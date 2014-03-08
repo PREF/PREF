@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>973</width>
+    <height>728</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PREF: Portable Reverse Engineering Framework 0.9 (by Dax89)</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/app_icons/res/app.png</normaloff>:/app_icons/res/app.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="PrefTabWidget" name="tabWidget">
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>973</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="menuImport">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <property name="icon">
+      <iconset resource="resources.qrc">
+       <normaloff>:/action_icons/res/import.png</normaloff>:/action_icons/res/import.png</iconset>
+     </property>
+     <addaction name="actionHex_File"/>
+    </widget>
+    <addaction name="action_Open"/>
+    <addaction name="menuImport"/>
+    <addaction name="actionCompare"/>
+    <addaction name="separator"/>
+    <addaction name="action_Save"/>
+    <addaction name="action_Save_As"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>&amp;?</string>
+    </property>
+    <addaction name="actionAbout_PREF"/>
+   </widget>
+   <widget class="QMenu" name="menu_Options">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Options</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menu_Tools">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionSignature_DB"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Tools"/>
+   <addaction name="menu_Options"/>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="mainToolBar">
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>22</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_Open"/>
+   <addaction name="actionCompare"/>
+   <addaction name="action_Save"/>
+   <addaction name="separator"/>
+   <addaction name="actionSignature_DB"/>
+   <addaction name="separator"/>
+   <addaction name="actionAbout_PREF"/>
+  </widget>
+  <action name="action_Open">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/action_icons/res/open.png</normaloff>:/action_icons/res/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_Save">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/action_icons/res/save.png</normaloff>:/action_icons/res/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_Save_As">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionAbout_PREF">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/action_icons/res/about.png</normaloff>:/action_icons/res/about.png</iconset>
+   </property>
+   <property name="text">
+    <string>About PREF</string>
+   </property>
+  </action>
+  <action name="actionCompare">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/misc_icons/res/diff.png</normaloff>:/misc_icons/res/diff.png</iconset>
+   </property>
+   <property name="text">
+    <string>Compare</string>
+   </property>
+  </action>
+  <action name="actionSignature_DB">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/signature_database/res/database.png</normaloff>:/signature_database/res/database.png</iconset>
+   </property>
+   <property name="text">
+    <string>Signature DB</string>
+   </property>
+   <property name="toolTip">
+    <string>Signature DB</string>
+   </property>
+  </action>
+  <action name="actionHex_File">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/misc_icons/res/hex.png</normaloff>:/misc_icons/res/hex.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hex File</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>PrefTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>preftabwidget/preftabwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
+ <connections/>
+</ui>

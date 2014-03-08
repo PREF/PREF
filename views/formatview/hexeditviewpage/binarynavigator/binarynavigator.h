@@ -1,0 +1,57 @@
+#ifndef BINARYNAVIGATOR_H
+#define BINARYNAVIGATOR_H
+
+#include <QtCore>
+#include <QtGui>
+#include <QtWidgets>
+#include <QtOpenGL>
+#include "qhexedit/qhexedit.h"
+#include "prefsdk/math.h"
+#include "prefsdk/bytecolors.h"
+#include "prefsdk/io/bytebuffer.h"
+
+using namespace PrefSDK;
+
+class BinaryNavigator : public QGLWidget
+{
+    Q_OBJECT
+
+    private:
+        enum DisplayMode { ByteClass = 0, Entropy = 1, Default = ByteClass };
+
+    public:
+        explicit BinaryNavigator(QWidget *parent = 0);
+        void setData(QHexEdit* hexedit, ByteBuffer* bb);
+        void displayDefault();
+        void displayEntropy();
+
+    public slots:
+        void renderMap(int = 0);
+        void renderEntropy(QPainter& p, qint64 x, qint64 y);
+        void renderByteClass(QPainter& p, qint64 x, qint64 y);
+
+    private:
+        qint64 indexFromPoint(const QPoint &pt);
+
+        void adjust();
+
+    private slots:
+        void updateSquare(qint64);
+
+    protected:
+        virtual void wheelEvent(QWheelEvent* event);
+        virtual void mousePressEvent(QMouseEvent* event);
+        virtual void paintEvent(QPaintEvent*);
+
+    private:
+        static const qreal BYTES_PER_LINE;
+        BinaryNavigator::DisplayMode _displaymode;
+        ByteBuffer* _bytebuffer;
+        QHexEdit* _hexedit;
+        qint64 _size;
+        qint64 _maxwidth;
+        qint64 _maxheight;
+        qint64 _offset;
+};
+
+#endif // BINARYNAVIGATOR_H
