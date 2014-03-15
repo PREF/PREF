@@ -5,7 +5,7 @@ QNumberLineEdit::QNumberLineEdit(QWidget *parent): QLineEdit(parent)
     this->_inputtype = QNumberLineEdit::None; /* Internal Use */
 
     this->_hexvalidator = new QRegExpValidator(this);
-    this->_hexvalidator->setRegExp(QRegExp("[0-9A-Fa-f]{1,255}"));
+    this->_hexvalidator->setRegExp(QRegExp("(0x)?[0-9A-Fa-f]{1,255}"));
 
     this->setInputType(QNumberLineEdit::AsciiString); /* Ascii String by Default */
 }
