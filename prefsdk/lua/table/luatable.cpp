@@ -60,7 +60,7 @@ namespace Lua
     {
         this->push();
 
-        if((luaT_typeof(l, 1) == LuaTypes::Table) && lua_compare(l, 1, -1, LUA_OPEQ))
+        if((luaT_typeof(l, 1) == LuaTypes::Table) && lua_equal(l, 1, -1))
         {
             lua_remove(l, 1); /* Remove Self */
             argcount--;

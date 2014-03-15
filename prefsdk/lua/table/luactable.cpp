@@ -74,7 +74,7 @@ namespace Lua
         LuaCTable* thethis = reinterpret_cast<LuaCTable*>(lua_touserdata(l, lua_upvalueindex(1)));
         thethis->metaConcat(l);
 
-        if((luaT_typeof(l, -1) == LuaTypes::String) && (lua_rawlen(l, -1) > 0))
+        if((luaT_typeof(l, -1) == LuaTypes::String) && (lua_objlen(l, -1) > 0))
             return 1;
 
         return 0;
@@ -293,17 +293,17 @@ namespace Lua
 
     bool LuaCTable::metaEqual(lua_State *l)
     {
-        return lua_compare(l, 1, 2, LUA_OPEQ) != 0;
+        return lua_equal(l, 1, 2) != 0;
     }
 
     bool LuaCTable::metaLessThan(lua_State *l)
     {
-        return lua_compare(l, 1, 2, LUA_OPLT) != 0;
+        return lua_lessthan(l, 1, 2) != 0;
     }
 
     bool LuaCTable::metaLessOrEqual(lua_State *l)
     {
-        return lua_compare(l, 1, 2, LUA_OPLE) != 0;
+        return this->metaLessThan(l) || this->metaEqual(l);
     }
 
     lua_Integer LuaCTable::metaLength()

@@ -37,7 +37,7 @@ namespace Lua
     lua_Integer LuaReference::length() const
     {
         lua_rawgeti(this->state(), LUA_REGISTRYINDEX, this->_ref);
-        int len = lua_rawlen(this->state(), -1);
+        int len = lua_objlen(this->state(), -1);
 
         lua_pop(this->state(), 1);
         return len;

@@ -38,6 +38,7 @@ namespace PrefSDK
             virtual QByteArray read(qint64 pos, qint64 len) = 0;
 
         lua_public:
+            lua_Integer size();
             void copyTo(LuaTable::Ptr buffer, lua_Integer start, lua_Integer end);
             lua_Integer find(QString s, lua_Integer start, lua_Integer end);
             lua_Integer find(QString s, lua_Integer start);

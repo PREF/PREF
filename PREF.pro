@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PREF
 TEMPLATE = app
-QMAKE_CXXFLAGS += -I$$PWD/include/lua -I$$PWD/include/sqlite  -std=c++11
+QMAKE_CXXFLAGS += -I$$PWD/include/luajit-2.0 -I$$PWD/include/sqlite -std=c++11
 LIBS += -lQt5Concurrent
 
 SOURCES += main.cpp\
@@ -311,10 +311,10 @@ RESOURCES += resources.qrc
 OTHER_FILES +=
 
 # *** START *** LINUX External Libraries *** START ***
-unix:!macx: LIBS += -L$$PWD/lib/linux/ -llua -lsqlite3
-# *** END *** Linux External Libraries *** END ***
+unix:!macx: LIBS += -L$$PWD/lib/linux/ -lluajit-5.1 -lsqlite3 -ldl
+# *** END *** LINUX External Libraries *** END ***
 
 # *** START *** WINDOWS External Libraries *** START ***
-win32: LIBS += -L$$PWD/lib/windows/ -llua -lsqlite3
+win32: LIBS += -L$$PWD/lib/windows/ -lluajit-5.1 -lsqlite3
 RC_FILE = resources.rc
 # *** END *** WINDOWS External Libraries *** END ***

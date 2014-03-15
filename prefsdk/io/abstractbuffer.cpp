@@ -23,6 +23,7 @@ namespace PrefSDK
         this->exportMethod<void, AbstractBuffer, lua_Integer, QString>("writeLine", &AbstractBuffer::writeLine);
 
         this->exportMethod<void, AbstractBuffer, LuaTable::Ptr, lua_Integer, lua_Integer>("copyTo", &AbstractBuffer::copyTo);
+        this->exportMethod<lua_Integer, AbstractBuffer>("size", &AbstractBuffer::size);
     }
 
     AbstractBuffer::~AbstractBuffer()
@@ -111,6 +112,11 @@ namespace PrefSDK
         }
 
         return currpos - pos;
+    }
+
+    lua_Integer AbstractBuffer::size()
+    {
+        return this->length();
     }
 
     lua_Integer AbstractBuffer::find(QString s, lua_Integer start)
