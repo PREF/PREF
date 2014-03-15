@@ -141,7 +141,8 @@ SOURCES += main.cpp\
     prefsdk/sqlitewrapper/sqliteexception.cpp \
     prefsdk/sqlitewrapper/sqlitestatement.cpp \
     prefsdk/sqlitewrapper/sqlitetransaction.cpp \
-    qhexedit/qhexeditcomments.cpp
+    qhexedit/qhexeditcomments.cpp \
+    prefsdk/lua/luadump.cpp
 
 HEADERS  += mainwindow.h \
     prefsdk/format/elements/field.h \
@@ -278,7 +279,8 @@ HEADERS  += mainwindow.h \
     prefsdk/sqlitewrapper/sqlitetypes.h \
     prefsdk/sqlitewrapper/sqlitestatement.h \
     prefsdk/sqlitewrapper/sqlitetransaction.h \
-    qhexedit/qhexeditcomments.h
+    qhexedit/qhexeditcomments.h \
+    prefsdk/lua/luadump.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
