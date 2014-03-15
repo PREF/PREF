@@ -58,7 +58,7 @@ void QNumberSpinBox::updateRegExp()
     this->_binvalidator->setRegExp(QRegExp(QString("[0-1]{1,%1}").arg(maxlen)));
     this->_octvalidator->setRegExp(QRegExp(QString("[0-8]{1,%1}").arg(maxlen)));
     this->_decvalidator->setRegExp(QRegExp(QString("[0-9]{1,%1}").arg(maxlen)));
-    this->_hexvalidator->setRegExp(QRegExp(QString("[0-9A-Fa-f]{1,%1}").arg(maxlen)));
+    this->_hexvalidator->setRegExp(QRegExp(QString("(0x)?[0-9A-Fa-f]{1,%1}").arg(maxlen)));
 }
 
 QValidator::State QNumberSpinBox::validate(QString &input, int &pos) const

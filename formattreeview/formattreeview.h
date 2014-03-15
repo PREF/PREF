@@ -33,6 +33,7 @@ class FormatTreeView : public QTreeView
         void onStructureGotoStart();
         void onStructureGotoEnd();
         void onStructureExport();
+        void onStructureImport();
         void onCopyOffset();
         void onCopyName();
         void onCopyValue();
@@ -48,6 +49,7 @@ class FormatTreeView : public QTreeView
         void removeBackColor(FormatObject*);
         void formatObjectSelected(FormatObject*);
         void exportAction(FormatObject*);
+        void importAction(FormatObject*);
         void gotoOffset(qint64);
 
     private:

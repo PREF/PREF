@@ -53,6 +53,7 @@ class HexEditViewPage: public QWidget
         void onRemoveBackColor(FormatObject* formatobj);
         void onFormatObjectSelected(FormatObject *formatobj);
         void exportData(FormatObject* formatobj);
+        void importData(FormatObject* formatobj);
         void scanSignatures();
 
     private:

@@ -109,6 +109,12 @@ void FormatTreeView::onStructureExport()
     emit exportAction(formatobj);
 }
 
+void FormatTreeView::onStructureImport()
+{
+    FormatObject* formatobj = this->selectedFormatObject();
+    emit importAction(formatobj);
+}
+
 void FormatTreeView::onCopyOffset()
 {
     FormatObject* formatobj = this->selectedFormatObject();
@@ -156,6 +162,7 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
         connect(this->_structuremenu, SIGNAL(gotoStartAction()), this, SLOT(onStructureGotoStart()));
         connect(this->_structuremenu, SIGNAL(gotoEndAction()), this, SLOT(onStructureGotoEnd()));
         connect(this->_structuremenu, SIGNAL(exportAction()), this, SLOT(onStructureExport()));
+        connect(this->_structuremenu, SIGNAL(importAction()), this, SLOT(onStructureImport()));
     }
 
     this->_formatobjectmenu->addMenu(this->_copymenu);

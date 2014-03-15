@@ -15,12 +15,14 @@ class StructureMenu : public QMenu
         void gotoStartAction();
         void gotoEndAction();
         void exportAction();
+        void importAction();
 
     private:
         QMenu* _gotomenu;
         QAction* _actgotostart;
         QAction* _actgotoend;
         QAction* _actexport;
+        QAction* _actimport;
 };
 
 #endif // STRUCTUREMENU_H

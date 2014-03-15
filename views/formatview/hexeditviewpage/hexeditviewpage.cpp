@@ -30,6 +30,7 @@ HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidg
     connect(ui->tvFormat, SIGNAL(removeBackColor(FormatObject*)), this, SLOT(onRemoveBackColor(FormatObject*)));
     connect(ui->tvFormat, SIGNAL(formatObjectSelected(FormatObject*)), this, SLOT(onFormatObjectSelected(FormatObject*)));
     connect(ui->tvFormat, SIGNAL(exportAction(FormatObject*)), this, SLOT(exportData(FormatObject*)));
+    connect(ui->tvFormat, SIGNAL(importAction(FormatObject*)), this, SLOT(importData(FormatObject*)));
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
@@ -169,6 +170,26 @@ void HexEditViewPage::exportData(FormatObject *formatobj)
     ExportDialog ed(ui->hexEdit, this->_bytebuffer, this);
     ed.setFixedRange(formatobj->offset(), formatobj->endOffset());
     ed.exec();
+}
+
+void HexEditViewPage::importData(FormatObject *formatobj)
+{
+    QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
+
+    if(!s.isEmpty())
+    {
+        QFile f(s);
+        f.open(QIODevice::ReadOnly);
+
+        qint64 offset = formatobj->offset();
+        qint64 size = qMin(f.size(), (formatobj->endOffset() - offset));
+
+        if (size > 0)
+        {
+            QByteArray ba = f.read(size);
+            this->_bytebuffer->write(offset, size, ba);
+        }
+    }
 }
 
 void HexEditViewPage::scanSignatures()
