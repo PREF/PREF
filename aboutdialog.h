@@ -2,6 +2,7 @@
 #define ABOUTDIALOG_H
 
 #include <QDialog>
+#include "luajit.h"
 #include "prefsdk/lua/lua.h"
 #include "prefsdk/sdkmanager.h"
 
