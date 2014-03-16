@@ -109,7 +109,7 @@ void FormatView::jumpToOffset(qint64 offset, qint64 length)
 
 void FormatView::on_tbFormats_clicked()
 {
-    FormatsDialog fd(SDKManager::state(), this->_bytebuffer->length(), this);
+    FormatsDialog fd(SDKManager::state(), this->_bytebuffer->length(), this->topLevelWidget());
     int res = fd.exec();
 
     if(res == FormatsDialog::Accepted)
@@ -123,7 +123,7 @@ void FormatView::on_tbFormats_clicked()
 
 void FormatView::on_tbFormatOptions_clicked()
 {
-    FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->model(), this->_bytebuffer);
+    FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->model(), this->_bytebuffer, this->topLevelWidget());
     fod.exec();
 }
 

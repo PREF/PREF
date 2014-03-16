@@ -261,7 +261,7 @@ void ActionToolBar::showGoto()
 
 void ActionToolBar::showExportDialog()
 {
-    ExportDialog ed(this->_hexedit, this->_bytebuffer, this);
+    ExportDialog ed(this->_hexedit, this->_bytebuffer, this->topLevelWidget());
     ed.exec();
 }
 
