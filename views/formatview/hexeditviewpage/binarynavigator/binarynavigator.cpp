@@ -34,7 +34,7 @@ void BinaryNavigator::renderMap(int)
     this->update();
 }
 
-void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y)
+void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
     qreal e = entropy(this->_bytebuffer, this->_offset);
     QColor c = ByteColors::entropyColor(e);
@@ -43,12 +43,12 @@ void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y)
 
     if(this->_offset == this->_hexedit->cursorPos())
     {
-        p.setPen(QColor(0xFF, 0xFF, 0x00));
-        p.drawRect(r);
+        cursorrect = r;
+        cursorcolor = QColor(0xFF, 0xFF, 0x00);
     }
 }
 
-void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y)
+void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
     uchar b = this->_bytebuffer->at(this->_offset);
     QColor c = ByteColors::byteClassColor(b);
@@ -57,8 +57,8 @@ void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y)
 
     if(this->_offset == this->_hexedit->cursorPos())
     {
-        p.setPen(QColor(0xFF, 0x00, 0xFF));
-        p.drawRect(r);
+        cursorrect = r;
+        cursorcolor = QColor(0xFF, 0x00, 0xFF);
     }
 }
 
@@ -117,6 +117,8 @@ void BinaryNavigator::paintEvent(QPaintEvent *)
 
     this->adjust();
 
+    QColor cursorcolor;
+    QRectF cursorrect;
     QPainter p(this);
 
     for(qreal x = 0, y = 0; (this->_offset < this->_bytebuffer->length()) && (y <= this->_maxheight); x += this->_size, this->_offset++)
@@ -130,15 +132,21 @@ void BinaryNavigator::paintEvent(QPaintEvent *)
         switch(this->_displaymode)
         {
             case BinaryNavigator::ByteClass:
-                this->renderByteClass(p, x, y);
+                this->renderByteClass(p, x, y, cursorrect, cursorcolor);
                 break;
 
             case BinaryNavigator::Entropy:
-                this->renderEntropy(p, x, y);
+                this->renderEntropy(p, x, y, cursorrect, cursorcolor);
                 break;
 
             default:
                 break;
         }
+    }
+
+    if(!cursorrect.isEmpty())
+    {
+        p.setPen(cursorcolor);
+        p.drawRect(cursorrect);
     }
 }

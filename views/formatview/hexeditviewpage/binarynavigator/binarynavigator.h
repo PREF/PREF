@@ -27,8 +27,8 @@ class BinaryNavigator : public QGLWidget
 
     public slots:
         void renderMap(int = 0);
-        void renderEntropy(QPainter& p, qint64 x, qint64 y);
-        void renderByteClass(QPainter& p, qint64 x, qint64 y);
+        void renderEntropy(QPainter& p, qint64 x, qint64 y, QRectF &cursorrect, QColor& cursorcolor);
+        void renderByteClass(QPainter& p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor);
 
     private:
         qint64 indexFromPoint(const QPoint &pt);
