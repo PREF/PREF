@@ -62,9 +62,14 @@ namespace PrefSDK
 
     FieldArray* Structure::addField(lua_Integer datatype, lua_Integer count, const QString &name)
     {
+        FieldArray* fa = nullptr;
         lua_Integer newoffset = this->endOffset();
         DataType::Type dt = static_cast<DataType::Type>(datatype);
-        FieldArray* fa = new FieldArray(this->state(), dt, newoffset, name, count, this->_bytebuffer, this->_model, this);
+
+        if(DataType::isString(dt))
+            fa = new AsciiString(this->state(), newoffset, name, count, this->_bytebuffer, this->_model, this);
+        else
+            fa = new FieldArray(this->state(), dt, newoffset, name, count, this->_bytebuffer, this->_model, this);
 
         this->_fieldmap[newoffset] = fa;
         this->_stringmap[name] = fa;
