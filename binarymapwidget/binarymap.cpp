@@ -194,6 +194,7 @@ void BinaryMap::drawInfo(QPainter &p)
 
     QRect r = QRect(this->width() - maxw, 10, maxw, fm.height() * 3);
 
+    p.setFont(this->font());
     p.setPen(QColor(Qt::white));
     p.drawText(r, Qt::AlignLeft | Qt::AlignTop, QString("%1\n%2\n%3").arg(start, end, width));
 }
