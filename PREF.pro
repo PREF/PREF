@@ -317,6 +317,6 @@ unix:!macx: LIBS += -L$$PWD/lib/linux/ -lluajit-5.1 -lsqlite3 -ldl
 # *** END *** LINUX External Libraries *** END ***
 
 # *** START *** WINDOWS External Libraries *** START ***
-win32: LIBS += -L$$PWD/lib/windows/ -lluajit-5.1 -lsqlite3
+win32: LIBS += -L$$PWD/lib/windows/ -lluajit -lsqlite3
 RC_FILE = resources.rc
 # *** END *** WINDOWS External Libraries *** END ***
