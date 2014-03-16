@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PREF: Portable Reverse Engineering Framework 0.9 (by Dax89)</string>
+   <string>PREF: Portable Reverse Engineering Framework 0.9.1</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
