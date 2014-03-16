@@ -13,6 +13,7 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
 
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
     if(DataTypesModel::_types.isEmpty())
     {

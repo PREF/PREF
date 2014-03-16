@@ -4,7 +4,8 @@ const QString BinaryMap::NO_DATA_AVAILABLE = "No Data Available";
 
 BinaryMap::BinaryMap(QWidget *parent): QGLWidget(parent), _displaymode(BinaryMap::None), _bytebuffer(nullptr), _step(0), _start(-1), _end(-1), _width(-1)
 {
-    QFont f("Monospace", 10);
+    QFont f("Monospace", qApp->font().pointSize());
+    f.setStyleHint(QFont::TypeWriter);
 
     this->setMouseTracking(true);
     this->setCursor(QCursor(Qt::CrossCursor));
@@ -194,7 +195,6 @@ void BinaryMap::drawInfo(QPainter &p)
 
     QRect r = QRect(this->width() - maxw, 10, maxw, fm.height() * 3);
 
-    p.setFont(this->font());
     p.setPen(QColor(Qt::white));
     p.drawText(r, Qt::AlignLeft | Qt::AlignTop, QString("%1\n%2\n%3").arg(start, end, width));
 }

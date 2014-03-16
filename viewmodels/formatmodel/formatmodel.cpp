@@ -6,7 +6,8 @@ FormatModel::FormatModel(lua_State* l, ByteBuffer *bytebuffer, QObject *parent):
     this->_bytebuffer = bytebuffer;
 
     this->_monospacefont.setFamily("Monospace");
-    this->_monospacefont.setPointSize(10);
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
     /* Thread Safety: Don't use QPixmap */
     this->_icostruct.load(":/format_icons/res/struct.png");
