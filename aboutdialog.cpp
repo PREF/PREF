@@ -15,6 +15,9 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent), ui(new Ui::AboutDial
     ui->twComponents->setItem(1, 1, new QTableWidgetItem(QString(LUA_RELEASE)));
     ui->twComponents->setItem(2, 0, new QTableWidgetItem("LuaJIT Version"));
     ui->twComponents->setItem(2, 1, new QTableWidgetItem(QString(LUAJIT_VERSION)));
+
+    ui->twComponents->resizeRowsToContents();
+    ui->twDevs->resizeRowsToContents();
 }
 
 AboutDialog::~AboutDialog()
