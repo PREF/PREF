@@ -127,9 +127,6 @@ SOURCES += main.cpp\
     actionwidget/findaction/findaction.cpp \
     elaboratetoolbar.cpp \
     actionwidget/actiontoolbar.cpp \
-    prefsdk/format/elements/strings/stringfield.cpp \
-    prefsdk/format/elements/strings/asciistring.cpp \
-    prefsdk/format/elements/strings/unicodestring.cpp \
     viewmodels/filefiltermodel/filefiltermodel.cpp \
     prefsdk/signatures/signaturedatabase.cpp \
     signaturedatabasedialog/signaturedatabasedialog.cpp \
@@ -265,9 +262,6 @@ HEADERS  += mainwindow.h \
     elaboratetoolbar.h \
     actionwidget/actiontoolbar.h \
     prefsdk/lua/luatypedefs.h \
-    prefsdk/format/elements/strings/stringfield.h \
-    prefsdk/format/elements/strings/asciistring.h \
-    prefsdk/format/elements/strings/unicodestring.h \
     viewmodels/filefiltermodel/filefiltermodel.h \
     prefsdk/signatures/signaturedatabase.h \
     signaturedatabasedialog/signaturedatabasedialog.h \
