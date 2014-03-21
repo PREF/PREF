@@ -49,11 +49,11 @@ class HexEditViewPage: public QWidget
         void updateOffset(qint64 offset);
         void updateSelLength(qint64 size);
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
-        void onSetBackColor(FormatObject* formatobj);
-        void onRemoveBackColor(FormatObject* formatobj);
-        void onFormatObjectSelected(FormatObject *formatobj);
-        void exportData(FormatObject* formatobj);
-        void importData(FormatObject* formatobj);
+        void onSetBackColor(FormatElement* formatobj);
+        void onRemoveBackColor(FormatElement* formatobj);
+        void onFormatObjectSelected(FormatElement *formatobj);
+        void exportData(FormatElement* formatobj);
+        void importData(FormatElement* formatobj);
         void scanSignatures();
 
     private:

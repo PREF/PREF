@@ -1,5 +1,5 @@
-#ifndef FORMATOBJECT_H
-#define FORMATOBJECT_H
+#ifndef PREFSDK_FORMATELEMENT_H
+#define PREFSDK_FORMATELEMENT_H
 
 #include <QtCore>
 #include "prefsdk/qlua.h"
@@ -9,7 +9,7 @@ namespace PrefSDK
 {
     using namespace Lua;
 
-    class FormatObject : public QObject, public LuaCTable
+    class FormatElement : public QObject, public LuaCTable
     {
         Q_OBJECT
 
@@ -18,7 +18,7 @@ namespace PrefSDK
 
         public:
             enum FormatObjectType {UndefinedType, StructureType, FieldType, FieldArrayType, BitFieldType};
-            explicit FormatObject(lua_State* l, lua_String tablename, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject* parentobject = 0, QObject *parent = 0);
+            explicit FormatElement(lua_State* l, lua_String tablename, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement* parentobject = 0, QObject *parent = 0);
             bool containsOffset(lua_Integer offset);
             void staticInfo(QString s);
             int base();
@@ -27,13 +27,13 @@ namespace PrefSDK
             virtual QString displayName();
             virtual QString info();
             virtual void setBase(int b);
-            virtual FormatObject* parentObject();
+            virtual FormatElement* parentObject();
 
         public: /* Abstract Methods */
             virtual QString displayType() = 0;
             virtual QString displayValue() = 0;
             virtual lua_Integer value() = 0;
-            virtual FormatObject::FormatObjectType objectType() = 0;
+            virtual FormatElement::FormatObjectType objectType() = 0;
             virtual lua_Integer size() = 0;
 
         lua_public:
@@ -47,7 +47,7 @@ namespace PrefSDK
             lua_Integer endOffset();
 
         signals:
-            void baseChanged(FormatObject* sender);
+            void baseChanged(FormatElement* sender);
 
         private:
             int _base;
@@ -55,7 +55,7 @@ namespace PrefSDK
             lua_Integer _baseoffset;
             QString _name;
             QString _staticinfo;
-            FormatObject* _parentobject;
+            FormatElement* _parentobject;
             LuaFunction::Ptr _infoprocedure;
 
         protected:
@@ -64,4 +64,4 @@ namespace PrefSDK
     };
 }
 
-#endif // FORMATOBJECT_H
+#endif // PREFSDK_FORMATELEMENT_H

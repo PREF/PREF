@@ -22,7 +22,6 @@ SOURCES += main.cpp\
     qhexedit/qhexeditprivate.cpp \
     qhexedit/qhexedit.cpp \
     qhistogram/qhistogram.cpp \
-    prefsdk/format/elements/formatobject.cpp \
     spinboxbaseselector/spinboxbaseselector.cpp \
     spinboxbaseselector/qnumberspinbox.cpp \
     qhexedit/qhexeditdata.cpp \
@@ -33,7 +32,6 @@ SOURCES += main.cpp\
     prefsdk/datatype.cpp \
     aboutdialog.cpp \
     prefsdk/format/elements/bitfield.cpp \
-    prefsdk/format/elements/fieldobject.cpp \
     exportdialog.cpp \
     views/formatview/disassemblerviewpage/disassemblerviewpage.cpp \
     viewmodels/datatypesmodel/datatypesmodel.cpp \
@@ -142,7 +140,9 @@ SOURCES += main.cpp\
     prefsdk/sqlitewrapper/sqlitestatement.cpp \
     prefsdk/sqlitewrapper/sqlitetransaction.cpp \
     qhexedit/qhexeditcomments.cpp \
-    prefsdk/lua/luadump.cpp
+    prefsdk/lua/luadump.cpp \
+    prefsdk/format/elements/fieldelement.cpp \
+    prefsdk/format/elements/formatelement.cpp
 
 HEADERS  += mainwindow.h \
     prefsdk/format/elements/field.h \
@@ -150,7 +150,6 @@ HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
     qhexedit/qhexedit.h \
     qhistogram/qhistogram.h \
-    prefsdk/format/elements/formatobject.h \
     spinboxbaseselector/spinboxbaseselector.h \
     spinboxbaseselector/qnumberspinbox.h \
     qhexedit/qhexeditdata.h \
@@ -161,7 +160,6 @@ HEADERS  += mainwindow.h \
     prefsdk/datatype.h \
     aboutdialog.h \
     prefsdk/format/elements/bitfield.h \
-    prefsdk/format/elements/fieldobject.h \
     exportdialog.h \
     views/formatview/disassemblerviewpage/disassemblerviewpage.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
@@ -280,7 +278,9 @@ HEADERS  += mainwindow.h \
     prefsdk/sqlitewrapper/sqlitestatement.h \
     prefsdk/sqlitewrapper/sqlitetransaction.h \
     qhexedit/qhexeditcomments.h \
-    prefsdk/lua/luadump.h
+    prefsdk/lua/luadump.h \
+    prefsdk/format/elements/fieldelement.h \
+    prefsdk/format/elements/formatelement.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    FieldArray::FieldArray(lua_State* l, DataType::Type itemtype, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject *formatobject, DataType::Type type, QObject *parent): FieldObject(l, "FieldArray", type, offset, name, bytebuffer, model, formatobject, parent)
+    FieldArray::FieldArray(lua_State* l, DataType::Type itemtype, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement *formatobject, DataType::Type type, QObject *parent): FieldElement(l, "FieldArray", type, offset, name, bytebuffer, model, formatobject, parent)
     {
         this->_itemtype = itemtype;
         this->_elementcount = itemcount;
@@ -41,7 +41,7 @@ namespace PrefSDK
 
     void FieldArray::setBase(int base)
     {
-        FieldObject::setBase(base);
+        FieldElement::setBase(base);
 
         foreach (lua_Integer o, this->_offsetlist)
             this->_fieldmap[o]->setBase(base);
@@ -73,7 +73,7 @@ namespace PrefSDK
             }
         }
 
-        FieldObject::metaIndex(l);
+        FieldElement::metaIndex(l);
     }
 
     DataType::Type FieldArray::itemDataType() const
@@ -99,8 +99,8 @@ namespace PrefSDK
         return this->_offsetlist.indexOf(f->offset());
     }
 
-    FormatObject::FormatObjectType FieldArray::objectType()
+    FormatElement::FormatObjectType FieldArray::objectType()
     {
-        return FormatObject::FieldArrayType;
+        return FormatElement::FieldArrayType;
     }
 }

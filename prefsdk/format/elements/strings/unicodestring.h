@@ -10,7 +10,7 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            explicit UnicodeString(lua_State* l, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject* formatobject, QObject *parent = 0);
+            explicit UnicodeString(lua_State* l, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement* formatobject, QObject *parent = 0);
 
         public: /* Overriden methods */
             virtual QString displayType();

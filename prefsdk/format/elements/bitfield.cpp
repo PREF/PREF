@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    BitField::BitField(lua_State* l, int bitstart, int bitend, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable* model, FieldObject *parentobject, QObject *parent): FieldObject(l, "BitField", parentobject->dataType(), offset, name, bytebuffer, model, parentobject, parent)
+    BitField::BitField(lua_State* l, int bitstart, int bitend, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable* model, FieldElement *parentobject, QObject *parent): FieldElement(l, "BitField", parentobject->dataType(), offset, name, bytebuffer, model, parentobject, parent)
     {
         this->_bitstart = bitstart;
         this->_bitend = bitend;
@@ -59,9 +59,9 @@ namespace PrefSDK
         return mask;
     }
 
-    FormatObject::FormatObjectType BitField::objectType()
+    FormatElement::FormatObjectType BitField::objectType()
     {
-        return FormatObject::BitFieldType;
+        return FormatElement::BitFieldType;
     }
 
     lua_Integer BitField::size()

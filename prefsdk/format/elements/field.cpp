@@ -2,14 +2,14 @@
 
 namespace PrefSDK
 {
-    Field::Field(lua_State* l, DataType::Type type, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable *model, FormatObject *parentobject, QObject *parent): FieldObject(l, "Field", type, offset, name, bytebuffer, model, parentobject, parent)
+    Field::Field(lua_State* l, DataType::Type type, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable *model, FormatElement *parentobject, QObject *parent): FieldElement(l, "Field", type, offset, name, bytebuffer, model, parentobject, parent)
     {
         this->exportMethod<LuaTable::Ptr, Field, lua_Integer, lua_String>("setBitField", &Field::setBitField);
         this->exportMethod<LuaTable::Ptr, Field, lua_Integer, lua_Integer, lua_String>("setBitField", &Field::setBitField);
         this->exportMethod<LuaTable::Ptr, Field, lua_String>("find", &Field::find);
     }
 
-    Field::Field(lua_State *l, lua_String tablename, DataType::Type type, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable* model, FormatObject *parentobject, QObject *parent): FieldObject(l, tablename, type, offset, name, bytebuffer, model, parentobject, parent)
+    Field::Field(lua_State *l, lua_String tablename, DataType::Type type, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable* model, FormatElement *parentobject, QObject *parent): FieldElement(l, tablename, type, offset, name, bytebuffer, model, parentobject, parent)
     {
 
     }
@@ -54,9 +54,9 @@ namespace PrefSDK
         return this->_stringlist.indexOf(bf->name());
     }
 
-    FormatObject::FormatObjectType Field::objectType()
+    FormatElement::FormatObjectType Field::objectType()
     {
-        return FormatObject::FieldType;
+        return FormatElement::FieldType;
     }
 
     LuaTable::Ptr Field::setBitField(lua_Integer bitstart, lua_String name)
@@ -95,6 +95,6 @@ namespace PrefSDK
             }
         }
 
-        FieldObject::metaIndex(l);
+        FieldElement::metaIndex(l);
     }
 }

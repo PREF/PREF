@@ -1,16 +1,16 @@
-#ifndef BITFIELD_H
-#define BITFIELD_H
+#ifndef PREFSDK_BITFIELD_H
+#define PREFSDK_BITFIELD_H
 
 #include <QtCore>
 #include <QtWidgets>
-#include "prefsdk/format/elements/fieldobject.h"
+#include "prefsdk/format/elements/fieldelement.h"
 
 namespace PrefSDK
 {
-    class BitField : public FieldObject
+    class BitField : public FieldElement
     {
         public:
-            BitField(lua_State *l, int bitstart, int bitend, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FieldObject* parentobject, QObject *parent = 0);
+            BitField(lua_State *l, int bitstart, int bitend, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FieldElement* parentobject, QObject *parent = 0);
             int bitStart() const;
             int bitEnd() const;
 
@@ -22,7 +22,7 @@ namespace PrefSDK
             virtual lua_Integer value();
             virtual QString displayName();
             virtual QString displayValue();
-            virtual FormatObject::FormatObjectType objectType();
+            virtual FormatElement::FormatObjectType objectType();
             virtual lua_Integer size();
 
         private:
@@ -31,4 +31,4 @@ namespace PrefSDK
             quint32 _mask;
     };
 }
-#endif // BITFIELD_H
+#endif // PREFSDK_BITFIELD_H

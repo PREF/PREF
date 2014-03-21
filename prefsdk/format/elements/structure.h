@@ -11,26 +11,26 @@
 
 namespace PrefSDK
 {
-    class Structure: public FormatObject
+    class Structure: public FormatElement
     {
         Q_OBJECT
 
         public:
             typedef QList<lua_Integer> OffsetList;
-            typedef QHash<lua_Integer, FormatObject*> FieldMap;
-            typedef QHash<QString, FormatObject*> StringMap;
+            typedef QHash<lua_Integer, FormatElement*> FieldMap;
+            typedef QHash<QString, FormatElement*> StringMap;
 
         public:
-            explicit Structure(lua_State *l, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject* parentobject = 0, QObject *parent = 0);
+            explicit Structure(lua_State *l, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement* parentobject = 0, QObject *parent = 0);
             Structure* addStructure(const QString& name);
             Structure* addStructure(const QString& name, lua_Integer offset);
-            FieldObject *addField(lua_Integer datatype, const QString& name);
+            FieldElement *addField(lua_Integer datatype, const QString& name);
             FieldArray* addField(lua_Integer datatype, lua_Integer count, const QString& name);
             bool hidden() const;
             lua_Integer fieldCount();
-            FormatObject* field(int i) const;
-            FormatObject* find(const QString& name);
-            int indexOf(FormatObject* f) const;
+            FormatElement* field(int i) const;
+            FormatElement* find(const QString& name);
+            int indexOf(FormatElement* f) const;
 
         protected:
             virtual void metaIndex(lua_State* l);
@@ -47,7 +47,7 @@ namespace PrefSDK
             virtual QString displayType();
             virtual QString displayValue();
             virtual lua_Integer value();
-            virtual FormatObject::FormatObjectType objectType();
+            virtual FormatElement::FormatObjectType objectType();
             virtual lua_Integer size();
 
         protected:

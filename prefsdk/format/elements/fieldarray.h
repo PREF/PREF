@@ -7,7 +7,7 @@
 
 namespace PrefSDK
 {
-    class FieldArray : public FieldObject
+    class FieldArray : public FieldElement
     {
         Q_OBJECT
 
@@ -16,7 +16,7 @@ namespace PrefSDK
             typedef QHash<lua_Integer, Field*> FieldMap;
 
         public:
-            explicit FieldArray(lua_State* l, DataType::Type itemtype, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject* formatobject, DataType::Type type = DataType::List, QObject *parent = 0);
+            explicit FieldArray(lua_State* l, DataType::Type itemtype, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement* formatobject, DataType::Type type = DataType::List, QObject *parent = 0);
             virtual void setBase(int base);
             DataType::Type itemDataType() const;
             int elementCount() const;
@@ -24,7 +24,7 @@ namespace PrefSDK
             int indexOf(Field *f) const;
 
         public: /* Overriden Methods */
-            virtual FormatObject::FormatObjectType objectType();
+            virtual FormatElement::FormatObjectType objectType();
             virtual QString displayType();
             virtual QString displayName();
             virtual QString displayValue();

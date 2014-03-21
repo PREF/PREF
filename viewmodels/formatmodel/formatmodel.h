@@ -39,7 +39,7 @@ class FormatModel : public FieldDataModel, public LuaCTable
         virtual void metaIndex(lua_State* l);
 
     private slots:
-        void updateModelData(FormatObject *sender);
+        void updateModelData(FormatElement *sender);
         void updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType);
 
     public: /* Overriden Methods */

@@ -1,55 +1,55 @@
-#include "fieldobject.h"
+#include "fieldelement.h"
 
 namespace PrefSDK
 {
-    FieldObject::FieldObject(lua_State* l, lua_String tablename, DataType::Type type, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject *parentobject, QObject *parent): FormatObject(l, tablename, offset, name, bytebuffer, model, parentobject, parent)
+    FieldElement::FieldElement(lua_State* l, lua_String tablename, DataType::Type type, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement *parentobject, QObject *parent): FormatElement(l, tablename, offset, name, bytebuffer, model, parentobject, parent)
     {
         this->_type = type;
 
-        this->exportMethod<lua_Integer, FieldObject>("datatype", &FieldObject::luaDataType);
+        this->exportMethod<lua_Integer, FieldElement>("datatype", &FieldElement::luaDataType);
     }
 
-    QString FieldObject::displayType()
+    QString FieldElement::displayType()
     {
         return DataType::stringValue(this->_type);
     }
 
-    lua_Integer FieldObject::size()
+    lua_Integer FieldElement::size()
     {
         return DataType::sizeOf(this->_type);
     }
 
-    DataType::Type FieldObject::dataType()
+    DataType::Type FieldElement::dataType()
     {
         return this->_type;
     }
 
-    lua_Integer FieldObject::luaDataType()
+    lua_Integer FieldElement::luaDataType()
     {
         return static_cast<lua_Integer>(this->_type);
     }
 
-    bool FieldObject::isSigned() const
+    bool FieldElement::isSigned() const
     {
         return DataType::isSigned(this->_type);
     }
 
-    bool FieldObject::isInteger() const
+    bool FieldElement::isInteger() const
     {
         return DataType::isInteger(this->_type);
     }
 
-    bool FieldObject::isOverflowed()
+    bool FieldElement::isOverflowed()
     {
         return this->_bytebuffer->willOverflow(this->offset(), this->_type);
     }
 
-    lua_Integer FieldObject::value()
+    lua_Integer FieldElement::value()
     {
         return this->_bytebuffer->readType(this->offset(), this->_type);
     }
 
-    QString FieldObject::displayValue()
+    QString FieldElement::displayValue()
     {
         if(this->_type == DataType::Char)
             return this->_bytebuffer->readString(this->offset(), 1);

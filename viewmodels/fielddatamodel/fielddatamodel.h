@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include "prefsdk/datatype.h"
-#include "prefsdk/format/elements/formatobject.h"
+#include "prefsdk/format/elements/formatelement.h"
 
 using namespace PrefSDK;
 

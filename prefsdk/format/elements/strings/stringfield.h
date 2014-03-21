@@ -10,7 +10,7 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            explicit StringField(lua_State* l, DataType::Type itemtype, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject* formatobject, DataType::Type type, QObject *parent = 0);
+            explicit StringField(lua_State* l, DataType::Type itemtype, lua_Integer offset, QString name, quint64 itemcount, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement* formatobject, DataType::Type type, QObject *parent = 0);
 
         public: /* Overriden methods */
             virtual QString displayName();

@@ -1,20 +1,20 @@
-#ifndef FIELDOBJECT_H
-#define FIELDOBJECT_H
+#ifndef PREFSDK_FIELDELEMENT_H
+#define PREFSDK_FIELDELEMENT_H
 
 #include <QtCore>
 #include <QtWidgets>
-#include "prefsdk/format/elements/formatobject.h"
+#include "prefsdk/format/elements/formatelement.h"
 
 namespace PrefSDK
 {
     using namespace Lua;
 
-    class FieldObject : public FormatObject
+    class FieldElement : public FormatElement
     {
         Q_OBJECT
 
         public:
-            explicit FieldObject(lua_State *l, lua_String tablename, DataType::Type type, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatObject* parentobject, QObject *parent = 0);
+            explicit FieldElement(lua_State *l, lua_String tablename, DataType::Type type, lua_Integer offset, QString name, ByteBuffer* bytebuffer, LuaCTable* model, FormatElement* parentobject, QObject *parent = 0);
             DataType::Type dataType();
             bool isSigned() const;
             bool isInteger() const;
@@ -33,4 +33,4 @@ namespace PrefSDK
             DataType::Type _type;
     };
 }
-#endif // FIELDOBJECT_H
+#endif // PREFSDK_FIELDELEMENT_H

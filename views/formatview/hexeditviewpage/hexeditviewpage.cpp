@@ -26,11 +26,11 @@ HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidg
     connect(ui->hexEdit, SIGNAL(verticalScrollBarValueChanged(int)), ui->binaryNavigator, SLOT(renderMap(int)));
     connect(ui->hexEdit, SIGNAL(visibleLinesChanged()), this, SLOT(scanSignatures()));
 
-    connect(ui->tvFormat, SIGNAL(setBackColor(FormatObject*)), this, SLOT(onSetBackColor(FormatObject*)));
-    connect(ui->tvFormat, SIGNAL(removeBackColor(FormatObject*)), this, SLOT(onRemoveBackColor(FormatObject*)));
-    connect(ui->tvFormat, SIGNAL(formatObjectSelected(FormatObject*)), this, SLOT(onFormatObjectSelected(FormatObject*)));
-    connect(ui->tvFormat, SIGNAL(exportAction(FormatObject*)), this, SLOT(exportData(FormatObject*)));
-    connect(ui->tvFormat, SIGNAL(importAction(FormatObject*)), this, SLOT(importData(FormatObject*)));
+    connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(removeBackColor(FormatElement*)), this, SLOT(onRemoveBackColor(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(formatObjectSelected(FormatElement*)), this, SLOT(onFormatObjectSelected(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(exportAction(FormatElement*)), this, SLOT(exportData(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(importAction(FormatElement*)), this, SLOT(importData(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
@@ -142,7 +142,7 @@ void HexEditViewPage::onHexEditCustomContextMenuRequested(const QPoint &pos)
     this->_toolbar->actionMenu()->popup(newpos);
 }
 
-void HexEditViewPage::onSetBackColor(FormatObject *formatobj)
+void HexEditViewPage::onSetBackColor(FormatElement *formatobj)
 {
     QColor c = QColorDialog::getColor(Qt::white, this);
 
@@ -153,26 +153,26 @@ void HexEditViewPage::onSetBackColor(FormatObject *formatobj)
     }
 }
 
-void HexEditViewPage::onRemoveBackColor(FormatObject *formatobj)
+void HexEditViewPage::onRemoveBackColor(FormatElement *formatobj)
 {
     lua_Integer offset = formatobj->offset();
     ui->hexEdit->clearHighlight(offset, (offset + formatobj->size() - 1));
 }
 
-void HexEditViewPage::onFormatObjectSelected(FormatObject *formatobj)
+void HexEditViewPage::onFormatObjectSelected(FormatElement *formatobj)
 {
     lua_Integer offset = formatobj->offset();
     ui->hexEdit->setSelection(offset, offset + formatobj->size());
 }
 
-void HexEditViewPage::exportData(FormatObject *formatobj)
+void HexEditViewPage::exportData(FormatElement *formatobj)
 {
     ExportDialog ed(ui->hexEdit, this->_bytebuffer, this);
     ed.setFixedRange(formatobj->offset(), formatobj->endOffset());
     ed.exec();
 }
 
-void HexEditViewPage::importData(FormatObject *formatobj)
+void HexEditViewPage::importData(FormatElement *formatobj)
 {
     QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
 

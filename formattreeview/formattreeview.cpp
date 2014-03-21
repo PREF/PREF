@@ -35,7 +35,7 @@ void FormatTreeView::setGotoMenuVisible(bool b)
 void FormatTreeView::setSelectedFormatObjectBase(int b)
 {
     QModelIndexList selidx = this->selectionModel()->selectedIndexes();
-    FormatObject* formatobj = reinterpret_cast<FormatObject*>(selidx[0].internalPointer());
+    FormatElement* formatobj = reinterpret_cast<FormatElement*>(selidx[0].internalPointer());
 
     formatobj->setBase(b);
     this->resizeTreeColumns();
@@ -48,11 +48,11 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
     if(selmodel && selmodel->selectedRows().length() == 1)
     {
         QModelIndex midx = selmodel->selectedRows()[0];
-        FormatObject* formatobj = (FormatObject*)midx.internalPointer();
+        FormatElement* formatobj = (FormatElement*)midx.internalPointer();
 
         this->_structuremenu->setGotoVisible(this->_gotovisible);
 
-        if(formatobj->objectType() == FormatObject::StructureType)
+        if(formatobj->objectType() == FormatElement::StructureType)
         {
             this->_structuremenu->setTitle(QString("'%1'").arg(formatobj->displayName()));
             this->_structuremenu->menuAction()->setVisible(true);
@@ -60,7 +60,7 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
         else
             this->_structuremenu->menuAction()->setVisible(false);
 
-        if(formatobj->objectType() == FormatObject::FieldType)
+        if(formatobj->objectType() == FormatElement::FieldType)
             this->_copymenu->setCopyValueVisible(true);
         else
             this->_copymenu->setCopyValueVisible(false);
@@ -72,9 +72,9 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
 
 void FormatTreeView::onTreeClicked(const QModelIndex &index)
 {
-    FormatObject* formatobj = reinterpret_cast<FormatObject*>(index.internalPointer());
+    FormatElement* formatobj = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if(formatobj->objectType() == FormatObject::BitFieldType)
+    if(formatobj->objectType() == FormatElement::BitFieldType)
         formatobj = formatobj->parentObject(); /* Set index = BitField's Parent */
 
     if(formatobj->size())
@@ -93,51 +93,51 @@ void FormatTreeView::removeBackColor()
 
 void FormatTreeView::onStructureGotoStart()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     emit gotoOffset(formatobj->offset());
 }
 
 void FormatTreeView::onStructureGotoEnd()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     emit gotoOffset(formatobj->endOffset());
 }
 
 void FormatTreeView::onStructureExport()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     emit exportAction(formatobj);
 }
 
 void FormatTreeView::onStructureImport()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     emit importAction(formatobj);
 }
 
 void FormatTreeView::onCopyOffset()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     qApp->clipboard()->setText(QString("%1").arg(formatobj->offset(), 8, 16, QLatin1Char('0')).toUpper());
 }
 
 void FormatTreeView::onCopyName()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     qApp->clipboard()->setText(formatobj->displayName());
 }
 
 void FormatTreeView::onCopyValue()
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
     qApp->clipboard()->setText(formatobj->displayValue());
 }
 
-FormatObject *FormatTreeView::selectedFormatObject() const
+FormatElement *FormatTreeView::selectedFormatObject() const
 {
     QItemSelectionModel* selmodel = this->selectionModel();
     QModelIndex index = selmodel->selectedIndexes()[0]; /* Get Selected Node Index*/
-    return reinterpret_cast<FormatObject*>(index.internalPointer());
+    return reinterpret_cast<FormatElement*>(index.internalPointer());
 }
 
 void FormatTreeView::configureContextMenu(bool highlightvisible)
@@ -177,9 +177,9 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 
 void FormatTreeView::updateColor(bool set)
 {
-    FormatObject* formatobj = this->selectedFormatObject();
+    FormatElement* formatobj = this->selectedFormatObject();
 
-    if(formatobj->objectType() == FormatObject::BitFieldType)
+    if(formatobj->objectType() == FormatElement::BitFieldType)
         formatobj = formatobj->parentObject(); /* Change Object to BitField's parent */
 
     if(formatobj->size())

@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    Structure::Structure(lua_State* l, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable *model, FormatObject* parentobject, QObject *parent): FormatObject(l, "Structure", offset, name, bytebuffer, model, parentobject, parent)
+    Structure::Structure(lua_State* l, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable *model, FormatElement* parentobject, QObject *parent): FormatElement(l, "Structure", offset, name, bytebuffer, model, parentobject, parent)
     {
         this->exportMethod<LuaTable::Ptr, Structure, lua_String>("addStructure", &Structure::addStructure);
         this->exportMethod<LuaTable::Ptr, Structure, lua_String, lua_Integer>("addStructure", &Structure::addStructure);
@@ -34,9 +34,9 @@ namespace PrefSDK
         return QString();
     }
 
-    FieldObject* Structure::addField(lua_Integer datatype, const QString &name)
+    FieldElement* Structure::addField(lua_Integer datatype, const QString &name)
     {
-        FieldObject* f;
+        FieldElement* f;
         lua_Integer newoffset = this->endOffset();
         DataType::Type dt = static_cast<DataType::Type>(datatype);
 
@@ -84,7 +84,7 @@ namespace PrefSDK
         foreach(lua_Integer o, this->_offsetlist)
             this->_fieldmap[o]->setBase(base);
 
-        FormatObject::setBase(base);
+        FormatElement::setBase(base);
     }
 
     QString Structure::displayType()
@@ -97,9 +97,9 @@ namespace PrefSDK
         throw new std::runtime_error("Cannot Read a Value from a Structure!");
     }
 
-    FormatObject::FormatObjectType Structure::objectType()
+    FormatElement::FormatObjectType Structure::objectType()
     {
-         return FormatObject::StructureType;
+         return FormatElement::StructureType;
     }
 
     lua_Integer Structure::size()
@@ -117,7 +117,7 @@ namespace PrefSDK
         return this->_offsetlist.length();
     }
 
-    FormatObject *Structure::field(int i) const
+    FormatElement *Structure::field(int i) const
     {
         if(i >= 0 && i < this->_offsetlist.length())
             return this->_fieldmap[this->_offsetlist[i]];
@@ -125,7 +125,7 @@ namespace PrefSDK
         return nullptr;
     }
 
-    FormatObject *Structure::find(const QString& name)
+    FormatElement *Structure::find(const QString& name)
     {
         if(this->_stringmap.contains(name))
             return this->_stringmap[name];
@@ -133,7 +133,7 @@ namespace PrefSDK
         return nullptr;
     }
 
-    int Structure::indexOf(FormatObject* f) const
+    int Structure::indexOf(FormatElement* f) const
     {
         return this->_offsetlist.indexOf(f->offset());
     }
@@ -148,13 +148,13 @@ namespace PrefSDK
 
             if(this->_stringmap.contains(key))
             {
-                FormatObject* fo = this->_stringmap[key];
+                FormatElement* fo = this->_stringmap[key];
                 fo->push();
                 return;
             }
         }
 
-        FormatObject::metaIndex(l);
+        FormatElement::metaIndex(l);
     }
 
     LuaTable::Ptr Structure::addStructure(lua_String name)
@@ -179,7 +179,7 @@ namespace PrefSDK
 
     LuaTable::Ptr Structure::find(lua_String fieldname)
     {
-        FormatObject* field = this->find(QString::fromLatin1(fieldname));
+        FormatElement* field = this->find(QString::fromLatin1(fieldname));
 
         if(field)
             return *field;
