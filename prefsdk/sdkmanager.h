@@ -11,6 +11,7 @@
 #include "prefsdk/prefdebug.h"
 #include "prefsdk/endian.h"
 #include "prefsdk/datatype.h"
+#include "prefsdk/format/elements/elementtype.h"
 #include "prefsdk/prefui.h"
 
 namespace PrefSDK
@@ -23,9 +24,10 @@ namespace PrefSDK
         private:
             SDKManager();
             static void runScript(QString sdkpath, QString filename);
-            static void loadSdkVersion(QString sdkpath);
-            static void loadSdkFiles(const QString &dir);
+            static void loadSdkVersion();
+            //static void loadSdkFiles(const QString &dir);
             static void loadPrefTables();
+            static int atPanic(lua_State*);
 
         public:
             static lua_State* initializeLua();
@@ -44,8 +46,7 @@ namespace PrefSDK
             static lua_State* _state;
             static SdkVersionFunction::Ptr _sdkversion;
             static const QString SDK_DIR;
-            static const QString REQUIRE_SCRIPT;
-            static const QString VERSION_SCRIPT;
+            static const QString MAIN_SCRIPT;
     };
 }
 

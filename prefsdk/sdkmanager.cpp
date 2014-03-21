@@ -9,21 +9,21 @@ namespace PrefSDK
     DataType::Ptr SDKManager::_datatype;
 
     SDKManager::SdkVersionFunction::Ptr SDKManager::_sdkversion;
-    lua_State* SDKManager::_state = NULL;
+    lua_State* SDKManager::_state = nullptr;
 
     const QString SDKManager::SDK_DIR = "sdk";
-    const QString SDKManager::VERSION_SCRIPT = "version.lua";
+    const QString SDKManager::MAIN_SCRIPT = "main.lua";
 
     SDKManager::SDKManager()
     {
     }
 
-    void SDKManager::loadSdkVersion(QString sdkpath)
+    void SDKManager::loadSdkVersion()
     {
-        SDKManager::runScript(sdkpath, SDKManager::VERSION_SCRIPT);
         SDKManager::_sdkversion = SDKManager::SdkVersionFunction::global(SDKManager::_state, "sdkVersion");
     }
 
+    /*
     void SDKManager::loadSdkFiles(const QString& dir)
     {
         QDir d(dir);
@@ -46,6 +46,7 @@ namespace PrefSDK
                 SDKManager::loadSdkFiles(fi.absoluteFilePath());
         }
     }
+    */
 
     void SDKManager::loadPrefTables()
     {
@@ -63,6 +64,12 @@ namespace PrefSDK
         Instruction::declareGlobals(SDKManager::_state);
         ReferenceTable::declareGlobals(SDKManager::_state);
         OutputBuffer::declareGlobals(SDKManager::_state);
+    }
+
+    int SDKManager::atPanic(lua_State*)
+    {
+        DebugDialog::instance()->out("ERROR: Lua Interpreter in Panic State, check stack dump.")->exec();
+        return 0;
     }
 
     void SDKManager::runScript(QString sdkpath, QString filename)
@@ -89,6 +96,7 @@ namespace PrefSDK
             SDKManager::initializeLua();
 
         luaW_addsearchpath(SDKManager::_state, qApp->applicationDirPath().toLatin1().constData());
+        lua_atpanic(SDKManager::_state, &SDKManager::atPanic);
 
         QDir d(qApp->applicationDirPath());
         QString sdkpath = d.absoluteFilePath(SDKManager::SDK_DIR);
@@ -98,15 +106,17 @@ namespace PrefSDK
 
         try
         {
-            SDKManager::loadSdkVersion(d.absoluteFilePath(sdkpath));
+            SDKManager::runScript(d.absoluteFilePath(sdkpath), SDKManager::MAIN_SCRIPT);
+            SDKManager::loadSdkVersion();
             SDKManager::loadPrefTables();
 
+            ElementType::load(SDKManager::_state);
             SQLite::SQLiteDatabase::initialize();
             SignatureDatabase::load();
         }
         catch(LuaException& e)
         {
-            DebugDialog::instance()->luaOut(e.what());
+            DebugDialog::instance()->luaOut(e.what())->exec();
             return false;
         }
 
