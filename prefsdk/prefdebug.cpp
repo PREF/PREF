@@ -20,13 +20,12 @@ namespace PrefSDK
 
     void PrefDebug::dbgprint(QString s)
     {
-        DebugDialog::instance()->luaOut(s);
+        DebugDialog::instance()->luaOut(s)->exec();
     }
 
     void PrefDebug::dbgprint(lua_String p)
     {
         PrefDebug::dbgprint(QString::fromLatin1(p));
-        qDebug() << p;
     }
 
     void PrefDebug::dbgprint(lua_Integer p)
@@ -36,9 +35,11 @@ namespace PrefSDK
 
     void PrefDebug::dbgprint(LuaTable::Ptr p)
     {
-        PrefDebug::dbgprint(QString("Table with %1 elements\n").arg(p->itemCount()));
+        DebugDialog::instance()->luaOut(QString("Table with %1 elements\n").arg(p->itemCount()));
 
         for(LuaTable::Iterator it = p->begin(); it != p->end(); it++)
-            PrefDebug::dbgprint(QString("%1 = %2\n").arg(it.keyString(), it.valueString()));
+            DebugDialog::instance()->luaOut(QString("%1 = %2\n").arg(it.keyString(), it.valueString()));
+
+        DebugDialog::instance()->exec();
     }
 }

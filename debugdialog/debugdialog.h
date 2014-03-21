@@ -22,7 +22,7 @@ class DebugDialog : public QDialog
     public:
         static void createInstance(lua_State* l);
         static DebugDialog* instance();
-        void luaOut(QString s);
+        DebugDialog* luaOut(QString s);
         DebugDialog* out(QString s);
         DebugDialog* outWord(QString s);
         DebugDialog* out(lua_Integer i, int base = 10, int fieldwidth = 0);
