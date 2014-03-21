@@ -44,7 +44,7 @@ namespace PrefSDK
 
         public: /* Overriden Methods */
             virtual void setBase(int base);
-            virtual QString typeName();
+            virtual QString displayType();
             virtual QString displayValue();
             virtual lua_Integer value();
             virtual FormatObject::FormatObjectType objectType();

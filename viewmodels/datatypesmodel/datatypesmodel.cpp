@@ -75,7 +75,7 @@ void DataTypesModel::setBase(int base)
 QString DataTypesModel::readValue(int row, bool* overflow) const
 {
     DataType::Type type = this->_types.at(row);
-    int bytelength = DataType::byteLength(type);
+    int bytelength = DataType::byteWidth(type);
 
     if(overflow)
         *overflow = false;

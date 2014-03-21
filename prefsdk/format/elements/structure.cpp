@@ -87,7 +87,7 @@ namespace PrefSDK
         FormatObject::setBase(base);
     }
 
-    QString Structure::typeName()
+    QString Structure::displayType()
     {
         return "Struct";
     }

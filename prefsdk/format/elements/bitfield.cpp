@@ -9,7 +9,7 @@ namespace PrefSDK
         this->_mask = this->createMask();
     }
 
-    QString BitField::typeName()
+    QString BitField::displayType()
     {
         return QString("bit[]");
     }

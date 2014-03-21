@@ -223,7 +223,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
             if(index.column() == 0)
                 return QString("%1").arg(fo->offset(), 8, 16, QLatin1Char('0')).toUpper();
             else if(index.column() == 1)
-                return fo->typeName();
+                return fo->displayType();
             else if(index.column() == 2)
                 return fo->displayName();
             else if(index.column() == 4)

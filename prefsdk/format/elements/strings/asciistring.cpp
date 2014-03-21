@@ -6,7 +6,7 @@ namespace PrefSDK
     {
     }
 
-    QString AsciiString::typeName()
+    QString AsciiString::displayType()
     {
         return DataType::stringValue(DataType::AsciiString);
     }

@@ -18,7 +18,7 @@ namespace PrefSDK
             quint32 createMask() const;
 
         public: /* Overriden methods */
-            virtual QString typeName();
+            virtual QString displayType();
             virtual lua_Integer value();
             virtual QString displayName();
             virtual QString displayValue();

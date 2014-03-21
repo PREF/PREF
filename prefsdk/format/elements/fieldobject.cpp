@@ -9,7 +9,7 @@ namespace PrefSDK
         this->exportMethod<lua_Integer, FieldObject>("datatype", &FieldObject::luaDataType);
     }
 
-    QString FieldObject::typeName()
+    QString FieldObject::displayType()
     {
         return DataType::stringValue(this->_type);
     }

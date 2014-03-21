@@ -21,7 +21,7 @@ namespace PrefSDK
             bool isOverflowed();
 
         public: /* Overriden methods */
-            virtual QString typeName();
+            virtual QString displayType();
             virtual lua_Integer value();
             virtual QString displayValue();
             virtual lua_Integer size();

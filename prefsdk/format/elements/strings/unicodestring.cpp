@@ -7,7 +7,7 @@ namespace PrefSDK
 
     }
 
-    QString UnicodeString::typeName()
+    QString UnicodeString::displayType()
     {
         return DataType::stringValue(DataType::UnicodeString);
     }

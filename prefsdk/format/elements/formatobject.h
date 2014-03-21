@@ -30,7 +30,7 @@ namespace PrefSDK
             virtual FormatObject* parentObject();
 
         public: /* Abstract Methods */
-            virtual QString typeName() = 0;
+            virtual QString displayType() = 0;
             virtual QString displayValue() = 0;
             virtual lua_Integer value() = 0;
             virtual FormatObject::FormatObjectType objectType() = 0;

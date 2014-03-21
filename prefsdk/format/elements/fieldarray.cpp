@@ -24,7 +24,7 @@ namespace PrefSDK
         }
     }
 
-    QString FieldArray::typeName()
+    QString FieldArray::displayType()
     {
         return QString("%1[]").arg(DataType::stringValue(this->_itemtype));
     }

@@ -25,7 +25,7 @@ namespace PrefSDK
 
         public: /* Overriden Methods */
             virtual FormatObject::FormatObjectType objectType();
-            virtual QString typeName();
+            virtual QString displayType();
             virtual QString displayName();
             virtual QString displayValue();
             virtual lua_Integer value();
