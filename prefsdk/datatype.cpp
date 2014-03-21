@@ -170,7 +170,7 @@ namespace PrefSDK
         return "Unknown";
     }
 
-    int DataType::byteLength(DataType::Type type)
+    int DataType::byteWidth(DataType::Type type)
     {
         switch(type)
         {

@@ -66,7 +66,7 @@ namespace PrefSDK
             static bool isUnicode(DataType::Type type);
             static bool isList(DataType::Type type);
             static QString stringValue(DataType::Type type);
-            static int byteLength(DataType::Type type);
+            static int byteWidth(DataType::Type type);
 
         lua_public:
             static lua_Integer sizeOf(lua_Integer type);
