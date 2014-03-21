@@ -9,7 +9,7 @@ bool FieldDataModel::validateValue(QVariant value, lua_Integer datatype, int bas
     DataType::Type type = static_cast<DataType::Type>(datatype);
     QString stringvalue = value.toString();
 
-    if(type == DataType::Char || type == DataType::List) /* (Single Char) OR (Char Array (aka String)) */
+    if(type == DataType::Char || type == DataType::Array) /* (Single Char) OR (Char Array (aka String)) */
     {
         ba = stringvalue.toLatin1();
         return true;

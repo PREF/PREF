@@ -17,11 +17,12 @@ namespace PrefSDK
         this->exportConstant("AsciiChar", DataType::AsciiChar);
         this->exportConstant("UnicodeChar", DataType::UnicodeChar);
         this->exportConstant("Blob", DataType::Blob);
-        this->exportConstant("List", DataType::List);
+        this->exportConstant("Array", DataType::Array);
         this->exportConstant("AsciiString", DataType::AsciiString);
         this->exportConstant("UnicodeString", DataType::UnicodeString);
 
         this->exportFunction<lua_Integer, lua_Integer>("sizeOf", &DataType::sizeOf);
+        this->exportFunction<QString, lua_Integer>("stringValue", &DataType::stringValue);
         this->exportFunction<bool, lua_Integer>("isInteger", &DataType::isInteger);
         this->exportFunction<bool, lua_Integer>("isSigned", &DataType::isSigned);
         this->exportFunction<bool, lua_Integer>("isString", &DataType::isString);
@@ -117,9 +118,11 @@ namespace PrefSDK
         return DataType::isList(static_cast<DataType::Type>(type));
     }
 
-    QString DataType::stringValue(DataType::Type type)
+    QString DataType::stringValue(lua_Integer type)
     {
-        switch(type)
+        DataType::Type dt = static_cast<DataType::Type>(type);
+
+        switch(dt)
         {
             case DataType::AsciiChar:
                 return "AsciiChar";
@@ -151,7 +154,7 @@ namespace PrefSDK
             case DataType::Int64:
                 return "Int64";
 
-            case DataType::List:
+            case DataType::Array:
                 return "List";
 
             case DataType::AsciiString:

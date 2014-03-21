@@ -26,7 +26,7 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
         DataTypesModel::_types.append(DataType::UInt32);
         DataTypesModel::_types.append(DataType::Int64);
         DataTypesModel::_types.append(DataType::UInt64);
-        DataTypesModel::_types.append(DataType::List);
+        DataTypesModel::_types.append(DataType::Array);
 
         DataTypesModel::_typenames.append("Char");
         DataTypesModel::_typenames.append("Signed Byte");
@@ -95,7 +95,7 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
 
         return this->_bytebuffer->stringValue(this->_offset, this->_base, type, this->_endian);
     }
-    else if(type == DataType::List)
+    else if(type == DataType::Array)
         return this->_bytebuffer->readValidString(this->_offset, DataTypesModel::STRING_LENGTH);
 
     return QString();
@@ -168,7 +168,7 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
             if(overflow)
                 return QColor(Qt::red);
 
-            if((this->_types.at(index.row()) == DataType::Char) || (this->_types.at(index.row()) == DataType::List))
+            if((this->_types.at(index.row()) == DataType::Char) || (this->_types.at(index.row()) == DataType::Array))
                 return QColor(Qt::darkGreen);
 
             return QColor(Qt::darkBlue);

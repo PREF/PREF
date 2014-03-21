@@ -46,7 +46,7 @@ namespace PrefSDK
                 UnicodeChar   = DataType::Characters | DataType::Unicode,
                 Char          = DataType::AsciiChar,
 
-                List          = DataType::Vector,
+                Array          = DataType::Vector,
                 AsciiString   = DataType::Vector | DataType::Characters | DataType::Ascii,
                 UnicodeString = DataType::Vector | DataType::Characters | DataType::Unicode,
 
@@ -65,13 +65,13 @@ namespace PrefSDK
             static bool isAscii(DataType::Type type);
             static bool isUnicode(DataType::Type type);
             static bool isList(DataType::Type type);
-            static QString stringValue(DataType::Type type);
             static int byteWidth(DataType::Type type);
 
         lua_public:
             static lua_Integer sizeOf(lua_Integer type);
 
         lua_private:
+            static QString stringValue(lua_Integer type);
             static bool isInteger(lua_Integer type);
             static bool isSigned(lua_Integer type);
             static bool isString(lua_Integer type);
