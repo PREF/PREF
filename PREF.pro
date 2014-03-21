@@ -142,7 +142,8 @@ SOURCES += main.cpp\
     qhexedit/qhexeditcomments.cpp \
     prefsdk/lua/luadump.cpp \
     prefsdk/format/elements/fieldelement.cpp \
-    prefsdk/format/elements/formatelement.cpp
+    prefsdk/format/elements/formatelement.cpp \
+    prefsdk/format/elements/elementtype.cpp
 
 HEADERS  += mainwindow.h \
     prefsdk/format/elements/field.h \
@@ -280,7 +281,8 @@ HEADERS  += mainwindow.h \
     qhexedit/qhexeditcomments.h \
     prefsdk/lua/luadump.h \
     prefsdk/format/elements/fieldelement.h \
-    prefsdk/format/elements/formatelement.h
+    prefsdk/format/elements/formatelement.h \
+    prefsdk/format/elements/elementtype.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
