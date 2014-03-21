@@ -64,7 +64,7 @@ namespace PrefSDK
             static bool isString(DataType::Type type);
             static bool isAscii(DataType::Type type);
             static bool isUnicode(DataType::Type type);
-            static bool isList(DataType::Type type);
+            static bool isArray(DataType::Type type);
             static int byteWidth(DataType::Type type);
 
         lua_public:
@@ -77,7 +77,7 @@ namespace PrefSDK
             static bool isString(lua_Integer type);
             static bool isAscii(lua_Integer type);
             static bool isUnicode(lua_Integer type);
-            static bool isList(lua_Integer type);
+            static bool isArray(lua_Integer type);
     };
 
     namespace Data

@@ -28,7 +28,7 @@ namespace PrefSDK
         this->exportFunction<bool, lua_Integer>("isString", &DataType::isString);
         this->exportFunction<bool, lua_Integer>("isAscii", &DataType::isAscii);
         this->exportFunction<bool, lua_Integer>("isUnicode", &DataType::isUnicode);
-        this->exportFunction<bool, lua_Integer>("isList", &DataType::isList);
+        this->exportFunction<bool, lua_Integer>("isArray", &DataType::isArray);
     }
 
     DataType::Ptr DataType::create(lua_State *l)
@@ -61,7 +61,7 @@ namespace PrefSDK
         return (type & (DataType::Characters | DataType::Unicode)) != 0;
     }
 
-    bool DataType::isList(DataType::Type type)
+    bool DataType::isArray(DataType::Type type)
     {
         return (type & DataType::Vector) != 0;
     }
@@ -113,9 +113,9 @@ namespace PrefSDK
         return DataType::isUnicode(static_cast<DataType::Type>(type));
     }
 
-    bool DataType::isList(lua_Integer type)
+    bool DataType::isArray(lua_Integer type)
     {
-        return DataType::isList(static_cast<DataType::Type>(type));
+        return DataType::isArray(static_cast<DataType::Type>(type));
     }
 
     QString DataType::stringValue(lua_Integer type)
