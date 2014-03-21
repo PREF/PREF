@@ -1,7 +1,7 @@
 #include "formatoptionsdialog.h"
 #include "ui_formatoptionsdialog.h"
 
-FormatOptionsDialog::FormatOptionsDialog(FormatDefinition::Ptr formatdef, FormatModel *formatmodel, ByteBuffer* bytebuffer, QWidget *parent): QDialog(parent), ui(new Ui::FormatOptionsDialog), _formatdefinition(formatdef), _formatmodel(formatmodel), _bytebuffer(bytebuffer), _selindex(-1)
+FormatOptionsDialog::FormatOptionsDialog(FormatDefinition::Ptr formatdef, FormatTree::Ptr formattree, ByteBuffer* bytebuffer, QWidget *parent): QDialog(parent), ui(new Ui::FormatOptionsDialog), _formatdefinition(formatdef), _formattree(formattree), _bytebuffer(bytebuffer), _selindex(-1)
 {
     ui->setupUi(this);
     ui->tvOptions->setModel(new OptionModel(this->_formatdefinition));
@@ -25,10 +25,10 @@ void FormatOptionsDialog::on_tvOptions_clicked(const QModelIndex &index)
 
 void FormatOptionsDialog::on_pbExecute_clicked()
 {
-    this->_formatdefinition->executeOption(this->_selindex, this->_formatmodel, this->_bytebuffer);
+    this->_formatdefinition->executeOption(this->_selindex, this->_formattree, this->_bytebuffer);
 }
 
 void FormatOptionsDialog::on_tvOptions_doubleClicked(const QModelIndex &index)
 {
-    this->_formatdefinition->executeOption(index.row() + 1, this->_formatmodel, this->_bytebuffer);
+    this->_formatdefinition->executeOption(index.row() + 1, this->_formattree, this->_bytebuffer);
 }

@@ -2,70 +2,18 @@
 
 namespace PrefSDK
 {
-    BitField::BitField(lua_State* l, int bitstart, int bitend, lua_Integer offset, QString name, ByteBuffer *bytebuffer, LuaCTable* model, FieldElement *parentobject, QObject *parent): FieldElement(l, "BitField", parentobject->dataType(), offset, name, bytebuffer, model, parentobject, parent)
+    BitField::BitField(const LuaTable::Ptr &bf, QObject *parent): FieldElement(bf, parent)
     {
-        this->_bitstart = bitstart;
-        this->_bitend = bitend;
-        this->_mask = this->createMask();
+
     }
 
-    QString BitField::displayType()
+    lua_Integer BitField::bitStart()
     {
-        return QString("bit[]");
+        return this->_elementtable->call<lua_Integer>("bitStart");
     }
 
-    int BitField::bitStart() const
+    lua_Integer BitField::bitEnd()
     {
-        return this->_bitstart;
-    }
-
-    int BitField::bitEnd() const
-    {
-        return this->_bitend;
-    }
-
-    lua_Integer BitField::value()
-    {
-        lua_Integer val = this->parentObject()->value();
-        return (val & this->_mask) >> this->_bitstart;
-    }
-
-    QString BitField::displayName()
-    {
-        if(this->_bitstart != this->_bitend)
-            return QString("%1[%2..%3]").arg(this->name(), QString::number(this->_bitstart, this->base()).toUpper(), QString::number(this->_bitend, this->base()).toUpper());
-
-        return QString("%1[%2]").arg(this->name(), QString::number(this->_bitstart, this->base()).toUpper());
-    }
-
-    QString BitField::displayValue()
-    {
-        lua_Integer val = this->value();
-        return QString::number(val, this->base()).toUpper();
-    }
-
-    quint32 BitField::createMask() const
-    {
-        quint32 mask = 0x00000000;
-
-        for(int i = 0; i < 32; i++)
-        {
-            if((i >= this->_bitstart) && (i <= this->_bitend))
-                mask |= (1 << i);
-            else
-                mask |= (0 << i);
-        }
-
-        return mask;
-    }
-
-    FormatElement::FormatObjectType BitField::objectType()
-    {
-        return FormatElement::BitFieldType;
-    }
-
-    lua_Integer BitField::size()
-    {
-        return 0; /* No size for Bit Fields! */
+        return this->_elementtable->call<lua_Integer>("bitStart");
     }
 }

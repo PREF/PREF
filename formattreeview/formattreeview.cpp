@@ -6,7 +6,6 @@ FormatTreeView::FormatTreeView(QWidget *parent): QTreeView(parent)
     this->_highlightmenu = nullptr;
     this->_numericbasemenu = nullptr;
 
-    //this->setModel(FormatModel::empty()); /* An empty model in order to display columns */
     this->configureContextMenu(true);
 
     /* FormatTreeView Signal/Slots */
@@ -48,11 +47,11 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
     if(selmodel && selmodel->selectedRows().length() == 1)
     {
         QModelIndex midx = selmodel->selectedRows()[0];
-        FormatElement* formatobj = (FormatElement*)midx.internalPointer();
+        FormatElement* formatobj = reinterpret_cast<FormatElement*>(midx.internalPointer());
 
         this->_structuremenu->setGotoVisible(this->_gotovisible);
 
-        if(formatobj->objectType() == FormatElement::StructureType)
+        if(formatobj->elementType() == ElementType::structure())
         {
             this->_structuremenu->setTitle(QString("'%1'").arg(formatobj->displayName()));
             this->_structuremenu->menuAction()->setVisible(true);
@@ -60,7 +59,7 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
         else
             this->_structuremenu->menuAction()->setVisible(false);
 
-        if(formatobj->objectType() == FormatElement::FieldType)
+        if(formatobj->elementType() == ElementType::field())
             this->_copymenu->setCopyValueVisible(true);
         else
             this->_copymenu->setCopyValueVisible(false);
@@ -74,8 +73,8 @@ void FormatTreeView::onTreeClicked(const QModelIndex &index)
 {
     FormatElement* formatobj = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if(formatobj->objectType() == FormatElement::BitFieldType)
-        formatobj = formatobj->parentObject(); /* Set index = BitField's Parent */
+    if(formatobj->elementType() == ElementType::bitField())
+        formatobj = formatobj->parentElement(); /* Set index = BitField's Parent */
 
     if(formatobj->size())
         emit formatObjectSelected(formatobj);
@@ -179,8 +178,8 @@ void FormatTreeView::updateColor(bool set)
 {
     FormatElement* formatobj = this->selectedFormatObject();
 
-    if(formatobj->objectType() == FormatElement::BitFieldType)
-        formatobj = formatobj->parentObject(); /* Change Object to BitField's parent */
+    if(formatobj->elementType() == ElementType::bitField())
+        formatobj = formatobj->parentElement(); /* Change Object to BitField's parent */
 
     if(formatobj->size())
     {

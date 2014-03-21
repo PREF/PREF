@@ -111,25 +111,25 @@ namespace PrefSDK
         else
             bb = bytebuffer;
 
-        FormatModel* fm = new FormatModel(this->_formatdeftable->state(), bb);
-
         try
         {
-            this->_formatdeftable->call<void, LuaTable::Ptr, LuaTable::Ptr>("parseFormat", *fm, *bb);
+            FormatTree::Ptr formattree = FormatTree::create(bytebuffer);
+            this->_formatdeftable->call<void, LuaTable::Ptr, LuaTable::Ptr>("parseFormat", formattree->luaTable(), *bb);
+            return new FormatModel(formattree, bb);
         }
         catch(LuaException& e)
         {
             PrefDebug::dbgprint(e.what());
         }
 
-        return fm;
+        return nullptr;
     }
 
-    void FormatDefinition::executeOption(int optindex, FormatModel *formatmodel, ByteBuffer* bytebuffer)
+    void FormatDefinition::executeOption(int optindex, FormatTree::Ptr formattree, ByteBuffer* bytebuffer)
     {
         try
         {
-            this->_formatdeftable->call<void, lua_Integer, LuaTable::Ptr, LuaTable::Ptr>("executeOption", optindex, *formatmodel, *bytebuffer);
+            this->_formatdeftable->call<void, lua_Integer, LuaTable::Ptr, LuaTable::Ptr>("executeOption", optindex, formattree->luaTable(), *bytebuffer);
         }
         catch(LuaException& e)
         {
@@ -137,13 +137,13 @@ namespace PrefSDK
         }
     }
 
-    DisassemblerLoader::Ptr FormatDefinition::generateLoader(FormatModel *formatmodel, ByteBuffer *bytebuffer)
+    DisassemblerLoader::Ptr FormatDefinition::generateLoader(FormatTree::Ptr formattree, ByteBuffer *bytebuffer)
     {
         DisassemblerLoader::Ptr dl = DisassemblerLoader::create(this->_formatdeftable->state());
 
         try
         {
-            this->_formatdeftable->call<void, LuaTable::Ptr, LuaTable::Ptr, LuaTable::Ptr>("generateLoader", *dl, *formatmodel, *bytebuffer);
+            this->_formatdeftable->call<void, LuaTable::Ptr, LuaTable::Ptr, LuaTable::Ptr>("generateLoader", *dl, formattree->luaTable(), *bytebuffer);
         }
         catch(LuaException& e)
         {

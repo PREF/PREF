@@ -4,8 +4,9 @@ FieldDataModel::FieldDataModel(QObject *parent): QAbstractItemModel(parent)
 {
 }
 
-bool FieldDataModel::validateValue(QVariant value, DataType::Type type, int base, QSysInfo::Endian endian, QByteArray &ba)
+bool FieldDataModel::validateValue(QVariant value, lua_Integer datatype, int base, QSysInfo::Endian endian, QByteArray &ba)
 {
+    DataType::Type type = static_cast<DataType::Type>(datatype);
     QString stringvalue = value.toString();
 
     if(type == DataType::Char || type == DataType::List) /* (Single Char) OR (Char Array (aka String)) */

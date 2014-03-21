@@ -115,15 +115,18 @@ void FormatView::on_tbFormats_clicked()
     if(res == FormatsDialog::Accepted)
     {
         this->_formatdefinition = fd.selectedFormat();
-        this->_hexeditview->loadFormat(this->_formatdefinition, fd.offset());
-        this->_disassemblerview->setData(this->_hexeditview->model(), this->_formatdefinition);
-        ui->tbFormatOptions->setEnabled(this->_formatdefinition->hasOptions());
+
+        if(this->_hexeditview->loadFormat(this->_formatdefinition, fd.offset()))
+        {
+            this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatdefinition);
+            ui->tbFormatOptions->setEnabled(this->_formatdefinition->hasOptions());
+        }
     }
 }
 
 void FormatView::on_tbFormatOptions_clicked()
 {
-    FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->model(), this->_bytebuffer, this->topLevelWidget());
+    FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->tree(), this->_bytebuffer, this->topLevelWidget());
     fod.exec();
 }
 

@@ -17,7 +17,7 @@ HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidg
     this->createToolBar();
 
     ui->binaryNavigator->setData(ui->hexEdit, bytebuffer);
-    ui->tvFormat->setModel(new FormatModel(bytebuffer->state(), bytebuffer)); /* Empty Model */
+    ui->tvFormat->setModel(new FormatModel(FormatTree::Ptr(), bytebuffer)); /* Empty Model */
 
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));
@@ -34,11 +34,12 @@ HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidg
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-void HexEditViewPage::loadFormat(const FormatDefinition::Ptr &fd, qint64 baseoffset)
+bool HexEditViewPage::loadFormat(const FormatDefinition::Ptr &fd, qint64 baseoffset)
 {
     this->_bytebuffer->setBaseOffset(baseoffset);
+    bool validated = fd->validateFormat(this->_bytebuffer, baseoffset);
 
-    if(fd->validateFormat(this->_bytebuffer, baseoffset))
+    if(validated)
     {
         this->_formatdefinition = fd;
         this->_formatmodel = fd->parseFormat(this->_bytebuffer, baseoffset);
@@ -48,6 +49,7 @@ void HexEditViewPage::loadFormat(const FormatDefinition::Ptr &fd, qint64 baseoff
         PrefDebug::dbgprint(QString("\nFormat Validation Failed for '%1'").arg(fd->name()));
 
     this->_bytebuffer->setBaseOffset(0);
+    return validated;
 }
 
 void HexEditViewPage::scanSignatures(bool b)
@@ -68,15 +70,9 @@ BinaryNavigator *HexEditViewPage::binaryNavigator()
     return ui->binaryNavigator;
 }
 
-void HexEditViewPage::setModel(FormatModel *model)
+FormatTree::Ptr HexEditViewPage::tree()
 {
-    this->_formatmodel = model;
-    ui->tvFormat->setModel(model);
-}
-
-FormatModel *HexEditViewPage::model()
-{
-    return this->_formatmodel;
+    return this->_formatmodel->tree();
 }
 
 FormatDefinition::Ptr HexEditViewPage::formatDefinition()

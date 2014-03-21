@@ -24,7 +24,7 @@ class DisassemblerViewPage : public QWidget
     
     public:
         explicit DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *parent = 0);
-        void setData(FormatModel* formatmodel, FormatDefinition::Ptr formatdefinition);
+        void setData(FormatTree::Ptr formattree, FormatDefinition::Ptr formatdefinition);
         ~DisassemblerViewPage();
 
     private:
@@ -42,7 +42,7 @@ class DisassemblerViewPage : public QWidget
 
     private:
         Ui::DisassemblerViewPage *ui;
-        FormatModel* _formatmodel;
+        FormatTree::Ptr _formattree;
         StringOffsetModel* _stringrefs;
         FunctionOffsetModel* _functionrefs;
         DisassemblerHelper* _disasmhelper;

@@ -32,8 +32,8 @@ namespace PrefSDK
             bool hasCategory() const;
             bool validateFormat(ByteBuffer* bytebuffer, lua_Integer baseoffset);
             FormatModel* parseFormat(ByteBuffer* bytebuffer, lua_Integer baseoffset) const;
-            void executeOption(int optindex, FormatModel* formatmodel, ByteBuffer *bytebuffer);
-            DisassemblerLoader::Ptr generateLoader(FormatModel* formatmodel, ByteBuffer *bytebuffer);
+            void executeOption(int optindex, FormatTree::Ptr formattree, ByteBuffer *bytebuffer);
+            DisassemblerLoader::Ptr generateLoader(FormatTree::Ptr formattree, ByteBuffer *bytebuffer);
 
         private:
             LuaTable::Ptr _formatdeftable;

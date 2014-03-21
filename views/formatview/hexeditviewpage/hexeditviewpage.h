@@ -26,12 +26,11 @@ class HexEditViewPage: public QWidget
 
     public:
         explicit HexEditViewPage(ByteBuffer* bytebuffer, QWidget *parent = 0);
-        void loadFormat(const FormatDefinition::Ptr& fd, qint64 baseoffset);
+        bool loadFormat(const FormatDefinition::Ptr& fd, qint64 baseoffset);
         void scanSignatures(bool canscan);
         BinaryNavigator* binaryNavigator();
-        void setModel(FormatModel* model);
         FormatDefinition::Ptr formatDefinition();
-        FormatModel* model();
+        FormatTree::Ptr tree();
         QHexEdit* hexEdit();
         ~HexEditViewPage();
 

@@ -4,42 +4,23 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "qhexedit/qhexeditdata.h"
+#include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "prefsdk/format/elements/structure.h"
+#include "prefsdk/format/formattree.h"
+#include "prefsdk/prefdebug.h"
 
 using namespace PrefSDK;
 
-class FormatModel : public FieldDataModel, public LuaCTable
+class FormatModel : public FieldDataModel
 {
     Q_OBJECT
 
     public:
-        typedef QList<lua_Integer> OffsetList;
-        typedef QHash<lua_Integer, Structure*> StructureMap;
-        typedef QHash<QString, Structure*> StringMap;
-
-    public:
-        explicit FormatModel(lua_State *l, ByteBuffer* byteBuffer, QObject *parent = 0);
-        void clearItems();
-        Structure* addStructure(const QString& name);
-        Structure* addStructure(const QString& name, lua_Integer offset);
-        Structure *structure(int i);
-        Structure* find(const QString& name);
-        lua_Integer structureCount();
-        ByteBuffer *byteBuffer();
-
-    lua_private:
-        LuaTable::Ptr luaAddStructure(lua_String name);
-        LuaTable::Ptr luaAddStructure(lua_String name, lua_Integer offset);
-        LuaTable::Ptr luaStructure(lua_Integer i);
-        LuaTable::Ptr luaFind(lua_String name);
-
-    protected:
-        virtual void metaIndex(lua_State* l);
+        explicit FormatModel(const FormatTree::Ptr& formattree, ByteBuffer* bytebuffer, QObject *parent = 0);
+        FormatTree::Ptr tree();
 
     private slots:
-        void updateModelData(FormatElement *sender);
         void updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType);
 
     public: /* Overriden Methods */
@@ -53,18 +34,13 @@ class FormatModel : public FieldDataModel, public LuaCTable
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        lua_State* _state;
-        OffsetList _offsetlist;
-        StructureMap _structuremap;
-        StringMap _stringmap;
-
-    private:
         static FormatModel* _empty;
         QFont _monospacefont;
         QImage _icostruct;
         QImage _icofield;
         QImage _icobitfield;
         ByteBuffer* _bytebuffer;
+        FormatTree::Ptr _formattree;
 };
 
 #endif // FORMATMODEL_H
