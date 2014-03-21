@@ -61,7 +61,7 @@ namespace PrefSDK
                 InstructionItem* ii = dynamic_cast<InstructionItem*>(li);
                 QString instr = this->_processordef->output(this->_referencetable, ii->instruction());
                 lua_Integer size = ii->instruction()->instructionSize();
-                DebugDialog::instance()->out(ii->address(), 16, 4)->hexDump(this->_bytebuffer->read(ii->address(), size))->outWord(instr)->outWord("\tSize:")->out(size)->newLine();
+                DebugDialog::instance()->out(ii->address(), 16, 4)->hexDump(this->_bytebuffer->read(ii->address(), size))->outWord(instr)->outWord("\tSize:")->out(size)->newLine()->exec();
             }
         }
     }

@@ -16,7 +16,6 @@ namespace PrefSDK
             void write(qint64 pos, const QByteArray& newba);
             void insert(qint64 pos, uchar ch);
             void setBaseOffset(lua_Integer baseoffset);
-            lua_Integer baseOffset() const;
             QString readValidString(lua_Integer pos, lua_Integer maxlen);
 
         protected:
@@ -39,6 +38,7 @@ namespace PrefSDK
 
         lua_public:
             lua_Integer size();
+            lua_Integer baseOffset();
             void copyTo(LuaTable::Ptr buffer, lua_Integer start, lua_Integer end);
             lua_Integer find(QString s, lua_Integer start, lua_Integer end);
             lua_Integer find(QString s, lua_Integer start);
@@ -54,7 +54,7 @@ namespace PrefSDK
             LuaTable::Ptr findAll(QString s, lua_Integer start);
             LuaTable::Ptr findAll(QString s);
 
-        private:
+        protected:
             lua_Integer _baseoffset;
     };
 }

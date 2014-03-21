@@ -22,11 +22,9 @@ namespace PrefSDK
             virtual ~ByteBuffer();
             ByteBuffer* clone(lua_Integer baseoffset = -1);
             QHexEditData* hexEditData();
-            QString stringValue(lua_Integer pos, int base, DataType::Type type, QSysInfo::Endian endian);
-            QString stringValue(lua_Integer pos, int base, DataType::Type type);
             QSysInfo::Endian endian();
+            QString stringValue(lua_Integer pos, int base, DataType::Type datatype, QSysInfo::Endian endian);
             bool willOverflow(lua_Integer pos, DataType::Type type, QSysInfo::Endian endian) const;
-            bool willOverflow(lua_Integer pos, DataType::Type type) const;
             void setEndian(QSysInfo::Endian endian);
             void save(QString filename);
             operator QHexEditData*() const;
@@ -46,6 +44,8 @@ namespace PrefSDK
         lua_public:
             lua_Integer readType(lua_Integer pos, lua_Integer type);
             void writeType(lua_Integer pos, lua_Integer dt, lua_Integer val);
+            QString stringValue(lua_Integer pos, lua_Integer base, lua_Integer type);
+            bool willOverflow(lua_Integer pos, lua_Integer type);
 
         private:
             template<typename DataType::Type TYPE> typename Data::ToType<TYPE>::Type readT(lua_Integer pos, QSysInfo::Endian endian) const

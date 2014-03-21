@@ -23,8 +23,8 @@ namespace Lua
         static constexpr const char* TypeName = "String";
     };
 
-    inline void luaT_getvalue(lua_State* l, int index, QString& v) { v = QString::fromLatin1(lua_tostring(l, index)); }
-    inline void luaT_pushvalue(lua_State* l, QString& v) { lua_pushstring(l, v.toLatin1().constData()); }
+    inline void luaT_getvalue(lua_State* l, int index, QString& v) { v = QString::fromUtf8(lua_tostring(l, index)); }
+    inline void luaT_pushvalue(lua_State* l, QString& v) { lua_pushstring(l, v.toUtf8().constData()); }
 }
 
 #include "lua/lua.h"

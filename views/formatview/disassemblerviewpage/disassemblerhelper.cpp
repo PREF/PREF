@@ -38,7 +38,7 @@ void DisassemblerHelper::run(ByteBuffer *bytebuffer, FormatDefinition::Ptr forma
 
                 if(!loader->inSegment(address))
                 {
-                    DebugDialog::instance()->out("Trying to disassemble no code segment at address: ")->out(address, 16)->newLine(2);
+                    DebugDialog::instance()->out("Trying to disassemble no code segment at address: ")->out(address, 16)->newLine(2)->exec();
                     this->_listing->printBacktrace();
                     break;
                 }

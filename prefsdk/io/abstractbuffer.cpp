@@ -24,6 +24,7 @@ namespace PrefSDK
 
         this->exportMethod<void, AbstractBuffer, LuaTable::Ptr, lua_Integer, lua_Integer>("copyTo", &AbstractBuffer::copyTo);
         this->exportMethod<lua_Integer, AbstractBuffer>("size", &AbstractBuffer::size);
+        this->exportMethod<lua_Integer, AbstractBuffer>("baseOffset", &AbstractBuffer::baseOffset);
     }
 
     AbstractBuffer::~AbstractBuffer()
@@ -212,7 +213,7 @@ namespace PrefSDK
         this->_baseoffset = baseoffset;
     }
 
-    lua_Integer AbstractBuffer::baseOffset() const
+    lua_Integer AbstractBuffer::baseOffset()
     {
         return this->_baseoffset;
     }

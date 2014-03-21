@@ -8,6 +8,8 @@ namespace PrefSDK
 
         this->exportMethod<lua_Integer, ByteBuffer, lua_Integer, lua_Integer>("readType", &ByteBuffer::readType);
         this->exportMethod<void, ByteBuffer, lua_Integer, lua_Integer, lua_Integer>("writeType", &ByteBuffer::writeType);
+        this->exportMethod<QString, ByteBuffer, lua_Integer, lua_Integer, lua_Integer>("stringValue", &ByteBuffer::stringValue);
+        this->exportMethod<bool, ByteBuffer, lua_Integer, lua_Integer>("willOverflow", &ByteBuffer::willOverflow);
     }
 
     ByteBuffer::~ByteBuffer()
@@ -30,9 +32,9 @@ namespace PrefSDK
         return this->_hexeditdata->at(i);
     }
 
-    QString ByteBuffer::stringValue(lua_Integer pos, int base, DataType::Type type)
+    QString ByteBuffer::stringValue(lua_Integer pos, lua_Integer base, lua_Integer type)
     {
-        return this->stringValue(pos, base, type, this->_endian);
+        return this->stringValue(pos, base, static_cast<DataType::Type>(type), this->_endian);
     }
 
     QSysInfo::Endian ByteBuffer::endian()
@@ -82,9 +84,9 @@ namespace PrefSDK
         return this->_hexeditdata->read(pos, len);
     }
 
-    bool ByteBuffer::willOverflow(lua_Integer pos, DataType::Type type) const
+    bool ByteBuffer::willOverflow(lua_Integer pos, lua_Integer type)
     {
-        return this->willOverflow(pos, type, this->_endian);
+        return this->willOverflow(pos, static_cast<DataType::Type>(type), this->_endian);
     }
 
     bool ByteBuffer::willOverflow(lua_Integer pos, DataType::Type type, QSysInfo::Endian endian) const
@@ -122,9 +124,9 @@ namespace PrefSDK
         return false;
     }
 
-    QString ByteBuffer::stringValue(lua_Integer pos, int base, DataType::Type type, QSysInfo::Endian endian)
+    QString ByteBuffer::stringValue(lua_Integer pos, int base, DataType::Type datatype, QSysInfo::Endian endian)
     {
-        switch(type)
+        switch(datatype)
         {
             case DataType::UInt8:
             {
@@ -255,7 +257,7 @@ namespace PrefSDK
 
     lua_Integer ByteBuffer::length() const
     {
-        return static_cast<lua_Integer>(this->_hexeditdata->length()) - this->baseOffset();
+        return static_cast<lua_Integer>(this->_hexeditdata->length()) - this->_baseoffset;
     }
 
     void ByteBuffer::writeType(lua_Integer pos, lua_Integer datatype, lua_Integer val)
