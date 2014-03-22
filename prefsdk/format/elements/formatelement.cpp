@@ -22,9 +22,9 @@ namespace PrefSDK
         return this->_elementtable;
     }
 
-    QString FormatElement::id()
+    QString FormatElement::elementId()
     {
-        return this->_elementtable->call<QString>("id");
+        return this->_elementtable->call<QString>("elementId");
     }
 
     lua_Integer FormatElement::elementType()

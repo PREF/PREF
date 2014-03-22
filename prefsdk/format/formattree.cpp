@@ -41,7 +41,7 @@ namespace PrefSDK
 
     void FormatTree::updateElement(FormatElement *element)
     {
-        LuaTable::Ptr t = this->elementTableFromPool(element->id());
+        LuaTable::Ptr t = this->elementTableFromPool(element->elementId());
         element->updateTable(t);
     }
 
