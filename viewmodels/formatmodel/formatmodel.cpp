@@ -246,10 +246,15 @@ int FormatModel::rowCount(const QModelIndex &parent) const
 
         if(parentelement->elementType() == ElementType::structure())
             return qobject_cast<Structure*>(parentelement)->fieldCount();
-        else if(parentelement->elementType() == ElementType::fieldArray())
-            return qobject_cast<FieldArray*>(parentelement)->itemCount();
         else if(parentelement->elementType() == ElementType::field())
             return qobject_cast<Field*>(parentelement)->bitFieldCount();
+        else if(parentelement->elementType() == ElementType::fieldArray())
+        {
+            FieldArray* fieldarray = qobject_cast<FieldArray*>(parentelement);
+
+            if(fieldarray->itemType() != DataType::Blob)
+                return qobject_cast<FieldArray*>(parentelement)->itemCount();
+        }
     }
 
     return 0;
