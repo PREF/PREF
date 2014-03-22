@@ -14,11 +14,9 @@ namespace PrefSDK
     {
         Q_OBJECT
 
-        private:
-            typedef LuaFunctionT<lua_String, LuaTable::Ptr, LuaTable::Ptr> InfoProcedure;
-
         public:
             explicit FormatElement(const LuaTable::Ptr& elementtable, QObject *parent = 0);
+            void updateTable(const LuaTable::Ptr t);
             const LuaTable::Ptr& table();
             lua_Integer elementType();
             lua_Integer base();

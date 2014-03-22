@@ -148,9 +148,9 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                 {
                     FieldArray* fa = formatelement_cast<FieldArray>(fo);
 
-                    if(fa->elementType() == DataType::Char)
+                    if(fa->itemType() == DataType::Char)
                         return QColor(Qt::darkGreen);
-                    else if(fa->elementType() == DataType::Blob)
+                    else if(fa->itemType() == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
                 else if(fo->elementType() == ElementType::bitField())
@@ -214,7 +214,7 @@ QModelIndex FormatModel::index(int row, int column, const QModelIndex &parent) c
     else if(parentelem->elementType() == ElementType::fieldArray())
     {
         FieldArray* parentfieldarray = formatelement_cast<FieldArray>(parentelem);
-        return this->createIndex(row, column, parentfieldarray->element(row));
+        return this->createIndex(row, column, parentfieldarray->item(row));
     }
     else if(parentelem->elementType() == ElementType::field())
     {
@@ -245,7 +245,7 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
             return this->createIndex(parentofparent->indexOf(parentstruct), 0, parentstruct);
         }
         else
-            return this->createIndex(this->_formattree->indexOf(parentstruct->offset()), 0, parentstruct);
+            return this->createIndex(this->_formattree->indexOf(parentstruct), 0, parentstruct);
     }
     else if(childobj->elementType() == ElementType::field() || childobj->elementType() == ElementType::fieldArray())
     {
@@ -259,7 +259,7 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
                 return this->createIndex(parentofparent->indexOf(parentobj), 0, parentobj);
             }
             else
-                return this->createIndex(this->_formattree->indexOf(parentobj->offset()), 0, parentobj);
+                return this->createIndex(this->_formattree->indexOf(parentobj), 0, parentobj);
         }
 
         if(childobj->elementType() == ElementType::field() && parentobj->elementType() == ElementType::fieldArray())
@@ -309,7 +309,7 @@ int FormatModel::rowCount(const QModelIndex &parent) const
         else if(parentelement->elementType() == ElementType::fieldArray())
         {
             FieldArray* parentfieldarray = formatelement_cast<FieldArray>(parentelement);
-            return parentfieldarray->elementCount();
+            return parentfieldarray->itemCount();
         }
         else if(parentelement->elementType() == ElementType::field())
         {

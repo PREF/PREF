@@ -14,6 +14,6 @@ namespace PrefSDK
 
     lua_Integer BitField::bitEnd()
     {
-        return this->_elementtable->call<lua_Integer>("bitStart");
+        return this->_elementtable->call<lua_Integer>("bitEnd");
     }
 }

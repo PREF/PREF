@@ -12,6 +12,11 @@ namespace PrefSDK
         */
     }
 
+    void FormatElement::updateTable(const LuaTable::Ptr t)
+    {
+        this->_elementtable = t;
+    }
+
     const LuaTable::Ptr &FormatElement::table()
     {
         return this->_elementtable;
@@ -63,7 +68,7 @@ namespace PrefSDK
 
     lua_Integer FormatElement::indexOf(FormatElement *fe)
     {
-        return this->_elementtable->call<lua_Integer, LuaTable::Ptr>("indexOf", fe->_elementtable);
+        return this->_elementtable->call<lua_Integer, LuaTable::Ptr>("indexOf", fe->_elementtable) - 1;
     }
 
     lua_Integer FormatElement::size()

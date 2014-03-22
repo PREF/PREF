@@ -22,11 +22,12 @@ namespace PrefSDK
 
         public:
             lua_Integer structureCount();
-            lua_Integer indexOf(lua_Integer offset);
+            lua_Integer indexOf(FormatElement *fe);
             Structure* structure(lua_Integer i);
             const LuaTable::Ptr& luaTable();
 
         private:
+            QHash<lua_Integer, Structure*> _structurepool;
             LuaTable::Ptr _formattreetable;
     };
 }

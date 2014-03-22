@@ -14,7 +14,10 @@ namespace PrefSDK
         public:
             explicit Structure(const LuaTable::Ptr& s, QObject *parent = 0);
             lua_Integer fieldCount();
-            FormatElement* field(lua_Integer i);
+            FormatElement *field(lua_Integer i);
+
+        private:
+            QHash<lua_Integer, FormatElement*> _fieldpool;
     };
 }
 

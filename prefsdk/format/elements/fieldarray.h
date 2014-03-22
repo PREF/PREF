@@ -12,9 +12,12 @@ namespace PrefSDK
 
         public:
             explicit FieldArray(const LuaTable::Ptr& fa, QObject *parent = 0);
-            lua_Integer elementType();
-            lua_Integer elementCount();
-            Field* element(lua_Integer i);
+            lua_Integer itemType();
+            lua_Integer itemCount();
+            Field* item(lua_Integer i);
+
+        private:
+            QHash<lua_Integer, Field*> _itempool;
     };
 }
 #endif // FIELDARRAY_H

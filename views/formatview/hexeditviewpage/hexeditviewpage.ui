@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>846</width>
-    <height>543</height>
+    <width>844</width>
+    <height>541</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,7 +103,7 @@
         <enum>Qt::CustomContextMenu</enum>
        </property>
        <property name="editTriggers">
-        <set>QAbstractItemView::DoubleClicked</set>
+        <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
        </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
