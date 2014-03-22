@@ -94,7 +94,10 @@ namespace PrefSDK
             this->_elementcache.insert(id, element);
         }
         else
+        {
             element = this->_elementcache[id];
+            element->updateTable(this->elementTableFromPool(id));
+        }
 
         return element;
     }
