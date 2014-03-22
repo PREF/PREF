@@ -22,6 +22,11 @@ namespace PrefSDK
         return this->_elementtable;
     }
 
+    QString FormatElement::id()
+    {
+        return this->_elementtable->call<QString>("id");
+    }
+
     lua_Integer FormatElement::elementType()
     {
         return this->_elementtable->call<lua_Integer>("elementType");
@@ -54,6 +59,11 @@ namespace PrefSDK
 
         LuaTable::Ptr p = this->_elementtable->call<LuaTable::Ptr>("parentElement");
         return new FormatElement(p);
+    }
+
+    QString FormatElement::parentId()
+    {
+        return this->_elementtable->call<QString>("parentId");
     }
 
     bool FormatElement::hasParent()

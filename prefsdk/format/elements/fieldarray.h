@@ -15,9 +15,7 @@ namespace PrefSDK
             lua_Integer itemType();
             lua_Integer itemCount();
             Field* item(lua_Integer i);
-
-        private:
-            QHash<lua_Integer, Field*> _itempool;
+            QString itemId(lua_Integer i);
     };
 }
 #endif // FIELDARRAY_H

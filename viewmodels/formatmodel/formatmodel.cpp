@@ -130,7 +130,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
             {
                 if(fo->elementType() == ElementType::field())
                 {
-                    Field* f = formatelement_cast<Field>(fo);
+                    Field* f = qobject_cast<Field*>(fo);
 
                     if(f->isOverflowed())
                         return QColor(Qt::red);
@@ -146,7 +146,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                 }
                 else if(fo->elementType() == ElementType::fieldArray())
                 {
-                    FieldArray* fa = formatelement_cast<FieldArray>(fo);
+                    FieldArray* fa = qobject_cast<FieldArray*>(fo);
 
                     if(fa->itemType() == DataType::Char)
                         return QColor(Qt::darkGreen);
@@ -170,7 +170,7 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
 
         if((formatobj->elementType() == ElementType::field()) && (index.column() == 3))
         {
-            Field* field = formatelement_cast<Field>(formatobj);
+            Field* field = qobject_cast<Field*>(formatobj);
             QString currvalue = field->displayValue();
             QString newvalue = value.toString();
 
@@ -201,28 +201,20 @@ QModelIndex FormatModel::index(int row, int column, const QModelIndex &parent) c
     if(!this->_formattree || !this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    if(!parent.isValid())
-        return this->createIndex(row, column, this->_formattree->structure(row));
+    FormatElement* element = nullptr;
 
-    FormatElement* parentelem = reinterpret_cast<FormatElement*>(parent.internalPointer());
+    if(parent.isValid())
+    {
+        FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+        element = this->_formattree->elementFromPool(row, parentelement);
+    }
+    else
+        element = this->_formattree->elementFromPool(row);
 
-    if(parentelem->elementType() == ElementType::structure())
-    {
-        Structure* parentstruct = formatelement_cast<Structure>(parentelem);
-        return this->createIndex(row, column, parentstruct->field(row));
-    }
-    else if(parentelem->elementType() == ElementType::fieldArray())
-    {
-        FieldArray* parentfieldarray = formatelement_cast<FieldArray>(parentelem);
-        return this->createIndex(row, column, parentfieldarray->item(row));
-    }
-    else if(parentelem->elementType() == ElementType::field())
-    {
-        Field* parentfield = formatelement_cast<Field>(parentelem);
-        return this->createIndex(row, column, parentfield->bitField(row));
-    }
+    if(!element)
+        return QModelIndex();
 
-    return QModelIndex();
+    return this->createIndex(row, column, element);
 }
 
 QModelIndex FormatModel::parent(const QModelIndex &child) const
@@ -230,63 +222,14 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
     if(!this->_formattree || !child.isValid())
         return QModelIndex();
 
-    FormatElement* childobj = reinterpret_cast<FormatElement*>(child.internalPointer());
+    FormatElement* childelement = reinterpret_cast<FormatElement*>(child.internalPointer());
 
-    if(childobj->elementType() == ElementType::structure())
-    {
-        if(!childobj->hasParent())
-            return QModelIndex();
+    if(!childelement->hasParent())
+        return QModelIndex();
 
-        Structure* parentstruct = formatelement_cast<Structure>(childobj->parentElement());
-
-        if(parentstruct->hasParent())
-        {
-            Structure* parentofparent = formatelement_cast<Structure>(parentstruct->parentElement());
-            return this->createIndex(parentofparent->indexOf(parentstruct), 0, parentstruct);
-        }
-        else
-            return this->createIndex(this->_formattree->indexOf(parentstruct), 0, parentstruct);
-    }
-    else if(childobj->elementType() == ElementType::field() || childobj->elementType() == ElementType::fieldArray())
-    {
-        FormatElement* parentobj = formatelement_cast<FormatElement>(childobj->parentElement());
-
-        if(parentobj->elementType() == ElementType::structure())
-        {
-            if(parentobj->hasParent())
-            {
-                Structure* parentofparent = formatelement_cast<Structure>(parentobj->parentElement());
-                return this->createIndex(parentofparent->indexOf(parentobj), 0, parentobj);
-            }
-            else
-                return this->createIndex(this->_formattree->indexOf(parentobj), 0, parentobj);
-        }
-
-        if(childobj->elementType() == ElementType::field() && parentobj->elementType() == ElementType::fieldArray())
-        {
-            FieldArray* parentfieldarray = formatelement_cast<FieldArray>(parentobj);
-            Structure* parentstruct = formatelement_cast<Structure>(parentfieldarray->parentElement());
-            return this->createIndex(parentstruct->indexOf(parentfieldarray), 0, parentfieldarray);
-        }
-    }
-    else if(childobj->elementType() == ElementType::bitField())
-    {
-        Field* parentfield = formatelement_cast<Field>(childobj->parentElement());
-        FormatElement* parentofparent = parentfield->parentElement();
-
-        if(parentofparent->elementType() == ElementType::structure())
-        {
-            Structure* s = formatelement_cast<Structure>(parentofparent);
-            return this->createIndex(s->indexOf(parentfield), 0, parentfield);
-        }
-        else if(parentofparent->elementType() == ElementType::fieldArray())
-        {
-            Structure* s = formatelement_cast<Structure>(parentofparent->parentElement());
-            return this->createIndex(s->indexOf(parentfield), 0, parentfield);
-        }
-    }
-
-    return QModelIndex();
+    QString parentid = childelement->parentId();
+    FormatElement* parentelement = this->_formattree->elementFromPool(parentid);
+    return this->createIndex(parentelement->indexOf(childelement), 0, parentelement);
 }
 
 int FormatModel::rowCount(const QModelIndex &parent) const
@@ -302,20 +245,11 @@ int FormatModel::rowCount(const QModelIndex &parent) const
         FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
 
         if(parentelement->elementType() == ElementType::structure())
-        {
-            Structure* parentstruct = formatelement_cast<Structure>(parentelement);
-            return parentstruct->fieldCount();
-        }
+            return qobject_cast<Structure*>(parentelement)->fieldCount();
         else if(parentelement->elementType() == ElementType::fieldArray())
-        {
-            FieldArray* parentfieldarray = formatelement_cast<FieldArray>(parentelement);
-            return parentfieldarray->itemCount();
-        }
+            return qobject_cast<FieldArray*>(parentelement)->itemCount();
         else if(parentelement->elementType() == ElementType::field())
-        {
-            Field* parentfield = formatelement_cast<Field>(parentelement);
-            return parentfield->bitFieldCount();
-        }
+            return qobject_cast<Field*>(parentelement)->bitFieldCount();
     }
 
     return 0;

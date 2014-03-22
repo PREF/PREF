@@ -15,9 +15,7 @@ namespace PrefSDK
             explicit Field(const LuaTable::Ptr& f, QObject *parent = 0);
             lua_Integer bitFieldCount();
             BitField* bitField(lua_Integer i);
-
-        private:
-            QHash<lua_Integer, BitField*> _bitfieldpool;
+            QString bitFieldId(lua_Integer i);
     };
 }
 
