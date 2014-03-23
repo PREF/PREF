@@ -66,6 +66,16 @@ namespace PrefSDK
         return this->_elementtable->call<QString>("parentId");
     }
 
+    bool FormatElement::isDynamic()
+    {
+        return this->_elementtable->call<bool>("isDynamic");
+    }
+
+    bool FormatElement::hasChildren()
+    {
+        return this->_elementtable->call<bool>("hasChildren");
+    }
+
     bool FormatElement::hasParent()
     {
         return this->_elementtable->call<bool>("hasParent");
@@ -103,6 +113,11 @@ namespace PrefSDK
             this->_elementtable->call<void, lua_Integer>("setBase", b);
             emit baseChanged(this);
         }
+    }
+
+    void FormatElement::parseChildren()
+    {
+        this->_elementtable->call<void>("parseChildren");
     }
 
     QString FormatElement::info()

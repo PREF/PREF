@@ -16,7 +16,6 @@ namespace PrefSDK
 
         public:
             explicit FormatElement(const LuaTable::Ptr& elementtable, QObject *parent = 0);
-            void updateTable(const LuaTable::Ptr t);
             const LuaTable::Ptr& table();
             QString elementId();
             lua_Integer elementType();
@@ -31,9 +30,13 @@ namespace PrefSDK
             QString info();
             FormatElement* parentElement();
             QString parentId();
+            bool isDynamic();
+            bool hasChildren();
             bool hasParent();
             bool containsOffset(lua_Integer offset);
+            void updateTable(const LuaTable::Ptr t);
             void setBase(lua_Integer b);
+            void parseChildren();
 
         signals:
             void baseChanged(FormatElement* sender);

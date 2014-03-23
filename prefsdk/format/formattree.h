@@ -24,6 +24,7 @@ namespace PrefSDK
             static FormatTree::Ptr create(ByteBuffer *bb);
 
         public:
+            bool isEmpty();
             lua_Integer structureCount();
             lua_Integer indexOf(FormatElement *fe);
             QString structureId(lua_Integer i);

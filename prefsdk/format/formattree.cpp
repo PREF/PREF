@@ -13,6 +13,11 @@ namespace PrefSDK
         return FormatTree::Ptr(new FormatTree(bb));
     }
 
+    bool FormatTree::isEmpty()
+    {
+        return this->_formattreetable->call<bool>("isEmpty");
+    }
+
     lua_Integer FormatTree::structureCount()
     {
         return this->_formattreetable->call<lua_Integer>("structureCount");

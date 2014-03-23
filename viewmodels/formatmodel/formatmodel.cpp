@@ -196,6 +196,18 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
     return FieldDataModel::setData(index, value, role);
 }
 
+void FormatModel::fetchMore(const QModelIndex &parent)
+{
+    if(parent.isValid())
+    {
+        FormatElement* formatelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+        formatelement->parseChildren();
+        return;
+    }
+
+    QAbstractItemModel::fetchMore(parent);
+}
+
 QModelIndex FormatModel::index(int row, int column, const QModelIndex &parent) const
 {
     if(!this->_formattree || !this->hasIndex(row, column, parent))
@@ -232,6 +244,29 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
     return this->createIndex(parentelement->indexOf(childelement), 0, parentelement);
 }
 
+bool FormatModel::canFetchMore(const QModelIndex &parent) const
+{
+    if(parent.isValid())
+    {
+        FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+        return parentelement->isDynamic();
+    }
+
+    return QAbstractItemModel::canFetchMore(parent);
+}
+
+bool FormatModel::hasChildren(const QModelIndex &parent) const
+{
+    if(!this->_formattree)
+        return false;
+
+    if(!parent.isValid())
+        return !this->_formattree->isEmpty();
+
+    FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+    return parentelement->hasChildren();
+}
+
 int FormatModel::rowCount(const QModelIndex &parent) const
 {
     if(!this->_formattree)
@@ -244,16 +279,19 @@ int FormatModel::rowCount(const QModelIndex &parent) const
     {
         FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
 
-        if(parentelement->elementType() == ElementType::structure())
-            return qobject_cast<Structure*>(parentelement)->fieldCount();
-        else if(parentelement->elementType() == ElementType::field())
-            return qobject_cast<Field*>(parentelement)->bitFieldCount();
-        else if(parentelement->elementType() == ElementType::fieldArray())
+        if(!parentelement->isDynamic())
         {
-            FieldArray* fieldarray = qobject_cast<FieldArray*>(parentelement);
+            if(parentelement->elementType() == ElementType::structure())
+                return qobject_cast<Structure*>(parentelement)->fieldCount();
+            else if(parentelement->elementType() == ElementType::field())
+                return qobject_cast<Field*>(parentelement)->bitFieldCount();
+            else if(parentelement->elementType() == ElementType::fieldArray())
+            {
+                FieldArray* fieldarray = qobject_cast<FieldArray*>(parentelement);
 
-            if(fieldarray->itemType() != DataType::Blob)
-                return qobject_cast<FieldArray*>(parentelement)->itemCount();
+                if(fieldarray->itemType() != DataType::Blob)
+                    return qobject_cast<FieldArray*>(parentelement)->itemCount();
+            }
         }
     }
 

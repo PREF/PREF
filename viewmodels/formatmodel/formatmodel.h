@@ -28,8 +28,11 @@ class FormatModel : public FieldDataModel
         virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool setData(const QModelIndex &index, const QVariant &value, int role);
+        virtual void fetchMore(const QModelIndex& parent);
         virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
         virtual QModelIndex parent(const QModelIndex &child) const;
+        virtual bool canFetchMore(const QModelIndex &parent) const;
+        virtual bool hasChildren(const QModelIndex &parent) const;
         virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
