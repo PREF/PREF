@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>973</width>
-    <height>728</height>
+    <width>971</width>
+    <height>726</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PREF: Portable Reverse Engineering Framework 0.9.1</string>
+   <string>PREF: Portable Reverse Engineering Framework 0.9.2</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -39,8 +39,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>973</width>
-     <height>21</height>
+     <width>971</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
