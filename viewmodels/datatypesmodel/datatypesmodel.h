@@ -27,7 +27,7 @@ class DataTypesModel : public FieldDataModel
         void updateData();
 
     private:
-        static QVector<lua_Integer> _types;
+        static QVector<DataType::Type> _types;
         static QVector<QString> _typenames;
 
     private:

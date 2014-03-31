@@ -2,140 +2,136 @@
 
 namespace PrefSDK
 {
-    LuaTable::Ptr DataType::_datatypetable;
-
-    DataType::DataType()
+    bool DataType::isInteger(DataType::Type type)
     {
-
+        return (type & DataType::Integer) != 0;
     }
 
-    void DataType::load(lua_State *l)
+    bool DataType::isSigned(DataType::Type type)
     {
-        DataType::_datatypetable = LuaTable::global(l, "DataType");
+        return (type & DataType::Unsigned) == 0;
     }
 
-    lua_Integer DataType::invalid()
+    bool DataType::isString(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Invalid");
+        return (type & (DataType::Vector | DataType::Characters)) != 0;
     }
 
-    lua_Integer DataType::uint8()
+    bool DataType::isAscii(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("UInt8");
+        return (type & (DataType::Characters | DataType::Ascii)) != 0;
     }
 
-    lua_Integer DataType::uint16()
+    bool DataType::isUnicode(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("UInt16");
+        return (type & (DataType::Characters | DataType::Unicode)) != 0;
     }
 
-    lua_Integer DataType::uint32()
+    bool DataType::isArray(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("UInt32");
+        return (type & DataType::Vector) != 0;
     }
 
-    lua_Integer DataType::uint64()
+    int DataType::sizeOf(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("UInt64");
+        if(type & DataType::Vector)
+            return 0;
+
+        if((type & DataType::Ascii) || (type == DataType::UInt8) || (type == DataType::Int8) || (type == DataType::Blob)) /* Blob requires 1 byte (used as array element only) */
+            return 1;
+
+        if((type & DataType::Unicode) || (type == DataType::UInt16) || (type == DataType::Int16))
+            return 2;
+
+        if((type == DataType::UInt32) || (type == DataType::Int32))
+            return 4;
+
+        if((type == DataType::UInt64) || (type == DataType::Int64))
+            return 8;
+
+        return 0;
     }
 
-    lua_Integer DataType::int8()
+    QString DataType::stringValue(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Int8");
+        switch(type)
+        {
+            case DataType::AsciiCharacter:
+                return "AsciiChar";
+
+            case DataType::UnicodeCharacter:
+                return "UnicodeChar";
+
+            case DataType::UInt8:
+                return "UInt8";
+
+            case DataType::Int8:
+                return "Int8";
+
+            case DataType::UInt16:
+                return "UInt16";
+
+            case DataType::Int16:
+                return "Int16";
+
+            case DataType::UInt32:
+                return "UInt32";
+
+            case DataType::Int32:
+                return "Int32";
+
+            case DataType::UInt64:
+                return "UInt64";
+
+            case DataType::Int64:
+                return "Int64";
+
+            case DataType::Array:
+                return "List";
+
+            case DataType::AsciiString:
+                return "AsciiString";
+
+            case DataType::UnicodeString:
+                return "UnicodeString";
+
+            case DataType::Blob: /* Blob requires 1 byte (used in array only) */
+                return "Blob";
+
+            default:
+                break;
+        }
+
+        return "Unknown";
     }
 
-    lua_Integer DataType::int16()
+    int DataType::byteWidth(DataType::Type type)
     {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Int16");
-    }
+        switch(type)
+        {
+            case DataType::Blob: /* Blob requires 1 byte (used in array only) */
+            case DataType::AsciiCharacter:
+            case DataType::UInt8:
+            case DataType::Int8:
+                return 1;
 
-    lua_Integer DataType::int32()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Int32");
-    }
+            case DataType::UnicodeCharacter:
+            case DataType::UInt16:
+            case DataType::Int16:
+                return 2;
 
-    lua_Integer DataType::int64()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Int64");
-    }
+            case DataType::UInt32:
+            case DataType::Int32:
+                return 4;
 
-    lua_Integer DataType::array()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Array");
-    }
+            case DataType::UInt64:
+            case DataType::Int64:
+                return 8;
 
-    lua_Integer DataType::blob()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Blob");
-    }
+            default:
+                break;
+        }
 
-    lua_Integer DataType::character()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("Character");
-    }
-
-    lua_Integer DataType::asciiCharacter()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("AsciiCharacter");
-    }
-
-    lua_Integer DataType::unicodeCharacter()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("UnicodeCharacter");
-    }
-
-    lua_Integer DataType::asciiString()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("AsciiString");
-    }
-
-    lua_Integer DataType::unicodeString()
-    {
-        return DataType::_datatypetable->get<lua_String, lua_Integer>("UnicodeString");
-    }
-
-    bool DataType::isInteger(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<bool, lua_Integer>("isInteger", datatype);
-    }
-
-    bool DataType::isSigned(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<bool, lua_Integer>("isSigned", datatype);
-    }
-
-    bool DataType::isString(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<bool, lua_Integer>("isString", datatype);
-    }
-
-    bool DataType::isAscii(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<bool, lua_Integer>("isAscii", datatype);
-    }
-
-    bool DataType::isUnicode(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<bool, lua_Integer>("isUnicode", datatype);
-    }
-
-    bool DataType::isArray(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<bool, lua_Integer>("isArray", datatype);
-    }
-
-    lua_Integer DataType::sizeOf(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<lua_Integer, lua_Integer>("sizeOf", datatype);
-    }
-
-    QString DataType::stringValue(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<QString, lua_Integer>("stringValue", datatype);
-    }
-
-    lua_Integer DataType::byteWidth(lua_Integer datatype)
-    {
-        return DataType::_datatypetable->call<lua_Integer, lua_Integer>("byteWidth", datatype);
+        return 0;
     }
 }

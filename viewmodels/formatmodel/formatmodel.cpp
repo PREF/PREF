@@ -135,19 +135,19 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                     if(fieldhdr->IsInteger())
                         return QColor(Qt::darkBlue);
 
-                    if(fieldhdr->Type == DataType::character())
+                    if(fieldhdr->Type == DataType::Character)
                         return QColor(Qt::darkGreen);
 
-                    if(fieldhdr->Type == DataType::blob())
+                    if(fieldhdr->Type == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
                 else if(elemhdr->ElementType == ElementType::FieldArray)
                 {
                     const FieldArray* fa = reinterpret_cast<const FieldArray*>(elemhdr);
 
-                    if(fa->ItemType() == DataType::character())
+                    if(fa->ItemType() == DataType::Character)
                         return QColor(Qt::darkGreen);
-                    else if(fa->ItemType() == DataType::blob())
+                    else if(fa->ItemType() == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
                 else if(elemhdr->ElementType == ElementType::BitField)
@@ -171,7 +171,7 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
             QString currvalue = QString::fromUtf8(fieldhdr->ElementHdr.DisplayValue());
             QString newvalue = value.toString();
 
-            if(fieldhdr->Type == DataType::character())
+            if(fieldhdr->Type == DataType::Character)
                 currvalue = currvalue.mid(1, currvalue.length() - 2); /* Strip ' ' */
 
             if(!QString::compare(currvalue, newvalue, Qt::CaseInsensitive))  /* Does 'currvalue == newvalue' ? */
@@ -289,7 +289,7 @@ int FormatModel::rowCount(const QModelIndex &parent) const
             {
                 const FieldArray* fieldarray = reinterpret_cast<const FieldArray*>(parentelemhdr);
 
-                if(fieldarray->ItemType() != DataType::blob())
+                if(fieldarray->ItemType() != DataType::Blob)
                     return reinterpret_cast<const FieldArray*>(parentelemhdr)->ItemCount();
             }
         }

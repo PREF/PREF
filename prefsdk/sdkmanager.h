@@ -10,7 +10,6 @@
 #include "prefsdk/qlua.h"
 #include "prefsdk/prefdebug.h"
 #include "prefsdk/byteorder.h"
-#include "prefsdk/datatype.h"
 #include "prefsdk/prefui.h"
 #include "prefsdk/global/preftable.h"
 

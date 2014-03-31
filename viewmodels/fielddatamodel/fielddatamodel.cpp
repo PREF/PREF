@@ -4,11 +4,11 @@ FieldDataModel::FieldDataModel(QObject *parent): QAbstractItemModel(parent)
 {
 }
 
-bool FieldDataModel::validateValue(QVariant value, lua_Integer datatype, int base, QSysInfo::Endian endian, QByteArray &ba)
+bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int base, QSysInfo::Endian endian, QByteArray &ba)
 {
     QString stringvalue = value.toString();
 
-    if(datatype == DataType::character() || datatype == DataType::isString(datatype)) /* (Single Char) OR (Char Array (aka String)) */
+    if(datatype == DataType::Character || datatype == DataType::isString(datatype)) /* (Single Char) OR (Char Array (aka String)) */
     {
         ba = stringvalue.toLatin1();
         return true;
@@ -23,22 +23,43 @@ bool FieldDataModel::validateValue(QVariant value, lua_Integer datatype, int bas
         else
             ds.setByteOrder(QDataStream::BigEndian);
 
-        if(datatype == DataType::uint8())
-            ds << static_cast<quint8>(stringvalue.toUInt(&isok, base));
-        else if(datatype == DataType::uint16())
-            ds << (quint16)stringvalue.toUShort(&isok, base);
-        else if(datatype == DataType::uint32())
-            ds << (quint32)stringvalue.toUInt(&isok, base);
-        else if(datatype == DataType::uint64())
-            ds << (quint64)stringvalue.toULongLong(&isok, base);
-        else if(datatype == DataType::int8())
-            ds << (qint8)stringvalue.toInt(&isok, base);
-        else if(datatype == DataType::int16())
-            ds << (qint16)stringvalue.toShort(&isok, base);
-        else if(datatype == DataType::int32())
-            ds << (qint32)stringvalue.toInt(&isok, base);
-        else if(datatype == DataType::int64())
-            ds << (qint64)stringvalue.toLongLong(&isok, base);
+        switch(datatype)
+        {
+            case DataType::UInt8:
+                ds << static_cast<qint8>(stringvalue.toUInt(&isok, base));
+                break;
+
+            case DataType::UInt16:
+                ds << static_cast<qint16>(stringvalue.toUShort(&isok, base));
+                break;
+
+            case DataType::UInt32:
+                ds << static_cast<qint32>(stringvalue.toUInt(&isok, base));
+                break;
+
+            case DataType::UInt64:
+                ds << static_cast<quint64>(stringvalue.toULongLong(&isok, base));
+                break;
+
+            case DataType::Int8:
+                ds << static_cast<qint8>(stringvalue.toInt(&isok, base));
+                break;
+
+            case DataType::Int16:
+                ds << static_cast<qint16>(stringvalue.toShort(&isok, base));
+                break;
+
+            case DataType::Int32:
+                ds << static_cast<qint32>(stringvalue.toInt(&isok, base));
+                break;
+
+            case DataType::Int64:
+                ds << static_cast<qint64>(stringvalue.toLongLong(&isok, base));
+                break;
+
+            default:
+                break;
+        }
 
         return isok;
     }

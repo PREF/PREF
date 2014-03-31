@@ -1,7 +1,7 @@
 #include "datatypesmodel.h"
 
 const int DataTypesModel::STRING_LENGTH = 15;
-QVector<lua_Integer> DataTypesModel::_types;
+QVector<DataType::Type> DataTypesModel::_types;
 QVector<QString> DataTypesModel::_typenames;
 
 DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
@@ -17,16 +17,16 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
 
     if(DataTypesModel::_types.isEmpty())
     {
-        DataTypesModel::_types.append(DataType::character());
-        DataTypesModel::_types.append(DataType::int8());
-        DataTypesModel::_types.append(DataType::uint8());
-        DataTypesModel::_types.append(DataType::int16());
-        DataTypesModel::_types.append(DataType::uint16());
-        DataTypesModel::_types.append(DataType::int32());
-        DataTypesModel::_types.append(DataType::uint32());
-        DataTypesModel::_types.append(DataType::int64());
-        DataTypesModel::_types.append(DataType::uint64());
-        DataTypesModel::_types.append(DataType::array());
+        DataTypesModel::_types.append(DataType::Character);
+        DataTypesModel::_types.append(DataType::Int8);
+        DataTypesModel::_types.append(DataType::UInt8);
+        DataTypesModel::_types.append(DataType::Int16);
+        DataTypesModel::_types.append(DataType::UInt16);
+        DataTypesModel::_types.append(DataType::Int32);
+        DataTypesModel::_types.append(DataType::UInt32);
+        DataTypesModel::_types.append(DataType::Int64);
+        DataTypesModel::_types.append(DataType::UInt64);
+        DataTypesModel::_types.append(DataType::Array);
 
         DataTypesModel::_typenames.append("Char");
         DataTypesModel::_typenames.append("Signed Byte");
@@ -74,7 +74,7 @@ void DataTypesModel::setBase(int base)
 
 QString DataTypesModel::readValue(int row, bool* overflow) const
 {
-    lua_Integer type = this->_types.at(row);
+    DataType::Type type = this->_types.at(row);
     int bytelength = DataType::byteWidth(type);
 
     if(overflow)
@@ -82,7 +82,7 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
 
     if(bytelength && ((this->_offset + bytelength) < this->_bytebuffer->length()))
     {
-        if(type == DataType::character())
+        if(type == DataType::Character)
             return this->_bytebuffer->readString(this->_offset, 1);
 
         /* NOTE:
@@ -97,7 +97,7 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
 
         return this->_bytebuffer->stringValue(this->_offset, this->_base, type, this->_endian);
     }
-    else if(type == DataType::array())
+    else if(type == DataType::Array)
         return this->_bytebuffer->readValidString(this->_offset, DataTypesModel::STRING_LENGTH);
 
     return QString();
@@ -170,7 +170,7 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
             if(overflow)
                 return QColor(Qt::red);
 
-            if((this->_types.at(index.row()) == DataType::character()) || (this->_types.at(index.row()) == DataType::array()))
+            if((this->_types.at(index.row()) == DataType::Character) || (this->_types.at(index.row()) == DataType::Array))
                 return QColor(Qt::darkGreen);
 
             return QColor(Qt::darkBlue);

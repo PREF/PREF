@@ -1,51 +1,63 @@
-#ifndef DATATYPE_H
-#define DATATYPE_H
+#ifndef PREFSDK_DATATYPE_H
+#define PREFSDK_DATATYPE_H
 
 #include <QtCore>
-#include "qlua.h"
 
 namespace PrefSDK
 {
     class DataType
     {
         private:
-            DataType();
+            enum TypeDefinitions
+            {
+                Undefined    = 0x00000000,
+                Unsigned     = 0x10000000,
+                Vector       = 0x20000000,
+
+                Integer      = 0x00010000,
+                Characters   = 0x00020000,
+
+                Ascii        = 0x00100000,
+                Unicode      = 0x00200000,
+            };
 
         public:
-            static void load(lua_State* l);
+            enum Type
+            {
+                Invalid            = DataType::Undefined,
 
-        public: /* Types */
-            static lua_Integer invalid();
-            static lua_Integer uint8();
-            static lua_Integer uint16();
-            static lua_Integer uint32();
-            static lua_Integer uint64();
-            static lua_Integer int8();
-            static lua_Integer int16();
-            static lua_Integer int32();
-            static lua_Integer int64();
-            static lua_Integer array();
-            static lua_Integer blob();
-            static lua_Integer character();
-            static lua_Integer asciiCharacter();
-            static lua_Integer unicodeCharacter();
-            static lua_Integer asciiString();
-            static lua_Integer unicodeString();
+                UInt8              = DataType::Unsigned | DataType::Integer | 0x00000001,
+                UInt16             = DataType::Unsigned | DataType::Integer | 0x00000002,
+                UInt32             = DataType::Unsigned | DataType::Integer | 0x00000004,
+                UInt64             = DataType::Unsigned | DataType::Integer | 0x00000008,
 
+                Int8               = DataType::Integer | 0x00000001,
+                Int16              = DataType::Integer | 0x00000002,
+                Int32              = DataType::Integer | 0x00000004,
+                Int64              = DataType::Integer | 0x00000008,
 
-        public: /* Methods */
-            static bool isInteger(lua_Integer datatype);
-            static bool isSigned(lua_Integer datatype);
-            static bool isString(lua_Integer datatype);
-            static bool isAscii(lua_Integer datatype);
-            static bool isUnicode(lua_Integer datatype);
-            static bool isArray(lua_Integer datatype);
-            static lua_Integer sizeOf(lua_Integer type);
-            static lua_Integer byteWidth(lua_Integer datatype);
-            static QString stringValue(lua_Integer datatype);
+                AsciiCharacter     = DataType::Characters | DataType::Ascii,
+                UnicodeCharacter   = DataType::Characters | DataType::Unicode,
+                Character          = DataType::AsciiCharacter,
 
-        private:
-            static LuaTable::Ptr _datatypetable;
+                Array              = DataType::Vector,
+                AsciiString        = DataType::Vector | DataType::Characters | DataType::Ascii,
+                UnicodeString      = DataType::Vector | DataType::Characters | DataType::Unicode,
+
+                Blob               = DataType::Undefined,
+
+            };
+
+        public:
+            static bool isInteger(DataType::Type type);
+            static bool isSigned(DataType::Type type);
+            static bool isString(DataType::Type type);
+            static bool isAscii(DataType::Type type);
+            static bool isUnicode(DataType::Type type);
+            static bool isArray(DataType::Type type);
+            static int sizeOf(DataType::Type type);
+            static int byteWidth(DataType::Type type);
+            static QString stringValue(DataType::Type type);
     };
 }
-#endif // DATATYPE_H
+#endif // PREFSDK_DATATYPE_H

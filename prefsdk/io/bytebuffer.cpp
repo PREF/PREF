@@ -86,7 +86,7 @@ namespace PrefSDK
     QString ByteBuffer::stringValue(lua_Integer pos, int base, lua_Integer datatype, QSysInfo::Endian endian)
     {
         lua_Integer val = this->readType(pos, datatype, ByteOrder::sdkEndian(endian));
-        return QString("%1").arg(val, DataType::byteWidth(datatype), base, QLatin1Char('0')).toUpper();
+        return QString("%1").arg(val, DataType::byteWidth(static_cast<DataType::Type>(datatype)), base, QLatin1Char('0')).toUpper();
     }
 
     PrefSDK::ByteBuffer::operator QHexEditData *() const
@@ -107,18 +107,20 @@ namespace PrefSDK
     lua_Integer ByteBuffer::readType(lua_Integer pos, lua_Integer datatype, lua_Integer endian)
     {
         this->adjustOffset(pos);
-        QByteArray ba = this->_hexeditdata->read(pos, DataType::sizeOf(datatype));
+        //NOTE: QByteArray ba = this->_hexeditdata->read(pos, DataType::sizeOf(datatype));
 
+        /*
         QDataStream ds(ba);
 
         if(ByteOrder::qEndian(endian) == QSysInfo::LittleEndian)
             ds.setByteOrder(QDataStream::LittleEndian);
         else
             ds.setByteOrder(QDataStream::BigEndian);
+        */
 
-        lua_Integer t; //NOTE: NON BASTA UN LUA INTEGER!
+        //lua_Integer t; //NOTE: NON BASTA UN LUA INTEGER! (CONTRO NOTA: ORA SI)
         //ds >> t;
-        return t;
+        //return t;
     }
 
     void ByteBuffer::writeType(lua_Integer pos, lua_Integer datatype, lua_Integer val)
@@ -133,6 +135,7 @@ namespace PrefSDK
         else
             ds.setByteOrder(QDataStream::BigEndian);
 
+        /* NOTE: !!!
         if(datatype == DataType::uint8())
             ds << static_cast<quint8>(val);
         else if(datatype == DataType::uint16())
@@ -152,5 +155,6 @@ namespace PrefSDK
 
         if(!ba.isEmpty())
             this->_hexeditdata->replace(pos, ba.length(), ba);
+        */
     }
 }

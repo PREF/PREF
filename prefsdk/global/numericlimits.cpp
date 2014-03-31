@@ -14,22 +14,35 @@ namespace PrefSDK
 
     bool NumericLimits::willOverflow(ByteBuffer *bytebuffer, lua_Integer pos, lua_Integer datatype, lua_Integer sdkendian)
     {
-        if(datatype == DataType::uint8())
-            return this->willOverflowT<quint8>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::uint16())
-            return this->willOverflowT<quint16>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::uint32())
-            return this->willOverflowT<quint32>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::uint64())
-            return this->willOverflowT<quint64>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::int8())
-            return this->willOverflowT<qint8>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::int16())
-            return this->willOverflowT<qint16>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::int32())
-            return this->willOverflowT<qint32>(bytebuffer->readType(pos, datatype, sdkendian));
-        else if(datatype == DataType::int64())
-            return this->willOverflowT<qint64>(bytebuffer->readType(pos, datatype, sdkendian));
+        switch(datatype)
+        {
+            case DataType::UInt8:
+                return this->willOverflowT<u_int8_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::UInt16:
+                return this->willOverflowT<u_int16_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::UInt32:
+                return this->willOverflowT<u_int32_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::UInt64:
+                return this->willOverflowT<u_int64_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::Int8:
+                return this->willOverflowT<int8_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::Int16:
+                return this->willOverflowT<int16_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::Int32:
+                return this->willOverflowT<int32_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            case DataType::Int64:
+                return this->willOverflowT<int64_t>(bytebuffer->readType(pos, datatype, sdkendian));
+
+            default:
+                break;
+        }
 
         return false;
     }

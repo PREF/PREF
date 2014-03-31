@@ -107,8 +107,6 @@ namespace PrefSDK
             SDKManager::loadSdkVersion();
             SDKManager::loadPrefTables();
 
-            DataType::load(SDKManager::_state);
-
             SQLite::SQLiteDatabase::initialize();
             SignatureDatabase::load();
         }
