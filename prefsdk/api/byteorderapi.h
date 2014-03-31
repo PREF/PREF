@@ -7,9 +7,12 @@ namespace PrefSDK
 {
     namespace API
     {
-        extern "C" const int ByteOrder_LittleEndian = QSysInfo::LittleEndian;
-        extern "C" const int ByteOrder_BigEndian = QSysInfo::BigEndian;
-        extern "C" const int ByteOrder_PlatformEndian = QSysInfo::ByteOrder;
+        extern "C"
+        {
+            const int ByteOrder_LittleEndian = QSysInfo::LittleEndian;
+            const int ByteOrder_BigEndian = QSysInfo::BigEndian;
+            const int ByteOrder_PlatformEndian = QSysInfo::ByteOrder;
+        }
     }
 }
 

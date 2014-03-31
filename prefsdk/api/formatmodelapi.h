@@ -8,7 +8,7 @@ namespace PrefSDK
 {
     namespace API
     {
-        void FormatModel_setFormatTree(FormatModel *__this, FormatTree* formattree);
+        extern "C" void FormatModel_setFormatTree(FormatModel *__this, FormatTree* formattree);
     }
 }
 
