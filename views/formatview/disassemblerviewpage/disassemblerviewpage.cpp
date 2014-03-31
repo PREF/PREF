@@ -3,7 +3,7 @@
 
 DisassemblerViewPage::DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidget(parent), ui(new Ui::DisassemblerViewPage)
 {
-    this->_formattree = nullptr;
+    //this->_formattree = nullptr;
     this->_bytebuffer = bytebuffer;
 
     ui->setupUi(this);
@@ -39,7 +39,8 @@ DisassemblerViewPage::DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *pare
     connect(this->_actdisassemble, SIGNAL(triggered()), this, SLOT(onActDisassembleTriggered()));
 }
 
-void DisassemblerViewPage::setData(FormatTree::Ptr formattree, FormatDefinition::Ptr formatdefinition)
+/*
+void DisassemblerViewPage::setData(FormatTreeOld::Ptr formattree, FormatDefinitionOld::Ptr formatdefinition)
 {
     this->_formattree = formattree;
     this->_formatdefinition = formatdefinition;
@@ -47,6 +48,7 @@ void DisassemblerViewPage::setData(FormatTree::Ptr formattree, FormatDefinition:
     if(formattree && formatdefinition)
         this->_toolbar->setEnabled(true);
 }
+*/
 
 DisassemblerViewPage::~DisassemblerViewPage()
 {
@@ -74,10 +76,10 @@ void DisassemblerViewPage::onActDisassembleTriggered()
     this->_actgoto->setEnabled(false);
     this->_actdisassemble->setEnabled(false);
 
-    DisassemblerLoader::Ptr loader = this->_formatdefinition->generateLoader(this->_formattree, this->_bytebuffer);
-    ui->disassemblyView->setLoader(loader);
+    //DisassemblerLoader::Ptr loader = this->_formatdefinition->generateLoader(this->_formattree, this->_bytebuffer);
+    //ui->disassemblyView->setLoader(loader);
 
-    QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_bytebuffer, this->_formatdefinition, loader);
+    //QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_bytebuffer, this->_formatdefinition, loader);
 }
 
 void DisassemblerViewPage::onFunctionsMenuXRefsTriggered()

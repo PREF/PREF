@@ -31,7 +31,6 @@ class FormatView : public AbstractView
         void save();
         void save(QString filename);
         FormatView::Views currentView();
-        ByteBuffer *buffer();
         ~FormatView();
 
     public: /* Overriden Methods */
@@ -62,8 +61,9 @@ class FormatView : public AbstractView
         ChartViewPage* _chartview;
         DisassemblerViewPage* _disassemblerview;
         StringFinderViewPage* _stringfinderview;
-        FormatDefinition::Ptr _formatdefinition;
+        const FormatDefinition* _formatdefinition;
         ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
 };
 
 #endif // FILEFORMATVIEW_H

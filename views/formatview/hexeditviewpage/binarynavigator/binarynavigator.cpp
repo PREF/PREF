@@ -2,7 +2,7 @@
 
 const qreal BinaryNavigator::BYTES_PER_LINE = 0x10;
 
-BinaryNavigator::BinaryNavigator(QWidget *parent): QGLWidget(parent), _bytebuffer(nullptr), _hexedit(nullptr), _size(-1), _maxwidth(-1), _maxheight(-1), _offset(-1)
+BinaryNavigator::BinaryNavigator(QWidget *parent): QGLWidget(parent), _hexeditdata(nullptr), _hexedit(nullptr), _size(-1), _maxwidth(-1), _maxheight(-1), _offset(-1)
 {
     this->_displaymode = BinaryNavigator::Default;
 }
@@ -19,10 +19,10 @@ void BinaryNavigator::displayEntropy()
     this->update();
 }
 
-void BinaryNavigator::setData(QHexEdit *hexedit, ByteBuffer *bb)
+void BinaryNavigator::setData(QHexEdit *hexedit)
 {
     this->_hexedit = hexedit;
-    this->_bytebuffer = bb;
+    this->_hexeditdata = hexedit->data();
 
     connect(this->_hexedit, SIGNAL(positionChanged(qint64)), this, SLOT(updateSquare(qint64)));
     this->renderMap();
@@ -36,7 +36,7 @@ void BinaryNavigator::renderMap(int)
 
 void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
-    qreal e = entropy(this->_bytebuffer, this->_offset);
+    qreal e = entropy(this->_hexeditdata, this->_offset);
     QColor c = ByteColors::entropyColor(e);
     QRectF r = QRectF(x, y, this->_size, this->_size);
     p.fillRect(r, c);
@@ -50,7 +50,7 @@ void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cur
 
 void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
-    uchar b = this->_bytebuffer->at(this->_offset);
+    uchar b = this->_hexeditdata->at(this->_offset);
     QColor c = ByteColors::byteClassColor(b);
     QRectF r = QRectF(x, y, this->_size, this->_size);
     p.fillRect(r, c);
@@ -89,7 +89,7 @@ void BinaryNavigator::updateSquare(qint64)
 
 void BinaryNavigator::wheelEvent(QWheelEvent *event)
 {
-    if(this->_hexedit && this->_bytebuffer)
+    if(this->_hexedit && this->_hexeditdata)
         this->_hexedit->scroll(event); /* Forward Scroll */
 
     QGLWidget::wheelEvent(event);
@@ -112,7 +112,7 @@ void BinaryNavigator::mousePressEvent(QMouseEvent *event)
 
 void BinaryNavigator::paintEvent(QPaintEvent *)
 {
-    if(!this->_bytebuffer || ! this->_hexedit || !this->isVisible())
+    if(!this->_hexeditdata || ! this->_hexedit || !this->isVisible())
         return;
 
     this->adjust();
@@ -121,7 +121,7 @@ void BinaryNavigator::paintEvent(QPaintEvent *)
     QRectF cursorrect;
     QPainter p(this);
 
-    for(qreal x = 0, y = 0; (this->_offset < this->_bytebuffer->length()) && (y <= this->_maxheight); x += this->_size, this->_offset++)
+    for(qreal x = 0, y = 0; (this->_offset < this->_hexeditdata->length()) && (y <= this->_maxheight); x += this->_size, this->_offset++)
     {
         if(x >= this->_maxwidth)
         {

@@ -13,7 +13,7 @@ class OptionModel: public QAbstractItemModel
     Q_OBJECT
 
     public:
-        explicit OptionModel(FormatDefinition::Ptr formatdef, QObject *parent = 0);
+        explicit OptionModel(const FormatDefinition* formatdefinition, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -25,7 +25,7 @@ class OptionModel: public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        FormatDefinition::Ptr _formatdef;
+        const FormatDefinition* _formatdefinition;
         QImage _icooptions;
 };
 

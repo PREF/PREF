@@ -3,17 +3,17 @@
 
 #include <math.h>
 #include <QtCore>
-#include "prefsdk/io/bytebuffer.h"
+#include "qhexedit/qhexeditdata.h"
 
 namespace PrefSDK
 {
     typedef QList<qint64> OccurrenceList;
     static constexpr qint64 ENTROPY_SIZE_DEFAULT = 32;
 
-    OccurrenceList generateOccList(ByteBuffer *bytebuffer, qint64 start, qint64 size = ENTROPY_SIZE_DEFAULT);
-    qreal entropy(ByteBuffer *bytebuffer, qint64 start, qint64 size = ENTROPY_SIZE_DEFAULT);
+    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size = ENTROPY_SIZE_DEFAULT);
+    qreal entropy(QHexEditData *hexeditdata, qint64 start, qint64 size = ENTROPY_SIZE_DEFAULT);
     qreal entropy(OccurrenceList occlist, qint64 size = ENTROPY_SIZE_DEFAULT);
-    qreal entropy(ByteBuffer *bytebuffer);
+    qreal entropy(QHexEditData *hexeditdata);
 }
 
 #endif // MATH_H

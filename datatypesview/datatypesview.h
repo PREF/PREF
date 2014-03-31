@@ -5,7 +5,6 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "prefsdk/io/bytebuffer.h"
-#include "prefsdk/format/elements/field.h"
 #include "viewmodels/datatypesmodel/datatypesmodel.h"
 #include "datatypesview/datatypesmenu.h"
 

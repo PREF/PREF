@@ -15,7 +15,7 @@ namespace PrefSDK
             enum Type { Void, Register, Memory, Phrase, Displacement, Immediate, JumpFar, JumpNear, CallFar, CallNear };
             Operand(lua_State* l);
             Operand::Type operandType();
-            DataType::Type dataType();
+            lua_Integer dataType();
             lua_Integer value();
             lua_Integer address();
             lua_Integer reg();

@@ -17,8 +17,6 @@ LIBS += -lQt5Concurrent
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    prefsdk/format/elements/field.cpp \
-    prefsdk/format/elements/fieldarray.cpp \
     qhexedit/qhexeditprivate.cpp \
     qhexedit/qhexedit.cpp \
     qhistogram/qhistogram.cpp \
@@ -31,7 +29,6 @@ SOURCES += main.cpp\
     viewmodels/fielddatamodel/fielddatamodel.cpp \
     prefsdk/datatype.cpp \
     aboutdialog.cpp \
-    prefsdk/format/elements/bitfield.cpp \
     exportdialog.cpp \
     views/formatview/disassemblerviewpage/disassemblerviewpage.cpp \
     viewmodels/datatypesmodel/datatypesmodel.cpp \
@@ -71,7 +68,6 @@ SOURCES += main.cpp\
     prefsdk/lua/table/luactable.cpp \
     prefsdk/lua/utils/overloadtable.cpp \
     prefsdk/lua/utils/callhelper.cpp \
-    prefsdk/endian.cpp \
     prefsdk/prefui.cpp \
     prefsdk/prefdebug.cpp \
     prefsdk/io/bytebuffer.cpp \
@@ -100,7 +96,6 @@ SOURCES += main.cpp\
     preftabwidget/preftabwidget.cpp \
     formattreeview/copymenu.cpp \
     qnumberlineedit.cpp \
-    prefsdk/format/elements/structure.cpp \
     binarymapwidget/entropywidget.cpp \
     binarymapwidget/binarymap.cpp \
     views/formatview/binaryviewpage/binaryviewpage.cpp \
@@ -138,14 +133,19 @@ SOURCES += main.cpp\
     prefsdk/sqlitewrapper/sqlitetransaction.cpp \
     qhexedit/qhexeditcomments.cpp \
     prefsdk/lua/luadump.cpp \
-    prefsdk/format/elements/fieldelement.cpp \
-    prefsdk/format/elements/formatelement.cpp \
-    prefsdk/format/elements/elementtype.cpp \
-    prefsdk/format/formattree.cpp
+    prefsdk/format/formattree.cpp \
+    prefsdk/global/preftable.cpp \
+    prefsdk/global/numericlimits.cpp \
+    prefsdk/byteorder.cpp \
+    prefsdk/api/qhexeditdataapi.cpp \
+    prefsdk/api/qbytearrayapi.cpp \
+    prefsdk/api/formatapi.cpp \
+    prefsdk/api/byteorderapi.cpp \
+    prefsdk/format/elements.cpp \
+    prefsdk/api/formatmodelapi.cpp \
+    prefsdk/api/elementapi.cpp
 
 HEADERS  += mainwindow.h \
-    prefsdk/format/elements/field.h \
-    prefsdk/format/elements/fieldarray.h \
     qhexedit/qhexeditprivate.h \
     qhexedit/qhexedit.h \
     qhistogram/qhistogram.h \
@@ -158,7 +158,6 @@ HEADERS  += mainwindow.h \
     viewmodels/fielddatamodel/fielddatamodel.h \
     prefsdk/datatype.h \
     aboutdialog.h \
-    prefsdk/format/elements/bitfield.h \
     exportdialog.h \
     views/formatview/disassemblerviewpage/disassemblerviewpage.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
@@ -205,7 +204,6 @@ HEADERS  += mainwindow.h \
     prefsdk/lua/utils/overloadtable.h \
     prefsdk/lua/utils/mangler.h \
     prefsdk/lua/utils/callhelper.h \
-    prefsdk/endian.h \
     prefsdk/qlua.h \
     prefsdk/prefui.h \
     prefsdk/prefdebug.h \
@@ -234,7 +232,6 @@ HEADERS  += mainwindow.h \
     preftabwidget/preftabwidget.h \
     formattreeview/copymenu.h \
     qnumberlineedit.h \
-    prefsdk/format/elements/structure.h \
     binarymapwidget/entropywidget.h \
     binarymapwidget/binarymap.h \
     views/formatview/binaryviewpage/binaryviewpage.h \
@@ -275,10 +272,18 @@ HEADERS  += mainwindow.h \
     prefsdk/sqlitewrapper/sqlitetransaction.h \
     qhexedit/qhexeditcomments.h \
     prefsdk/lua/luadump.h \
-    prefsdk/format/elements/fieldelement.h \
-    prefsdk/format/elements/formatelement.h \
-    prefsdk/format/elements/elementtype.h \
-    prefsdk/format/formattree.h
+    prefsdk/format/formattree.h \
+    prefsdk/global/preftable.h \
+    prefsdk/global/numericlimits.h \
+    prefsdk/byteorder.h \
+    prefsdk/api/qhexeditdataapi.h \
+    prefsdk/api/qbytearrayapi.h \
+    prefsdk/api/byteorderapi.h \
+    prefsdk/api/formatapi.h \
+    prefsdk/api/api.h \
+    prefsdk/format/elements.h \
+    prefsdk/api/formatmodelapi.h \
+    prefsdk/api/elementapi.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -312,6 +317,7 @@ OTHER_FILES +=
 
 # *** START *** LINUX External Libraries *** START ***
 unix:!macx: LIBS += -L$$PWD/lib/linux/ -lluajit-5.1 -lsqlite3 -ldl
+QMAKE_LFLAGS += -Wl,--export-dynamic
 # *** END *** LINUX External Libraries *** END ***
 
 # *** START *** WINDOWS External Libraries *** START ***

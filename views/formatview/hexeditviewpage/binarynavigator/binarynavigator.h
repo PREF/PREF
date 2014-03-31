@@ -8,7 +8,6 @@
 #include "qhexedit/qhexedit.h"
 #include "prefsdk/math.h"
 #include "prefsdk/bytecolors.h"
-#include "prefsdk/io/bytebuffer.h"
 
 using namespace PrefSDK;
 
@@ -21,7 +20,7 @@ class BinaryNavigator : public QGLWidget
 
     public:
         explicit BinaryNavigator(QWidget *parent = 0);
-        void setData(QHexEdit* hexedit, ByteBuffer* bb);
+        void setData(QHexEdit* hexedit);
         void displayDefault();
         void displayEntropy();
 
@@ -46,7 +45,7 @@ class BinaryNavigator : public QGLWidget
     private:
         static const qreal BYTES_PER_LINE;
         BinaryNavigator::DisplayMode _displaymode;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         QHexEdit* _hexedit;
         qint64 _size;
         qint64 _maxwidth;

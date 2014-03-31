@@ -4,9 +4,10 @@
 #include <QtCore>
 #include <QApplication>
 #include "prefsdk/categorymanager.h"
-#include "prefsdk/format/formatdefinition.h"
+#include "viewmodels/formatmodel/formatmodel.h"
 #include "prefsdk/prefdebug.h"
 #include "qhexedit/qhexeditdata.h"
+#include "formatdefinition.h"
 
 namespace PrefSDK
 {
@@ -20,12 +21,13 @@ namespace PrefSDK
 
         public:
             static void load(lua_State *l);
+            static void registerFormat(const FormatDefinition* formatdefinition);
             static int length();
-            static FormatDefinition::Ptr format(int i);
+            static const FormatDefinition* format(int i);
 
         private:
-            static LuaTable::Ptr _fltable;
-            static QList<FormatDefinition::Ptr> _formats;
+            static QList<const FormatDefinition*> _formats;
+            static int _formatscount;
             static const QString FORMATS_DIR;
             static const QString FORMAT_MAIN_FILE;
     };

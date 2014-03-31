@@ -18,7 +18,7 @@ class FormatOptionsDialog : public QDialog
     Q_OBJECT
 
     public:
-        explicit FormatOptionsDialog(FormatDefinition::Ptr formatdef, FormatTree::Ptr formattree, ByteBuffer *bytebuffer, QWidget *parent = 0);
+        explicit FormatOptionsDialog(const FormatDefinition* formatdefinition, QHexEditData *hexeditdata, QWidget *parent = 0);
         ~FormatOptionsDialog();
 
     private:
@@ -31,9 +31,8 @@ class FormatOptionsDialog : public QDialog
 
     private:
         Ui::FormatOptionsDialog *ui;
-        FormatDefinition::Ptr _formatdefinition;
-        FormatTree::Ptr _formattree;
-        ByteBuffer* _bytebuffer;
+        const FormatDefinition* _formatdefinition;
+        QHexEditData* _hexeditdata;
         int _selindex;
 };
 

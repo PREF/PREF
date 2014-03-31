@@ -6,8 +6,8 @@
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
-#include "prefsdk/format/elements/structure.h"
 #include "prefsdk/format/formattree.h"
+#include "prefsdk/format/elements.h"
 #include "prefsdk/prefdebug.h"
 
 using namespace PrefSDK;
@@ -17,8 +17,8 @@ class FormatModel : public FieldDataModel
     Q_OBJECT
 
     public:
-        explicit FormatModel(const FormatTree::Ptr& formattree, ByteBuffer* bytebuffer, QObject *parent = 0);
-        FormatTree::Ptr tree();
+        explicit FormatModel(QHexEditData* hexeditdata, QObject *parent = 0);
+        void setFormatTree(FormatTree* formattree);
 
     private slots:
         void updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType);
@@ -42,8 +42,8 @@ class FormatModel : public FieldDataModel
         QImage _icostruct;
         QImage _icofield;
         QImage _icobitfield;
-        ByteBuffer* _bytebuffer;
-        FormatTree::Ptr _formattree;
+        QHexEditData* _hexeditdata;
+        FormatTree* _formattree;
 };
 
 #endif // FORMATMODEL_H

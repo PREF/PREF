@@ -17,7 +17,7 @@ class DisassemblerHelper : public QObject
 
     public:
         explicit DisassemblerHelper(QObject *parent = 0);
-        void run(ByteBuffer *bytebuffer, FormatDefinition::Ptr formatdefinition, DisassemblerLoader::Ptr loader);
+        //void run(ByteBuffer *bytebuffer, FormatDefinitionOld::Ptr formatdefinition, DisassemblerLoader::Ptr loader);
         void stop();
         DisassemblerListing::Ptr listing();
 

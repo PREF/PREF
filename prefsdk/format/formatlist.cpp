@@ -2,8 +2,8 @@
 
 namespace PrefSDK
 {
-    LuaTable::Ptr FormatList::_fltable;
-    QList<FormatDefinition::Ptr> FormatList::_formats;
+    QList<const FormatDefinition*> FormatList::_formats;
+    int FormatList::_formatscount = 0;
     const QString FormatList::FORMATS_DIR = "formats";
     const QString FormatList::FORMAT_MAIN_FILE = "main.lua";
 
@@ -24,7 +24,10 @@ namespace PrefSDK
                 QDir fd(fi.absoluteFilePath());
 
                 if(fd.exists(FormatList::FORMAT_MAIN_FILE))
+                {
+                    FormatList::_formatscount++;
                     luaW_dofile(l, fd.absoluteFilePath(FormatList::FORMAT_MAIN_FILE).toLatin1().constData());
+                }
             }
             catch(LuaException& e)
             {
@@ -35,9 +38,6 @@ namespace PrefSDK
 
     void FormatList::load(lua_State* l)
     {
-        FormatList::_fltable = LuaTable::create(l);
-        FormatList::_fltable->pushGlobal("FormatList");
-
         CategoryManager::clear();
         FormatList::_formats.clear();
 
@@ -48,23 +48,21 @@ namespace PrefSDK
             return;
 
         FormatList::loadFormats(l, formatspath);
-        CategoryManager::addGlobalCategory(FormatList::_fltable->length());
+        CategoryManager::addGlobalCategory(FormatList::_formatscount);
+    }
 
-        for(lua_Integer i = 0; i < FormatList::_fltable->length(); i++)
-        {
-            LuaTable::Ptr fdt = FormatList::_fltable->get<lua_Integer>(i + 1);
-            FormatDefinition::Ptr fd(new FormatDefinition(fdt));
-            CategoryManager::add(fd->category(), i);
-            FormatList::_formats.append(fd);
-        }
+    void FormatList::registerFormat(const FormatDefinition *formatdefinition)
+    {
+        CategoryManager::add(formatdefinition->Category, FormatList::_formats.length());
+        FormatList::_formats.append(formatdefinition);
     }
 
     int FormatList::length()
     {
-        return FormatList::_fltable->length();
+        return FormatList::_formats.length();
     }
 
-    FormatDefinition::Ptr FormatList::format(int i)
+    const FormatDefinition *FormatList::format(int i)
     {
         return FormatList::_formats.at(i);
     }

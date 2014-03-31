@@ -2,46 +2,23 @@
 #define PREFSDK_FORMATTREE_H
 
 #include "prefsdk/qlua.h"
-#include "elements/structure.h"
 #include "prefsdk/prefdebug.h"
+#include "elements.h"
 
 namespace PrefSDK
 {
-    class FormatTree: public QObject
+    typedef u_int64_t (*StructureCountProc)();
+    typedef const Structure* (*GetStructureProc)(u_int64_t i);
+    typedef const ElementHeader* (*ElementFromPoolProc)(int64_t i, const ElementHeader* parent);
+    typedef const ElementHeader* (*ElementFromPoolByIdProc)(const char* id);
+
+    typedef struct FormatTree
     {
-        Q_OBJECT
-
-        public:
-            typedef std::shared_ptr<FormatTree> Ptr;
-
-        private:
-            typedef QHash<QString, FormatElement*> ElementCache;
-
-        private:
-            explicit FormatTree(ByteBuffer *bb, QObject* parent = 0);
-
-        public:
-            static FormatTree::Ptr create(ByteBuffer *bb);
-
-        public:
-            bool isEmpty();
-            lua_Integer structureCount();
-            lua_Integer indexOf(FormatElement *fe);
-            QString structureId(lua_Integer i);
-            Structure* structure(lua_Integer i);
-            const LuaTable::Ptr& luaTable();
-            void updateElement(FormatElement* element);
-            FormatElement* elementFromPool(lua_Integer i, FormatElement* parent = nullptr);
-            FormatElement* elementFromPool(const QString& id);
-
-        private:
-            LuaTable::Ptr pool();
-            LuaTable::Ptr elementTableFromPool(const QString& id);
-
-        private:
-            LuaTable::Ptr _formattreetable;
-            ElementCache _elementcache;
-    };
+        StructureCountProc StructureCount;
+        GetStructureProc GetStructure;
+        ElementFromPoolProc ElementFromPool;
+        ElementFromPoolByIdProc ElementFromPoolById;
+    } FormatTree;
 }
 
 #endif // PREFSDK_FORMATTREE_H

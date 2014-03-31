@@ -5,7 +5,7 @@
 #include <QtGui>
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/format/elements/structure.h"
+#include "prefsdk/global/numericlimits.h"
 
 class DataTypesModel : public FieldDataModel
 {
@@ -27,7 +27,7 @@ class DataTypesModel : public FieldDataModel
         void updateData();
 
     private:
-        static QVector<DataType::Type> _types;
+        static QVector<lua_Integer> _types;
         static QVector<QString> _typenames;
 
     private:

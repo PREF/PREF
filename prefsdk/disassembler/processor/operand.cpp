@@ -19,9 +19,9 @@ namespace PrefSDK
         return static_cast<Operand::Type>(this->_optype);
     }
 
-    DataType::Type Operand::dataType()
+    lua_Integer Operand::dataType()
     {
-        return static_cast<DataType::Type>(this->_datatype);
+        return this->_datatype;
     }
 
     lua_Integer Operand::value()

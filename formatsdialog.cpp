@@ -25,7 +25,7 @@ FormatsDialog::FormatsDialog(lua_State* l, qint64 maxlen, QWidget *parent): QDia
         ui->tvFormats->resizeColumnToContents(i);
 }
 
-FormatDefinition::Ptr FormatsDialog::selectedFormat()
+const FormatDefinition *FormatsDialog::selectedFormat()
 {
     CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
     QItemSelectionModel* model = ui->tvFormats->selectionModel();

@@ -58,21 +58,28 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        FormatDefinition::Ptr fd = FormatList::format(this->_category->globalFormatIndex(index.row()));
+        const FormatDefinition* fd = FormatList::format(this->_category->globalFormatIndex(index.row()));
 
         switch(index.column())
         {
             case 0:
-                return fd->name();
+                return QString::fromUtf8(fd->Name);
 
             case 1:
-                return fd->endianString();
+            {
+                QSysInfo::Endian endian = static_cast<QSysInfo::Endian>(fd->Endian);
+
+                if(endian == QSysInfo::LittleEndian)
+                    return "LittleEndian";
+
+                return "BigEndian";
+            }
 
             case 2:
-                return fd->author();
+                return QString::fromUtf8(fd->Author);
 
             case 3:
-                return fd->version();
+                return QString::fromUtf8(fd->Version);
 
             default:
                 break;

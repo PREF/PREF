@@ -9,10 +9,10 @@
 #include "prefsdk/sqlitewrapper/sqlite.h"
 #include "prefsdk/qlua.h"
 #include "prefsdk/prefdebug.h"
-#include "prefsdk/endian.h"
+#include "prefsdk/byteorder.h"
 #include "prefsdk/datatype.h"
-#include "prefsdk/format/elements/elementtype.h"
 #include "prefsdk/prefui.h"
+#include "prefsdk/global/preftable.h"
 
 namespace PrefSDK
 {
@@ -37,10 +37,9 @@ namespace PrefSDK
             static lua_State* state();
 
         private:
+            static PrefTable::Ptr _preftable;
             static PrefDebug::Ptr _prefdebug;
             static PrefUI::Ptr _prefui;
-            static Endian::Ptr _endian;
-            static DataType::Ptr _datatype;
 
         private:
             static lua_State* _state;

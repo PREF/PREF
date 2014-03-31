@@ -5,8 +5,10 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtOpenGL>
+#include "qhexedit/qhexeditdata.h"
 #include "prefsdk/math.h"
 #include "prefsdk/bytecolors.h"
+#include "prefsdk/qlua.h"
 
 using namespace PrefSDK;
 
@@ -26,7 +28,7 @@ class BinaryMap : public QGLWidget
         void setWidth(int w);
         void setStep(qint64 step);
         void setDisplayMode(BinaryMap::DisplayMode mode);
-        void setData(ByteBuffer* bytebuffer);
+        void setData(QHexEditData* hexeditdata);
 
     private:
         qint64 start();
@@ -60,7 +62,7 @@ class BinaryMap : public QGLWidget
         static const QString NO_DATA_AVAILABLE;
         QHash<lua_Integer, lua_Integer> _drawedoffset;
         DisplayMode _displaymode;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         QByteArray _bits;
         qint64 _step;
         qint64 _start;

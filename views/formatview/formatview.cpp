@@ -1,7 +1,7 @@
 #include "formatview.h"
 #include "ui_formatview.h"
 
-FormatView::FormatView(QHexEditData* hexeditdata, QWidget *parent): AbstractView(parent), ui(new Ui::FormatView)
+FormatView::FormatView(QHexEditData* hexeditdata, QWidget *parent): AbstractView(parent), ui(new Ui::FormatView), _hexeditdata(hexeditdata)
 {
     ui->setupUi(this);
     this->_bytebuffer = new ByteBuffer(SDKManager::state(), hexeditdata);
@@ -15,12 +15,14 @@ FormatView::FormatView(QHexEditData* hexeditdata, QWidget *parent): AbstractView
 
 void FormatView::save()
 {
-    this->_bytebuffer->save();
+    this->_hexeditdata->save();
 }
 
 void FormatView::save(QString filename)
 {
-    this->_bytebuffer->save(filename);
+    QFile f(filename);
+    this->_hexeditdata->saveTo(&f);
+    f.close();
 }
 
 FormatView::Views FormatView::currentView()
@@ -49,11 +51,6 @@ FormatView::Views FormatView::currentView()
     return FormatView::CustomView;
 }
 
-ByteBuffer* FormatView::buffer()
-{
-    return this->_bytebuffer;
-}
-
 FormatView::~FormatView()
 {
     delete ui;
@@ -66,13 +63,13 @@ bool FormatView::canSave() const
 
 void FormatView::createHexView()
 {
-    this->_hexeditview = new HexEditViewPage(this->_bytebuffer, this);
+    this->_hexeditview = new HexEditViewPage(this->_hexeditdata, this);
     ui->tabWidget->addTab(this->_hexeditview, "Hex Edit");
 }
 
 void FormatView::createBinaryView()
 {
-    this->_binaryview = new BinaryViewPage(this->_bytebuffer);
+    this->_binaryview = new BinaryViewPage(this->_hexeditdata);
     connect(this->_binaryview, SIGNAL(gotoTriggered(qint64)), this, SLOT(jumpToOffset(qint64)));
     ui->tabWidget->addTab(this->_binaryview, "Binary View");
 }
@@ -109,7 +106,7 @@ void FormatView::jumpToOffset(qint64 offset, qint64 length)
 
 void FormatView::on_tbFormats_clicked()
 {
-    FormatsDialog fd(SDKManager::state(), this->_bytebuffer->length(), this->topLevelWidget());
+    FormatsDialog fd(SDKManager::state(), this->_hexeditdata->length(), this->topLevelWidget());
     int res = fd.exec();
 
     if(res == FormatsDialog::Accepted)
@@ -118,16 +115,16 @@ void FormatView::on_tbFormats_clicked()
 
         if(this->_hexeditview->loadFormat(this->_formatdefinition, fd.offset()))
         {
-            this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatdefinition);
-            ui->tbFormatOptions->setEnabled(this->_formatdefinition->hasOptions());
+            //NOTE: this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatdefinition);
+            //NOTE: ui->tbFormatOptions->setEnabled(this->_formatdefinition->hasOptions());
         }
     }
 }
 
 void FormatView::on_tbFormatOptions_clicked()
 {
-    FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->tree(), this->_bytebuffer, this->topLevelWidget());
-    fod.exec();
+    //NOTE: FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->tree(), this->_bytebuffer, this->topLevelWidget());
+    //NOTE: fod.exec();
 }
 
 void FormatView::on_tbSignatureScanner_clicked()

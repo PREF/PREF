@@ -15,7 +15,8 @@ DisassemblerListing::Ptr DisassemblerHelper::listing()
     return this->_listing;
 }
 
-void DisassemblerHelper::run(ByteBuffer *bytebuffer, FormatDefinition::Ptr formatdefinition, DisassemblerLoader::Ptr loader)
+/*
+void DisassemblerHelper::run(ByteBuffer *bytebuffer, FormatDefinitionOld::Ptr formatdefinition, DisassemblerLoader::Ptr loader)
 {
     this->_cancontinue = true;
 
@@ -49,7 +50,7 @@ void DisassemblerHelper::run(ByteBuffer *bytebuffer, FormatDefinition::Ptr forma
                 if(sz)
                     processor->emulate(addrqueue, this->_listing->referenceTable(), instr);
                 else
-                    addrqueue->pushFront(address + 1); /* Got an Invalid Instruction: Try To Disassemble Next Byte */
+                    addrqueue->pushFront(address + 1);  Got an Invalid Instruction: Try To Disassemble Next Byte
 
                 this->_listing->addInstruction(instr);
             }
@@ -62,3 +63,4 @@ void DisassemblerHelper::run(ByteBuffer *bytebuffer, FormatDefinition::Ptr forma
 
     emit finished();
 }
+*/

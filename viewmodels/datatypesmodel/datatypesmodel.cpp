@@ -1,7 +1,7 @@
 #include "datatypesmodel.h"
 
 const int DataTypesModel::STRING_LENGTH = 15;
-QVector<DataType::Type> DataTypesModel::_types;
+QVector<lua_Integer> DataTypesModel::_types;
 QVector<QString> DataTypesModel::_typenames;
 
 DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
@@ -17,16 +17,16 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
 
     if(DataTypesModel::_types.isEmpty())
     {
-        DataTypesModel::_types.append(DataType::Char);
-        DataTypesModel::_types.append(DataType::Int8);
-        DataTypesModel::_types.append(DataType::UInt8);
-        DataTypesModel::_types.append(DataType::Int16);
-        DataTypesModel::_types.append(DataType::UInt16);
-        DataTypesModel::_types.append(DataType::Int32);
-        DataTypesModel::_types.append(DataType::UInt32);
-        DataTypesModel::_types.append(DataType::Int64);
-        DataTypesModel::_types.append(DataType::UInt64);
-        DataTypesModel::_types.append(DataType::Array);
+        DataTypesModel::_types.append(DataType::character());
+        DataTypesModel::_types.append(DataType::int8());
+        DataTypesModel::_types.append(DataType::uint8());
+        DataTypesModel::_types.append(DataType::int16());
+        DataTypesModel::_types.append(DataType::uint16());
+        DataTypesModel::_types.append(DataType::int32());
+        DataTypesModel::_types.append(DataType::uint32());
+        DataTypesModel::_types.append(DataType::int64());
+        DataTypesModel::_types.append(DataType::uint64());
+        DataTypesModel::_types.append(DataType::array());
 
         DataTypesModel::_typenames.append("Char");
         DataTypesModel::_typenames.append("Signed Byte");
@@ -74,7 +74,7 @@ void DataTypesModel::setBase(int base)
 
 QString DataTypesModel::readValue(int row, bool* overflow) const
 {
-    DataType::Type type = this->_types.at(row);
+    lua_Integer type = this->_types.at(row);
     int bytelength = DataType::byteWidth(type);
 
     if(overflow)
@@ -82,20 +82,22 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
 
     if(bytelength && ((this->_offset + bytelength) < this->_bytebuffer->length()))
     {
-        if(type == DataType::Char)
+        if(type == DataType::character())
             return this->_bytebuffer->readString(this->_offset, 1);
 
-        if(this->_bytebuffer->willOverflow(this->_offset, type, this->_endian))
+        /* NOTE:
+        if(NumericLimits::willOverflow(this->_bytebuffer, this->_offset, type, this->_endian))
         {
             if(overflow)
                 *overflow = true;
 
             return "Overflow";
         }
+        */
 
         return this->_bytebuffer->stringValue(this->_offset, this->_base, type, this->_endian);
     }
-    else if(type == DataType::Array)
+    else if(type == DataType::array())
         return this->_bytebuffer->readValidString(this->_offset, DataTypesModel::STRING_LENGTH);
 
     return QString();
@@ -150,12 +152,12 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
         else if(index.column() == 1)
         {
             bool overflow = false;
-            QString s = this->readValue(index.row(), &overflow);
+            //NOTE: QString s = this->readValue(index.row(), &overflow);
 
-            if(!DataType::isInteger(this->_types.at(index.row())) && (role == Qt::DisplayRole) && !overflow)
-                return QString("'%1'").arg(s.simplified());
+            //NOTE: if(!DataType::isInteger(this->_types.at(index.row())) && (role == Qt::DisplayRole) && !overflow)
+                //return QString("'%1'").arg(s.simplified());
 
-            return s.simplified();
+            //NOTE: return s.simplified();
         }
     }
     else if(role == Qt::ForegroundRole)
@@ -168,7 +170,7 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
             if(overflow)
                 return QColor(Qt::red);
 
-            if((this->_types.at(index.row()) == DataType::Char) || (this->_types.at(index.row()) == DataType::Array))
+            if((this->_types.at(index.row()) == DataType::character()) || (this->_types.at(index.row()) == DataType::array()))
                 return QColor(Qt::darkGreen);
 
             return QColor(Qt::darkBlue);

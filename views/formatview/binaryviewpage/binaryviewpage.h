@@ -19,7 +19,7 @@ class BinaryViewPage : public QWidget
     Q_OBJECT
 
     public:
-        explicit BinaryViewPage(ByteBuffer *bytebuffer, QWidget *parent = 0);
+        explicit BinaryViewPage(QHexEditData *hexeditdata, QWidget *parent = 0);
         ~BinaryViewPage();
 
     private slots:
@@ -35,7 +35,6 @@ class BinaryViewPage : public QWidget
 
     private:
         Ui::BinaryViewPage *ui;
-        ByteBuffer* _bytebuffer;
         bool _ctrlpressed;
         bool _shiftpressed;
 };

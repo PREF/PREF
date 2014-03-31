@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    OccurrenceList generateOccList(ByteBuffer *bytebuffer, qint64 start, qint64 size)
+    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size)
     {
         OccurrenceList occlist;
 
@@ -11,33 +11,33 @@ namespace PrefSDK
 
         if(start < (size / 2))
             start = 0;
-        else if(start > bytebuffer->length() - (size / 2))
-            start = bytebuffer->length() - (size / 2);
+        else if(start > hexeditdata->length() - (size / 2))
+            start = hexeditdata->length() - (size / 2);
         else
             start -= size / 2;
 
         for(qint64 i = start; i < start + size; i++)
         {
-            if(i >= static_cast<uint>(bytebuffer->length()))
+            if(i >= static_cast<uint>(hexeditdata->length()))
                 break;
 
-            uchar b = bytebuffer->at(i);
+            uchar b = hexeditdata->at(i);
             occlist[b] += 1;
         }
 
         return occlist;
     }
 
-    qreal entropy(ByteBuffer *bytebuffer)
+    qreal entropy(QHexEditData *hexeditdata)
     {
-        return entropy(bytebuffer, 0, bytebuffer->length());
+        return entropy(hexeditdata, 0, hexeditdata->length());
     }
 
-    qreal entropy(ByteBuffer *bytebuffer, qint64 start, qint64 size)
+    qreal entropy(QHexEditData *hexeditdata, qint64 start, qint64 size)
     {
         qreal e = 0.0;
         qint64 base = qMin(size, static_cast<qint64>(256));
-        OccurrenceList occs = generateOccList(bytebuffer, start, size);
+        OccurrenceList occs = generateOccList(hexeditdata, start, size);
 
         for(int i = 0; i < occs.length(); i++)
         {

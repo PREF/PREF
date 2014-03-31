@@ -3,10 +3,9 @@
 namespace PrefSDK
 {
     /* PREF Tables */
+    PrefTable::Ptr SDKManager::_preftable;
     PrefDebug::Ptr SDKManager::_prefdebug;
     PrefUI::Ptr SDKManager::_prefui;
-    Endian::Ptr SDKManager::_endian;
-    DataType::Ptr SDKManager::_datatype;
 
     SDKManager::SdkVersionFunction::Ptr SDKManager::_sdkversion;
     lua_State* SDKManager::_state = nullptr;
@@ -50,16 +49,14 @@ namespace PrefSDK
 
     void SDKManager::loadPrefTables()
     {
+        SDKManager::_preftable = PrefTable::create(SDKManager::_state);
         SDKManager::_prefdebug = PrefDebug::create(SDKManager::_state);
         SDKManager::_prefui = PrefUI::create(SDKManager::_state);
-        SDKManager::_endian = Endian::create(SDKManager::_state);
-        SDKManager::_datatype = DataType::create(SDKManager::_state);
 
+        SDKManager::_preftable->pushGlobal();
         SDKManager::_prefui->pushGlobal();
-        SDKManager::_endian->pushGlobal();
-        SDKManager::_datatype->pushGlobal();
 
-        DisassemblerSegment::declareGlobals(SDKManager::_state);
+        //DisassemblerSegment::declareGlobals(SDKManager::_state);
         Operand::declareGlobals(SDKManager::_state);
         Instruction::declareGlobals(SDKManager::_state);
         ReferenceTable::declareGlobals(SDKManager::_state);
@@ -110,7 +107,8 @@ namespace PrefSDK
             SDKManager::loadSdkVersion();
             SDKManager::loadPrefTables();
 
-            ElementType::load(SDKManager::_state);
+            DataType::load(SDKManager::_state);
+
             SQLite::SQLiteDatabase::initialize();
             SignatureDatabase::load();
         }

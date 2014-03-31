@@ -1,20 +1,20 @@
 #include "binaryviewpage.h"
 #include "ui_binaryviewpage.h"
 
-BinaryViewPage::BinaryViewPage(ByteBuffer* bytebuffer, QWidget *parent): QWidget(parent), ui(new Ui::BinaryViewPage), _bytebuffer(bytebuffer), _ctrlpressed(false), _shiftpressed(false)
+BinaryViewPage::BinaryViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::BinaryViewPage), _ctrlpressed(false), _shiftpressed(false)
 {
     ui->setupUi(this);
 
     ui->sbStep->setMinimum(1);
     ui->sbStep->setValue(0x10);
-    ui->sbStep->setMaximum(bytebuffer->length());
+    ui->sbStep->setMaximum(hexeditdata->length());
 
     ui->binaryMap->setStart(0);
-    ui->binaryMap->setEnd(bytebuffer->length());
+    ui->binaryMap->setEnd(hexeditdata->length());
     ui->binaryMap->setWidth(256);
     ui->binaryMap->setStep(ui->sbStep->value());
     ui->binaryMap->setDisplayMode(BinaryMap::DotPlot);
-    ui->binaryMap->setData(bytebuffer);
+    ui->binaryMap->setData(hexeditdata);
 
     connect(ui->binaryMap, SIGNAL(gotoTriggered(qint64)), this, SIGNAL(gotoTriggered(qint64)));
     connect(ui->binaryMap, SIGNAL(ctrlModifier(bool)), this, SLOT(onCtrlModifier(bool)));

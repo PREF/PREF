@@ -1,14 +1,13 @@
 #include "hexeditviewpage.h"
 #include "ui_hexeditviewpage.h"
 
-HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidget(parent), ui(new Ui::HexEditViewPage), _formatmodel(nullptr), _bytebuffer(bytebuffer), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::HexEditViewPage), _formatmodel(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
 
     ui->hSplitter->setStretchFactor(1, 1);
     ui->vSplitter->setStretchFactor(0, 1);
-    ui->dataView->setData(bytebuffer);
-    ui->hexEdit->setData(bytebuffer->hexEditData());
+    ui->hexEdit->setData(hexeditdata);
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
 
@@ -16,8 +15,8 @@ HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidg
     this->updateSelLength(0);
     this->createToolBar();
 
-    ui->binaryNavigator->setData(ui->hexEdit, bytebuffer);
-    ui->tvFormat->setModel(new FormatModel(FormatTree::Ptr(), bytebuffer)); /* Empty Model */
+    ui->binaryNavigator->setData(ui->hexEdit);
+    ui->tvFormat->setModel(new FormatModel(hexeditdata)); /* Empty Model */
 
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));
@@ -26,29 +25,27 @@ HexEditViewPage::HexEditViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidg
     connect(ui->hexEdit, SIGNAL(verticalScrollBarValueChanged(int)), ui->binaryNavigator, SLOT(renderMap(int)));
     connect(ui->hexEdit, SIGNAL(visibleLinesChanged()), this, SLOT(scanSignatures()));
 
-    connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));
-    connect(ui->tvFormat, SIGNAL(removeBackColor(FormatElement*)), this, SLOT(onRemoveBackColor(FormatElement*)));
-    connect(ui->tvFormat, SIGNAL(formatObjectSelected(FormatElement*)), this, SLOT(onFormatObjectSelected(FormatElement*)));
-    connect(ui->tvFormat, SIGNAL(exportAction(FormatElement*)), this, SLOT(exportData(FormatElement*)));
-    connect(ui->tvFormat, SIGNAL(importAction(FormatElement*)), this, SLOT(importData(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(setBackColor(const ElementHeader*)), this, SLOT(onSetBackColor(const ElementHeader*)));
+    connect(ui->tvFormat, SIGNAL(removeBackColor(const ElementHeader*)), this, SLOT(onRemoveBackColor(const ElementHeader*)));
+    connect(ui->tvFormat, SIGNAL(formatObjectSelected(const ElementHeader*)), this, SLOT(onFormatObjectSelected(const ElementHeader*)));
+    connect(ui->tvFormat, SIGNAL(exportAction(const ElementHeader*)), this, SLOT(exportData(const ElementHeader*)));
+    connect(ui->tvFormat, SIGNAL(importAction(const ElementHeader*)), this, SLOT(importData(const ElementHeader*)));
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-bool HexEditViewPage::loadFormat(const FormatDefinition::Ptr &fd, qint64 baseoffset)
+bool HexEditViewPage::loadFormat(const FormatDefinition *fd, int64_t baseoffset)
 {
-    this->_bytebuffer->setBaseOffset(baseoffset);
-    bool validated = fd->validateFormat(this->_bytebuffer, baseoffset);
+    bool validated = fd->ValidateProcedure(this->_hexeditdata, baseoffset);
 
     if(validated)
     {
         this->_formatdefinition = fd;
-        this->_formatmodel = fd->parseFormat(this->_bytebuffer, baseoffset);
+        fd->ParseProcedure(this->_formatmodel, this->_hexeditdata, baseoffset);
         ui->tvFormat->setModel(this->_formatmodel);
     }
     else
-        PrefDebug::dbgprint(QString("\nFormat Validation Failed for '%1'").arg(fd->name()));
+        PrefDebug::dbgprint(QString("\nFormat Validation Failed for '%1'").arg(QString::fromUtf8(fd->Name)));
 
-    this->_bytebuffer->setBaseOffset(0);
     return validated;
 }
 
@@ -70,12 +67,7 @@ BinaryNavigator *HexEditViewPage::binaryNavigator()
     return ui->binaryNavigator;
 }
 
-FormatTree::Ptr HexEditViewPage::tree()
-{
-    return this->_formatmodel->tree();
-}
-
-FormatDefinition::Ptr HexEditViewPage::formatDefinition()
+const FormatDefinition *HexEditViewPage::formatDefinition()
 {
     return this->_formatdefinition;
 }
@@ -138,37 +130,37 @@ void HexEditViewPage::onHexEditCustomContextMenuRequested(const QPoint &pos)
     this->_toolbar->actionMenu()->popup(newpos);
 }
 
-void HexEditViewPage::onSetBackColor(FormatElement *formatobj)
+void HexEditViewPage::onSetBackColor(const ElementHeader* elemhdr)
 {
     QColor c = QColorDialog::getColor(Qt::white, this);
 
     if(c.isValid())
     {
-        lua_Integer offset = formatobj->offset();
-        ui->hexEdit->highlightBackground(offset, (offset + formatobj->size() - 1), c);
+        u_int64_t offset = elemhdr->Offset();
+        ui->hexEdit->highlightBackground(offset, (offset + elemhdr->Size() - 1), c);
     }
 }
 
-void HexEditViewPage::onRemoveBackColor(FormatElement *formatobj)
+void HexEditViewPage::onRemoveBackColor(const ElementHeader* elemhdr)
 {
-    lua_Integer offset = formatobj->offset();
-    ui->hexEdit->clearHighlight(offset, (offset + formatobj->size() - 1));
+    u_int64_t offset = elemhdr->Offset();
+    ui->hexEdit->clearHighlight(offset, (offset + elemhdr->Size() - 1));
 }
 
-void HexEditViewPage::onFormatObjectSelected(FormatElement *formatobj)
+void HexEditViewPage::onFormatObjectSelected(const ElementHeader* elemhdr)
 {
-    lua_Integer offset = formatobj->offset();
-    ui->hexEdit->setSelection(offset, offset + formatobj->size());
+    u_int64_t offset = elemhdr->Offset();
+    ui->hexEdit->setSelection(offset, offset + elemhdr->Size());
 }
 
-void HexEditViewPage::exportData(FormatElement *formatobj)
+void HexEditViewPage::exportData(const ElementHeader *elemhdr)
 {
     ExportDialog ed(ui->hexEdit, this->_bytebuffer, this);
-    ed.setFixedRange(formatobj->offset(), formatobj->endOffset());
+    ed.setFixedRange(elemhdr->Offset(), elemhdr->EndOffset());
     ed.exec();
 }
 
-void HexEditViewPage::importData(FormatElement *formatobj)
+void HexEditViewPage::importData(const ElementHeader* elemhdr)
 {
     QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
 
@@ -177,13 +169,13 @@ void HexEditViewPage::importData(FormatElement *formatobj)
         QFile f(s);
         f.open(QIODevice::ReadOnly);
 
-        qint64 offset = formatobj->offset();
-        qint64 size = qMin(f.size(), (formatobj->endOffset() - offset));
+        u_int64_t offset = elemhdr->Offset();
+        u_int64_t size = qMin(static_cast<u_int64_t>(f.size()), (elemhdr->EndOffset() - offset));
 
         if (size > 0)
         {
             QByteArray ba = f.read(size);
-            this->_bytebuffer->write(offset, size, ba);
+            this->_hexeditdata->replace(offset, size, ba);
         }
     }
 }
@@ -198,10 +190,10 @@ void HexEditViewPage::scanSignatures()
 
     while(offset <= endoffset)
     {
-        bool stepdone = SignatureDatabase::database()->step(this->_bytebuffer->at(offset), depth, sigid, foundsig);
+        bool stepdone = SignatureDatabase::database()->step(this->_hexeditdata->at(offset), depth, sigid, foundsig);
 
         /* We have found a good byte, check if it is a dead path */
-        if(stepdone && !SignatureDatabase::database()->canContinue(this->_bytebuffer->at(offset + 1), depth))
+        if(stepdone && !SignatureDatabase::database()->canContinue(this->_hexeditdata->at(offset + 1), depth))
         {
             depth = 0;
             foundsig.clear();
@@ -210,7 +202,7 @@ void HexEditViewPage::scanSignatures()
         }
 
         /* We have completed a path, verify depth and if it is valid, highlight it in QHexEdit */
-        if(!stepdone && (depth > 0) && (offset < endoffset) && !SignatureDatabase::database()->canContinue(this->_bytebuffer->at(offset + 1), depth))
+        if(!stepdone && (depth > 0) && (offset < endoffset) && !SignatureDatabase::database()->canContinue(this->_hexeditdata->at(offset + 1), depth))
         {
             /* Check False Positives: ignore it and continue the analysis */
             if(depth != SignatureDatabase::database()->signatureMaxDepth(sigid) || !SignatureDatabase::database()->isSignatureValid(foundsig, sigid))

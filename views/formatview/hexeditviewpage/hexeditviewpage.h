@@ -25,12 +25,11 @@ class HexEditViewPage: public QWidget
     Q_OBJECT
 
     public:
-        explicit HexEditViewPage(ByteBuffer* bytebuffer, QWidget *parent = 0);
-        bool loadFormat(const FormatDefinition::Ptr& fd, qint64 baseoffset);
+        explicit HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent = 0);
+        bool loadFormat(const FormatDefinition* fd, int64_t baseoffset);
         void scanSignatures(bool canscan);
         BinaryNavigator* binaryNavigator();
-        FormatDefinition::Ptr formatDefinition();
-        FormatTree::Ptr tree();
+        const FormatDefinition* formatDefinition();
         QHexEdit* hexEdit();
         ~HexEditViewPage();
 
@@ -48,18 +47,19 @@ class HexEditViewPage: public QWidget
         void updateOffset(qint64 offset);
         void updateSelLength(qint64 size);
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
-        void onSetBackColor(FormatElement* formatobj);
-        void onRemoveBackColor(FormatElement* formatobj);
-        void onFormatObjectSelected(FormatElement *formatobj);
-        void exportData(FormatElement* formatobj);
-        void importData(FormatElement* formatobj);
+        void onSetBackColor(const ElementHeader *elemhdr);
+        void onRemoveBackColor(const ElementHeader *elemhdr);
+        void onFormatObjectSelected(const ElementHeader* elemhdr);
+        void exportData(const ElementHeader* elemhdr);
+        void importData(const ElementHeader *elemhdr);
         void scanSignatures();
 
     private:
         Ui::HexEditViewPage *ui;
-        FormatDefinition::Ptr _formatdefinition;
+        const FormatDefinition* _formatdefinition;
         FormatModel* _formatmodel;
         ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;
         QColor _signaturecolor;
         bool _signscanenabled;

@@ -39,17 +39,17 @@ class FormatTreeView : public QTreeView
         void onCopyValue();
 
     private:
-        FormatElement* selectedFormatObject() const;
+        const ElementHeader *selectedElement() const;
         void configureContextMenu(bool highlightvisible);
         void updateColor(bool set);
         void resizeTreeColumns();
 
     signals:
-        void setBackColor(FormatElement*);
-        void removeBackColor(FormatElement*);
-        void formatObjectSelected(FormatElement*);
-        void exportAction(FormatElement*);
-        void importAction(FormatElement*);
+        void setBackColor(const ElementHeader*);
+        void removeBackColor(const ElementHeader*);
+        void formatObjectSelected(const ElementHeader*);
+        void exportAction(const ElementHeader*);
+        void importAction(const ElementHeader*);
         void gotoOffset(qint64);
 
     private:

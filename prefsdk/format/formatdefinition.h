@@ -12,32 +12,27 @@ namespace PrefSDK
 {
     using namespace Lua;
 
-    class FormatDefinition
+    typedef bool (*ValidateProc)(QHexEditData* hexeditdata, int64_t baseoffset);
+    typedef FormatTree* (*ParseProc)(FormatModel* formatmodel, QHexEditData* hexeditdata, int64_t baseoffset);
+    typedef const char* (*OptionNameProc)(int i);
+    typedef int64_t (*OptionCountProc)();
+    typedef void (*ExecuteOptionProc)(int optindex, QHexEditData* hexeditdata);
+
+    typedef struct FormatDefinition
     {
-        public:
-            typedef std::shared_ptr<FormatDefinition> Ptr;
+      const char* Name;
+      const char* Category;
+      const char* Author;
+      const char* Version;
+      int Endian;
 
-        public:
-            FormatDefinition(const LuaTable::Ptr& t);
-            lua_State *state() const;
-            QString name() const;
-            QString author() const;
-            QString version() const;
-            QSysInfo::Endian endian() const;
-            int optionsCount() const;
-            QString option(int i) const;
-            QString endianString() const;
-            QString category() const;
-            bool hasOptions() const;
-            bool hasCategory() const;
-            bool validateFormat(ByteBuffer* bytebuffer, lua_Integer baseoffset);
-            FormatModel* parseFormat(ByteBuffer* bytebuffer, lua_Integer baseoffset) const;
-            void executeOption(int optindex, FormatTree::Ptr formattree, ByteBuffer *bytebuffer);
-            DisassemblerLoader::Ptr generateLoader(FormatTree::Ptr formattree, ByteBuffer *bytebuffer);
+      ValidateProc ValidateProcedure;
+      ParseProc ParseProcedure;
+      OptionNameProc OptionName;
+      OptionCountProc OptionCount;
+      ExecuteOptionProc ExecuteOption;
 
-        private:
-            LuaTable::Ptr _formatdeftable;
-    };
+    } FormatDefinition;
 }
 
 #endif // PREFSDK_FORMATDEFINITION_H
