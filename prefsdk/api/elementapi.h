@@ -7,14 +7,11 @@ namespace PrefSDK
 {
     namespace API
     {
-        extern "C"
-        {
-            const int ElementType_Invalid = ElementType::Invalid;
-            const int ElementType_Structure = ElementType::Structure;
-            const int ElementType_Field = ElementType::Field;
-            const int ElementType_FieldArray = ElementType::FieldArray;
-            const int ElementType_BitField = ElementType::BitField;
-        }
+        extern "C" const int ElementType_Invalid = ElementType::Invalid;
+        extern "C" const int ElementType_Structure = ElementType::Structure;
+        extern "C" const int ElementType_Field = ElementType::Field;
+        extern "C" const int ElementType_FieldArray = ElementType::FieldArray;
+        extern "C" const int ElementType_BitField = ElementType::BitField;
     }
 }
 

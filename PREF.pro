@@ -144,7 +144,9 @@ SOURCES += main.cpp\
     prefsdk/format/elements.cpp \
     prefsdk/api/formatmodelapi.cpp \
     prefsdk/api/elementapi.cpp \
-    prefsdk/api/datatypeapi.cpp
+    prefsdk/api/datatypeapi.cpp \
+    prefsdk/api/datastreamapi.cpp \
+    prefsdk/api/numericlimitsapi.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -285,7 +287,9 @@ HEADERS  += mainwindow.h \
     prefsdk/format/elements.h \
     prefsdk/api/formatmodelapi.h \
     prefsdk/api/elementapi.h \
-    prefsdk/api/datatypeapi.h
+    prefsdk/api/datatypeapi.h \
+    prefsdk/api/datastreamapi.h \
+    prefsdk/api/numericlimitsapi.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

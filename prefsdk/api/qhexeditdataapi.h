@@ -12,7 +12,7 @@ namespace PrefSDK
             QHexEditData* QHexEditData_fromFile(const char* filename);
             int64_t QHexEditData_length(QHexEditData* __this);
             int64_t QHexEditData_indexOf(QHexEditData* __this, QByteArray* ba, int64_t start);
-            u_int8_t QHexEditData_at(QHexEditData* __this, int64_t pos);
+            uint8_t QHexEditData_at(QHexEditData* __this, int64_t pos);
             QByteArray* QHexEditData_read(QHexEditData* __this, int64_t pos, int64_t len);
             void QHexEditData_append(QHexEditData* __this, QByteArray *ba);
             void QHexEditData_insert(QHexEditData* __this, int64_t pos, QByteArray* ba);

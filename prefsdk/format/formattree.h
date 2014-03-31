@@ -7,8 +7,8 @@
 
 namespace PrefSDK
 {
-    typedef u_int64_t (*StructureCountProc)();
-    typedef const Structure* (*GetStructureProc)(u_int64_t i);
+    typedef uint64_t (*StructureCountProc)();
+    typedef const Structure* (*GetStructureProc)(uint64_t i);
     typedef const ElementHeader* (*ElementFromPoolProc)(int64_t i, const ElementHeader* parent);
     typedef const ElementHeader* (*ElementFromPoolByIdProc)(const char* id);
 

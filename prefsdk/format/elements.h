@@ -21,16 +21,16 @@ namespace PrefSDK
 
     typedef bool (*BoolGetPropertyProc)();
     typedef int (*IntegerGetPropertyProc)();
-    typedef u_int64_t (*OffsetGetPropertyProc)();
+    typedef uint64_t (*OffsetGetPropertyProc)();
     typedef const char* (*StringGetPropertyProc)();
     typedef const struct ElementHeader* (*GetParentElementProc)();
 
     typedef void (*BoolSetPropertyProc)(bool);
 
     typedef int64_t (*IndexOfProc)(const struct ElementHeader* elementheader);
-    typedef bool (*ContainsOffsetProc)(u_int64_t);
+    typedef bool (*ContainsOffsetProc)(uint64_t);
     typedef void (*ParseChildrenProc)();
-    typedef const char* (*GetIdProc)(u_int64_t);
+    typedef const char* (*GetIdProc)(uint64_t);
 
     typedef struct ElementHeader
     {

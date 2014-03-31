@@ -19,7 +19,7 @@ namespace PrefSDK
             return __this->indexOf(*ba, start);
         }
 
-        u_int8_t QHexEditData_at(QHexEditData *__this, int64_t pos)
+        uint8_t QHexEditData_at(QHexEditData *__this, int64_t pos)
         {
             return __this->at(pos);
         }

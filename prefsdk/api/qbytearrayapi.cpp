@@ -28,5 +28,10 @@ namespace PrefSDK
         {
             return (*__thethis == *ba);
         }
+
+        const char *QByteArray_toString(QByteArray *__thethis)
+        {
+            return __thethis->constData();
+        }
     }
 }

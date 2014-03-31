@@ -17,16 +17,16 @@ namespace PrefSDK
         switch(datatype)
         {
             case DataType::UInt8:
-                return this->willOverflowT<u_int8_t>(bytebuffer->readType(pos, datatype, sdkendian));
+                return this->willOverflowT<uint8_t>(bytebuffer->readType(pos, datatype, sdkendian));
 
             case DataType::UInt16:
-                return this->willOverflowT<u_int16_t>(bytebuffer->readType(pos, datatype, sdkendian));
+                return this->willOverflowT<uint16_t>(bytebuffer->readType(pos, datatype, sdkendian));
 
             case DataType::UInt32:
-                return this->willOverflowT<u_int32_t>(bytebuffer->readType(pos, datatype, sdkendian));
+                return this->willOverflowT<uint32_t>(bytebuffer->readType(pos, datatype, sdkendian));
 
             case DataType::UInt64:
-                return this->willOverflowT<u_int64_t>(bytebuffer->readType(pos, datatype, sdkendian));
+                return this->willOverflowT<uint64_t>(bytebuffer->readType(pos, datatype, sdkendian));
 
             case DataType::Int8:
                 return this->willOverflowT<int8_t>(bytebuffer->readType(pos, datatype, sdkendian));

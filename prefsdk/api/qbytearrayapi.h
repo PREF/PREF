@@ -14,6 +14,7 @@ namespace PrefSDK
             int QByteArray_length(QByteArray* __thethis);
             int8_t QByteArray_at(QByteArray *__thethis, int64_t pos);
             bool QByteArray_eq(QByteArray *__thethis, QByteArray* ba);
+            const char* QByteArray_toString(QByteArray* __thethis);
         }
     }
 }

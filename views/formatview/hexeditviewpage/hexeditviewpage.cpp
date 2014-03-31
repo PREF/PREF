@@ -136,20 +136,20 @@ void HexEditViewPage::onSetBackColor(const ElementHeader* elemhdr)
 
     if(c.isValid())
     {
-        u_int64_t offset = elemhdr->Offset();
+        uint64_t offset = elemhdr->Offset();
         ui->hexEdit->highlightBackground(offset, (offset + elemhdr->Size() - 1), c);
     }
 }
 
 void HexEditViewPage::onRemoveBackColor(const ElementHeader* elemhdr)
 {
-    u_int64_t offset = elemhdr->Offset();
+    uint64_t offset = elemhdr->Offset();
     ui->hexEdit->clearHighlight(offset, (offset + elemhdr->Size() - 1));
 }
 
 void HexEditViewPage::onFormatObjectSelected(const ElementHeader* elemhdr)
 {
-    u_int64_t offset = elemhdr->Offset();
+    uint64_t offset = elemhdr->Offset();
     ui->hexEdit->setSelection(offset, offset + elemhdr->Size());
 }
 
@@ -169,8 +169,8 @@ void HexEditViewPage::importData(const ElementHeader* elemhdr)
         QFile f(s);
         f.open(QIODevice::ReadOnly);
 
-        u_int64_t offset = elemhdr->Offset();
-        u_int64_t size = qMin(static_cast<u_int64_t>(f.size()), (elemhdr->EndOffset() - offset));
+        uint64_t offset = elemhdr->Offset();
+        uint64_t size = qMin(static_cast<uint64_t>(f.size()), (elemhdr->EndOffset() - offset));
 
         if (size > 0)
         {

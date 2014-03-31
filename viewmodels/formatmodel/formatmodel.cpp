@@ -24,7 +24,7 @@ void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::Ac
     qint64 startoffset = offset;
     qint64 endoffset = offset + length;
 
-    for(u_int64_t i = 0; i < this->_formattree->StructureCount(); i++)
+    for(uint64_t i = 0; i < this->_formattree->StructureCount(); i++)
     {
         const Structure* s = this->_formattree->GetStructure(i + 1);
 

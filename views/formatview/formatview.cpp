@@ -116,15 +116,15 @@ void FormatView::on_tbFormats_clicked()
         if(this->_hexeditview->loadFormat(this->_formatdefinition, fd.offset()))
         {
             //NOTE: this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatdefinition);
-            //NOTE: ui->tbFormatOptions->setEnabled(this->_formatdefinition->hasOptions());
+            ui->tbFormatOptions->setEnabled(this->_formatdefinition->OptionCount() > 0);
         }
     }
 }
 
 void FormatView::on_tbFormatOptions_clicked()
 {
-    //NOTE: FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditview->tree(), this->_bytebuffer, this->topLevelWidget());
-    //NOTE: fod.exec();
+    FormatOptionsDialog fod(this->_formatdefinition, this->_hexeditdata, this->topLevelWidget());
+    fod.exec();
 }
 
 void FormatView::on_tbSignatureScanner_clicked()
