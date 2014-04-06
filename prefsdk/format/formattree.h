@@ -16,8 +16,8 @@ namespace PrefSDK
     {
         StructureCountProc StructureCount;
         GetStructureProc GetStructure;
-        ElementFromPoolProc ElementFromPool;
         ElementFromPoolByIdProc ElementFromPoolById;
+        ElementFromPoolProc ElementFromPool;
     } FormatTree;
 }
 

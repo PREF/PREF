@@ -83,7 +83,7 @@ void LuaStackViewModel::generateStackList()
 {
     this->_stacklist.clear();
 
-    for(int i = 1; i <= this->_top; i++)
+    for(int i = this->_top; i >= 1; i--)
     {
         StackItem si;
         LuaTypes::LuaType t = luaT_typeof(this->_state, i);

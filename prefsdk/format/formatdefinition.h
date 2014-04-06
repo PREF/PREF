@@ -13,9 +13,9 @@ namespace PrefSDK
     using namespace Lua;
 
     typedef bool (*ValidateProc)(QHexEditData* hexeditdata, int64_t baseoffset);
-    typedef FormatTree* (*ParseProc)(FormatModel* formatmodel, QHexEditData* hexeditdata, int64_t baseoffset);
+    typedef void (*ParseProc)(FormatModel* formatmodel, QHexEditData* hexeditdata, int64_t baseoffset);
     typedef const char* (*OptionNameProc)(int i);
-    typedef int64_t (*OptionCountProc)();
+    typedef int (*OptionsCountProc)();
     typedef void (*ExecuteOptionProc)(int optindex, QHexEditData* hexeditdata);
 
     typedef struct FormatDefinition
@@ -24,12 +24,13 @@ namespace PrefSDK
       const char* Category;
       const char* Author;
       const char* Version;
+
       int Endian;
 
       ValidateProc ValidateProcedure;
       ParseProc ParseProcedure;
+      OptionsCountProc OptionsCount;
       OptionNameProc OptionName;
-      OptionCountProc OptionCount;
       ExecuteOptionProc ExecuteOption;
 
     } FormatDefinition;

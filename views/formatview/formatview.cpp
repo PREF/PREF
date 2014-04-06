@@ -116,7 +116,7 @@ void FormatView::on_tbFormats_clicked()
         if(this->_hexeditview->loadFormat(this->_formatdefinition, fd.offset()))
         {
             //NOTE: this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatdefinition);
-            ui->tbFormatOptions->setEnabled(this->_formatdefinition->OptionCount() > 0);
+            ui->tbFormatOptions->setEnabled(this->_formatdefinition->OptionsCount() > 0);
         }
     }
 }

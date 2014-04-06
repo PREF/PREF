@@ -16,7 +16,9 @@ FormatModel::FormatModel(QHexEditData *hexeditdata, QObject *parent): FieldDataM
 
 void FormatModel::setFormatTree(FormatTree *formattree)
 {
+    this->beginInsertRows(QModelIndex(), 0, formattree->StructureCount());
     this->_formattree = formattree;
+    this->endInsertRows();
 }
 
 void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType)
@@ -218,10 +220,10 @@ QModelIndex FormatModel::index(int row, int column, const QModelIndex &parent) c
     if(parent.isValid())
     {
         const ElementHeader* parentelement = reinterpret_cast<const ElementHeader*>(parent.internalPointer());
-        element = this->_formattree->ElementFromPool(row, parentelement);
+        element = this->_formattree->ElementFromPool(row + 1, parentelement);
     }
     else
-        element = this->_formattree->ElementFromPool(row, nullptr);
+        element = this->_formattree->ElementFromPool(row + 1, nullptr);
 
     if(!element)
         return QModelIndex();
@@ -239,9 +241,9 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
     if(!childelemhdr->HasParent())
         return QModelIndex();
 
-    QString parentid = QString::fromUtf8(childelemhdr->ParentId);
+    QString parentid = QString::fromUtf8(childelemhdr->ParentId());
     const ElementHeader* parentelement = this->_formattree->ElementFromPoolById(parentid.toUtf8().constData());
-    return this->createIndex(parentelement->IndexOf(childelemhdr), 0, const_cast<ElementHeader*>(parentelement));
+    return this->createIndex(parentelement->IndexOf(childelemhdr) - 1, 0, const_cast<ElementHeader*>(parentelement));
 }
 
 bool FormatModel::canFetchMore(const QModelIndex &parent) const

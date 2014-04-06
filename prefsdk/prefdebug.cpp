@@ -20,7 +20,7 @@ namespace PrefSDK
 
     void PrefDebug::dbgprint(QString s)
     {
-        DebugDialog::instance()->luaOut(s)->exec();
+        DebugDialog::instance()->luaOut(s);
     }
 
     void PrefDebug::dbgprint(lua_String p)
@@ -39,7 +39,5 @@ namespace PrefSDK
 
         for(LuaTable::Iterator it = p->begin(); it != p->end(); it++)
             DebugDialog::instance()->luaOut(QString("%1 = %2\n").arg(it.keyString(), it.valueString()));
-
-        DebugDialog::instance()->exec();
     }
 }

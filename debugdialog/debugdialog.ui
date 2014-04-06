@@ -9,15 +9,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>754</width>
-    <height>512</height>
+    <width>744</width>
+    <height>502</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>PREF Debug Window</string>
   </property>
   <property name="modal">
-   <bool>false</bool>
+   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,0">
    <property name="margin">
@@ -63,16 +63,16 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tScriptOutput">
+     <widget class="QWidget" name="tLuaOutput">
       <attribute name="title">
-       <string>Script Output</string>
+       <string>Lua Output</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <property name="margin">
         <number>0</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="teScriptOutput">
+        <widget class="QTextEdit" name="teLuaOutput">
          <property name="font">
           <font>
            <family>Monospace</family>

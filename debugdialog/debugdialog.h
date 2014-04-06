@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <QtConcurrent/QtConcurrent>
 #include "viewmodels/luatypeviewmodel/luastackviewmodel.h"
 #include "prefsdk/qlua.h"
 #include "prefsdk/lua/luadebug.h"

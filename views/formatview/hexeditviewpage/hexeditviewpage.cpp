@@ -1,7 +1,7 @@
 #include "hexeditviewpage.h"
 #include "ui_hexeditviewpage.h"
 
-HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::HexEditViewPage), _formatmodel(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::HexEditViewPage), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
 
@@ -15,8 +15,9 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
     this->updateSelLength(0);
     this->createToolBar();
 
+    this->_formatmodel = new FormatModel(hexeditdata);
+    ui->tvFormat->setModel(this->_formatmodel);
     ui->binaryNavigator->setData(ui->hexEdit);
-    ui->tvFormat->setModel(new FormatModel(hexeditdata)); /* Empty Model */
 
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));

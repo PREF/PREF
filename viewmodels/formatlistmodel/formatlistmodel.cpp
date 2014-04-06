@@ -70,9 +70,9 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
                 QSysInfo::Endian endian = static_cast<QSysInfo::Endian>(fd->Endian);
 
                 if(endian == QSysInfo::LittleEndian)
-                    return "LittleEndian";
+                    return "Little Endian";
 
-                return "BigEndian";
+                return "Big Endian";
             }
 
             case 2:

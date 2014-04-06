@@ -63,10 +63,42 @@ namespace PrefSDK
         OutputBuffer::declareGlobals(SDKManager::_state);
     }
 
-    int SDKManager::atPanic(lua_State*)
+    int SDKManager::luaAtPanic(lua_State* l)
     {
-        DebugDialog::instance()->out("ERROR: Lua Interpreter in Panic State, check stack dump.")->exec();
+        int top = lua_gettop(l);
+
+        DebugDialog::instance()->luaOut(QString::fromUtf8(lua_tostring(l, top)))->exec();
         return 0;
+    }
+
+    void SDKManager::prefAtPanic(QtMsgType msgtype, const QMessageLogContext& context, const QString& msg)
+    {
+        QString endmsg;
+
+        switch(msgtype)
+        {
+            case QtDebugMsg:
+                endmsg.append("DEBUG: ");
+                break;
+
+            case QtWarningMsg:
+                endmsg.append("WARNING: ");
+                break;
+
+            case QtCriticalMsg:
+                endmsg.append("CRITICAL: ");
+                break;
+
+            case QtFatalMsg:
+                endmsg.append("FATAL: ");
+                break;
+
+            default:
+                break;
+        }
+
+        endmsg.append(QString("%1 (%2:%3, %4)").arg(msg, QString::fromUtf8(context.file), QString::number(context.line), QString::fromUtf8(context.function)));
+        DebugDialog::instance()->out(endmsg);
     }
 
     void SDKManager::runScript(QString sdkpath, QString filename)
@@ -93,7 +125,6 @@ namespace PrefSDK
             SDKManager::initializeLua();
 
         luaW_addsearchpath(SDKManager::_state, qApp->applicationDirPath().toLatin1().constData());
-        lua_atpanic(SDKManager::_state, &SDKManager::atPanic);
 
         QDir d(qApp->applicationDirPath());
         QString sdkpath = d.absoluteFilePath(SDKManager::SDK_DIR);
@@ -112,11 +143,17 @@ namespace PrefSDK
         }
         catch(LuaException& e)
         {
-            DebugDialog::instance()->luaOut(e.what())->exec();
+            DebugDialog::instance()->luaOut(e.what());
             return false;
         }
 
         return true;
+    }
+
+    void SDKManager::registerMessageHandler()
+    {
+        //qInstallMessageHandler(&SDKManager::prefAtPanic);
+        lua_atpanic(SDKManager::_state, &SDKManager::luaAtPanic);
     }
 
     QString SDKManager::version()

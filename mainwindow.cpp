@@ -11,7 +11,8 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     if(l)
     {
-        DebugDialog::createInstance(l);
+        DebugDialog::createInstance(l);        
+        SDKManager::registerMessageHandler();
         this->_sdkloaded = SDKManager::loadSDK();
 
     }

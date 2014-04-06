@@ -61,7 +61,7 @@ QModelIndex OptionModel::parent(const QModelIndex &) const
 
 int OptionModel::rowCount(const QModelIndex &) const
 {
-    return this->_formatdefinition->OptionCount();
+    return this->_formatdefinition->OptionsCount();
 }
 
 Qt::ItemFlags OptionModel::flags(const QModelIndex &index) const

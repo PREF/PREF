@@ -26,12 +26,16 @@ namespace PrefSDK
             static void loadSdkVersion();
             //static void loadSdkFiles(const QString &dir);
             static void loadPrefTables();
-            static int atPanic(lua_State*);
+
+        private:
+            static int luaAtPanic(lua_State* l);
+            static void prefAtPanic(QtMsgType msgtype, const QMessageLogContext &context, const QString &msg);
 
         public:
             static lua_State* initializeLua();
             static bool loadSDK();
             static void unloadSDK();
+            static void registerMessageHandler();
             static QString version();
             static lua_State* state();
 

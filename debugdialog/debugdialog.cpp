@@ -13,7 +13,7 @@ DebugDialog::DebugDialog(lua_State* l, QWidget *parent): QDialog(parent), ui(new
 
     connect(this, SIGNAL(outHtml(QString)), ui->tePrefOutput, SLOT(insertHtml(QString)), Qt::QueuedConnection);
     connect(this, SIGNAL(outText(QString)), ui->tePrefOutput, SLOT(insertPlainText(QString)), Qt::QueuedConnection);
-    connect(this, SIGNAL(luaOutText(QString)), ui->teScriptOutput, SLOT(insertPlainText(QString)), Qt::QueuedConnection);
+    connect(this, SIGNAL(luaOutText(QString)), ui->teLuaOutput, SLOT(insertPlainText(QString)), Qt::QueuedConnection);
 }
 
 void DebugDialog::createInstance(lua_State *l)
@@ -31,6 +31,10 @@ DebugDialog* DebugDialog::luaOut(QString s)
 {
     emit luaOutText(s);
     ui->tabWidget->setCurrentIndex(0);
+
+    if(!this->isVisible())
+        this->exec();
+
     return this;
 }
 
@@ -38,6 +42,10 @@ DebugDialog* DebugDialog::out(QString s)
 {
     emit outHtml(s);
     ui->tabWidget->setCurrentIndex(1);
+
+    if(!this->isVisible())
+        this->exec();
+
     return this;
 }
 

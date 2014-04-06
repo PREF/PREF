@@ -34,11 +34,11 @@ namespace PrefSDK
 
     typedef struct ElementHeader
     {
-        const char* Name;
-        const char* Id;
-        const char* ParentId;
-
         int32_t ElementType;
+
+        StringGetPropertyProc Name;
+        StringGetPropertyProc Id;
+        StringGetPropertyProc ParentId;
 
         BoolGetPropertyProc IsDynamic;
         BoolGetPropertyProc HasChildren;
