@@ -33,10 +33,12 @@ namespace PrefSDK
 
     bool Field::isDynamic() const
     {
-        if(this->_bitfieldids.isEmpty())
-            return FormatElement::isDynamic();
-
         return false;
+    }
+
+    bool Field::hasChildren() const
+    {
+        return !this->_bitfieldids.isEmpty();
     }
 
     ElementType::Type Field::elementType() const

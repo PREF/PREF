@@ -20,6 +20,7 @@ namespace PrefSDK
 
         public: /* Overriden Methods */
             virtual bool isDynamic() const;
+            virtual bool hasChildren() const;
             virtual ElementType::Type elementType() const;
             virtual int indexOf(FormatElement* fe) const;
             virtual QString displayValue() const;
