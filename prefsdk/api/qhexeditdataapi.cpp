@@ -16,9 +16,45 @@ namespace PrefSDK
             hexeditdata->device()->seek(0);
         }
 
+        int64_t QHexEditData_indexOf(QHexEditData *__this, int64_t pos, const char *s)
+        {
+            QString str = QString::fromUtf8(s);
+            return __this->indexOf(str.toUtf8(), pos);
+        }
+
         int64_t QHexEditData_length(QHexEditData *__this)
         {
             return __this->length();
+        }
+
+        char QHexEditData_readAsciiChar(QHexEditData *__this, int64_t pos)
+        {
+            return static_cast<char>(__this->at(pos));
+        }
+
+        const char *QHexEditData_readString(QHexEditData *__this, int64_t pos, int64_t len)
+        {
+            QByteArray ba = __this->read(pos, len);
+            return QString(ba).toUtf8().constData();
+        }
+
+        const char *QHexEditData_readLine(QHexEditData *__this, int64_t pos)
+        {
+            QString s;
+
+            char ch = '\0';
+
+            for(int64_t i = pos; i < __this->length(); i++)
+            {
+                ch = static_cast<char>(__this->at(i));
+
+                if(ch == '\n' || ch == '\r')
+                    break;
+
+                s.append(QChar(ch));
+            }
+
+            return s.toUtf8().constData();
         }
 
         uint8_t QHexEditData_readUInt8(QHexEditData *__this, uint64_t pos)

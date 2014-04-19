@@ -167,6 +167,11 @@ namespace PrefSDK
             return __this->itemCount();
         }
 
+        BitField *Field_setBitField(Field *__this, const char *name, int bitstart, int bitend)
+        {
+            return __this->setBitField(QString::fromUtf8(name), bitstart, bitend);
+        }
+
         int Field_getBitFieldCount(Field *__this)
         {
             return __this->bitFieldCount();

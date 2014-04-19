@@ -45,6 +45,7 @@ namespace PrefSDK
             int FieldArray_getItemType(FieldArray* __this);
             int FieldArray_getItemCount(FieldArray* __this);
 
+            BitField* Field_setBitField(Field* __this, const char* name, int bitstart, int bitend);
             int Field_getBitFieldCount(Field* __this);
 
             uint64_t BitField_getMask(BitField* __this);

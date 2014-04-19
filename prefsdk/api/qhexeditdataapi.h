@@ -10,7 +10,12 @@ namespace PrefSDK
         extern "C"
         {
             void QHexEditData_copyTo(QHexEditData* __this, QHexEditData* hexeditdata);
+            int64_t QHexEditData_indexOf(QHexEditData* __this, int64_t pos, const char* s);
             int64_t QHexEditData_length(QHexEditData* __this);
+
+            char QHexEditData_readAsciiChar(QHexEditData* __this, int64_t pos);
+            const char* QHexEditData_readString(QHexEditData* __this, int64_t pos, int64_t len);
+            const char* QHexEditData_readLine(QHexEditData* __this, int64_t pos);
 
             uint8_t QHexEditData_readUInt8(QHexEditData* __this, uint64_t pos);
             uint16_t QHexEditData_readUInt16(QHexEditData* __this, uint64_t pos, int endian);

@@ -24,6 +24,13 @@ namespace PrefSDK
         return qobject_cast<BitField*>(this->_elementpool[id]);
     }
 
+    BitField *Field::setBitField(const QString &name, int bitstart, int bitend)
+    {
+        BitField* bf = new BitField(this->_state, bitstart, bitend, this->offset(), this->_datatype, name, this->id(), this->_elementpool, this->_hexeditdata);
+        this->_bitfieldids[name] = bf->id();
+        return bf;
+    }
+
     bool Field::isDynamic() const
     {
         if(this->_bitfieldids.isEmpty())

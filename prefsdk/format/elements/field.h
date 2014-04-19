@@ -16,6 +16,7 @@ namespace PrefSDK
             uint bitFieldCount() const;
             const BitField *bitField(int64_t i) const;
             const BitField *bitField(const QString &name) const;
+            BitField* setBitField(const QString& name, int bitstart, int bitend);
 
         public: /* Overriden Methods */
             virtual bool isDynamic() const;
