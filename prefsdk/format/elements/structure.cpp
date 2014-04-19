@@ -25,6 +25,11 @@ namespace PrefSDK
 
         if(count > 1)
             fe = new FieldArray(this->_state, datatype, count, newoffset, name, this->id(), this->_elementpool, this->_hexeditdata);
+        else if(DataType::isString(datatype))
+        {
+            QString s = this->_hexeditdata->readString(newoffset);
+            fe = new FieldArray(this->_state, DataType::AsciiCharacter, s.length(), newoffset, name, this->id(), this->_elementpool, this->_hexeditdata);
+        }
         else
             fe = new Field(this->_state, datatype, newoffset, name, this->id(), this->_elementpool, this->_hexeditdata);
 

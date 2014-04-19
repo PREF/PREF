@@ -142,21 +142,7 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
         }
     }
     else if(type == DataType::Array)
-    {
-        QString s;
-
-        for(qint64 i = 0; i < DataTypesModel::STRING_LENGTH; i++)
-        {
-            QChar ch(this->_hexeditdata->at(this->_offset + i));
-
-            if(!ch.isPrint())
-                break;
-
-            s.append(ch);
-        }
-
-        return s;
-    }
+        return this->_hexeditdata->readString(this->_offset, DataTypesModel::STRING_LENGTH);
 
     return QString();
 }
