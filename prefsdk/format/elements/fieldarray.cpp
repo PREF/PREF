@@ -43,6 +43,24 @@ namespace PrefSDK
         return ElementType::FieldArray;
     }
 
+    QString FieldArray::displayType() const
+    {
+        return QString("%1[]").arg(FieldElement::displayType());
+    }
+
+    QString FieldArray::displayName() const
+    {
+        return QString("%1[%2]").arg(FieldElement::displayName(), QString::number(this->itemCount(), this->base()));
+    }
+
+    QString FieldArray::displayValue() const
+    {
+        if(this->_itemtype == DataType::Character)
+            return QString("'%1'").arg(QString(this->_hexeditdata->read(this->offset(), this->size())).simplified());
+
+        return FieldElement::displayValue();
+    }
+
     uint64_t FieldArray::size() const
     {
         return DataType::sizeOf(this->_itemtype) * this->_itemcount;

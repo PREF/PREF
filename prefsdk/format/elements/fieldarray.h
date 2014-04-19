@@ -20,6 +20,9 @@ namespace PrefSDK
             virtual bool isDynamic() const;
             virtual bool hasChildren() const;
             virtual ElementType::Type elementType() const;
+            virtual QString displayType() const;
+            virtual QString displayName() const;
+            virtual QString displayValue() const;
             virtual uint64_t size() const;
             virtual bool isOverflowed() const;
             virtual int indexOf(FormatElement* fe) const;
