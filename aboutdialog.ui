@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>550</width>
-    <height>373</height>
+    <width>538</width>
+    <height>361</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -82,81 +82,12 @@ color: rgb(0, 0, 255)</string>
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabComponents">
-      <attribute name="title">
-       <string>Components</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTableWidget" name="twComponents">
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="alternatingRowColors">
-          <bool>true</bool>
-         </property>
-         <property name="selectionBehavior">
-          <enum>QAbstractItemView::SelectRows</enum>
-         </property>
-         <attribute name="horizontalHeaderHighlightSections">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="horizontalHeaderStretchLastSection">
-          <bool>true</bool>
-         </attribute>
-         <attribute name="verticalHeaderVisible">
-          <bool>false</bool>
-         </attribute>
-         <attribute name="verticalHeaderHighlightSections">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string>Component</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignLeft|AlignVCenter</set>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Version</string>
-          </property>
-          <property name="textAlignment">
-           <set>AlignLeft|AlignVCenter</set>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="tabDevs">
       <attribute name="title">
        <string>Developers</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_3">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item>
@@ -208,6 +139,11 @@ color: rgb(0, 0, 255)</string>
            <set>AlignLeft|AlignVCenter</set>
           </property>
          </column>
+         <column>
+          <property name="text">
+           <string>Website</string>
+          </property>
+         </column>
          <item row="0" column="0">
           <property name="text">
            <string>Dax</string>
@@ -216,6 +152,25 @@ color: rgb(0, 0, 255)</string>
          <item row="0" column="1">
           <property name="text">
            <string>trogu.davide@gmail.com</string>
+          </property>
+         </item>
+         <item row="0" column="2">
+          <property name="text">
+           <string>dax89.comlu.com</string>
+          </property>
+          <property name="font">
+           <font>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="foreground">
+           <brush brushstyle="NoBrush">
+            <color alpha="255">
+             <red>0</red>
+             <green>0</green>
+             <blue>0</blue>
+            </color>
+           </brush>
           </property>
          </item>
          <item row="1" column="0">
@@ -228,6 +183,62 @@ color: rgb(0, 0, 255)</string>
            <string>krnlsoft@hotmail.it</string>
           </property>
          </item>
+         <item row="1" column="2">
+          <property name="text">
+           <string>N/A</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabComponents">
+      <attribute name="title">
+       <string>Components</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="twComponents">
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="verticalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Component</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeft|AlignVCenter</set>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Version</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeft|AlignVCenter</set>
+          </property>
+         </column>
         </widget>
        </item>
       </layout>

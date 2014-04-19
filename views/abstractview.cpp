@@ -2,6 +2,7 @@
 
 AbstractView::AbstractView(QWidget *parent): QWidget(parent)
 {
+
 }
 
 AbstractView::~AbstractView()

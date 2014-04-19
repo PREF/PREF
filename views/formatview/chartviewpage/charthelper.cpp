@@ -18,9 +18,9 @@ void ChartHelper::updateProgressBar(qint64 length, qreal newval)
     }
 }
 
-void ChartHelper::run(ByteBuffer *bytebuffer, qint64 start, qint64 end)
+void ChartHelper::run(QHexEditData *hexeditdata, qint64 start, qint64 end)
 {
-    if(bytebuffer->length())
+    if(hexeditdata->length())
     {
         this->_cancontinue = true;
         this->_maxocc = 0;
@@ -31,7 +31,7 @@ void ChartHelper::run(ByteBuffer *bytebuffer, qint64 start, qint64 end)
 
         for(qint64 i = start; this->_cancontinue && (i < end); i++)
         {
-            uchar b = bytebuffer->at(i);
+            uchar b = hexeditdata->at(i);
             this->_occlist[b] += 1;
 
             if(this->_maxocc < this->_occlist[b])

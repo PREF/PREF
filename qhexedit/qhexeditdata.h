@@ -34,8 +34,14 @@ class QHexEditData : public QObject
                         return 0;
 
                     QByteArray ba = this->_hexeditdata->read(this->pos(), maxlen);
-                    memcpy(data, ba.data(), ba.length());
-                    return ba.length();
+
+                    if(!ba.isEmpty())
+                    {
+                        memcpy(data, ba.data(), ba.length());
+                        return ba.length();
+                    }
+
+                    return -1;
                 }
 
                 qint64 writeData(const char *data, qint64 len)
@@ -302,6 +308,12 @@ class QHexEditData : public QObject
         void replace(qint64 pos, const QByteArray& ba);
         void replace(qint64 pos, qint64 len, const QByteArray& ba);
         QByteArray read(qint64 pos, qint64 len);
+        quint16 readUInt16(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
+        quint32 readUInt32(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
+        quint64 readUInt64(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
+        qint16 readInt16(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
+        qint32 readInt32(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
+        qint64 readInt64(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
         qint64 length() const;
 
     public slots:

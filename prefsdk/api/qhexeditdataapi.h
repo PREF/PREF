@@ -9,16 +9,18 @@ namespace PrefSDK
     {
         extern "C"
         {
-            QHexEditData* QHexEditData_fromFile(const char* filename);
+            void QHexEditData_copyTo(QHexEditData* __this, QHexEditData* hexeditdata);
             int64_t QHexEditData_length(QHexEditData* __this);
-            int64_t QHexEditData_indexOf(QHexEditData* __this, QByteArray* ba, int64_t start);
-            uint8_t QHexEditData_at(QHexEditData* __this, int64_t pos);
-            QByteArray* QHexEditData_read(QHexEditData* __this, int64_t pos, int64_t len);
-            void QHexEditData_append(QHexEditData* __this, QByteArray *ba);
-            void QHexEditData_insert(QHexEditData* __this, int64_t pos, QByteArray* ba);
-            void QHexEditData_remove(QHexEditData* __this, int64_t pos, int64_t len);
-            void QHexEditData_replace(QHexEditData* __this, int64_t pos, int64_t len, QByteArray* ba);
-            void QHexEditData_save(QHexEditData* __this);
+
+            uint8_t QHexEditData_readUInt8(QHexEditData* __this, uint64_t pos);
+            uint16_t QHexEditData_readUInt16(QHexEditData* __this, uint64_t pos, int endian);
+            uint32_t QHexEditData_readUInt32(QHexEditData* __this, uint64_t pos, int endian);
+            uint64_t QHexEditData_readUInt64(QHexEditData* __this, uint64_t pos, int endian);
+
+            int8_t QHexEditData_readInt8(QHexEditData* __this, uint64_t pos);
+            int16_t QHexEditData_readInt16(QHexEditData* __this, uint64_t pos, int endian);
+            int32_t QHexEditData_readInt32(QHexEditData* __this, uint64_t pos, int endian);
+            int64_t QHexEditData_readInt64(QHexEditData* __this, uint64_t pos, int endian);
         }
     }
 }

@@ -1,15 +1,16 @@
 #include "datatypesmodel.h"
 
 const int DataTypesModel::STRING_LENGTH = 15;
-QVector<DataType::Type> DataTypesModel::_types;
-QVector<QString> DataTypesModel::_typenames;
+QHash<QSysInfo::Endian, QHash<DataType::Type, DataType::Type> > DataTypesModel::_botypes;
+QList<DataType::Type> DataTypesModel::_types;
+QList<QString> DataTypesModel::_typenames;
 
 DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
 {
     this->_offset = 0;
     this->_base = 16;
     this->_endian = QSysInfo::BigEndian;
-    this->_bytebuffer = nullptr;
+    this->_hexeditdata = nullptr;
 
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -17,6 +18,23 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
 
     if(DataTypesModel::_types.isEmpty())
     {
+        DataTypesModel::_botypes[QSysInfo::LittleEndian] = QHash<DataType::Type, DataType::Type>();
+        DataTypesModel::_botypes[QSysInfo::BigEndian] = QHash<DataType::Type, DataType::Type>();
+
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int16] = DataType::Int16_LE;
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::UInt16] = DataType::UInt16_LE;
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int32] = DataType::Int32_LE;
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::UInt32] = DataType::UInt32_LE;
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int64] = DataType::Int64_LE;
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::UInt64] = DataType::UInt64_LE;
+
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::Int16] = DataType::Int16_BE;
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::UInt16] = DataType::UInt16_BE;
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::Int32] = DataType::Int32_BE;
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::UInt32] = DataType::UInt32_BE;
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::Int64] = DataType::Int64_BE;
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::UInt64] = DataType::UInt64_BE;
+
         DataTypesModel::_types.append(DataType::Character);
         DataTypesModel::_types.append(DataType::Int8);
         DataTypesModel::_types.append(DataType::UInt8);
@@ -75,30 +93,70 @@ void DataTypesModel::setBase(int base)
 QString DataTypesModel::readValue(int row, bool* overflow) const
 {
     DataType::Type type = this->_types.at(row);
-    int bytelength = DataType::byteWidth(type);
+    int bytewidth = DataType::byteWidth(type);
 
     if(overflow)
         *overflow = false;
 
-    if(bytelength && ((this->_offset + bytelength) < this->_bytebuffer->length()))
+    if(bytewidth && ((this->_offset + bytewidth) < this->_hexeditdata->length()))
     {
-        if(type == DataType::Character)
-            return this->_bytebuffer->readString(this->_offset, 1);
-
-        /* NOTE:
-        if(NumericLimits::willOverflow(this->_bytebuffer, this->_offset, type, this->_endian))
+        if(bytewidth > 1 && NumericLimits::willOverflow(this->_hexeditdata, this->_offset, DataTypesModel::_botypes[this->_endian][type]))
         {
             if(overflow)
                 *overflow = true;
 
             return "Overflow";
         }
-        */
 
-        return this->_bytebuffer->stringValue(this->_offset, this->_base, type, this->_endian);
+        switch(type)
+        {
+            case DataType::Character:
+                return QString("%1").arg(static_cast<char>(this->_hexeditdata->at(this->_offset)));
+
+            case DataType::Int8:
+                return QString("%1").arg(static_cast<char>(this->_hexeditdata->at(this->_offset)), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::UInt8:
+                return QString("%1").arg(static_cast<uchar>(this->_hexeditdata->at(this->_offset)), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::Int16:
+                return QString("%1").arg(this->_hexeditdata->readInt16(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::UInt16:
+                return QString("%1").arg(this->_hexeditdata->readUInt16(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::Int32:
+                return QString("%1").arg(this->_hexeditdata->readInt32(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::UInt32:
+                return QString("%1").arg(this->_hexeditdata->readUInt32(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::Int64:
+                return QString("%1").arg(static_cast<qint64>(this->_hexeditdata->readInt64(this->_offset, this->_endian)), bytewidth, this->_base, QLatin1Char('0'));
+
+            case DataType::UInt64:
+                return QString("%1").arg(static_cast<quint64>(this->_hexeditdata->readUInt64(this->_offset, this->_endian)), bytewidth, this->_base, QLatin1Char('0'));
+
+            default:
+                break;
+        }
     }
     else if(type == DataType::Array)
-        return this->_bytebuffer->readValidString(this->_offset, DataTypesModel::STRING_LENGTH);
+    {
+        QString s;
+
+        for(qint64 i = 0; i < DataTypesModel::STRING_LENGTH; i++)
+        {
+            QChar ch(this->_hexeditdata->at(this->_offset + i));
+
+            if(!ch.isPrint())
+                break;
+
+            s.append(ch);
+        }
+
+        return s;
+    }
 
     return QString();
 }
@@ -108,10 +166,10 @@ void DataTypesModel::updateData()
     emit dataChanged(this->index(0, 1), this->index(this->rowCount() - 1, 1));
 }
 
-void DataTypesModel::setData(ByteBuffer *bytebuffer)
+void DataTypesModel::setData(QHexEditData *hexeditdata)
 {
     this->_offset = 0;
-    this->_bytebuffer = bytebuffer;
+    this->_hexeditdata = hexeditdata;
     this->updateData();
 }
 
@@ -142,7 +200,7 @@ QVariant DataTypesModel::headerData(int section, Qt::Orientation orientation, in
 
 QVariant DataTypesModel::data(const QModelIndex &index, int role) const
 {
-    if(!index.isValid() || !this->_bytebuffer)
+    if(!index.isValid() || !this->_hexeditdata)
         return QVariant();
 
     if(role == Qt::DisplayRole || role == Qt::EditRole)
@@ -152,12 +210,15 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
         else if(index.column() == 1)
         {
             bool overflow = false;
-            //NOTE: QString s = this->readValue(index.row(), &overflow);
+            DataType::Type currenttype = this->_types.at(index.row());
+            QString s = this->readValue(index.row(), &overflow);
 
-            //NOTE: if(!DataType::isInteger(this->_types.at(index.row())) && (role == Qt::DisplayRole) && !overflow)
-                //return QString("'%1'").arg(s.simplified());
+            if(DataType::isInteger(currenttype) && !overflow)
+                return s.toUpper();
+            else if(DataType::isString(currenttype) || currenttype == DataType::Character)
+                return QString("'%1'").arg(s.simplified());
 
-            //NOTE: return s.simplified();
+            return s;
         }
     }
     else if(role == Qt::ForegroundRole)
@@ -200,7 +261,7 @@ bool DataTypesModel::setData(const QModelIndex &index, const QVariant &value, in
 
         if(valid)
         {
-            this->_bytebuffer->write(this->_offset, newdata.length(), newdata);
+            this->_hexeditdata->replace(this->_offset, newdata.length(), newdata);
             return true;
         }
 
@@ -235,7 +296,7 @@ Qt::ItemFlags DataTypesModel::flags(const QModelIndex &index) const
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-    if(this->_bytebuffer)
+    if(this->_hexeditdata)
     {
         bool overflow = false;
         this->readValue(index.row(), &overflow);

@@ -16,7 +16,7 @@ FormatModel::FormatModel(QHexEditData *hexeditdata, QObject *parent): FieldDataM
 
 void FormatModel::setFormatTree(FormatTree *formattree)
 {
-    this->beginInsertRows(QModelIndex(), 0, formattree->StructureCount());
+    this->beginInsertRows(QModelIndex(), 0, formattree->structureCount());
     this->_formattree = formattree;
     this->endInsertRows();
 }
@@ -26,16 +26,16 @@ void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::Ac
     qint64 startoffset = offset;
     qint64 endoffset = offset + length;
 
-    for(uint64_t i = 0; i < this->_formattree->StructureCount(); i++)
+    for(uint64_t i = 0; i < this->_formattree->structureCount(); i++)
     {
-        const Structure* s = this->_formattree->GetStructure(i + 1);
+        Structure* s = this->_formattree->structure(i);
 
-        if(s->ElementHdr.ContainsOffset(startoffset))
+        if(s->containsOffset(startoffset))
         {
             QModelIndex midx = this->index(i, 0);
             emit dataChanged(midx, this->index(midx.row(), this->columnCount() - 1, midx.parent()));
 
-            if(s->ElementHdr.ContainsOffset(endoffset))
+            if(s->containsOffset(endoffset))
                 break;
         }
     }
@@ -80,34 +80,34 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
     if(!this->_formattree || !index.isValid())
         return QVariant();
 
-    const ElementHeader* elemhdr = reinterpret_cast<const ElementHeader*>(index.internalPointer());
+    FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
     if(role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if(role == Qt::DisplayRole)
         {
             if(index.column() == 0)
-                return QString("%1").arg(elemhdr->Offset(), 8, 16, QLatin1Char('0')).toUpper();
+                return QString("%1").arg(formatelement->offset(), 8, 16, QLatin1Char('0')).toUpper();
             else if(index.column() == 1)
-                return elemhdr->DisplayType();
+                return formatelement->displayType();
             else if(index.column() == 2)
-                return elemhdr->DisplayName();
+                return formatelement->displayName();
             else if(index.column() == 4)
-                return elemhdr->Info();
+                return formatelement->info();
         }
 
-        if(index.column() == 3 && ((elemhdr->ElementType == ElementType::Field || elemhdr->ElementType == ElementType::FieldArray) || (elemhdr->ElementType == ElementType::BitField)))
-            return elemhdr->DisplayValue();
+        if(index.column() == 3 && ((formatelement->elementType() == ElementType::Field || formatelement->elementType() == ElementType::FieldArray) || (formatelement->elementType() == ElementType::BitField)))
+            return formatelement->displayValue();
     }
     else if(role == Qt::DecorationRole)
     {
         if(index.column() == 0)
         {
-            if(elemhdr->ElementType == ElementType::Structure)
+            if(formatelement->elementType() == ElementType::Structure)
                 return this->_icostruct;
-            if((elemhdr->ElementType == ElementType::Field) || (elemhdr->ElementType == ElementType::FieldArray))
+            if((formatelement->elementType() == ElementType::Field) || (formatelement->elementType() == ElementType::FieldArray))
                 return this->_icofield;
-            else if(elemhdr->ElementType == ElementType::BitField)
+            else if(formatelement->elementType() == ElementType::BitField)
                 return this->_icobitfield;
         }
     }
@@ -120,39 +120,39 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
     {
         if(index.column() == 0)
             return QColor(Qt::darkBlue);
-        else if(((index.column() == 3) && ((elemhdr->ElementType == ElementType::Field) || (elemhdr->ElementType == ElementType::FieldArray) || (elemhdr->ElementType == ElementType::BitField))) || (index.column() == 4))
+        else if(((index.column() == 3) && ((formatelement->elementType() == ElementType::Field) || (formatelement->elementType() == ElementType::FieldArray) || (formatelement->elementType() == ElementType::BitField))) || (index.column() == 4))
         {
             if(index.column() == 4)
                 return QColor(Qt::darkGreen);
 
             if(index.column() == 3)
             {
-                if(elemhdr->ElementType == ElementType::Field)
+                if(formatelement->elementType() == ElementType::Field)
                 {
-                    const FieldHeader* fieldhdr = reinterpret_cast<const FieldHeader*>(elemhdr);
+                    FieldElement* fieldelement = qobject_cast<FieldElement*>(formatelement);
 
-                    if(fieldhdr->IsOverflowed())
+                    if(fieldelement->isOverflowed())
                         return QColor(Qt::red);
 
-                    if(fieldhdr->IsInteger())
+                    if(fieldelement->isInteger())
                         return QColor(Qt::darkBlue);
 
-                    if(fieldhdr->Type == DataType::Character)
+                    if(fieldelement->dataType() == DataType::Character)
                         return QColor(Qt::darkGreen);
 
-                    if(fieldhdr->Type == DataType::Blob)
+                    if(fieldelement->dataType() == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
-                else if(elemhdr->ElementType == ElementType::FieldArray)
+                else if(formatelement->elementType() == ElementType::FieldArray)
                 {
-                    const FieldArray* fa = reinterpret_cast<const FieldArray*>(elemhdr);
+                    FieldArray* fa = qobject_cast<FieldArray*>(formatelement);
 
-                    if(fa->ItemType() == DataType::Character)
+                    if(fa->itemType() == DataType::Character)
                         return QColor(Qt::darkGreen);
-                    else if(fa->ItemType() == DataType::Blob)
+                    else if(fa->itemType() == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
-                else if(elemhdr->ElementType == ElementType::BitField)
+                else if(formatelement->elementType() == ElementType::BitField)
                     return QColor(Qt::darkRed);
             }
         }
@@ -165,31 +165,28 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
     if(this->_formattree && (role == Qt::EditRole) && index.isValid())
     {
-        ElementHeader* elementhdr = reinterpret_cast<ElementHeader*>(index.internalPointer());
+        FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-        if((elementhdr->ElementType == ElementType::Field) && (index.column() == 3))
+        if((formatelement->elementType() == ElementType::Field) && (index.column() == 3))
         {
-            FieldHeader* fieldhdr = reinterpret_cast<FieldHeader*>(elementhdr);
-            QString currvalue = QString::fromUtf8(fieldhdr->ElementHdr.DisplayValue());
+            FieldElement* fieldelement = qobject_cast<FieldElement*>(formatelement);
+            QString currvalue = fieldelement->displayValue();
             QString newvalue = value.toString();
 
-            if(fieldhdr->Type == DataType::Character)
+            if(fieldelement->dataType() == DataType::Character)
                 currvalue = currvalue.mid(1, currvalue.length() - 2); /* Strip ' ' */
 
             if(!QString::compare(currvalue, newvalue, Qt::CaseInsensitive))  /* Does 'currvalue == newvalue' ? */
                 return false;
 
-            /* NOTE: !!!
             QByteArray newdata;
-
-            bool valid = FormatModel::validateValue(value, field->dataType(), field->base(), this->_hexeditdata->endian(), newdata);
+            bool valid = FormatModel::validateValue(value, fieldelement->dataType(), fieldelement->base(), DataType::byteOrder(fieldelement->dataType()), newdata);
 
             if(valid)
             {
-                this->_hexeditdata->replace(field->offset(), newdata.length(), newdata);
+                this->_hexeditdata->replace(fieldelement->offset(), newdata.length(), newdata);
                 return true;
             }
-            */
 
             return false;
         }
@@ -202,8 +199,31 @@ void FormatModel::fetchMore(const QModelIndex &parent)
 {
     if(parent.isValid())
     {
-        ElementHeader* elementhdr = reinterpret_cast<ElementHeader*>(parent.internalPointer());
-        elementhdr->ParseChildren();
+        uint64_t count = 0;
+        FormatElement* formatelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+        formatelement->parseChildren();
+
+        switch(formatelement->elementType())
+        {
+            case ElementType::Structure:
+                count = qobject_cast<Structure*>(formatelement)->fieldCount();
+                break;
+
+            case ElementType::FieldArray:
+                count = qobject_cast<FieldArray*>(formatelement)->itemCount();
+                break;
+
+            case ElementType::Field:
+                count = qobject_cast<Field*>(formatelement)->bitFieldCount();
+                break;
+
+            default:
+                break;
+        }
+
+        /* Notify the View that 'count' items has been inserted */
+        this->beginInsertRows(parent, 0, count);
+        this->endInsertRows();
         return;
     }
 
@@ -215,20 +235,20 @@ QModelIndex FormatModel::index(int row, int column, const QModelIndex &parent) c
     if(!this->_formattree || !this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    const ElementHeader* element = nullptr;
+    FormatElement* element = nullptr;
 
     if(parent.isValid())
     {
-        const ElementHeader* parentelement = reinterpret_cast<const ElementHeader*>(parent.internalPointer());
-        element = this->_formattree->ElementFromPool(row + 1, parentelement);
+        FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+        element = this->_formattree->elementFromPool(row, parentelement);
     }
     else
-        element = this->_formattree->ElementFromPool(row + 1, nullptr);
+        element = this->_formattree->elementFromPool(row);
 
     if(!element)
         return QModelIndex();
 
-    return this->createIndex(row, column, const_cast<ElementHeader*>(element));
+    return this->createIndex(row, column, element);
 }
 
 QModelIndex FormatModel::parent(const QModelIndex &child) const
@@ -236,22 +256,21 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
     if(!this->_formattree || !child.isValid())
         return QModelIndex();
 
-    const ElementHeader* childelemhdr = reinterpret_cast<const ElementHeader*>(child.internalPointer());
+    FormatElement* childelement = reinterpret_cast<FormatElement*>(child.internalPointer());
 
-    if(!childelemhdr->HasParent())
+    if(!childelement->hasParent())
         return QModelIndex();
 
-    QString parentid = QString::fromUtf8(childelemhdr->ParentId());
-    const ElementHeader* parentelement = this->_formattree->ElementFromPoolById(parentid.toUtf8().constData());
-    return this->createIndex(parentelement->IndexOf(childelemhdr) - 1, 0, const_cast<ElementHeader*>(parentelement));
+    FormatElement* parentelement = childelement->parentElement();
+    return this->createIndex(parentelement->indexOf(childelement), 0, parentelement);
 }
 
 bool FormatModel::canFetchMore(const QModelIndex &parent) const
 {
     if(parent.isValid())
     {
-        const ElementHeader* parentelemhdr = reinterpret_cast<const ElementHeader*>(parent.internalPointer());
-        return parentelemhdr->IsDynamic();
+        FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+        return parentelement->isDynamic();
     }
 
     return QAbstractItemModel::canFetchMore(parent);
@@ -263,10 +282,10 @@ bool FormatModel::hasChildren(const QModelIndex &parent) const
         return false;
 
     if(!parent.isValid())
-        return this->_formattree->StructureCount() > 0;
+        return this->_formattree->structureCount() > 0;
 
-    const ElementHeader* parentelemhdr = reinterpret_cast<const ElementHeader*>(parent.internalPointer());
-    return parentelemhdr->HasChildren();
+    FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
+    return parentelement->hasChildren();
 }
 
 int FormatModel::rowCount(const QModelIndex &parent) const
@@ -275,24 +294,24 @@ int FormatModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     if(!parent.isValid())
-        return this->_formattree->StructureCount();
+        return this->_formattree->structureCount();
 
     if(parent.column() == 0)
     {
-        const ElementHeader* parentelemhdr = reinterpret_cast<const ElementHeader*>(parent.internalPointer());
+        FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
 
-        if(!parentelemhdr->IsDynamic())
+        if(!parentelement->isDynamic())
         {
-            if(parentelemhdr->ElementType == ElementType::Structure)
-                return reinterpret_cast<const Structure*>(parentelemhdr)->FieldCount();
-            else if(parentelemhdr->ElementType == ElementType::Field)
-                return reinterpret_cast<const Field*>(parentelemhdr)->BitFieldCount();
-            else if(parentelemhdr->ElementType == ElementType::FieldArray)
+            if(parentelement->elementType() == ElementType::Structure)
+                return qobject_cast<Structure*>(parentelement)->fieldCount();
+            else if(parentelement->elementType() == ElementType::Field)
+                return qobject_cast<Field*>(parentelement)->bitFieldCount();
+            else if(parentelement->elementType() == ElementType::FieldArray)
             {
-                const FieldArray* fieldarray = reinterpret_cast<const FieldArray*>(parentelemhdr);
+                FieldArray* fieldarray = qobject_cast<FieldArray*>(parentelement);
 
-                if(fieldarray->ItemType() != DataType::Blob)
-                    return reinterpret_cast<const FieldArray*>(parentelemhdr)->ItemCount();
+                if(fieldarray->itemType() != DataType::Blob)
+                    return qobject_cast<FieldArray*>(parentelement)->itemCount();
             }
         }
     }
@@ -306,9 +325,9 @@ Qt::ItemFlags FormatModel::flags(const QModelIndex &index) const
         return Qt::NoItemFlags;
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-    const ElementHeader* elemhdr = reinterpret_cast<const ElementHeader*>(index.internalPointer());
+    FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if((index.column() == 3) && (elemhdr->ElementType == ElementType::Field))
+    if((index.column() == 3) && (formatelement->elementType() == ElementType::Field))
         flags |= Qt::ItemIsEditable;
 
     return flags;

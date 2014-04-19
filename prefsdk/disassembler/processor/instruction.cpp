@@ -115,7 +115,7 @@ namespace PrefSDK
     lua_Integer Instruction::next(lua_Integer datatype)
     {        
         lua_Integer res = this->_bytebuffer->readType(this->_address + this->_size, datatype);
-        //NOTE: this->_size += DataType::sizeOf(datatype);
+        this->_size += DataType::sizeOf(static_cast<DataType::Type>(datatype));
         return res;
     }
 }

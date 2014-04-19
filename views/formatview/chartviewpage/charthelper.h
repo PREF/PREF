@@ -2,11 +2,9 @@
 #define CHARTHELPER_H
 
 #include <QtCore>
-#include "prefsdk/io/bytebuffer.h"
+#include "qhexedit/qhexeditdata.h"
 
-using namespace PrefSDK;
-
-class ChartHelper : public QObject
+class ChartHelper: public QObject
 {
     Q_OBJECT
 
@@ -20,7 +18,7 @@ class ChartHelper : public QObject
         void updateProgressBar(qint64 length, qreal newval);
 
     public slots:
-        void run(ByteBuffer *bytebuffer, qint64 start, qint64 end);
+        void run(QHexEditData *hexeditdata, qint64 start, qint64 end);
         void stop();
 
     private:

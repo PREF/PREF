@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>744</width>
-    <height>502</height>
+    <width>742</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -231,6 +231,13 @@
       <widget class="QPushButton" name="pbClose">
        <property name="text">
         <string>Close</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbTerminate">
+       <property name="text">
+        <string>Terminate</string>
        </property>
       </widget>
      </item>

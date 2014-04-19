@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>971</width>
-    <height>726</height>
+    <width>965</width>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PREF: Portable Reverse Engineering Framework 0.9.2</string>
+   <string>PREF: Portable Reverse Engineering Framework 0.9.5</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -39,7 +39,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>971</width>
+     <width>965</width>
      <height>22</height>
     </rect>
    </property>
@@ -72,14 +72,6 @@
     </property>
     <addaction name="actionAbout_PREF"/>
    </widget>
-   <widget class="QMenu" name="menu_Options">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Options</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menu_Tools">
     <property name="enabled">
      <bool>true</bool>
@@ -88,13 +80,13 @@
      <string>&amp;Tools</string>
     </property>
     <addaction name="actionSignature_DB"/>
+    <addaction name="separator"/>
+    <addaction name="actionSettings"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Tools"/>
-   <addaction name="menu_Options"/>
    <addaction name="menu"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
     <bool>false</bool>
@@ -125,6 +117,7 @@
    <addaction name="separator"/>
    <addaction name="actionAbout_PREF"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="action_Open">
    <property name="icon">
     <iconset resource="resources.qrc">
@@ -202,6 +195,11 @@
    </property>
    <property name="text">
     <string>Hex File</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

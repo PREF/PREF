@@ -4,7 +4,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/io/bytebuffer.h"
 #include "viewmodels/datatypesmodel/datatypesmodel.h"
 #include "datatypesview/datatypesmenu.h"
 
@@ -21,7 +20,7 @@ class DataTypesView : public QWidget
     public:
         explicit DataTypesView(QWidget *parent = 0);
         DataTypesModel* model();
-        void setData(ByteBuffer* bytebuffer);
+        void setData(QHexEditData *hexeditdata);
         ~DataTypesView();
 
     private slots:

@@ -46,7 +46,6 @@ SOURCES += main.cpp\
     views/formatview/hexeditviewpage/hexeditviewpage.cpp \
     views/formatview/formatview.cpp \
     prefsdk/format/formatlist.cpp \
-    prefsdk/format/formatdefinition.cpp \
     formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
@@ -68,8 +67,6 @@ SOURCES += main.cpp\
     prefsdk/lua/table/luactable.cpp \
     prefsdk/lua/utils/overloadtable.cpp \
     prefsdk/lua/utils/callhelper.cpp \
-    prefsdk/prefui.cpp \
-    prefsdk/prefdebug.cpp \
     prefsdk/io/bytebuffer.cpp \
     prefsdk/disassembler/disassemblerrange.cpp \
     prefsdk/disassembler/disassemblerfunction.cpp \
@@ -103,9 +100,6 @@ SOURCES += main.cpp\
     views/formatview/binaryviewpage/displaymodewidget.cpp \
     views/formatview/chartviewpage/chartviewpage.cpp \
     views/formatview/chartviewpage/charthelper.cpp \
-    prefsdk/exporter/exportlist.cpp \
-    prefsdk/exporter/exportdefinition.cpp \
-    viewmodels/exportmodel/exportmodel.cpp \
     prefsdk/io/abstractbuffer.cpp \
     prefsdk/io/filebuffer.cpp \
     datatypesview/datatypesmenu.cpp \
@@ -134,19 +128,24 @@ SOURCES += main.cpp\
     qhexedit/qhexeditcomments.cpp \
     prefsdk/lua/luadump.cpp \
     prefsdk/format/formattree.cpp \
-    prefsdk/global/preftable.cpp \
-    prefsdk/global/numericlimits.cpp \
-    prefsdk/byteorder.cpp \
     prefsdk/api/qhexeditdataapi.cpp \
-    prefsdk/api/qbytearrayapi.cpp \
     prefsdk/api/formatapi.cpp \
     prefsdk/api/byteorderapi.cpp \
-    prefsdk/format/elements.cpp \
-    prefsdk/api/formatmodelapi.cpp \
     prefsdk/api/elementapi.cpp \
+    prefsdk/format/elements/elementtype.cpp \
+    prefsdk/format/elements/formatelement.cpp \
+    prefsdk/format/elements/fieldelement.cpp \
+    prefsdk/format/elements/bitfield.cpp \
+    prefsdk/format/elements/field.cpp \
+    prefsdk/format/elements/fieldarray.cpp \
+    prefsdk/format/elements/structure.cpp \
+    prefsdk/api/prefapi.cpp \
+    prefsdk/api/debugapi.cpp \
+    prefsdk/numericlimits.cpp \
     prefsdk/api/datatypeapi.cpp \
-    prefsdk/api/datastreamapi.cpp \
-    prefsdk/api/numericlimitsapi.cpp
+    prefsdk/api/exporterapi.cpp \
+    prefsdk/exporter/exporterlist.cpp \
+    viewmodels/exportmodel/exportermodel.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -180,7 +179,6 @@ HEADERS  += mainwindow.h \
     views/formatview/hexeditviewpage/hexeditviewpage.h \
     views/formatview/formatview.h \
     prefsdk/format/formatlist.h \
-    prefsdk/format/formatdefinition.h \
     formatsdialog.h \
     prefsdk/categorymanager.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
@@ -208,8 +206,6 @@ HEADERS  += mainwindow.h \
     prefsdk/lua/utils/mangler.h \
     prefsdk/lua/utils/callhelper.h \
     prefsdk/qlua.h \
-    prefsdk/prefui.h \
-    prefsdk/prefdebug.h \
     prefsdk/io/bytebuffer.h \
     prefsdk/disassembler/disassemblerrange.h \
     prefsdk/disassembler/disassemblerfunction.h \
@@ -242,9 +238,6 @@ HEADERS  += mainwindow.h \
     views/formatview/binaryviewpage/displaymodewidget.h \
     views/formatview/chartviewpage/charthelper.h \
     views/formatview/chartviewpage/chartviewpage.h \
-    prefsdk/exporter/exportlist.h \
-    prefsdk/exporter/exportdefinition.h \
-    viewmodels/exportmodel/exportmodel.h \
     prefsdk/io/abstractbuffer.h \
     prefsdk/io/filebuffer.h \
     datatypesview/datatypesmenu.h \
@@ -276,20 +269,24 @@ HEADERS  += mainwindow.h \
     qhexedit/qhexeditcomments.h \
     prefsdk/lua/luadump.h \
     prefsdk/format/formattree.h \
-    prefsdk/global/preftable.h \
-    prefsdk/global/numericlimits.h \
-    prefsdk/byteorder.h \
     prefsdk/api/qhexeditdataapi.h \
-    prefsdk/api/qbytearrayapi.h \
     prefsdk/api/byteorderapi.h \
     prefsdk/api/formatapi.h \
-    prefsdk/api/api.h \
-    prefsdk/format/elements.h \
-    prefsdk/api/formatmodelapi.h \
     prefsdk/api/elementapi.h \
     prefsdk/api/datatypeapi.h \
-    prefsdk/api/datastreamapi.h \
-    prefsdk/api/numericlimitsapi.h
+    prefsdk/format/elements/elementtype.h \
+    prefsdk/format/elements/formatelement.h \
+    prefsdk/format/elements/fieldelement.h \
+    prefsdk/format/elements/bitfield.h \
+    prefsdk/format/elements/field.h \
+    prefsdk/format/elements/fieldarray.h \
+    prefsdk/format/elements/structure.h \
+    prefsdk/api/prefapi.h \
+    prefsdk/api/debugapi.h \
+    prefsdk/numericlimits.h \
+    prefsdk/api/exporterapi.h \
+    viewmodels/exportmodel/exportermodel.h \
+    prefsdk/exporter/exporterlist.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

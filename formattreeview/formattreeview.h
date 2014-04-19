@@ -24,7 +24,8 @@ class FormatTreeView : public QTreeView
         void setGotoMenuVisible(bool b);
 
     private slots:
-        void resizeColumnsOnExpandedOrCollapsed(const QModelIndex&);
+        void adaptColumns(QModelIndex topleft, QModelIndex bottomright);
+        void resizeSingleColumn(const QModelIndex& index);
         void setSelectedFormatObjectBase(int b);
         void showContextMenu(const QPoint& pos);
         void onTreeClicked(const QModelIndex &index);
@@ -39,17 +40,16 @@ class FormatTreeView : public QTreeView
         void onCopyValue();
 
     private:
-        const ElementHeader *selectedElement() const;
+        FormatElement* selectedElement() const;
         void configureContextMenu(bool highlightvisible);
         void updateColor(bool set);
-        void resizeTreeColumns();
 
     signals:
-        void setBackColor(const ElementHeader*);
-        void removeBackColor(const ElementHeader*);
-        void formatObjectSelected(const ElementHeader*);
-        void exportAction(const ElementHeader*);
-        void importAction(const ElementHeader*);
+        void setBackColor(FormatElement*);
+        void removeBackColor(FormatElement*);
+        void formatObjectSelected(FormatElement*);
+        void exportAction(FormatElement*);
+        void importAction(FormatElement*);
         void gotoOffset(qint64);
 
     private:

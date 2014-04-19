@@ -17,8 +17,8 @@ class FormatsDialog : public QDialog
     Q_OBJECT
     
     public:
-        explicit FormatsDialog(lua_State *l, qint64 maxlen, QWidget *parent = 0);
-        const FormatDefinition* selectedFormat();
+        explicit FormatsDialog(qint64 maxlen, QWidget *parent = 0);
+        const FormatList::Format& selectedFormat();
         qint64 offset();
         ~FormatsDialog();
 

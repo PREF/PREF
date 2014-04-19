@@ -2,8 +2,9 @@
 
 namespace PrefSDK
 {
-    QList<const FormatDefinition*> FormatList::_formats;
-    int FormatList::_formatscount = 0;
+    QList<FormatList::Format> FormatList::_formats;
+    QHash<FormatList::FormatId, int> FormatList::_formatmap;
+
     const QString FormatList::FORMATS_DIR = "formats";
     const QString FormatList::FORMAT_MAIN_FILE = "main.lua";
 
@@ -12,35 +13,30 @@ namespace PrefSDK
 
     }
 
-    void FormatList::loadFormats(lua_State *l, QString dir)
+    void FormatList::loadFormats(lua_State *l, const QString& dir)
     {
         QDir d(dir);
         QFileInfoList dirs = d.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 
         foreach(QFileInfo fi, dirs)
-        {            
-            try
-            {
-                QDir fd(fi.absoluteFilePath());
+        {
+            QDir fd(fi.absoluteFilePath());
 
-                if(fd.exists(FormatList::FORMAT_MAIN_FILE))
-                {
-                    FormatList::_formatscount++;
-                    luaW_dofile(l, fd.absoluteFilePath(FormatList::FORMAT_MAIN_FILE).toLatin1().constData());
-                }
-            }
-            catch(LuaException& e)
+            if(fd.exists(FormatList::FORMAT_MAIN_FILE))
             {
-                PrefDebug::dbgprint(e.what());
+                int res = luaL_dofile(l, fd.absoluteFilePath(FormatList::FORMAT_MAIN_FILE).toUtf8().constData());
+
+                if(res != 0)
+                {
+                    DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
+                    lua_pop(l, 1);
+                }
             }
         }
     }
 
-    void FormatList::load(lua_State* l)
+    void FormatList::load(lua_State *l)
     {
-        CategoryManager::clear();
-        FormatList::_formats.clear();
-
         QDir d(qApp->applicationDirPath());
         QString formatspath = d.absoluteFilePath(FormatList::FORMATS_DIR);
 
@@ -48,13 +44,22 @@ namespace PrefSDK
             return;
 
         FormatList::loadFormats(l, formatspath);
-        CategoryManager::addGlobalCategory(FormatList::_formatscount);
     }
 
-    void FormatList::registerFormat(const FormatDefinition *formatdefinition)
+    void FormatList::registerFormat(const QString& name, const QString& category, const QString& author, const QString& version, FormatId formatid)
     {
-        CategoryManager::add(formatdefinition->Category, FormatList::_formats.length());
-        FormatList::_formats.append(formatdefinition);
+        int idx = FormatList::_formats.length();
+
+        CategoryManager::add(category, idx);
+        FormatList::_formats.append(Format(name, category, author, version, formatid));
+        FormatList::_formatmap[formatid] = idx;
+    }
+
+    void FormatList::registerOption(FormatList::FormatId formatid, int optionidx, const QString &name, const QString& description)
+    {
+        int idx = FormatList::_formatmap[formatid];
+        FormatList::Format& format = FormatList::_formats[idx];
+        format.addOption(optionidx, name, description);
     }
 
     int FormatList::length()
@@ -62,7 +67,7 @@ namespace PrefSDK
         return FormatList::_formats.length();
     }
 
-    const FormatDefinition *FormatList::format(int i)
+    const FormatList::Format& FormatList::format(int i)
     {
         return FormatList::_formats.at(i);
     }

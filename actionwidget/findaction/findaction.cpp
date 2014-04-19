@@ -5,7 +5,7 @@ FindAction::FindAction(QWidget *parent): QWidget(parent), ui(new Ui::FindAction)
 {
     ui->setupUi(this);
 
-    ui->cbBase->addItem("Ascii String", QNumberLineEdit::AsciiString);
+    ui->cbBase->addItem("ASCII String", QNumberLineEdit::AsciiString);
     ui->cbBase->addItem("Unicode String", QNumberLineEdit::UnicodeString);
     ui->cbBase->addItem("Hex", QNumberLineEdit::HexString);
 

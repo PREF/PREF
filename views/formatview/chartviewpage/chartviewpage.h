@@ -7,7 +7,6 @@
 #include <QtConcurrent/QtConcurrent>
 #include "qhistogram/qhistogram.h"
 #include "prefsdk/bytecolors.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "qhexedit/qhexedit.h"
 #include "prefsdk/math.h"
 #include "elaboratetoolbar.h"
@@ -24,7 +23,7 @@ class ChartViewPage : public QWidget
     Q_OBJECT
     
     public:
-        explicit ChartViewPage(ByteBuffer* bytebuffer, QHexEdit* hexedit, QWidget *parent = 0);
+        explicit ChartViewPage(QHexEditData* hexeditdata, QHexEdit* hexedit, QWidget *parent = 0);
         ~ChartViewPage();
 
     private:
@@ -41,7 +40,7 @@ class ChartViewPage : public QWidget
         static QMap<uchar, QString> _nonasciichars;
         Ui::ChartViewPage *ui;
         ChartHelper* _charthelper;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         ElaborateToolBar* _toolbar;
         QHexEdit* _hexedit;
 

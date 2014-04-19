@@ -104,7 +104,7 @@ void CompareView::updateRightInfo(qint64 pos)
 
 void CompareView::createToolbar(QHexEdit* hexedit, QWidget *tbcontainer, ActionWidget* actionwidget)
 {
-    ActionToolBar* atb = new ActionToolBar(hexedit, new ByteBuffer(SDKManager::state(), hexedit->data()));
+    ActionToolBar* atb = new ActionToolBar(hexedit);
     atb->createActions(actionwidget, static_cast<ActionToolBar::Actions>(ActionToolBar::Clipboard | ActionToolBar::Seek | ActionToolBar::ByteManipulation | ActionToolBar::NoEditable));
 
     QVBoxLayout* vl = new QVBoxLayout();

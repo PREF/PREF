@@ -22,7 +22,7 @@ CategoryManager::CategoryPtr FormatListModel::selectedCategory() const
 
 int FormatListModel::columnCount(const QModelIndex &) const
 {
-    return 4;
+    return 3;
 }
 
 QVariant FormatListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -35,12 +35,9 @@ QVariant FormatListModel::headerData(int section, Qt::Orientation orientation, i
                 return "Name";
 
             case 1:
-                return "Endian";
-
-            case 2:
                 return "Author";
 
-            case 3:
+            case 2:
                 return "Version";
 
             default:
@@ -58,28 +55,18 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const FormatDefinition* fd = FormatList::format(this->_category->globalFormatIndex(index.row()));
+        const FormatList::Format& f = FormatList::format(this->_category->globalFormatIndex(index.row()));
 
         switch(index.column())
         {
             case 0:
-                return QString::fromUtf8(fd->Name);
+                return f.name();
 
             case 1:
-            {
-                QSysInfo::Endian endian = static_cast<QSysInfo::Endian>(fd->Endian);
-
-                if(endian == QSysInfo::LittleEndian)
-                    return "Little Endian";
-
-                return "Big Endian";
-            }
+                return f.author();
 
             case 2:
-                return QString::fromUtf8(fd->Author);
-
-            case 3:
-                return QString::fromUtf8(fd->Version);
+                return f.version();
 
             default:
                 break;

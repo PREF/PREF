@@ -32,9 +32,6 @@ DebugDialog* DebugDialog::luaOut(QString s)
     emit luaOutText(s);
     ui->tabWidget->setCurrentIndex(0);
 
-    if(!this->isVisible())
-        this->exec();
-
     return this;
 }
 
@@ -101,23 +98,25 @@ void DebugDialog::closeEvent(QCloseEvent *e)
 
 void DebugDialog::showEvent(QShowEvent*)
 {
-    if(this->isVisible())
-    {
-        ui->teTraceback->setText(QString::fromLatin1(luaD_traceback(this->_state)));
-        ui->teStackDump->setText(QString::fromLatin1(luaD_stackdump(this->_state)));
-        this->_stackmodel->updateTop();
+    ui->teTraceback->setText(QString::fromLatin1(luaD_traceback(this->_state)));
+    ui->teStackDump->setText(QString::fromLatin1(luaD_stackdump(this->_state)));
+    this->_stackmodel->updateTop();
 
-        QTextCursor tc = ui->teTraceback->textCursor();
-        tc.setPosition(0);
-        ui->teTraceback->setTextCursor(tc);
+    QTextCursor tc = ui->teTraceback->textCursor();
+    tc.setPosition(0);
+    ui->teTraceback->setTextCursor(tc);
 
-        tc = ui->teStackDump->textCursor();
-        tc.setPosition(0);
-        ui->teStackDump->setTextCursor(tc);
-    }
+    tc = ui->teStackDump->textCursor();
+    tc.setPosition(0);
+    ui->teStackDump->setTextCursor(tc);
 }
 
 void DebugDialog::on_pbClose_clicked()
 {
     this->hide();
+}
+
+void DebugDialog::on_pbTerminate_clicked()
+{
+    qApp->exit(-1);
 }

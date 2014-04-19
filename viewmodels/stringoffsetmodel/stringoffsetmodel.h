@@ -6,16 +6,14 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/io/bytebuffer.h"
-
-using namespace PrefSDK;
+#include "qhexedit/qhexeditdata.h"
 
 class StringOffsetModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit StringOffsetModel(ByteBuffer* bytebuffer, QObject *parent = 0);
+        explicit StringOffsetModel(QHexEditData* hexeditdata, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -27,7 +25,7 @@ class StringOffsetModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     
     private:
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
 };
 
 #endif // STRINGOFFSETMODEL_H

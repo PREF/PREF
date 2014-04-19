@@ -4,9 +4,16 @@ namespace PrefSDK
 {
     namespace API
     {
-        QHexEditData *QHexEditData_fromFile(const char *filename)
+        void QHexEditData_copyTo(QHexEditData *__this, QHexEditData *hexeditdata)
         {
-            return QHexEditData::fromFile(filename);
+            __this->device()->seek(0);
+            QByteArray ba = __this->device()->readAll();
+
+            hexeditdata->device()->seek(0);
+            hexeditdata->device()->write(ba);
+
+            __this->device()->seek(0);
+            hexeditdata->device()->seek(0);
         }
 
         int64_t QHexEditData_length(QHexEditData *__this)
@@ -14,45 +21,44 @@ namespace PrefSDK
             return __this->length();
         }
 
-        int64_t QHexEditData_indexOf(QHexEditData *__this, QByteArray *ba, int64_t start)
+        uint8_t QHexEditData_readUInt8(QHexEditData *__this, uint64_t pos)
         {
-            return __this->indexOf(*ba, start);
+           return static_cast<uint8_t>(__this->at(pos));
         }
 
-        uint8_t QHexEditData_at(QHexEditData *__this, int64_t pos)
+        uint16_t QHexEditData_readUInt16(QHexEditData* __this, uint64_t pos, int endian)
         {
-            return __this->at(pos);
+            return static_cast<uint16_t>(__this->readUInt16(pos, static_cast<QSysInfo::Endian>(endian)));
         }
 
-        QByteArray *QHexEditData_read(QHexEditData *__this, int64_t pos, int64_t len)
+        uint32_t QHexEditData_readUInt32(QHexEditData* __this, uint64_t pos, int endian)
         {
-            return new QByteArray(__this->read(pos, len));
+            return static_cast<int32_t>(__this->readUInt32(pos, static_cast<QSysInfo::Endian>(endian)));
         }
 
-        void QHexEditData_append(QHexEditData *__this, QByteArray* ba)
+        uint64_t QHexEditData_readUInt64(QHexEditData *__this, uint64_t pos, int endian)
         {
-            __this->append(*ba);
+            return static_cast<uint64_t>(__this->readUInt64(pos, static_cast<QSysInfo::Endian>(endian)));
         }
 
-        void QHexEditData_insert(QHexEditData *__this, int64_t pos, QByteArray *ba)
+        int8_t QHexEditData_readInt8(QHexEditData *__this, uint64_t pos)
         {
-            __this->insert(pos, *ba);
+            return static_cast<int8_t>(__this->at(pos));
         }
 
-        void QHexEditData_remove(QHexEditData *__this, int64_t pos, int64_t len)
+        int16_t QHexEditData_readInt16(QHexEditData* __this, uint64_t pos, int endian)
         {
-            __this->remove(pos, len);
+            return static_cast<int16_t>(__this->readInt16(pos, static_cast<QSysInfo::Endian>(endian)));
         }
 
-        void QHexEditData_replace(QHexEditData *__this, int64_t pos, int64_t len, QByteArray *ba)
+        int32_t QHexEditData_readInt32(QHexEditData* __this, uint64_t pos, int endian)
         {
-            __this->replace(pos, len, *ba);
+            return static_cast<int32_t>(__this->readInt32(pos, static_cast<QSysInfo::Endian>(endian)));
         }
 
-        void QHexEditData_save(QHexEditData *__this)
+        int64_t QHexEditData_readInt64(QHexEditData *__this, uint64_t pos, int endian)
         {
-            __this->save();
+            return static_cast<int64_t>(__this->readInt64(pos, static_cast<QSysInfo::Endian>(endian)));
         }
-
     }
 }

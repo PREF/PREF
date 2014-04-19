@@ -1,24 +1,32 @@
 #ifndef PREFSDK_NUMERICLIMITS_H
 #define PREFSDK_NUMERICLIMITS_H
 
-#include <QtCore>
 #include <limits>
-#include "prefsdk/qlua.h"
-#include "prefsdk/byteorder.h"
-#include "prefsdk/io/bytebuffer.h"
+#include "prefsdk/datatype.h"
+#include "qhexedit/qhexeditdata.h"
 
 namespace PrefSDK
 {
-    class NumericLimits : public LuaCTable
+    class NumericLimits
     {
-        public:
-            typedef std::shared_ptr<NumericLimits> Ptr;
+        private:
+            NumericLimits();
 
         private:
-            NumericLimits(lua_State* l);
-
-            template<typename TYPE> bool willOverflowT(TYPE val) const
+            template<typename TYPE> static bool willOverflowT(QHexEditData* hexeditdata, uint64_t pos, DataType::Type datatype)
             {
+                TYPE val;
+                QByteArray ba = hexeditdata->read(pos, DataType::sizeOf(datatype));
+
+                QDataStream ds(ba);
+
+                if(DataType::byteOrder(datatype) == QSysInfo::LittleEndian)
+                    ds.setByteOrder(QDataStream::LittleEndian);
+                else
+                    ds.setByteOrder(QDataStream::BigEndian);
+
+                ds >> val;
+
                 if(std::numeric_limits<TYPE>::is_signed)
                 {
                     return static_cast<std::uintmax_t>(val) > static_cast<std::uintmax_t>(INTMAX_MAX) ||
@@ -30,11 +38,7 @@ namespace PrefSDK
             }
 
         public:
-            static NumericLimits::Ptr create(lua_State* l);
-
-        lua_public:
-            bool willOverflow(ByteBuffer* bytebuffer, lua_Integer pos, lua_Integer datatype, lua_Integer sdkendian);
-            bool willOverflow(ByteBuffer* bytebuffer, lua_Integer pos, lua_Integer datatype);
+            static bool willOverflow(QHexEditData* hexeditdata, uint64_t pos, DataType::Type datatype);
     };
 }
 

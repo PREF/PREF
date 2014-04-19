@@ -1,27 +1,30 @@
 #include "exportdialog.h"
 #include "ui_exportdialog.h"
 
-ExportDialog::ExportDialog(QHexEdit *hexedit, ByteBuffer* bytebuffer, QWidget *parent): QDialog(parent), ui(new Ui::ExportDialog), _state(bytebuffer->state()), _hexedit(hexedit), _bytebuffer(bytebuffer)
+ExportDialog::ExportDialog(QHexEdit *hexedit, QWidget *parent): QDialog(parent), ui(new Ui::ExportDialog), _hexedit(hexedit), _startoffset(0), _endoffset(0)
 {
     ui->setupUi(this);
 
     connect(ui->pbCancel, SIGNAL(clicked()), this, SLOT(reject()));
 
-    this->_hexedit = hexedit;
-    this->_exportmodel = new ExportModel();
-
-    ExportList::load(this->_state);
+    QHexEditData* hexeditdata = hexedit->data();
+    this->_exportmodel = new ExporterModel();
 
     ui->pbExport->setEnabled(false);
 
     ui->sbbsFrom->setMinimum(0);
-    ui->sbbsFrom->setMaximum(bytebuffer->length());
+    ui->sbbsFrom->setMaximum(hexeditdata->length());
 
     ui->sbbsTo->setMinimum(1);
-    ui->sbbsTo->setMaximum(bytebuffer->length());
-    ui->sbbsTo->setValue(bytebuffer->length());
+    ui->sbbsTo->setMaximum(hexeditdata->length());
+    ui->sbbsTo->setValue(hexeditdata->length());
 
     ui->tvExporters->setModel(this->_exportmodel);
+
+    if(hexedit->selectionStart() != hexedit->selectionEnd())
+        ui->rbSelection->setChecked(true);
+    else
+        ui->rbAll->setChecked(true);
 
     for(int i = 0; i < this->_exportmodel->columnCount(); i++)
         ui->tvExporters->resizeColumnToContents(i);
@@ -39,6 +42,26 @@ void ExportDialog::setFixedRange(qint64 start, qint64 end)
     ui->sbbsTo->setEnabled(false);
 }
 
+const ExporterList::Exporter &ExportDialog::selectedExporter() const
+{
+    return this->_selexporter;
+}
+
+const QString &ExportDialog::fileName() const
+{
+    return this->_filename;
+}
+
+quint64 ExportDialog::startOffset() const
+{
+    return this->_endoffset;
+}
+
+quint64 ExportDialog::endOffset() const
+{
+    return this->_startoffset;
+}
+
 ExportDialog::~ExportDialog()
 {
     delete ui;
@@ -46,30 +69,30 @@ ExportDialog::~ExportDialog()
 
 void ExportDialog::validateFields()
 {
-    if(!this->_selexporter || !ui->leFile->text().length())
+    if(!this->_selexporter.id() || !ui->leFile->text().length())
         ui->pbExport->setEnabled(false);
     else
         ui->pbExport->setEnabled(true);
 }
 
-bool ExportDialog::queryRange(lua_Integer &from, lua_Integer &to)
+bool ExportDialog::queryRange()
 {
     if(ui->rbAll->isChecked())
     {
-        from = 0;
-        to = this->_bytebuffer->length();
+        this->_startoffset = 0;
+        this->_endoffset = this->_hexedit->data()->length();
         return true;
     }
     else if(ui->rbSelection->isChecked())
     {
-        from = qMin(this->_hexedit->selectionStart(), this->_hexedit->selectionEnd());
-        to = qMax(this->_hexedit->selectionStart(), this->_hexedit->selectionEnd());
+        this->_startoffset = qMin(this->_hexedit->selectionStart(), this->_hexedit->selectionEnd());
+        this->_endoffset = qMax(this->_hexedit->selectionStart(), this->_hexedit->selectionEnd());
         return true;
     }
     else if(ui->rbRange->isChecked())
     {
-        from = qMin(ui->sbbsFrom->value(), ui->sbbsTo->value());
-        to = qMax(ui->sbbsFrom->value(), ui->sbbsTo->value());
+        this->_startoffset = qMin(ui->sbbsFrom->value(), ui->sbbsTo->value());
+        this->_endoffset = qMax(ui->sbbsFrom->value(), ui->sbbsTo->value());
         return true;
     }
 
@@ -106,18 +129,16 @@ void ExportDialog::on_tbBrowse_clicked()
 void ExportDialog::on_tvExporters_clicked(const QModelIndex &index)
 {
     if(index.isValid())
-        this->_selexporter = ExportList::exporter(index.row());
+        this->_selexporter = ExporterList::exporter(index.row());
     else
-        this->_selexporter = ExportDefinition::Ptr();
+        this->_selexporter = ExporterList::Exporter();
 
     this->validateFields();
 }
 
 void ExportDialog::on_pbExport_clicked()
 {
-    lua_Integer from, to;
-
-    if(!this->queryRange(from, to))
+    if(!this->queryRange())
     {
         QMessageBox mb;
         mb.setWindowTitle("Export Error");
@@ -128,6 +149,5 @@ void ExportDialog::on_pbExport_clicked()
         return;
     }
 
-    this->_selexporter->exportData(this->_bytebuffer, this->_filename, from, to);
     this->accept();
 }

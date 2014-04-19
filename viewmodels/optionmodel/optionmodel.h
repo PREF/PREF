@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/format/formatdefinition.h"
+#include "prefsdk/format/formatlist.h"
 
 using namespace PrefSDK;
 
@@ -13,7 +13,7 @@ class OptionModel: public QAbstractItemModel
     Q_OBJECT
 
     public:
-        explicit OptionModel(const FormatDefinition* formatdefinition, QObject *parent = 0);
+        explicit OptionModel(const FormatList::Format& format, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -25,7 +25,7 @@ class OptionModel: public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        const FormatDefinition* _formatdefinition;
+        FormatList::Format _format;
         QImage _icooptions;
 };
 

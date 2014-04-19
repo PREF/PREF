@@ -15,10 +15,10 @@ class StringFinderHelper : public QObject
 
     public slots:
         void stop();
-        void run(ByteBuffer *bytebuffer, int minlength, int maxlength);
+        void run(QHexEditData *hexeditdata, int minlength, int maxlength);
 
     private:
-        void updateProgressBar(ByteBuffer* bytebuffer, qreal newval);
+        void updateProgressBar(QHexEditData *hexeditdata, qreal newval);
 
     signals:
         void finished();

@@ -1,9 +1,9 @@
 #include "actiontoolbar.h"
 
-ActionToolBar::ActionToolBar(QHexEdit *hexedit, ByteBuffer *bytebuffer, QWidget *parent): QToolBar(parent)
+ActionToolBar::ActionToolBar(QHexEdit *hexedit, QWidget *parent): QToolBar(parent)
 {
     this->_hexedit = hexedit;
-    this->_bytebuffer = bytebuffer;
+    this->_hexeditdata = hexedit->data();
     this->_actions = ActionToolBar::None;
     this->_ctxmenu = nullptr;
     this->_actionwidget = nullptr;
@@ -164,72 +164,72 @@ QMenu *ActionToolBar::actionMenu()
 
 void ActionToolBar::doAnd(qint64 start, qint64 end, uchar value)
 {
-    if(end > this->_bytebuffer->length())
-        end = this->_bytebuffer->length();
+    if(end > this->_hexeditdata->length())
+        end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_bytebuffer->read(start, end - start);
+    QByteArray ba = this->_hexeditdata->read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] & value;
 
-    this->_bytebuffer->write(start, l, ba);
+    this->_hexeditdata->replace(start, l, ba);
 }
 
 void ActionToolBar::doOr(qint64 end, qint64 start, uchar value)
 {
-    if(end > this->_bytebuffer->length())
-        end = this->_bytebuffer->length();
+    if(end > this->_hexeditdata->length())
+        end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_bytebuffer->read(start, end - start);
+    QByteArray ba = this->_hexeditdata->read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] | value;
 
-    this->_bytebuffer->write(start, l, ba);
+    this->_hexeditdata->replace(start, l, ba);
 }
 
 void ActionToolBar::doXor(qint64 start, qint64 end, uchar value)
 {
-    if(end > this->_bytebuffer->length())
-        end = this->_bytebuffer->length();
+    if(end > this->_hexeditdata->length())
+        end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_bytebuffer->read(start, end - start);
+    QByteArray ba = this->_hexeditdata->read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] ^ value;
 
-    this->_bytebuffer->write(start, l, ba);
+    this->_hexeditdata->replace(start, l, ba);
 }
 
 void ActionToolBar::doMod(qint64 start, qint64 end, uchar value)
 {
-    if(end > this->_bytebuffer->length())
-        end = this->_bytebuffer->length();
+    if(end > this->_hexeditdata->length())
+        end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_bytebuffer->read(start, end - start);
+    QByteArray ba = this->_hexeditdata->read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] % value;
 
-    this->_bytebuffer->write(start, l, ba);
+    this->_hexeditdata->replace(start, l, ba);
 }
 
 void ActionToolBar::doNot(qint64 start, qint64 end)
 {
-    if(end > this->_bytebuffer->length())
-        end = this->_bytebuffer->length();
+    if(end > this->_hexeditdata->length())
+        end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_bytebuffer->read(start, end - start);
+    QByteArray ba = this->_hexeditdata->read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = !ba[i];
 
-    this->_bytebuffer->write(start, l, ba);
+    this->_hexeditdata->replace(start, l, ba);
 }
 
 void ActionToolBar::addMenuSeparatorIfNeeded()
@@ -261,8 +261,11 @@ void ActionToolBar::showGoto()
 
 void ActionToolBar::showExportDialog()
 {
-    ExportDialog ed(this->_hexedit, this->_bytebuffer, this->topLevelWidget());
-    ed.exec();
+    ExportDialog ed(this->_hexedit, this->topLevelWidget());
+    int res = ed.exec();
+
+    if(res == ExportDialog::Accepted)
+        ExporterList::exportData(ed.selectedExporter().id(), ed.fileName(), this->_hexedit->data(), ed.startOffset(), ed.endOffset());
 }
 
 void ActionToolBar::byteOpRequested(uchar value, ByteOpsAction::ByteOperations bo)

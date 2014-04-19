@@ -1,12 +1,12 @@
 #include "stringfinderviewpage.h"
 #include "ui_stringfinderviewpage.h"
 
-StringFinderViewPage::StringFinderViewPage(ByteBuffer* bytebuffer, QWidget *parent): QWidget(parent), ui(new Ui::StringFinderViewPage)
+StringFinderViewPage::StringFinderViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::StringFinderViewPage)
 {
     ui->setupUi(this);
 
     this->_stringfinderhelper = nullptr;
-    this->_bytebuffer = bytebuffer;
+    this->_hexeditdata = hexeditdata;
     this->_stringfinderhelper = new StringFinderHelper();
 
     this->_stringfindermodel = new StringFinderModel();
@@ -83,7 +83,7 @@ void StringFinderViewPage::onStartTriggered()
     dynamic_cast<StringFinderModel*>(ui->stringList->model())->clearItems();
     this->_actexportcsv->setEnabled(false);
 
-    QtConcurrent::run(this->_stringfinderhelper, &StringFinderHelper::run, this->_bytebuffer, ui->sbMinLength->value(), ui->sbMaxLength->value());
+    QtConcurrent::run(this->_stringfinderhelper, &StringFinderHelper::run, this->_hexeditdata, ui->sbMinLength->value(), ui->sbMaxLength->value());
 }
 
 void StringFinderViewPage::onGotoTriggered()

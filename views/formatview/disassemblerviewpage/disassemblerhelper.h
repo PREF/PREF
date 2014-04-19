@@ -5,7 +5,6 @@
 #include <QtGui>
 #include "prefsdk/qlua.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/disassembler/addressqueue.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 

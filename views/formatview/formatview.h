@@ -5,13 +5,13 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "views/abstractview.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "datatypesview/datatypesview.h"
 #include "hexeditviewpage/hexeditviewpage.h"
 #include "binaryviewpage/binaryviewpage.h"
 #include "chartviewpage/chartviewpage.h"
 #include "disassemblerviewpage/disassemblerviewpage.h"
 #include "stringfinderviewpage/stringfinderviewpage.h"
+#include "prefsdk/sdkmanager.h"
 #include "formatoptionsdialog.h"
 #include "formatsdialog.h"
 
@@ -61,8 +61,7 @@ class FormatView : public AbstractView
         ChartViewPage* _chartview;
         DisassemblerViewPage* _disassemblerview;
         StringFinderViewPage* _stringfinderview;
-        const FormatDefinition* _formatdefinition;
-        ByteBuffer* _bytebuffer;
+        FormatList::Format _format;
         QHexEditData* _hexeditdata;
 };
 

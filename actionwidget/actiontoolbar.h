@@ -5,7 +5,6 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexedit.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "actionwidget.h"
 #include "exportdialog.h"
 
@@ -17,7 +16,7 @@ class ActionToolBar : public QToolBar
 
     public:
         enum Actions {None = 0, UndoRedo = 1, Clipboard = 2, Seek = 4, ByteManipulation = 8, AllActions = UndoRedo | Clipboard | Seek | ByteManipulation, NoEditable = 0x1000 };
-        explicit ActionToolBar(QHexEdit* hexedit, ByteBuffer* bytebuffer, QWidget *parent = 0);
+        explicit ActionToolBar(QHexEdit* hexedit, QWidget *parent = 0);
         void createActions(ActionWidget* actionwidget, ActionToolBar::Actions act);
         void setEditActionsEnabled(bool b);
         QMenu* actionMenu();
@@ -43,7 +42,7 @@ class ActionToolBar : public QToolBar
     private:
         QMenu* _ctxmenu;
         QHexEdit* _hexedit;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         ActionWidget* _actionwidget;
         ActionToolBar::Actions _actions;
         QAction* _actundo;

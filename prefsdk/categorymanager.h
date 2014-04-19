@@ -16,7 +16,7 @@ namespace PrefSDK
             class Category
             {
                 public:
-                    Category(int formatscount): _name("(All)"), _formatscount(formatscount) { }
+                    Category(): _name("(All)"), _formatscount(0) { }
                     Category(QString cn): _name(cn), _formatscount(0) {}
                     QString name() const { return this->_name; }
                     int formatsCount() const { return this->_formatscount; }
@@ -45,10 +45,10 @@ namespace PrefSDK
 
         private:
             CategoryManager();
+            static void addGlobalCategory();
 
         public:
             static void add(QString categoryname, int formatidx);
-            static void addGlobalCategory(int formatscount);
             static void clear();
             static int categoryCount();
             static CategoryPtr category(QString categoryname);

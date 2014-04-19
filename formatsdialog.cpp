@@ -1,7 +1,7 @@
 #include "formatsdialog.h"
 #include "ui_formatsdialog.h"
 
-FormatsDialog::FormatsDialog(lua_State* l, qint64 maxlen, QWidget *parent): QDialog(parent), ui(new Ui::FormatsDialog)
+FormatsDialog::FormatsDialog(qint64 maxlen, QWidget *parent): QDialog(parent), ui(new Ui::FormatsDialog)
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(1, 1);
@@ -13,8 +13,6 @@ FormatsDialog::FormatsDialog(lua_State* l, qint64 maxlen, QWidget *parent): QDia
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    FormatList::load(l);
-
     this->_categorymodel = new CategoryModel();
     this->_formatsmodel = new FormatListModel();
 
@@ -25,7 +23,7 @@ FormatsDialog::FormatsDialog(lua_State* l, qint64 maxlen, QWidget *parent): QDia
         ui->tvFormats->resizeColumnToContents(i);
 }
 
-const FormatDefinition *FormatsDialog::selectedFormat()
+const FormatList::Format &FormatsDialog::selectedFormat()
 {
     CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
     QItemSelectionModel* model = ui->tvFormats->selectionModel();

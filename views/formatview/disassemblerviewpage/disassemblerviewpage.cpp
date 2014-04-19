@@ -1,11 +1,8 @@
 #include "disassemblerviewpage.h"
 #include "ui_disassemblerviewpage.h"
 
-DisassemblerViewPage::DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *parent): QWidget(parent), ui(new Ui::DisassemblerViewPage)
+DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::DisassemblerViewPage), _formattree(nullptr), _hexeditdata(hexeditdata)
 {
-    //this->_formattree = nullptr;
-    this->_bytebuffer = bytebuffer;
-
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0, 1);
 
@@ -25,7 +22,7 @@ DisassemblerViewPage::DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *pare
 
     this->_disasmhelper = new DisassemblerHelper(this);
     this->_functionrefs = new FunctionOffsetModel(ui->tvFunctions);
-    this->_stringrefs = new StringOffsetModel(this->_bytebuffer, ui->tvStrings);
+    this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
 
     ui->tvFunctions->setModel(this->_functionrefs);
     ui->tvStrings->setModel(this->_stringrefs);
@@ -39,16 +36,14 @@ DisassemblerViewPage::DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *pare
     connect(this->_actdisassemble, SIGNAL(triggered()), this, SLOT(onActDisassembleTriggered()));
 }
 
-/*
-void DisassemblerViewPage::setData(FormatTreeOld::Ptr formattree, FormatDefinitionOld::Ptr formatdefinition)
+void DisassemblerViewPage::setData(FormatTree* formattree, const FormatList::Format& format)
 {
     this->_formattree = formattree;
-    this->_formatdefinition = formatdefinition;
+    this->_format = format;
 
-    if(formattree && formatdefinition)
+    if(formattree)
         this->_toolbar->setEnabled(true);
 }
-*/
 
 DisassemblerViewPage::~DisassemblerViewPage()
 {

@@ -4,16 +4,16 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/exporter/exportlist.h"
+#include "prefsdk/exporter/exporterlist.h"
 
 using namespace PrefSDK;
 
-class ExportModel : public QAbstractItemModel
+class ExporterModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit ExportModel(QObject *parent = 0);
+        explicit ExporterModel(QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;

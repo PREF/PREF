@@ -3,29 +3,31 @@
 
 #include <QtCore>
 #include <QtWidgets>
-#include "prefsdk/format/formatlist.h"
+#include <cstdint>
+#include "qhexedit/qhexeditdata.h"
 #include "prefsdk/signatures/signaturedatabase.h"
-#include "prefsdk/disassembler/disassembler.h"
 #include "prefsdk/sqlitewrapper/sqlite.h"
-#include "prefsdk/qlua.h"
-#include "prefsdk/prefdebug.h"
-#include "prefsdk/byteorder.h"
-#include "prefsdk/prefui.h"
-#include "prefsdk/global/preftable.h"
+#include "prefsdk/format/formatlist.h"
+#include "prefsdk/format/formattree.h"
+#include "prefsdk/exporter/exporterlist.h"
 
 namespace PrefSDK
 {
     class SDKManager
     {
         private:
-            typedef LuaFunctionT<lua_String> SdkVersionFunction;
+            struct SdkVersion
+            {
+                bool IsLoaded;
+                int8_t Major;
+                int8_t Minor;
+                int8_t Revision;
+                QString Custom;
+            };
 
         private:
             SDKManager();
-            static void runScript(QString sdkpath, QString filename);
-            static void loadSdkVersion();
-            //static void loadSdkFiles(const QString &dir);
-            static void loadPrefTables();
+            static void loadMain(QString sdkpath, QString filename);
 
         private:
             static int luaAtPanic(lua_State* l);
@@ -33,20 +35,22 @@ namespace PrefSDK
 
         public:
             static lua_State* initializeLua();
+            static void setVersion(int8_t major, int8_t minor, int8_t revision, const QString& custom);
+            static void registerMessageHandler();
             static bool loadSDK();
             static void unloadSDK();
-            static void registerMessageHandler();
             static QString version();
             static lua_State* state();
 
+        public: /* PrefSDK Public Functions */
+            static FormatTree* parseFormat(FormatList::FormatId formatid, int64_t baseoffset, QHexEditData* hexeditdata);
+
         private:
-            static PrefTable::Ptr _preftable;
-            static PrefDebug::Ptr _prefdebug;
-            static PrefUI::Ptr _prefui;
+            static SdkVersion _sdkversion;
 
         private:
             static lua_State* _state;
-            static SdkVersionFunction::Ptr _sdkversion;
+            static const char* SDK_TABLE;
             static const QString SDK_DIR;
             static const QString MAIN_SCRIPT;
     };

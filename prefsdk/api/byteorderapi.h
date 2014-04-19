@@ -2,6 +2,8 @@
 #define PREFSDK_API_BYTEORDERAPI_H
 
 #include <QtCore>
+#include <QtEndian>
+#include "prefsdk/datatype.h"
 
 namespace PrefSDK
 {

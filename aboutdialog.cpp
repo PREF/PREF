@@ -17,7 +17,9 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent), ui(new Ui::AboutDial
     ui->twComponents->setItem(2, 1, new QTableWidgetItem(QString(LUAJIT_VERSION)));
 
     ui->twComponents->resizeRowsToContents();
+    ui->twComponents->resizeColumnsToContents();
     ui->twDevs->resizeRowsToContents();
+    ui->twDevs->resizeColumnsToContents();
 }
 
 AboutDialog::~AboutDialog()

@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexedit.h"
-#include "viewmodels/exportmodel/exportmodel.h"
+#include "viewmodels/exportmodel/exportermodel.h"
 
 using namespace PrefSDK;
 
@@ -18,9 +18,13 @@ class ExportDialog : public QDialog
     Q_OBJECT
     
     public:
-        explicit ExportDialog(QHexEdit* hexedit, ByteBuffer *bytebuffer, QWidget *parent = 0);
-        void setFixedRange(qint64 start, qint64 end);
+        explicit ExportDialog(QHexEdit* hexedit, QWidget *parent = 0);
         ~ExportDialog();
+        void setFixedRange(qint64 start, qint64 end);
+        const ExporterList::Exporter& selectedExporter() const;
+        const QString& fileName() const;
+        quint64 startOffset() const;
+        quint64 endOffset() const;
 
     private slots:
         void on_rbRange_toggled(bool checked);
@@ -30,15 +34,15 @@ class ExportDialog : public QDialog
 
     private:
         void validateFields();
-        bool queryRange(lua_Integer& from, lua_Integer& to);
+        bool queryRange();
 
     private:
         Ui::ExportDialog *ui;
-        ExportModel* _exportmodel;
-        ExportDefinition::Ptr _selexporter;
-        lua_State* _state;
+        ExporterModel* _exportmodel;
+        ExporterList::Exporter _selexporter;
         QHexEdit* _hexedit;
-        ByteBuffer* _bytebuffer;
+        quint64 _startoffset;
+        quint64 _endoffset;
         QString _filename;
 };
 

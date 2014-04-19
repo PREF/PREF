@@ -48,10 +48,9 @@ class MainWindow : public QMainWindow
         void on_tabWidget_tabCloseRequested(int index);
         void on_tabWidget_currentChanged(int index);
         void on_actionSignature_DB_triggered();
-
         void on_actionHex_File_triggered();
 
-private:
+    private:
         Ui::MainWindow *ui;
         bool _sdkloaded;
 };

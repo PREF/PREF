@@ -39,7 +39,9 @@ class DebugDialog : public QDialog
     private slots:
         void on_pbClose_clicked();
 
-    protected:
+        void on_pbTerminate_clicked();
+
+protected:
         virtual void closeEvent(QCloseEvent* e);
         virtual void showEvent(QShowEvent*);
 

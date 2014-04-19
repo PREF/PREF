@@ -6,9 +6,9 @@ StringFinderHelper::StringFinderHelper(QObject *parent): QObject(parent)
     this->_lastperc = 0;
 }
 
-void StringFinderHelper::updateProgressBar(ByteBuffer* bytebuffer, qreal newval)
+void StringFinderHelper::updateProgressBar(QHexEditData* hexeditdata, qreal newval)
 {
-    int perc = static_cast<int>((newval / static_cast<qreal>(bytebuffer->length()) * 100));
+    int perc = static_cast<int>((newval / static_cast<qreal>(hexeditdata->length()) * 100));
 
     if(perc != this->_lastperc)
     {
@@ -17,7 +17,7 @@ void StringFinderHelper::updateProgressBar(ByteBuffer* bytebuffer, qreal newval)
     }
 }
 
-void StringFinderHelper::run(ByteBuffer* bytebuffer, int minlength, int maxlength)
+void StringFinderHelper::run(QHexEditData* hexeditdata, int minlength, int maxlength)
 {
     QString s;
     qreal offset = 0;
@@ -25,9 +25,9 @@ void StringFinderHelper::run(ByteBuffer* bytebuffer, int minlength, int maxlengt
     this->_cancontinue = true;
     emit progressChanged(0); /* Set Progressbar to 0% */
 
-    while(this->_cancontinue && (static_cast<quint64>(offset) < static_cast<quint64>(bytebuffer->length())))
+    while(this->_cancontinue && (static_cast<quint64>(offset) < static_cast<quint64>(hexeditdata->length())))
     {
-        uchar ch = bytebuffer->at(offset);
+        uchar ch = hexeditdata->at(offset);
 
         if(s.length() == maxlength)
         {
@@ -47,7 +47,7 @@ void StringFinderHelper::run(ByteBuffer* bytebuffer, int minlength, int maxlengt
             s.clear();
 
         offset++;
-        this->updateProgressBar(bytebuffer, offset);
+        this->updateProgressBar(hexeditdata, offset);
     }
 
     emit progressChanged(100); /* Set Progressbar to 100% */

@@ -3,7 +3,7 @@
 
 QMap<uchar, QString> ChartViewPage::_nonasciichars;
 
-ChartViewPage::ChartViewPage(ByteBuffer *bytebuffer, QHexEdit *hexedit, QWidget *parent): QWidget(parent), ui(new Ui::ChartViewPage)
+ChartViewPage::ChartViewPage(QHexEditData* hexeditdata, QHexEdit *hexedit, QWidget *parent): QWidget(parent), ui(new Ui::ChartViewPage)
 {
     if(ChartViewPage::_nonasciichars.isEmpty())
         ChartViewPage::initNonAsciiChars();
@@ -11,7 +11,7 @@ ChartViewPage::ChartViewPage(ByteBuffer *bytebuffer, QHexEdit *hexedit, QWidget 
     ui->setupUi(this);
 
     this->_hexedit = hexedit;
-    this->_bytebuffer = bytebuffer;
+    this->_hexeditdata = hexeditdata;
 
     this->_charthelper = new ChartHelper();
     this->_toolbar = new ElaborateToolBar();
@@ -97,13 +97,13 @@ void ChartViewPage::createListModel()
 void ChartViewPage::calculate()
 {
     ui->progressBar->setValue(0);
-    QtConcurrent::run(this->_charthelper, &ChartHelper::run, this->_bytebuffer, 0, this->_bytebuffer->length());
+    QtConcurrent::run(this->_charthelper, &ChartHelper::run, this->_hexeditdata, 0, this->_hexeditdata->length());
 }
 
 void ChartViewPage::updateModel()
 {
     uint imax = 0xFFFFFFFF;
-    qint64 len = static_cast<qint64>(this->_bytebuffer->length()), max = 0;
+    qint64 len = this->_hexeditdata->length(), max = 0;
 
     QStandardItemModel* model = (QStandardItemModel*)ui->lisOccurrence->model();
     QList<qint64> occlist = this->_charthelper->occurrences();

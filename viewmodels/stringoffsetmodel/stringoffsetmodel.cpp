@@ -1,8 +1,8 @@
 #include "stringoffsetmodel.h"
 
-StringOffsetModel::StringOffsetModel(ByteBuffer *bytebuffer, QObject *parent): QAbstractItemModel(parent)
+StringOffsetModel::StringOffsetModel(QHexEditData *hexeditdata, QObject *parent): QAbstractItemModel(parent)
 {
-    this->_bytebuffer = bytebuffer;
+    this->_hexeditdata = hexeditdata;
 }
 
 int StringOffsetModel::columnCount(const QModelIndex&) const

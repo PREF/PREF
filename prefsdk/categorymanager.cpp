@@ -16,6 +16,11 @@ namespace PrefSDK
         QString key;
         CategoryPtr c;
 
+        if(CategoryManager::_categories.isEmpty())
+            CategoryManager::addGlobalCategory();
+
+        CategoryManager::_categories[CategoryManager::GLOBAL_CATEGORY]->update(formatidx);
+
         if(categoryname.simplified().isEmpty())
             key = CategoryManager::UNCATEGORIZED_CATEGORY;
         else
@@ -32,11 +37,11 @@ namespace PrefSDK
         c->update(formatidx);
     }
 
-    void CategoryManager::addGlobalCategory(int formatscount)
+    void CategoryManager::addGlobalCategory()
     {
         if(!CategoryManager::_categories.contains(CategoryManager::GLOBAL_CATEGORY))
         {
-            CategoryPtr c(new Category(formatscount));
+            CategoryPtr c(new Category());
             CategoryManager::_categories.insert(CategoryManager::GLOBAL_CATEGORY, c);
         }
     }

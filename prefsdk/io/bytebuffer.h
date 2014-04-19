@@ -5,7 +5,6 @@
 #include <limits>
 #include <cstdint>
 #include "prefsdk/datatype.h"
-#include "prefsdk/byteorder.h"
 #include "prefsdk/io/abstractbuffer.h"
 #include "qhexedit/qhexeditdata.h"
 

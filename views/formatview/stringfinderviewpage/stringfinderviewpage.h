@@ -6,8 +6,8 @@
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
 #include "viewmodels/stringfindermodel/stringfindermodel.h"
+#include "qhexedit/qhexeditdata.h"
 #include "elaboratetoolbar.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "stringfinderhelper.h"
 
 using namespace PrefSDK;
@@ -21,7 +21,7 @@ class StringFinderViewPage : public QWidget
     Q_OBJECT
     
     public:
-        explicit StringFinderViewPage(ByteBuffer* bytebuffer, QWidget *parent = 0);
+        explicit StringFinderViewPage(QHexEditData* hexeditdata, QWidget *parent = 0);
         ~StringFinderViewPage();
     
     private:
@@ -47,7 +47,7 @@ class StringFinderViewPage : public QWidget
 
     private:
         Ui::StringFinderViewPage *ui;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         StringFinderModel* _stringfindermodel;
         StringFinderHelper* _stringfinderhelper;
         ElaborateToolBar* _toolbar;

@@ -2,8 +2,8 @@
 #define PREFSDK_DISASSEMBLERLISTING_H
 
 #include "prefsdk/qlua.h"
-#include "prefsdk/prefdebug.h"
 #include "prefsdk/io/bytebuffer.h"
+#include "debugdialog/debugdialog.h"
 #include "referencetable.h"
 #include "listingitems/listingitem.h"
 #include "listingitems/instructionitem.h"

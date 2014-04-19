@@ -22,9 +22,9 @@ DataTypesModel *DataTypesView::model()
     return this->_datatypesmodel;
 }
 
-void DataTypesView::setData(ByteBuffer* bytebuffer)
+void DataTypesView::setData(QHexEditData* hexeditdata)
 {
-    this->_datatypesmodel->setData(bytebuffer);
+    this->_datatypesmodel->setData(hexeditdata);
 }
 
 DataTypesView::~DataTypesView()

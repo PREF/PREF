@@ -1,12 +1,13 @@
 #include "hexeditviewpage.h"
 #include "ui_hexeditviewpage.h"
 
-HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::HexEditViewPage), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::HexEditViewPage), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
 
     ui->hSplitter->setStretchFactor(1, 1);
     ui->vSplitter->setStretchFactor(0, 1);
+    ui->dataView->setData(hexeditdata);
     ui->hexEdit->setData(hexeditdata);
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
@@ -26,28 +27,23 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
     connect(ui->hexEdit, SIGNAL(verticalScrollBarValueChanged(int)), ui->binaryNavigator, SLOT(renderMap(int)));
     connect(ui->hexEdit, SIGNAL(visibleLinesChanged()), this, SLOT(scanSignatures()));
 
-    connect(ui->tvFormat, SIGNAL(setBackColor(const ElementHeader*)), this, SLOT(onSetBackColor(const ElementHeader*)));
-    connect(ui->tvFormat, SIGNAL(removeBackColor(const ElementHeader*)), this, SLOT(onRemoveBackColor(const ElementHeader*)));
-    connect(ui->tvFormat, SIGNAL(formatObjectSelected(const ElementHeader*)), this, SLOT(onFormatObjectSelected(const ElementHeader*)));
-    connect(ui->tvFormat, SIGNAL(exportAction(const ElementHeader*)), this, SLOT(exportData(const ElementHeader*)));
-    connect(ui->tvFormat, SIGNAL(importAction(const ElementHeader*)), this, SLOT(importData(const ElementHeader*)));
+    connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(removeBackColor(FormatElement*)), this, SLOT(onRemoveBackColor(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(formatObjectSelected(FormatElement*)), this, SLOT(onFormatObjectSelected(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(exportAction(FormatElement*)), this, SLOT(exportData(FormatElement*)));
+    connect(ui->tvFormat, SIGNAL(importAction(FormatElement*)), this, SLOT(importData(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-bool HexEditViewPage::loadFormat(const FormatDefinition *fd, int64_t baseoffset)
+bool HexEditViewPage::loadFormat(const FormatList::Format &format, int64_t baseoffset)
 {
-    bool validated = fd->ValidateProcedure(this->_hexeditdata, baseoffset);
+    this->_formattree = SDKManager::parseFormat(format.id(), baseoffset, this->_hexeditdata);
+    this->_formatmodel->setFormatTree(this->_formattree);
 
-    if(validated)
-    {
-        this->_formatdefinition = fd;
-        fd->ParseProcedure(this->_formatmodel, this->_hexeditdata, baseoffset);
-        ui->tvFormat->setModel(this->_formatmodel);
-    }
-    else
-        PrefDebug::dbgprint(QString("\nFormat Validation Failed for '%1'").arg(QString::fromUtf8(fd->Name)));
+    for(int i = 0; i < this->_formatmodel->columnCount(); i++)
+        ui->tvFormat->resizeColumnToContents(i);
 
-    return validated;
+    return !this->_formattree->isEmpty();
 }
 
 void HexEditViewPage::scanSignatures(bool b)
@@ -68,9 +64,14 @@ BinaryNavigator *HexEditViewPage::binaryNavigator()
     return ui->binaryNavigator;
 }
 
-const FormatDefinition *HexEditViewPage::formatDefinition()
+const FormatList::Format &HexEditViewPage::format()
 {
-    return this->_formatdefinition;
+    return this->_format;
+}
+
+FormatTree *HexEditViewPage::tree()
+{
+    return this->_formattree;
 }
 
 void HexEditViewPage::gotoOffset(qint64 offset, qint64 length)
@@ -83,7 +84,7 @@ void HexEditViewPage::gotoOffset(qint64 offset, qint64 length)
 
 void HexEditViewPage::createToolBar()
 {
-    this->_toolbar = new ActionToolBar(ui->hexEdit, this->_bytebuffer, ui->tbContainer);
+    this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
 
     QVBoxLayout* vl = new QVBoxLayout();
@@ -131,37 +132,40 @@ void HexEditViewPage::onHexEditCustomContextMenuRequested(const QPoint &pos)
     this->_toolbar->actionMenu()->popup(newpos);
 }
 
-void HexEditViewPage::onSetBackColor(const ElementHeader* elemhdr)
+void HexEditViewPage::onSetBackColor(FormatElement* formatelement)
 {
     QColor c = QColorDialog::getColor(Qt::white, this);
 
     if(c.isValid())
     {
-        uint64_t offset = elemhdr->Offset();
-        ui->hexEdit->highlightBackground(offset, (offset + elemhdr->Size() - 1), c);
+        uint64_t offset = formatelement->offset();
+        ui->hexEdit->highlightBackground(offset, (offset + formatelement->size() - 1), c);
     }
 }
 
-void HexEditViewPage::onRemoveBackColor(const ElementHeader* elemhdr)
+void HexEditViewPage::onRemoveBackColor(FormatElement* formatelement)
 {
-    uint64_t offset = elemhdr->Offset();
-    ui->hexEdit->clearHighlight(offset, (offset + elemhdr->Size() - 1));
+    uint64_t offset = formatelement->offset();
+    ui->hexEdit->clearHighlight(offset, (offset + formatelement->size() - 1));
 }
 
-void HexEditViewPage::onFormatObjectSelected(const ElementHeader* elemhdr)
+void HexEditViewPage::onFormatObjectSelected(FormatElement* formatelement)
 {
-    uint64_t offset = elemhdr->Offset();
-    ui->hexEdit->setSelection(offset, offset + elemhdr->Size());
+    uint64_t offset = formatelement->offset();
+    ui->hexEdit->setSelection(offset, offset + formatelement->size());
 }
 
-void HexEditViewPage::exportData(const ElementHeader *elemhdr)
+void HexEditViewPage::exportData(FormatElement *formatelement)
 {
-    ExportDialog ed(ui->hexEdit, this->_bytebuffer, this);
-    ed.setFixedRange(elemhdr->Offset(), elemhdr->EndOffset());
-    ed.exec();
+    ExportDialog ed(ui->hexEdit, this);
+    ed.setFixedRange(formatelement->offset(), formatelement->endOffset());
+    int res = ed.exec();
+
+    if(res == ExportDialog::Accepted)
+        ExporterList::exportData(ed.selectedExporter().id(), ed.fileName(), this->_hexeditdata, ed.startOffset(), ed.endOffset());
 }
 
-void HexEditViewPage::importData(const ElementHeader* elemhdr)
+void HexEditViewPage::importData(FormatElement* formatelement)
 {
     QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
 
@@ -170,8 +174,8 @@ void HexEditViewPage::importData(const ElementHeader* elemhdr)
         QFile f(s);
         f.open(QIODevice::ReadOnly);
 
-        uint64_t offset = elemhdr->Offset();
-        uint64_t size = qMin(static_cast<uint64_t>(f.size()), (elemhdr->EndOffset() - offset));
+        uint64_t offset = formatelement->offset();
+        uint64_t size = qMin(static_cast<uint64_t>(f.size()), (formatelement->endOffset() - offset));
 
         if (size > 0)
         {

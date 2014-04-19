@@ -5,7 +5,8 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
-#include "prefsdk/format/formatdefinition.h"
+#include "prefsdk/format/formattree.h"
+#include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/disassembler.h"
 #include "crossreferencedialog/crossreferencedialog.h"
 #include "viewmodels/functionoffsetmodel/functionoffsetmodel.h"
@@ -23,8 +24,8 @@ class DisassemblerViewPage : public QWidget
     Q_OBJECT
     
     public:
-        explicit DisassemblerViewPage(ByteBuffer *bytebuffer, QWidget *parent = 0);
-        //NOTE: void setData(FormatTreeOld::Ptr formattree, FormatDefinitionOld::Ptr formatdefinition);
+        explicit DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *parent = 0);
+        void setData(FormatTree* formattree, const FormatList::Format& format);
         ~DisassemblerViewPage();
 
     private:
@@ -42,11 +43,12 @@ class DisassemblerViewPage : public QWidget
 
     private:
         Ui::DisassemblerViewPage *ui;
-        //FormatTreeOld::Ptr _formattree;
+        FormatTree* _formattree;
+        FormatList::Format _format;
         StringOffsetModel* _stringrefs;
         FunctionOffsetModel* _functionrefs;
         DisassemblerHelper* _disasmhelper;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         QToolBar* _toolbar;
         QAction* _actstop;
         QAction* _actdisassemble;

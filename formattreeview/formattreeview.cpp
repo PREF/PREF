@@ -11,14 +11,14 @@ FormatTreeView::FormatTreeView(QWidget *parent): QTreeView(parent)
     /* FormatTreeView Signal/Slots */
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
     connect(this, SIGNAL(clicked(QModelIndex)), this, SLOT(onTreeClicked(QModelIndex)));
-    connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(resizeColumnsOnExpandedOrCollapsed(QModelIndex)));
-    connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(resizeColumnsOnExpandedOrCollapsed(QModelIndex)));
+    connect(this, SIGNAL(expanded(QModelIndex)), this, SLOT(resizeSingleColumn(QModelIndex)));
+    connect(this, SIGNAL(collapsed(QModelIndex)), this, SLOT(resizeSingleColumn(QModelIndex)));
 }
 
 void FormatTreeView::setModel(FormatModel* model)
 {
     QTreeView::setModel(model);
-    this->resizeTreeColumns();
+    connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(adaptColumns(QModelIndex,QModelIndex)));
 }
 
 void FormatTreeView::setHighlightMenuVisible(bool b)
@@ -31,13 +31,19 @@ void FormatTreeView::setGotoMenuVisible(bool b)
     this->_gotovisible = b;
 }
 
+void FormatTreeView::adaptColumns(QModelIndex topleft, QModelIndex bottomright)
+{
+    int firstcol = topleft.column(), lastcol = bottomright.column();
+
+    for(int i = firstcol; i <= lastcol; i++)
+        this->resizeColumnToContents(i);
+}
+
 void FormatTreeView::setSelectedFormatObjectBase(int b)
 {
     QModelIndexList selidx = this->selectionModel()->selectedIndexes();
-    const ElementHeader* elemhdr = reinterpret_cast<const ElementHeader*>(selidx[0].internalPointer());
-
-    elemhdr->SetBase(b);
-    this->resizeTreeColumns();
+    FormatElement* formatelement = reinterpret_cast<FormatElement*>(selidx[0].internalPointer());
+    formatelement->setBase(b);
 }
 
 void FormatTreeView::showContextMenu(const QPoint &pos)
@@ -47,37 +53,37 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
     if(selmodel && selmodel->selectedRows().length() == 1)
     {
         QModelIndex midx = selmodel->selectedRows()[0];
-        const ElementHeader* elemhdr = reinterpret_cast<const ElementHeader*>(midx.internalPointer());
+        FormatElement* formatelement = reinterpret_cast<FormatElement*>(midx.internalPointer());
 
         this->_structuremenu->setGotoVisible(this->_gotovisible);
 
-        if(elemhdr->ElementType == ElementType::Structure)
+        if(formatelement->elementType() == ElementType::Structure)
         {
-            this->_structuremenu->setTitle(QString("'%1'").arg(QString::fromUtf8(elemhdr->DisplayName())));
+            this->_structuremenu->setTitle(QString("'%1'").arg(formatelement->displayName()));
             this->_structuremenu->menuAction()->setVisible(true);
         }
         else
             this->_structuremenu->menuAction()->setVisible(false);
 
-        if(elemhdr->ElementType == ElementType::Field)
+        if(formatelement->elementType() == ElementType::Field)
             this->_copymenu->setCopyValueVisible(true);
         else
             this->_copymenu->setCopyValueVisible(false);
 
-        this->_numericbasemenu->setBase(elemhdr->Base());
+        this->_numericbasemenu->setBase(formatelement->base());
         this->_formatobjectmenu->exec(this->mapToGlobal(pos));
     }
 }
 
 void FormatTreeView::onTreeClicked(const QModelIndex &index)
 {
-    const ElementHeader* elemhdr = reinterpret_cast<const ElementHeader*>(index.internalPointer());
+    FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if(elemhdr->ElementType == ElementType::BitField)
-        elemhdr = elemhdr->ParentElement(); /* Set index = BitField's Parent */
+    if(formatelement->elementType() == ElementType::BitField)
+        formatelement = formatelement->parentElement(); /* Set index = BitField's Parent */
 
-    if(elemhdr->Size())
-        emit formatObjectSelected(elemhdr);
+    if(formatelement->size())
+        emit formatObjectSelected(formatelement);
 }
 
 void FormatTreeView::setBackColor()
@@ -92,51 +98,51 @@ void FormatTreeView::removeBackColor()
 
 void FormatTreeView::onStructureGotoStart()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    emit gotoOffset(elemhdr->Offset());
+    FormatElement* formatelement = this->selectedElement();
+    emit gotoOffset(formatelement->offset());
 }
 
 void FormatTreeView::onStructureGotoEnd()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    emit gotoOffset(elemhdr->EndOffset());
+    FormatElement* formatelement = this->selectedElement();
+    emit gotoOffset(formatelement->endOffset());
 }
 
 void FormatTreeView::onStructureExport()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    emit exportAction(elemhdr);
+    FormatElement* formatelement = this->selectedElement();
+    emit exportAction(formatelement);
 }
 
 void FormatTreeView::onStructureImport()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    emit importAction(elemhdr);
+    FormatElement* formatelement = this->selectedElement();
+    emit importAction(formatelement);
 }
 
 void FormatTreeView::onCopyOffset()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    qApp->clipboard()->setText(QString("%1").arg(elemhdr->Offset(), 8, 16, QLatin1Char('0')).toUpper());
+    FormatElement* formatelement = this->selectedElement();
+    qApp->clipboard()->setText(QString("%1").arg(formatelement->offset(), 8, 16, QLatin1Char('0')).toUpper());
 }
 
 void FormatTreeView::onCopyName()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    qApp->clipboard()->setText(elemhdr->DisplayName());
+    FormatElement* formatelement = this->selectedElement();
+    qApp->clipboard()->setText(formatelement->displayName());
 }
 
 void FormatTreeView::onCopyValue()
 {
-    const ElementHeader* elemhdr = this->selectedElement();
-    qApp->clipboard()->setText(elemhdr->DisplayValue());
+    FormatElement* formatelement = this->selectedElement();
+    qApp->clipboard()->setText(formatelement->displayValue());
 }
 
-const ElementHeader *FormatTreeView::selectedElement() const
+FormatElement *FormatTreeView::selectedElement() const
 {
     QItemSelectionModel* selmodel = this->selectionModel();
     QModelIndex index = selmodel->selectedIndexes()[0]; /* Get Selected Node Index*/
-    return reinterpret_cast<const ElementHeader*>(index.internalPointer());
+    return reinterpret_cast<FormatElement*>(index.internalPointer());
 }
 
 void FormatTreeView::configureContextMenu(bool highlightvisible)
@@ -176,27 +182,21 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 
 void FormatTreeView::updateColor(bool set)
 {
-    const ElementHeader* elementhdr = this->selectedElement();
+    FormatElement* formatelement = this->selectedElement();
 
-    if(elementhdr->ElementType == ElementType::BitField)
-        elementhdr = elementhdr->ParentElement(); /* Change Object to BitField's parent */
+    if(formatelement->elementType() == ElementType::BitField)
+        formatelement = formatelement->parentElement(); /* Change Object to BitField's parent */
 
-    if(elementhdr->Size())
+    if(formatelement->size())
     {
         if(set)
-            emit setBackColor(elementhdr);
+            emit setBackColor(formatelement);
         else
-            emit removeBackColor(elementhdr);
+            emit removeBackColor(formatelement);
     }
 }
 
-void FormatTreeView::resizeTreeColumns()
+void FormatTreeView::resizeSingleColumn(const QModelIndex& index)
 {
-    for(int i = 0; i < this->model()->columnCount(); i++)
-        this->resizeColumnToContents(i);
-}
-
-void FormatTreeView::resizeColumnsOnExpandedOrCollapsed(const QModelIndex &)
-{
-    this->resizeTreeColumns();
+    this->adaptColumns(this->model()->index(index.row(), 0), this->model()->index(index.row(), this->model()->columnCount() - 1));
 }

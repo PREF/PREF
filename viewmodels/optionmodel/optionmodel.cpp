@@ -1,6 +1,6 @@
 #include "optionmodel.h"
 
-OptionModel::OptionModel(const FormatDefinition *formatdefinition, QObject *parent): QAbstractItemModel(parent), _formatdefinition(formatdefinition)
+OptionModel::OptionModel(const FormatList::Format &format, QObject *parent): QAbstractItemModel(parent), _format(format)
 {
     QImage img;
     img.load(":/misc_icons/res/formatoptions.png");
@@ -10,7 +10,7 @@ OptionModel::OptionModel(const FormatDefinition *formatdefinition, QObject *pare
 
 int OptionModel::columnCount(const QModelIndex &) const
 {
-    return 1;
+    return 3;
 }
 
 QVariant OptionModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -20,7 +20,13 @@ QVariant OptionModel::headerData(int section, Qt::Orientation orientation, int r
         switch(section)
         {
             case 0:
-                return "Option";
+                return "Index";
+
+            case 1:
+                return "Name";
+
+            case 2:
+                return "Description";
 
             default:
                 break;
@@ -35,13 +41,27 @@ QVariant OptionModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
-    if(index.column() == 0)
+    if(role == Qt::DisplayRole)
     {
-        if(role == Qt::DisplayRole)
-            return QString::fromUtf8(this->_formatdefinition->OptionName(index.row()));
-        else if(role == Qt::DecorationRole)
-            return this->_icooptions;
+        FormatList::Format::Option option = this->_format.option(index.row());
+
+        switch(index.column())
+        {
+            case 0:
+                return QString::number(option.index());
+
+            case 1:
+                return option.name();
+
+            case 2:
+                return option.description();
+
+            default:
+                break;
+        }
     }
+    else if(role == Qt::DecorationRole && index.column() == 0)
+        return this->_icooptions;
 
     return QVariant();
 }
@@ -61,7 +81,7 @@ QModelIndex OptionModel::parent(const QModelIndex &) const
 
 int OptionModel::rowCount(const QModelIndex &) const
 {
-    return this->_formatdefinition->OptionsCount();
+    return this->_format.optionsCount();
 }
 
 Qt::ItemFlags OptionModel::flags(const QModelIndex &index) const

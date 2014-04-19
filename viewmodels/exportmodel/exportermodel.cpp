@@ -1,6 +1,6 @@
-#include "exportmodel.h"
+#include "exportermodel.h"
 
-ExportModel::ExportModel(QObject *parent): QAbstractItemModel(parent)
+ExporterModel::ExporterModel(QObject *parent): QAbstractItemModel(parent)
 {
     QImage img;
     img.load(":/action_icons/res/export.png");
@@ -8,12 +8,12 @@ ExportModel::ExportModel(QObject *parent): QAbstractItemModel(parent)
     this->_icoexport = img.scaled(16, 16, Qt::KeepAspectRatio);
 }
 
-int ExportModel::columnCount(const QModelIndex &) const
+int ExporterModel::columnCount(const QModelIndex &) const
 {
     return 4;
 }
 
-QVariant ExportModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant ExporterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
@@ -39,28 +39,28 @@ QVariant ExportModel::headerData(int section, Qt::Orientation orientation, int r
     return QVariant();
 }
 
-QVariant ExportModel::data(const QModelIndex &index, int role) const
+QVariant ExporterModel::data(const QModelIndex &index, int role) const
 {
     if(!index.isValid())
         return QVariant();
 
     if(role == Qt::DisplayRole)
     {
-        ExportDefinition::Ptr ed = ExportList::exporter(index.row());
+        const ExporterList::Exporter& e = ExporterList::exporter(index.row());
 
         switch(index.column())
         {
             case 0:
-                return ed->name();
+                return e.name();
 
             case 1:
-                return ed->author();
+                return e.author();
 
             case 2:
-                return ed->version();
+                return e.version();
 
             case 3:
-                return ed->description();
+                return e.description();
 
             default:
                 break;
@@ -72,7 +72,7 @@ QVariant ExportModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QModelIndex ExportModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex ExporterModel::index(int row, int column, const QModelIndex &parent) const
 {
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
@@ -80,17 +80,17 @@ QModelIndex ExportModel::index(int row, int column, const QModelIndex &parent) c
     return this->createIndex(row, column);
 }
 
-QModelIndex ExportModel::parent(const QModelIndex &) const
+QModelIndex ExporterModel::parent(const QModelIndex &) const
 {
     return QModelIndex(); /* It's a List: No Parents! */
 }
 
-int ExportModel::rowCount(const QModelIndex &) const
+int ExporterModel::rowCount(const QModelIndex &) const
 {
-    return ExportList::length();
+    return ExporterList::length();
 }
 
-Qt::ItemFlags ExportModel::flags(const QModelIndex &index) const
+Qt::ItemFlags ExporterModel::flags(const QModelIndex &index) const
 {
     if(!index.isValid())
         return Qt::NoItemFlags;

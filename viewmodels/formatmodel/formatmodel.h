@@ -7,7 +7,6 @@
 #include "qhexedit/qhexeditdata.h"
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "prefsdk/format/formattree.h"
-#include "prefsdk/format/elements.h"
 
 using namespace PrefSDK;
 
@@ -17,7 +16,7 @@ class FormatModel : public FieldDataModel
 
     public:
         explicit FormatModel(QHexEditData* hexeditdata, QObject *parent = 0);
-        void setFormatTree(FormatTree* formattree);
+        void setFormatTree(FormatTree *formattree);
 
     private slots:
         void updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType);

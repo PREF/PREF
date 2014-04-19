@@ -9,47 +9,60 @@ namespace PrefSDK
 
     bool DataType::isSigned(DataType::Type type)
     {
-        return (type & DataType::Unsigned) == 0;
+        return DataType::isInteger(type) && (type & DataType::Signed);
     }
 
     bool DataType::isString(DataType::Type type)
     {
-        return (type & (DataType::Vector | DataType::Characters)) != 0;
+        return (type & (DataType::Vector | DataType::Characters));
     }
 
     bool DataType::isAscii(DataType::Type type)
     {
-        return (type & (DataType::Characters | DataType::Ascii)) != 0;
+        return DataType::isString(type) && (type & DataType::Ascii);
     }
 
     bool DataType::isUnicode(DataType::Type type)
     {
-        return (type & (DataType::Characters | DataType::Unicode)) != 0;
+        return DataType::isString(type) && (type & DataType::Unicode);
     }
 
     bool DataType::isArray(DataType::Type type)
     {
-        return (type & DataType::Vector) != 0;
+        return (type & DataType::Vector);
+    }
+
+    bool DataType::isLittleEndian(DataType::Type type)
+    {
+        return DataType::isInteger(type) && (type & DataType::LittleEndian);
+    }
+
+    bool DataType::isBigEndian(DataType::Type type)
+    {
+        return DataType::isInteger(type) && (type & DataType::BigEndian);
     }
 
     int DataType::sizeOf(DataType::Type type)
     {
-        if(type & DataType::Vector)
-            return 0;
+        return DataType::bitWidth(type) / 8;
+    }
 
-        if((type & DataType::Ascii) || (type == DataType::UInt8) || (type == DataType::Int8) || (type == DataType::Blob)) /* Blob requires 1 byte (used as array element only) */
-            return 1;
+    int DataType::byteWidth(DataType::Type type)
+    {
+        return DataType::sizeOf(type) * 2;
+    }
 
-        if((type & DataType::Unicode) || (type == DataType::UInt16) || (type == DataType::Int16))
-            return 2;
+    QSysInfo::Endian DataType::byteOrder(DataType::Type type)
+    {
+        if(DataType::isInteger(type))
+        {
+            if(type & DataType::LittleEndian)
+                return QSysInfo::LittleEndian;
 
-        if((type == DataType::UInt32) || (type == DataType::Int32))
-            return 4;
+            return QSysInfo::BigEndian;
+        }
 
-        if((type == DataType::UInt64) || (type == DataType::Int64))
-            return 8;
-
-        return 0;
+        return QSysInfo::ByteOrder;
     }
 
     QString DataType::stringValue(DataType::Type type)
@@ -62,41 +75,53 @@ namespace PrefSDK
             case DataType::UnicodeCharacter:
                 return "UnicodeChar";
 
-            case DataType::UInt8:
-                return "UInt8";
-
-            case DataType::Int8:
-                return "Int8";
-
-            case DataType::UInt16:
-                return "UInt16";
-
-            case DataType::Int16:
-                return "Int16";
-
-            case DataType::UInt32:
-                return "UInt32";
-
-            case DataType::Int32:
-                return "Int32";
-
-            case DataType::UInt64:
-                return "UInt64";
-
-            case DataType::Int64:
-                return "Int64";
-
-            case DataType::Array:
-                return "List";
-
             case DataType::AsciiString:
                 return "AsciiString";
 
             case DataType::UnicodeString:
                 return "UnicodeString";
 
+            case DataType::Array:
+                return "Array";
+
             case DataType::Blob: /* Blob requires 1 byte (used in array only) */
                 return "Blob";
+
+            case DataType::UInt8:
+                return "UInt8";
+
+            case DataType::UInt16:
+            case DataType::UInt16_LE:
+            case DataType::UInt16_BE:
+                return "UInt16";
+
+            case DataType::UInt32:
+            case DataType::UInt32_LE:
+            case DataType::UInt32_BE:
+                return "UInt32";
+
+            case DataType::UInt64:
+            case DataType::UInt64_LE:
+            case DataType::UInt64_BE:
+                return "UInt16";
+
+            case DataType::Int8:
+                return "Int8";
+
+            case DataType::Int16:
+            case DataType::Int16_LE:
+            case DataType::Int16_BE:
+                return "Int16";
+
+            case DataType::Int32:
+            case DataType::Int32_LE:
+            case DataType::Int32_BE:
+                return "Int32";
+
+            case DataType::Int64:
+            case DataType::Int64_LE:
+            case DataType::Int64_BE:
+                return "Int16";
 
             default:
                 break;
@@ -105,7 +130,7 @@ namespace PrefSDK
         return "Unknown";
     }
 
-    int DataType::byteWidth(DataType::Type type)
+    int DataType::bitWidth(DataType::Type type)
     {
         switch(type)
         {
@@ -113,20 +138,32 @@ namespace PrefSDK
             case DataType::AsciiCharacter:
             case DataType::UInt8:
             case DataType::Int8:
-                return 1;
+                return 8;
 
             case DataType::UnicodeCharacter:
             case DataType::UInt16:
+            case DataType::UInt16_LE:
+            case DataType::UInt16_BE:
             case DataType::Int16:
-                return 2;
+            case DataType::Int16_LE:
+            case DataType::Int16_BE:
+                return 16;
 
             case DataType::UInt32:
+            case DataType::UInt32_LE:
+            case DataType::UInt32_BE:
             case DataType::Int32:
-                return 4;
+            case DataType::Int32_LE:
+            case DataType::Int32_BE:
+                return 32;
 
             case DataType::UInt64:
+            case DataType::UInt64_LE:
+            case DataType::UInt64_BE:
             case DataType::Int64:
-                return 8;
+            case DataType::Int64_LE:
+            case DataType::Int64_BE:
+                return 64;
 
             default:
                 break;

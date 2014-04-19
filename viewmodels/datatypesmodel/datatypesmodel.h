@@ -5,7 +5,7 @@
 #include <QtGui>
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/global/numericlimits.h"
+#include "prefsdk/numericlimits.h"
 
 class DataTypesModel : public FieldDataModel
 {
@@ -18,7 +18,7 @@ class DataTypesModel : public FieldDataModel
 
     public slots:
         void setOffset(qint64 pos);
-        void setData(ByteBuffer *bytebuffer);
+        void setData(QHexEditData *hexeditdata);
         void setEndian(QSysInfo::Endian endian);
         void setBase(int base);
 
@@ -27,13 +27,14 @@ class DataTypesModel : public FieldDataModel
         void updateData();
 
     private:
-        static QVector<DataType::Type> _types;
-        static QVector<QString> _typenames;
+        static QHash<QSysInfo::Endian, QHash<DataType::Type, DataType::Type> > _botypes;
+        static QList<DataType::Type> _types;
+        static QList<QString> _typenames;
 
     private:
         static const int STRING_LENGTH;
         QFont _monospacefont;
-        ByteBuffer* _bytebuffer;
+        QHexEditData* _hexeditdata;
         QSysInfo::Endian _endian;
         qint64 _offset;
         int _base;
