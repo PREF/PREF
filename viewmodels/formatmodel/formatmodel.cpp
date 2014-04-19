@@ -23,6 +23,9 @@ void FormatModel::setFormatTree(FormatTree *formattree)
 
 void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType)
 {
+    if(!this->_formattree)
+        return;
+
     qint64 startoffset = offset;
     qint64 endoffset = offset + length;
 
