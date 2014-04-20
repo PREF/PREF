@@ -63,10 +63,7 @@ void DisassemblerViewPage::onActDisassembleTriggered()
 {
     this->_actgoto->setEnabled(false);
 
-    //DisassemblerLoader::Ptr loader = this->_formatdefinition->generateLoader(this->_formattree, this->_bytebuffer);
-    //ui->disassemblyView->setLoader(loader);
-
-    //QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_bytebuffer, this->_formatdefinition, loader);
+    QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_hexeditdata);
 }
 
 void DisassemblerViewPage::onFunctionsMenuXRefsTriggered()
@@ -119,7 +116,7 @@ void DisassemblerViewPage::displayDisassembly()
     this->_actgoto->setEnabled(true);
 
     /* Disassembly Page */
-    ui->disassemblyView->setListing(this->_disasmhelper->listing());
+    //ui->disassemblyView->setListing(this->_disasmhelper->listing());
     //ui->disassemblyView->gotoEP();
 
     /* Function Reference Part */

@@ -10,57 +10,18 @@ void DisassemblerHelper::stop()
     this->_cancontinue = false;
 }
 
-DisassemblerListing::Ptr DisassemblerHelper::listing()
+void DisassemblerHelper::run(QHexEditData *hexeditdata)
 {
-    return this->_listing;
-}
+    lua_State* l = SDKManager::state();
 
-/*
-void DisassemblerHelper::run(ByteBuffer *bytebuffer, FormatDefinitionOld::Ptr formatdefinition, DisassemblerLoader::Ptr loader)
-{
-    this->_cancontinue = true;
+    lua_getglobal(l, "Sdk");
+    lua_getfield(l, -1, "disassembleFormat");
+    lua_pushlightuserdata(l, hexeditdata);
+    int res = lua_pcall(l, 1, 0, 0);
 
-    try
-    {
-        ProcessorDefinition::Ptr processor = loader->processor();
-        this->_listing = DisassemblerListing::create(formatdefinition->state(), bytebuffer, processor);
+    if(res != 0)
+        DebugDialog::instance()->out(lua_tostring(l, -1));
 
-        for(int i = 0; i < loader->entryCount(); i++)
-        {
-            AddressQueue::Ptr addrqueue = AddressQueue::create(formatdefinition->state());
-            addrqueue->pushBack(loader->entryAddress(i));
-
-            while(this->_cancontinue && !addrqueue->isEmpty())
-            {
-                lua_Integer address = addrqueue->popBack();
-
-                if(this->_listing->isDisassembled(address))
-                    continue;
-
-                if(!loader->inSegment(address))
-                {
-                    DebugDialog::instance()->out("Trying to disassemble no code segment at address: ")->out(address, 16)->newLine(2)->exec();
-                    this->_listing->printBacktrace();
-                    break;
-                }
-
-                Instruction::Ptr instr = Instruction::create(formatdefinition->state(), address, address, bytebuffer);
-                lua_Integer sz = processor->analyze(instr);
-
-                if(sz)
-                    processor->emulate(addrqueue, this->_listing->referenceTable(), instr);
-                else
-                    addrqueue->pushFront(address + 1);  Got an Invalid Instruction: Try To Disassemble Next Byte
-
-                this->_listing->addInstruction(instr);
-            }
-        }
-    }
-    catch(LuaException&)
-    {
-        this->_listing->printBacktrace();
-    }
-
+    lua_pop(l, (res ? 2 : 1));
     emit finished();
 }
-*/

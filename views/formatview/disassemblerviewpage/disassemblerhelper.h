@@ -3,10 +3,11 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "prefsdk/qlua.h"
+#include <lua.hpp>
 #include "qhexedit/qhexeditdata.h"
+#include "prefsdk/sdkmanager.h"
+#include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/addressqueue.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
 
 using namespace PrefSDK;
 
@@ -16,16 +17,14 @@ class DisassemblerHelper : public QObject
 
     public:
         explicit DisassemblerHelper(QObject *parent = 0);
-        //void run(ByteBuffer *bytebuffer, FormatDefinitionOld::Ptr formatdefinition, DisassemblerLoader::Ptr loader);
+        void run(QHexEditData *hexeditdata);
         void stop();
-        DisassemblerListing::Ptr listing();
 
     signals:
         void finished();
 
     private:
         bool _cancontinue;
-        DisassemblerListing::Ptr _listing;
 };
 
 #endif // DISASSEMBLERHELPER_H
