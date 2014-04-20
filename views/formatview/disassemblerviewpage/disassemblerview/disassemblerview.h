@@ -9,7 +9,7 @@ class DisassemblerView : public QFrame
 
     public:
         explicit DisassemblerView(QWidget *parent = 0);
-        void setLoader(DisassemblerLoader::Ptr dl);
+        void setLoader(const ProcessorLoader& dl);
         void setListing(DisassemblerListing::Ptr dl);
         void gotoVA(quint64 va);
         void gotoEP();

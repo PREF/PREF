@@ -17,9 +17,6 @@ namespace PrefSDK
             QString name() const;
             DisassemblerSegment::SegmentType type() const;
 
-        public:
-            static void declareGlobals(lua_State *l);
-
         private:
             QString _name;
             lua_Integer _baseaddress;

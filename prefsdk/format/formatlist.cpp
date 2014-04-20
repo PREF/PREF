@@ -67,8 +67,13 @@ namespace PrefSDK
         return FormatList::_formats.length();
     }
 
-    const FormatList::Format& FormatList::format(int i)
+    FormatList::Format &FormatList::format(int i)
     {
-        return FormatList::_formats.at(i);
+        return FormatList::_formats[i];
+    }
+
+    FormatList::Format &FormatList::formatFromId(FormatList::FormatId id)
+    {
+        return FormatList::_formats[FormatList::_formatmap[id]];
     }
 }

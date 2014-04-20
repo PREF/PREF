@@ -55,7 +55,7 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const FormatList::Format& f = FormatList::format(this->_category->globalFormatIndex(index.row()));
+        FormatList::Format& f = FormatList::format(this->_category->globalFormatIndex(index.row()));
 
         switch(index.column())
         {

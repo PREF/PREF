@@ -57,7 +57,7 @@ void DisassemblerViewPrivate::gotoEP()
     */
 }
 
-void DisassemblerViewPrivate::setLoader(DisassemblerLoader::Ptr dl)
+void DisassemblerViewPrivate::setLoader(const ProcessorLoader &dl)
 {
     this->_loader = dl;
 }
@@ -124,6 +124,7 @@ void DisassemblerViewPrivate::setCharColor(InstructionItem* ii, const QChar& ch,
 
 void DisassemblerViewPrivate::setInstructionColor(InstructionItem *ii, QPainter &painter)
 {
+    /* NOTE: !!!
     Instruction::Ptr instruction = ii->instruction();
     Instruction::InstructionFeatures features = this->_loader->processor()->features(instruction->instructionType());
 
@@ -137,10 +138,12 @@ void DisassemblerViewPrivate::setInstructionColor(InstructionItem *ii, QPainter 
         painter.setPen(this->_nofeaturecolor);
     else
         painter.setPen(Qt::black);
+    */
 }
 
 void DisassemblerViewPrivate::drawLine(QPainter &painter, QFontMetrics &fm, lua_Integer i, int y)
 {
+    /* NOTE: !!!
     int x = 0;
     ListingItem* item = this->_listing->item(i);
 
@@ -159,7 +162,8 @@ void DisassemblerViewPrivate::drawLine(QPainter &painter, QFontMetrics &fm, lua_
         this->drawInstruction(ii, painter, fm, x + this->_hexdumpwidth + this->_labelwidth, y);
     }
     else if(item->itemType() == ListingItem::Label)
-        this->drawLabel(dynamic_cast<LabelItem*>(item), painter, fm, x + this->_hexdumpwidth, y);
+        this->drawLabel(dynamic_cast<LabelItem*>(item), painter, fm, x + this->_hexdumpwidth, y);  
+    */
 }
 
 int DisassemblerViewPrivate::drawAddress(const QString& segmentname, QPainter &painter, QFontMetrics &fm, ListingItem* li, int y)
@@ -238,9 +242,9 @@ void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference::Ptr
         if(address == ignoreaddress)
             continue;
 
-        if(this->_loader->inSegment(address))
+        if(this->_loader.inSegment(address))
         {
-            DisassemblerSegment ds = this->_loader->segment(address);
+            DisassemblerSegment ds = this->_loader.segment(address);
 
             if(addresses.isEmpty())
                 addresses.append(QString("%1:%2").arg(ds.name(), QString::number(address, 16).toUpper()));

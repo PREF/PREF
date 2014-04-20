@@ -14,6 +14,12 @@ namespace PrefSDK
             FormatList::registerOption(formatid, optionidx, QString::fromUtf8(name), QString::fromUtf8(description));
         }
 
+        void Format_enableDisassembler(FormatList::FormatId formatid)
+        {
+            FormatList::Format& format = FormatList::formatFromId(formatid);
+            format.enableDisassembler();
+        }
+
         bool Format_checkUInt8(QHexEditData* hexeditdata, uint64_t offset, uint8_t value)
         {
             uint8_t dataval = static_cast<uint8_t>(hexeditdata->at(offset));

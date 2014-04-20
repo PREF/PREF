@@ -1,7 +1,8 @@
 #ifndef PREFSDK_DISASSEMBLERRANGE_H
 #define PREFSDK_DISASSEMBLERRANGE_H
 
-#include "prefsdk/qlua.h"
+#include <lua.hpp>
+#include <QtCore>
 
 namespace PrefSDK
 {
@@ -9,18 +10,18 @@ namespace PrefSDK
     {
         public:
             DisassemblerRange();
-            DisassemblerRange(lua_Integer start, lua_Integer end);
+            DisassemblerRange(quint64 start, quint64 end);
             DisassemblerRange(const DisassemblerRange& dr);
-            lua_Integer start() const;
-            lua_Integer end() const;
-            bool contains(lua_Integer addr) const;
+            quint64 start() const;
+            quint64 end() const;
+            quint64 size() const;
+            bool contains(quint64 addr) const;
             bool isEmpty() const;
-            lua_Integer size() const;
             DisassemblerRange &operator=(const DisassemblerRange& rhs);
 
         private:
-            lua_Integer _start;
-            lua_Integer _end;
+            quint64 _start;
+            quint64 _end;
     };
 }
 #endif // PREFSDK_DISASSEMBLERRANGE_H

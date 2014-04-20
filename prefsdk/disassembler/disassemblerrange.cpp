@@ -7,7 +7,7 @@ namespace PrefSDK
         this->_start = this->_end = 0;
     }
 
-    DisassemblerRange::DisassemblerRange(lua_Integer start, lua_Integer end)
+    DisassemblerRange::DisassemblerRange(quint64 start, quint64 end)
     {
         this->_start = start;
         this->_end = end;
@@ -18,17 +18,22 @@ namespace PrefSDK
         *this = dr;
     }
 
-    lua_Integer DisassemblerRange::start() const
+    quint64 DisassemblerRange::start() const
     {
         return this->_start;
     }
 
-    lua_Integer DisassemblerRange::end() const
+    quint64 DisassemblerRange::end() const
     {
         return this->_end;
     }
 
-    bool DisassemblerRange::contains(lua_Integer addr) const
+    quint64 DisassemblerRange::size() const
+    {
+        return this->_end - this->_start;
+    }
+
+    bool DisassemblerRange::contains(quint64 addr) const
     {
         return (addr >= this->_start && addr <= this->_end);
     }
@@ -36,11 +41,6 @@ namespace PrefSDK
     bool DisassemblerRange::isEmpty() const
     {
         return this->_start >= this->_end;
-    }
-
-    lua_Integer DisassemblerRange::size() const
-    {
-        return this->_end - this->_start;
     }
 
     DisassemblerRange &DisassemblerRange::operator=(const DisassemblerRange &rhs)

@@ -23,7 +23,7 @@ FormatsDialog::FormatsDialog(qint64 maxlen, QWidget *parent): QDialog(parent), u
         ui->tvFormats->resizeColumnToContents(i);
 }
 
-const FormatList::Format &FormatsDialog::selectedFormat()
+FormatList::Format &FormatsDialog::selectedFormat()
 {
     CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
     QItemSelectionModel* model = ui->tvFormats->selectionModel();

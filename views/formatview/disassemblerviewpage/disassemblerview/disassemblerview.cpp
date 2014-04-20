@@ -24,7 +24,7 @@ DisassemblerView::DisassemblerView(QWidget *parent): QFrame(parent)
     this->setLayout(this->_hlayout);
 }
 
-void DisassemblerView::setLoader(DisassemblerLoader::Ptr dl)
+void DisassemblerView::setLoader(const ProcessorLoader &dl)
 {
     this->_disasmview_p->setLoader(dl);
 }

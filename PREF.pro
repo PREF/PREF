@@ -71,7 +71,6 @@ SOURCES += main.cpp\
     prefsdk/disassembler/disassemblerrange.cpp \
     prefsdk/disassembler/disassemblerfunction.cpp \
     prefsdk/disassembler/disassemblersegment.cpp \
-    prefsdk/disassembler/disassemblerloader.cpp \
     prefsdk/disassembler/processor/instruction.cpp \
     prefsdk/disassembler/processor/operand.cpp \
     prefsdk/disassembler/processor/processordefinition.cpp \
@@ -145,7 +144,9 @@ SOURCES += main.cpp\
     prefsdk/api/datatypeapi.cpp \
     prefsdk/api/exporterapi.cpp \
     prefsdk/exporter/exporterlist.cpp \
-    viewmodels/exportmodel/exportermodel.cpp
+    viewmodels/exportmodel/exportermodel.cpp \
+    prefsdk/disassembler/processorloader.cpp \
+    prefsdk/api/processorapi.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -210,7 +211,6 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/disassemblerrange.h \
     prefsdk/disassembler/disassemblerfunction.h \
     prefsdk/disassembler/disassemblersegment.h \
-    prefsdk/disassembler/disassemblerloader.h \
     prefsdk/disassembler/processor/instruction.h \
     prefsdk/disassembler/processor/operand.h \
     prefsdk/disassembler/processor/processordefinition.h \
@@ -286,7 +286,9 @@ HEADERS  += mainwindow.h \
     prefsdk/numericlimits.h \
     prefsdk/api/exporterapi.h \
     viewmodels/exportmodel/exportermodel.h \
-    prefsdk/exporter/exporterlist.h
+    prefsdk/exporter/exporterlist.h \
+    prefsdk/disassembler/processorloader.h \
+    prefsdk/api/processorapi.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

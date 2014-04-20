@@ -28,16 +28,4 @@ namespace PrefSDK
     {
         return this->_type;
     }
-
-    void DisassemblerSegment::declareGlobals(lua_State* l)
-    {
-        if(LuaTable::global(l, "SegmentType")->isNull())
-        {
-            LuaTable::Ptr t = LuaTable::create(l);
-            t->set("Code", DisassemblerSegment::Code);
-            t->set("Data", DisassemblerSegment::Data);
-
-            t->pushGlobal("SegmentType");
-        }
-    }
 }

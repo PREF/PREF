@@ -41,7 +41,7 @@ void DisassemblerViewPage::setData(FormatTree* formattree, const FormatList::For
     this->_formattree = formattree;
     this->_format = format;
 
-    if(formattree)
+    if(format.canDisassemble())
         this->_toolbar->setEnabled(true);
 }
 

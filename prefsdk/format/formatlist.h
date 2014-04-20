@@ -1,10 +1,11 @@
 #ifndef FORMATLIST_H
 #define FORMATLIST_H
 
+#include <lua.hpp>
 #include <QtCore>
 #include "prefsdk/categorymanager.h"
+#include "prefsdk/disassembler/disassembler.h"
 #include "debugdialog/debugdialog.h"
-#include "lua.h"
 
 namespace PrefSDK
 {
@@ -32,15 +33,18 @@ namespace PrefSDK
                     };
 
                 public:
-                    Format(): _id(nullptr) { }
-                    Format(const QString& name, const QString& category, const QString& author, const QString& version, FormatId id): _name(name), _category(category), _author(author), _version(version), _id(id) { }
+                    Format(): _id(nullptr), _candisassemble(false) { }
+                    Format(const QString& name, const QString& category, const QString& author, const QString& version, FormatId id): _name(name), _category(category), _author(author), _version(version), _candisassemble(false), _id(id) { }
                     void addOption(int optionidx, const QString& name, const QString& description) { this->_options[optionidx] = Option(optionidx, name, description); }
+                    void enableDisassembler() { this->_candisassemble = true; }
                     Option option(int idx) const { return this->_options[idx + 1]; }
+                    ProcessorLoader& disassemblerLoader() { return this->_disassembler; }
                     int optionsCount() const { return this->_options.count(); }
                     const QString& name() const { return this->_name; }
                     const QString& category() const { return this->_category; }
                     const QString& author() const { return this->_author; }
                     const QString& version() const { return this->_version; }
+                    bool canDisassemble() const { return this->_candisassemble; }
                     FormatList::FormatId id() const { return this->_id; }
 
                 private:
@@ -48,8 +52,10 @@ namespace PrefSDK
                     QString _category;
                     QString _author;
                     QString _version;
+                    bool _candisassemble;
                     FormatId _id;
-                    QHash<int, Option> _options;
+                    ProcessorLoader _disassembler;
+                    QHash<int, Format::Option> _options;
             };
 
         private:
@@ -60,7 +66,8 @@ namespace PrefSDK
             static void load(lua_State *l);
             static void registerFormat(const QString& name, const QString& category, const QString& author, const QString& version, FormatList::FormatId formatid);
             static void registerOption(FormatList::FormatId formatid, int optionidx, const QString& name, const QString &description);
-            static const FormatList::Format& format(int i);
+            static FormatList::Format& format(int i);
+            static FormatList::Format& formatFromId(FormatList::FormatId id);
             static int length();
 
         private:

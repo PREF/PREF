@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "prefsdk/disassembler/disassemblerlisting.h"
-#include "prefsdk/disassembler/disassemblerloader.h"
+#include "prefsdk/disassembler/processorloader.h"
 
 using namespace PrefSDK;
 
@@ -17,7 +17,7 @@ class DisassemblerViewPrivate : public QWidget
         explicit DisassemblerViewPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent = 0);
         void gotoVA(quint64 va);
         void gotoEP();
-        void setLoader(DisassemblerLoader::Ptr dl);
+        void setLoader(const ProcessorLoader& dl);
         void setListing(DisassemblerListing::Ptr dl);
 
     private:
@@ -45,7 +45,7 @@ class DisassemblerViewPrivate : public QWidget
         virtual void keyPressEvent(QKeyEvent* e);
 
     private:
-        DisassemblerLoader::Ptr _loader;
+        ProcessorLoader _loader;
         DisassemblerListing::Ptr _listing;
         QScrollArea* _scrollArea;
         QScrollBar* _vscrollbar;
