@@ -24,21 +24,21 @@ namespace PrefSDK
         return static_cast<Instruction::InstructionFeatures>(f);
     }
 
-    lua_Integer ProcessorDefinition::analyze(const Instruction::Ptr &instr)
+    lua_Integer ProcessorDefinition::analyze(const Instruction *instr)
     {
-        return this->call<lua_Integer, LuaTable::Ptr>("analyze", *instr);
+        //return this->call<lua_Integer, LuaTable::Ptr>("analyze", *instr);
     }
 
-    void ProcessorDefinition::emulate(const AddressQueue::Ptr& queue, ReferenceTable *reftable, const Instruction::Ptr &instr)
+    void ProcessorDefinition::emulate(const AddressQueue::Ptr& queue, ReferenceTable *reftable, const Instruction* instr)
     {
-        this->call<void, LuaTable::Ptr, LuaTable::Ptr, LuaTable::Ptr>("emulate", *queue, *reftable, *instr);
+        //this->call<void, LuaTable::Ptr, LuaTable::Ptr, LuaTable::Ptr>("emulate", *queue, *reftable, *instr);
     }
 
-    QString ProcessorDefinition::output(ReferenceTable *reftable, const Instruction::Ptr &instr)
+    QString ProcessorDefinition::output(ReferenceTable *reftable, const Instruction* instr)
     {
-        OutputBuffer ob(this->state(), reftable);
-        this->call<void, LuaTable::Ptr, LuaTable::Ptr>("output", ob, *instr);
-        return ob.buffer();
+        //OutputBuffer ob(this->state(), reftable);
+        //this->call<void, LuaTable::Ptr, LuaTable::Ptr>("output", ob, *instr);
+        //return ob.buffer();
     }
 
     void ProcessorDefinition::updatePc(lua_Integer amount)

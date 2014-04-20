@@ -1,11 +1,12 @@
 #ifndef PREFSDK_REFERENCETABLE_H
 #define PREFSDK_REFERENCETABLE_H
 
-#include "prefsdk/qlua.h"
+#include <QtCore>
+#include <cstdint>
 
 namespace PrefSDK
 {
-    class ReferenceTable : public QObject, public LuaCTable
+    class ReferenceTable: public QObject
     {
         Q_OBJECT
 
@@ -16,9 +17,7 @@ namespace PrefSDK
 
             struct Reference
             {
-                typedef std::shared_ptr<Reference> Ptr;
-
-                QList<lua_Integer> InstructionAddresses;
+                QList<uint64_t> InstructionAddresses;
                 ReferenceTable::ReferenceType Type;
                 QString Prefix;
 
@@ -27,26 +26,23 @@ namespace PrefSDK
                     ReferenceTable::CodeReference CodeFlags;
                     ReferenceTable::DataReference DataFlags;
                 };
-
-                static Reference::Ptr create() { return Reference::Ptr(new Reference()); }
             };
 
         private:
-            typedef QMap<lua_Integer, Reference::Ptr> ReferenceMap;
+            typedef QMap<uint64_t, Reference> ReferenceMap;
 
         public:
-            static void declareGlobals(lua_State* l);
+            explicit ReferenceTable(QObject* parent = 0);
+            bool isReference(uint64_t address);
+            ReferenceTable::Reference reference(uint64_t address);
 
-        public:
-            explicit ReferenceTable(lua_State* l, QObject* parent = 0);
-            bool isReference(lua_Integer address);
-            ReferenceTable::Reference::Ptr reference(lua_Integer address);
-
+        /*
         lua_public:
             void codeRef(lua_Integer address, lua_Integer addressby, lua_Integer flags);
+        */
 
         signals:
-            void codeReferenceAdded(lua_Integer address);
+            void codeReferenceAdded(uint64_t address);
 
         private:
             ReferenceMap _refs;

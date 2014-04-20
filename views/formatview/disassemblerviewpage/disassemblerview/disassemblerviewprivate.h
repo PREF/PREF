@@ -18,7 +18,7 @@ class DisassemblerViewPrivate : public QWidget
         void gotoVA(quint64 va);
         void gotoEP();
         void setLoader(const ProcessorLoader& dl);
-        void setListing(DisassemblerListing::Ptr dl);
+        void setListing(DisassemblerListing *dl);
 
     private:
         void adjust();
@@ -31,7 +31,7 @@ class DisassemblerViewPrivate : public QWidget
         void drawLabel(LabelItem* li, QPainter &painter, QFontMetrics &fm, int x, int y);
         void drawComment(const QString& s, QPainter &painter, QFontMetrics &fm, int x, int y);
         void drawInstruction(InstructionItem *ii, QPainter& painter, QFontMetrics& fm, int x, int y);
-        void drawReference(const ReferenceTable::Reference::Ptr ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y);
+        void drawReference(const ReferenceTable::Reference& ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y);
 
     private slots:
         void onDisassemblerDataChanged(quint64);
@@ -46,7 +46,7 @@ class DisassemblerViewPrivate : public QWidget
 
     private:
         ProcessorLoader _loader;
-        DisassemblerListing::Ptr _listing;
+        DisassemblerListing* _listing;
         QScrollArea* _scrollArea;
         QScrollBar* _vscrollbar;
         QColor _nofeaturecolor;

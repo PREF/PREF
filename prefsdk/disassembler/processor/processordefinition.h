@@ -24,9 +24,9 @@ namespace PrefSDK
 
         lua_public:
             Instruction::InstructionFeatures features(lua_Integer itype);
-            lua_Integer analyze(const Instruction::Ptr& instr);
-            void emulate(const AddressQueue::Ptr& queue, ReferenceTable *reftable, const Instruction::Ptr& instr);
-            QString output(ReferenceTable *reftable, const Instruction::Ptr& instr);
+            lua_Integer analyze(const Instruction *instr);
+            void emulate(const AddressQueue::Ptr& queue, ReferenceTable *reftable, const Instruction *instr);
+            QString output(ReferenceTable *reftable, const Instruction *instr);
 
         public slots:
             void updatePc(lua_Integer amount);

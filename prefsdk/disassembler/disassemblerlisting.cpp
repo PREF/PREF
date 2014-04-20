@@ -2,17 +2,17 @@
 
 namespace PrefSDK
 {
-    DisassemblerListing::DisassemblerListing(lua_State* l, ByteBuffer *bytebuffer, const ProcessorDefinition::Ptr& processordef, QObject* parent): QObject(parent), LuaCTable(l, "DisassembleListing")
+    DisassemblerListing::DisassemblerListing(QHexEditData* hexeditdata, const ProcessorDefinition::Ptr& processordef, QObject* parent): QObject(parent)
     {
         this->_maxinstructionsize = 1;
-        this->_bytebuffer = bytebuffer;
+        this->_hexeditdata = hexeditdata;
         this->_processordef = processordef;
-        this->_referencetable = new ReferenceTable(l);
+        this->_referencetable = new ReferenceTable();
 
-        connect(this->_referencetable, SIGNAL(codeReferenceAdded(lua_Integer)), this, SLOT(onCodeReferenceAdded(lua_Integer)));
+        connect(this->_referencetable, SIGNAL(codeReferenceAdded(uint64_t)), this, SLOT(onCodeReferenceAdded(uint64_t)));
     }
 
-    void DisassemblerListing::addInstruction(const Instruction::Ptr& instruction)
+    void DisassemblerListing::addInstruction(Instruction* instruction)
     {
         if(instruction->instructionSize() > this->_maxinstructionsize)
             this->_maxinstructionsize = instruction->instructionSize();
@@ -20,7 +20,7 @@ namespace PrefSDK
         this->_listing.add(new InstructionItem(instruction, this->_processordef, this->_referencetable));
     }
 
-    bool DisassemblerListing::isDisassembled(lua_Integer address)
+    bool DisassemblerListing::isDisassembled(uint64_t address)
     {
         return this->_listing.containsInstruction(address);
     }
@@ -35,9 +35,9 @@ namespace PrefSDK
         return this->_referencetable;
     }
 
-    ByteBuffer *DisassemblerListing::buffer()
+    QHexEditData *DisassemblerListing::buffer()
     {
-        return this->_bytebuffer;
+        return this->_hexeditdata;
     }
 
     int DisassemblerListing::itemCount()
@@ -56,22 +56,17 @@ namespace PrefSDK
         {
             ListingItem* li = this->item(i);
 
-            if(li->itemType() == ListingItem::Instruction)
+            if(li->itemType() == ListingItems::Instruction)
             {
                 InstructionItem* ii = dynamic_cast<InstructionItem*>(li);
                 QString instr = this->_processordef->output(this->_referencetable, ii->instruction());
                 lua_Integer size = ii->instruction()->instructionSize();
-                DebugDialog::instance()->out(ii->address(), 16, 4)->hexDump(this->_bytebuffer->read(ii->address(), size))->outWord(instr)->outWord("\tSize:")->out(size)->newLine()->exec();
+                DebugDialog::instance()->out(ii->address(), 16, 4)->hexDump(this->_hexeditdata->read(ii->address(), size))->outWord(instr)->outWord("\tSize:")->out(size)->newLine()->exec();
             }
         }
     }
 
-    DisassemblerListing::Ptr DisassemblerListing::create(lua_State *l, ByteBuffer* bytebuffer, const ProcessorDefinition::Ptr& processordef)
-    {
-        return DisassemblerListing::Ptr(new DisassemblerListing(l, bytebuffer, processordef));
-    }
-
-    void DisassemblerListing::onCodeReferenceAdded(lua_Integer address)
+    void DisassemblerListing::onCodeReferenceAdded(uint64_t address)
     {
         LabelItem* li = new LabelItem(QString::number(address, 16), address, this->_referencetable);
         this->_listing.add(li);

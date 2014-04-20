@@ -43,10 +43,10 @@ namespace PrefSDK
             {
                 if(this->_reftable->isReference(val))
                 {
-                    ReferenceTable::Reference::Ptr ref = this->_reftable->reference(val);
+                    ReferenceTable::Reference ref = this->_reftable->reference(val);
 
-                    if(ref->Type == ReferenceTable::Code)
-                        this->_buffer.append(QString("%1%2").arg(ref->Prefix, QString::number(val, 16).toUpper()));
+                    if(ref.Type == ReferenceTable::Code)
+                        this->_buffer.append(QString("%1%2").arg(ref.Prefix, QString::number(val, 16).toUpper()));
                 }
             }
             break;

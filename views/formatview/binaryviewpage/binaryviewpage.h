@@ -5,7 +5,6 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
-#include "prefsdk/io/bytebuffer.h"
 #include "displaymodewidget.h"
 
 using namespace PrefSDK;

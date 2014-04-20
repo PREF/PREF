@@ -9,7 +9,6 @@
 #include "actionwidget/actiontoolbar.h"
 #include "binarynavigator/binarynavigator.h"
 #include "viewmodels/formatmodel/formatmodel.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/sdkmanager.h"
 #include "prefsdk/math.h"

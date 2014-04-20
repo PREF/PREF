@@ -12,7 +12,7 @@ namespace PrefSDK
 
         public:
             explicit LabelItem(QString labelname, lua_Integer address, ReferenceTable* reftable, QObject *parent = 0);
-            virtual ListingItemType itemType();
+            virtual ListingItems::Type itemType();
             virtual QString stringValue();
 
         private:

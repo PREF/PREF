@@ -1,6 +1,6 @@
 #include "disassemblerviewprivate.h"
 
-DisassemblerViewPrivate::DisassemblerViewPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent): QWidget(parent)
+DisassemblerViewPrivate::DisassemblerViewPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent): QWidget(parent), _listing(nullptr)
 {
     this->_scrollArea = scrollarea;
     this->_vscrollbar = vscrollbar;
@@ -62,7 +62,7 @@ void DisassemblerViewPrivate::setLoader(const ProcessorLoader &dl)
     this->_loader = dl;
 }
 
-void DisassemblerViewPrivate::setListing(DisassemblerListing::Ptr dl)
+void DisassemblerViewPrivate::setListing(DisassemblerListing* dl)
 {
     this->_listing = dl;
 
@@ -178,8 +178,8 @@ int DisassemblerViewPrivate::drawAddress(const QString& segmentname, QPainter &p
 
 void DisassemblerViewPrivate::drawHexDump(InstructionItem *ii, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
-    ByteBuffer* bytebuffer = this->_listing->buffer();
-    QByteArray ba = bytebuffer->read(ii->address(), ii->instruction()->instructionSize());
+    QHexEditData* hexeditdata = this->_listing->buffer();
+    QByteArray ba = hexeditdata->read(ii->address(), ii->instruction()->instructionSize());
     QString hexdump;
 
     for(int i = 0; i < ba.length(); i++)
@@ -197,15 +197,15 @@ void DisassemblerViewPrivate::drawHexDump(InstructionItem *ii, QPainter &painter
 void DisassemblerViewPrivate::drawLabel(LabelItem *li, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     ReferenceTable* reftable = this->_listing->referenceTable();
-    ReferenceTable::Reference::Ptr ref = reftable->reference(li->address());
+    ReferenceTable::Reference ref = reftable->reference(li->address());
     QString s = li->stringValue();
     int w = fm.width(s);
 
     painter.setPen(Qt::darkCyan);
     painter.drawText(x, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
 
-    if(ref)
-        this->drawReference(ref, li->address(), painter, fm, x + w + this->_labelwidth, y);
+    //if(ref)
+        //NOTE: this->drawReference(ref, li->address(), painter, fm, x + w + this->_labelwidth, y);
 }
 
 void DisassemblerViewPrivate::drawComment(const QString &s, QPainter &painter, QFontMetrics &fm, int x, int y)
@@ -231,13 +231,13 @@ void DisassemblerViewPrivate::drawInstruction(InstructionItem* ii, QPainter &pai
     }
 }
 
-void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference::Ptr ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y)
+void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference& ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     QString addresses;
 
-    for(int i = 0; i < ref->InstructionAddresses.length(); i++)
+    for(int i = 0; i < ref.InstructionAddresses.length(); i++)
     {
-        lua_Integer address = ref->InstructionAddresses[i];
+        lua_Integer address = ref.InstructionAddresses[i];
 
         if(address == ignoreaddress)
             continue;
@@ -257,7 +257,7 @@ void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference::Ptr
     {
         QString reftype;
 
-        if(ref->Type == ReferenceTable::Code)
+        if(ref.Type == ReferenceTable::Code)
             reftype = "CODE";
         else
             reftype = "DATA";

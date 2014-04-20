@@ -67,7 +67,6 @@ SOURCES += main.cpp\
     prefsdk/lua/table/luactable.cpp \
     prefsdk/lua/utils/overloadtable.cpp \
     prefsdk/lua/utils/callhelper.cpp \
-    prefsdk/io/bytebuffer.cpp \
     prefsdk/disassembler/disassemblerrange.cpp \
     prefsdk/disassembler/disassemblerfunction.cpp \
     prefsdk/disassembler/disassemblersegment.cpp \
@@ -99,8 +98,6 @@ SOURCES += main.cpp\
     views/formatview/binaryviewpage/displaymodewidget.cpp \
     views/formatview/chartviewpage/chartviewpage.cpp \
     views/formatview/chartviewpage/charthelper.cpp \
-    prefsdk/io/abstractbuffer.cpp \
-    prefsdk/io/filebuffer.cpp \
     datatypesview/datatypesmenu.cpp \
     viewmodels/optionmodel/optionmodel.cpp \
     formatoptionsdialog.cpp \
@@ -146,7 +143,8 @@ SOURCES += main.cpp\
     prefsdk/exporter/exporterlist.cpp \
     viewmodels/exportmodel/exportermodel.cpp \
     prefsdk/disassembler/processorloader.cpp \
-    prefsdk/api/processorapi.cpp
+    prefsdk/api/processorapi.cpp \
+    prefsdk/disassembler/disassembler.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -207,7 +205,6 @@ HEADERS  += mainwindow.h \
     prefsdk/lua/utils/mangler.h \
     prefsdk/lua/utils/callhelper.h \
     prefsdk/qlua.h \
-    prefsdk/io/bytebuffer.h \
     prefsdk/disassembler/disassemblerrange.h \
     prefsdk/disassembler/disassemblerfunction.h \
     prefsdk/disassembler/disassemblersegment.h \
@@ -238,8 +235,6 @@ HEADERS  += mainwindow.h \
     views/formatview/binaryviewpage/displaymodewidget.h \
     views/formatview/chartviewpage/charthelper.h \
     views/formatview/chartviewpage/chartviewpage.h \
-    prefsdk/io/abstractbuffer.h \
-    prefsdk/io/filebuffer.h \
     datatypesview/datatypesmenu.h \
     viewmodels/optionmodel/optionmodel.h \
     formatoptionsdialog.h \

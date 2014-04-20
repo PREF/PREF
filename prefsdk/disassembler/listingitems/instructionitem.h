@@ -13,13 +13,13 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            explicit InstructionItem(const Instruction::Ptr instr, const ProcessorDefinition::Ptr& procdef, ReferenceTable* reftable, QObject *parent = 0);
-            Instruction::Ptr instruction();
-            virtual ListingItemType itemType();
+            explicit InstructionItem(Instruction* instr, const ProcessorDefinition::Ptr& procdef, ReferenceTable* reftable, QObject *parent = 0);
+            Instruction* instruction();
+            virtual ListingItems::Type itemType();
             virtual QString stringValue();
 
         private:
-            Instruction::Ptr _instruction;
+            Instruction* _instruction;
             ReferenceTable* _reftable;
             ProcessorDefinition::Ptr _processordef;
     };

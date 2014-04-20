@@ -10,8 +10,6 @@
 #include "elaboratetoolbar.h"
 #include "stringfinderhelper.h"
 
-using namespace PrefSDK;
-
 namespace Ui {
 class StringFinderViewPage;
 }

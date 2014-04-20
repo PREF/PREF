@@ -1,18 +1,17 @@
 #ifndef PREFSDK_DISASSEMBLERLISTING_H
 #define PREFSDK_DISASSEMBLERLISTING_H
 
-#include "prefsdk/qlua.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "debugdialog/debugdialog.h"
-#include "referencetable.h"
+#include "prefsdk/io/bytebuffer.h"
+#include "processor/processordefinition.h"
 #include "listingitems/listingitem.h"
 #include "listingitems/instructionitem.h"
 #include "listingitems/labelitem.h"
-#include "processor/processordefinition.h"
+#include "referencetable.h"
 
 namespace PrefSDK
 {
-    class DisassemblerListing : public QObject, public LuaCTable
+    class DisassemblerListing : public QObject
     {
         Q_OBJECT
 
@@ -45,7 +44,7 @@ namespace PrefSDK
                         lp.first |= Listing::ContainsInstruction;
                         lp.second.append(ii);
 
-                        Instruction::Ptr instr = ii->instruction();
+                        Instruction* instr = ii->instruction();
                         lua_Integer addr = instr->address();
 
                         for(int i = 0; i < instr->instructionSize(); i++)
@@ -100,30 +99,24 @@ namespace PrefSDK
             };
 
         public:
-            typedef std::shared_ptr<DisassemblerListing> Ptr;
-
-        public:
-            explicit DisassemblerListing(lua_State* l, ByteBuffer *bytebuffer, const ProcessorDefinition::Ptr& processordef, QObject* parent = 0);
-            void addInstruction(const Instruction::Ptr &item);
-            bool isDisassembled(lua_Integer address);
+            explicit DisassemblerListing(QHexEditData *hexeditdata, const ProcessorDefinition::Ptr& processordef, QObject* parent = 0);
+            void addInstruction(Instruction *item);
+            bool isDisassembled(uint64_t address);
             ListingItem *item(int i);
             ReferenceTable *referenceTable();
-            ByteBuffer* buffer();
+            QHexEditData* buffer();
             int itemCount();
             int maxInstructionSize();
             void printBacktrace();
 
-        public:
-            static DisassemblerListing::Ptr create(lua_State* l, ByteBuffer *bytebuffer, const ProcessorDefinition::Ptr& processordef);
-
         private slots:
-            void onCodeReferenceAdded(lua_Integer address);
+            void onCodeReferenceAdded(uint64_t address);
 
         private:
             Listing _listing;
             ProcessorDefinition::Ptr _processordef;
             ReferenceTable* _referencetable;
-            ByteBuffer* _bytebuffer;
+            QHexEditData* _hexeditdata;
             int _maxinstructionsize;
     };
 }

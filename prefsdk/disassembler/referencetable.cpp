@@ -2,28 +2,28 @@
 
 namespace PrefSDK
 {
-    ReferenceTable::ReferenceTable(lua_State *l, QObject* parent): QObject(parent), LuaCTable(l, "ReferenceTable")
+    ReferenceTable::ReferenceTable(QObject* parent): QObject(parent)
     {
-        this->exportMethod<void, ReferenceTable, lua_Integer, lua_Integer, lua_Integer>("codeRef", &ReferenceTable::codeRef);
+
     }
 
-    bool ReferenceTable::isReference(lua_Integer address)
+    bool ReferenceTable::isReference(uint64_t address)
     {
         return this->_refs.contains(address);
     }
 
-    void ReferenceTable::codeRef(lua_Integer address, lua_Integer addressby, lua_Integer flags)
+    /*
+    void ReferenceTable::codeRef(uint64_t address, uint64_t addressby, uint64_t flags)
     {
-        Reference::Ptr ref;
+        Reference ref;
 
         if(this->_refs.contains(address))
         {
             ref = this->_refs[address];
             ref->InstructionAddresses.append(addressby);
         }
-        else /* if(!ref) */
+        else if(!ref)
         {
-            ref = Reference::create();
             ref->Type = ReferenceTable::Code;
             ref->CodeFlags = static_cast<ReferenceTable::CodeReference>(flags);
 
@@ -35,29 +35,14 @@ namespace PrefSDK
             ref->InstructionAddresses.append(addressby);
 
             this->_refs[address] = ref;
-        }
+        }  
 
         emit codeReferenceAdded(address);
     }
+    */
 
-    ReferenceTable::Reference::Ptr ReferenceTable::reference(lua_Integer address)
+    ReferenceTable::Reference ReferenceTable::reference(uint64_t address)
     {
         return this->_refs[address];
-    }
-
-    void ReferenceTable::declareGlobals(lua_State *l)
-    {
-        LuaTable::Ptr t = LuaTable::create(l);
-        t->set("CallFar", ReferenceTable::CallFar);
-        t->set("CallNear", ReferenceTable::CallNear);
-        t->set("JumpFar", ReferenceTable::JumpFar);
-        t->set("JumpNear", ReferenceTable::JumpNear);
-        t->pushGlobal("CodeReference");
-
-        t = LuaTable::create(l);
-        t->set("Offset", ReferenceTable::Offset);
-        t->set("Read", ReferenceTable::Read);
-        t->set("Write", ReferenceTable::Write);
-        t->pushGlobal("DataReference");
     }
 }

@@ -2,9 +2,7 @@
 #define STRINGFINDERHELPER_H
 
 #include <QtCore>
-#include "prefsdk/io/bytebuffer.h"
-
-using namespace PrefSDK;
+#include "qhexedit/qhexeditdata.h"
 
 class StringFinderHelper : public QObject
 {

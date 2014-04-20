@@ -29,7 +29,7 @@ void DisassemblerView::setLoader(const ProcessorLoader &dl)
     this->_disasmview_p->setLoader(dl);
 }
 
-void DisassemblerView::setListing(DisassemblerListing::Ptr dl)
+void DisassemblerView::setListing(DisassemblerListing* dl)
 {
     this->_disasmview_p->setListing(dl);
 }

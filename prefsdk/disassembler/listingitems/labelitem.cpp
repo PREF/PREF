@@ -8,14 +8,14 @@ namespace PrefSDK
         this->_reftable = reftable;
     }
 
-    ListingItem::ListingItemType LabelItem::itemType()
+    ListingItems::Type LabelItem::itemType()
     {
-        return ListingItem::Label;
+        return ListingItems::Label;
     }
 
     QString LabelItem::stringValue()
     {
-        ReferenceTable::Reference::Ptr ref = this->_reftable->reference(this->address());
-        return QString("%1%2:").arg(ref->Prefix, this->_labelname);
+        ReferenceTable::Reference ref = this->_reftable->reference(this->address());
+        return QString("%1%2:").arg(ref.Prefix, this->_labelname);
     }
 }
