@@ -18,7 +18,7 @@ class FormatsDialog : public QDialog
     
     public:
         explicit FormatsDialog(qint64 maxlen, QWidget *parent = 0);
-        FormatList::Format& selectedFormat();
+        FormatList::FormatId selectedFormat();
         qint64 offset();
         ~FormatsDialog();
 

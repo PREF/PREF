@@ -110,7 +110,7 @@ void FormatView::on_tbFormats_clicked()
 
     if(res == FormatsDialog::Accepted)
     {
-        this->_formatid = fd.selectedFormat().id();
+        this->_formatid = fd.selectedFormat();
         FormatList::Format& format = FormatList::formatFromId(this->_formatid);
 
         if(this->_hexeditview->loadFormat(this->_formatid, fd.offset()))
