@@ -35,9 +35,9 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-bool HexEditViewPage::loadFormat(const FormatList::Format &format, int64_t baseoffset)
+bool HexEditViewPage::loadFormat(const FormatList::FormatId &formatid, int64_t baseoffset)
 {
-    this->_formattree = SDKManager::parseFormat(format.id(), baseoffset, this->_hexeditdata);
+    this->_formattree = SDKManager::parseFormat(formatid, baseoffset, this->_hexeditdata);
     this->_formatmodel->setFormatTree(this->_formattree);
 
     for(int i = 0; i < this->_formatmodel->columnCount(); i++)

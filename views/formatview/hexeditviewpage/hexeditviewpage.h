@@ -27,7 +27,7 @@ class HexEditViewPage: public QWidget
 
     public:
         explicit HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent = 0);
-        bool loadFormat(const FormatList::Format& format, int64_t baseoffset);
+        bool loadFormat(const FormatList::FormatId &formatid, int64_t baseoffset);
         void scanSignatures(bool canscan);
         BinaryNavigator* binaryNavigator();
         const FormatList::Format& format();

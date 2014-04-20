@@ -33,7 +33,7 @@ namespace PrefSDK
                     };
 
                 public:
-                    Format(): _id(nullptr), _candisassemble(false) { }
+                    Format(): _candisassemble(false), _id(nullptr) { }
                     Format(const QString& name, const QString& category, const QString& author, const QString& version, FormatId id): _name(name), _category(category), _author(author), _version(version), _candisassemble(false), _id(id) { }
                     void addOption(int optionidx, const QString& name, const QString& description) { this->_options[optionidx] = Option(optionidx, name, description); }
                     void enableDisassembler() { this->_candisassemble = true; }

@@ -1,10 +1,10 @@
 #include "formatoptionsdialog.h"
 #include "ui_formatoptionsdialog.h"
 
-FormatOptionsDialog::FormatOptionsDialog(lua_State *l, const FormatList::Format& format, QHexEdit *hexedit, QWidget *parent): QDialog(parent), ui(new Ui::FormatOptionsDialog), _state(l), _format(format), _hexedit(hexedit), _selindex(-1)
+FormatOptionsDialog::FormatOptionsDialog(lua_State *l, const FormatList::FormatId &formatid, QHexEdit *hexedit, QWidget *parent): QDialog(parent), ui(new Ui::FormatOptionsDialog), _state(l), _formatid(formatid), _hexedit(hexedit), _selindex(-1)
 {
     ui->setupUi(this);
-    ui->tvOptions->setModel(new OptionModel(this->_format));
+    ui->tvOptions->setModel(new OptionModel(this->_formatid));
 
     connect(ui->pbCancel, SIGNAL(clicked()), this, SLOT(reject()));
 }

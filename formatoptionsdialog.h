@@ -20,7 +20,7 @@ class FormatOptionsDialog : public QDialog
     Q_OBJECT
 
     public:
-        explicit FormatOptionsDialog(lua_State* l, const FormatList::Format& format, QHexEdit* hexedit, QWidget *parent = 0);
+        explicit FormatOptionsDialog(lua_State* l, const FormatList::FormatId& formatid, QHexEdit* hexedit, QWidget *parent = 0);
         ~FormatOptionsDialog();
 
     private:
@@ -35,7 +35,7 @@ class FormatOptionsDialog : public QDialog
     private:
         Ui::FormatOptionsDialog *ui;
         lua_State* _state;
-        FormatList::Format _format;
+        FormatList::FormatId _formatid;
         QHexEdit* _hexedit;
         int _selindex;
 };

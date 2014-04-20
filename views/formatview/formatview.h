@@ -56,12 +56,12 @@ class FormatView : public AbstractView
 
     private:
         Ui::FormatView *ui;
+        FormatList::FormatId _formatid;
         HexEditViewPage* _hexeditview;
         BinaryViewPage* _binaryview;
         ChartViewPage* _chartview;
         DisassemblerViewPage* _disassemblerview;
         StringFinderViewPage* _stringfinderview;
-        FormatList::Format _format;
         QHexEditData* _hexeditdata;
 };
 

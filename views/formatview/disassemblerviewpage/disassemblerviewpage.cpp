@@ -36,12 +36,12 @@ DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *p
     connect(this->_actdisassemble, SIGNAL(triggered()), this, SLOT(onActDisassembleTriggered()));
 }
 
-void DisassemblerViewPage::setData(FormatTree* formattree, const FormatList::Format& format)
+void DisassemblerViewPage::setData(FormatTree* formattree, const FormatList::FormatId& formatid)
 {
     this->_formattree = formattree;
-    this->_format = format;
+    this->_formatid = formatid;
 
-    if(format.canDisassemble())
+    if(FormatList::formatFromId(formatid).canDisassemble())
         this->_toolbar->setEnabled(true);
 }
 

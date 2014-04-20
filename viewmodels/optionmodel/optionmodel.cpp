@@ -1,6 +1,6 @@
 #include "optionmodel.h"
 
-OptionModel::OptionModel(const FormatList::Format &format, QObject *parent): QAbstractItemModel(parent), _format(format)
+OptionModel::OptionModel(const FormatList::FormatId format, QObject *parent): QAbstractItemModel(parent), _formatid(format)
 {
     QImage img;
     img.load(":/misc_icons/res/formatoptions.png");
@@ -43,7 +43,8 @@ QVariant OptionModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        FormatList::Format::Option option = this->_format.option(index.row());
+        FormatList::Format& format = FormatList::formatFromId(this->_formatid);
+        FormatList::Format::Option option = format.option(index.row());
 
         switch(index.column())
         {
@@ -81,7 +82,8 @@ QModelIndex OptionModel::parent(const QModelIndex &) const
 
 int OptionModel::rowCount(const QModelIndex &) const
 {
-    return this->_format.optionsCount();
+    FormatList::Format& format = FormatList::formatFromId(this->_formatid);
+    return format.optionsCount();
 }
 
 Qt::ItemFlags OptionModel::flags(const QModelIndex &index) const

@@ -25,7 +25,7 @@ class DisassemblerViewPage : public QWidget
     
     public:
         explicit DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *parent = 0);
-        void setData(FormatTree* formattree, const FormatList::Format& format);
+        void setData(FormatTree* formattree, const FormatList::FormatId &formatid);
         ~DisassemblerViewPage();
 
     private:
@@ -44,7 +44,7 @@ class DisassemblerViewPage : public QWidget
     private:
         Ui::DisassemblerViewPage *ui;
         FormatTree* _formattree;
-        FormatList::Format _format;
+        FormatList::FormatId _formatid;
         StringOffsetModel* _stringrefs;
         FunctionOffsetModel* _functionrefs;
         DisassemblerHelper* _disasmhelper;

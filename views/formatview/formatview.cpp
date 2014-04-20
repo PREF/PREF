@@ -110,19 +110,20 @@ void FormatView::on_tbFormats_clicked()
 
     if(res == FormatsDialog::Accepted)
     {
-        this->_format = fd.selectedFormat();
+        this->_formatid = fd.selectedFormat().id();
+        FormatList::Format& format = FormatList::formatFromId(this->_formatid);
 
-        if(this->_hexeditview->loadFormat(this->_format, fd.offset()))
-        {
-            this->_disassemblerview->setData(this->_hexeditview->tree(), this->_format);
-            ui->tbFormatOptions->setEnabled(this->_format.optionsCount() > 0);
+        if(this->_hexeditview->loadFormat(this->_formatid, fd.offset()))
+        {   
+            this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatid);
+            ui->tbFormatOptions->setEnabled(format.optionsCount() > 0);
         }
     }
 }
 
 void FormatView::on_tbFormatOptions_clicked()
 {
-    FormatOptionsDialog fod(SDKManager::state(), this->_format, this->_hexeditview->hexEdit(), this->topLevelWidget());
+    FormatOptionsDialog fod(SDKManager::state(), this->_formatid, this->_hexeditview->hexEdit(), this->topLevelWidget());
     fod.exec();
 }
 
