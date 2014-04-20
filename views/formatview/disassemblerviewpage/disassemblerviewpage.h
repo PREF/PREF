@@ -12,6 +12,7 @@
 #include "viewmodels/functionoffsetmodel/functionoffsetmodel.h"
 #include "viewmodels/stringoffsetmodel/stringoffsetmodel.h"
 #include "disassemblerhelper.h"
+#include "elaboratetoolbar.h"
 
 using namespace PrefSDK;
 
@@ -49,9 +50,7 @@ class DisassemblerViewPage : public QWidget
         FunctionOffsetModel* _functionrefs;
         DisassemblerHelper* _disasmhelper;
         QHexEditData* _hexeditdata;
-        QToolBar* _toolbar;
-        QAction* _actstop;
-        QAction* _actdisassemble;
+        ElaborateToolBar* _toolbar;
         QAction* _actgoto;
         QMenu* _functionsmenu;
 
