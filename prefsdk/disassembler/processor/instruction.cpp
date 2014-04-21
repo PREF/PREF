@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(uint64_t virtualaddress, uint64_t address, QHexEditData* hexeditdata): _type(0), _datatype(DataType::Invalid), _size(0u), _virtualaddress(virtualaddress), _address(address), _hexeditdata(hexeditdata)
+    Instruction::Instruction(uint64_t virtualaddress, uint64_t address): _type(0), _datatype(DataType::Invalid), _size(0u), _address(address), _virtualaddress(virtualaddress)
     {
 
     }
@@ -56,13 +56,4 @@ namespace PrefSDK
     {
         return this->_operands.Op6;
     }
-
-    /*
-    lua_Integer Instruction::next(lua_Integer datatype)
-    {        
-        lua_Integer res = this->_bytebuffer->readType(this->_address + this->_size, datatype);
-        this->_size += DataType::sizeOf(static_cast<DataType::Type>(datatype));
-        return res;
-    }
-    */
 }

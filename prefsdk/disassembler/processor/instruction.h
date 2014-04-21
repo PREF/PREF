@@ -1,7 +1,6 @@
 #ifndef PREFSDK_INSTRUCTION_H
 #define PREFSDK_INSTRUCTION_H
 
-#include "qhexedit/qhexeditdata.h"
 #include "prefsdk/datatype.h"
 #include "prefsdk/disassembler/processor/operand.h"
 
@@ -27,7 +26,7 @@ namespace PrefSDK
                                        Jump = 0x04000, Shift = 0x08000 };
 
         public:
-            Instruction(uint64_t virtualaddress, uint64_t address, QHexEditData *hexeditdata);
+            Instruction(uint64_t address, uint64_t virtualaddress);
             uint64_t virtualAddress();
             uint64_t address();
             uint64_t instructionType();
@@ -42,11 +41,10 @@ namespace PrefSDK
 
         private:
             uint _size;
-            uint64_t _virtualaddress;
             uint64_t _address;
+            uint64_t _virtualaddress;
             uint64_t _type;
             DataType::Type _datatype;
-            QHexEditData* _hexeditdata;
             Operands _operands;
     };
 }
