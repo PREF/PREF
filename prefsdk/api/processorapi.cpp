@@ -12,12 +12,12 @@ namespace PrefSDK
             loader.addSegment(QString::fromUtf8(name), static_cast<DisassemblerSegment::SegmentType>(segmenttype), startoffset, endoffset, baseaddress);
         }
 
-        void ProcessorLoader_addEntryPoint(FormatList::FormatId formatid, const char *name, uint64_t offset)
+        void ProcessorLoader_addEntry(FormatList::FormatId formatid, const char *name, uint64_t offset)
         {
             FormatList::Format& format = FormatList::formatFromId(formatid);
             ProcessorLoader& loader = format.disassemblerLoader();
 
-            loader.addEntryPoint(QString::fromUtf8(name), offset);
+            loader.addEntry(QString::fromUtf8(name), offset);
         }
     }
 }

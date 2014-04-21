@@ -12,7 +12,7 @@ namespace PrefSDK
         this->_segments.append(DisassemblerSegment(baseaddress, startoffset, endoffset, name, segmenttype));
     }
 
-    void ProcessorLoader::addEntryPoint(QString name, quint64 address)
+    void ProcessorLoader::addEntry(QString name, quint64 address)
     {
         this->_entries.append(EntryPair(name, address));
     }

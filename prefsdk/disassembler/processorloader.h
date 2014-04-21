@@ -15,7 +15,7 @@ namespace PrefSDK
             void addSegment(QString name, DisassemblerSegment::SegmentType segmenttype, quint64 startoffset, quint64 endoffset, quint64 baseaddress);
             DisassemblerSegment& segment(quint64 address);
             bool inSegment(quint64 address);
-            void addEntryPoint(QString name, quint64 address);
+            void addEntry(QString name, quint64 address);
             quint64 entryAddress(int i);
             QString entryName(int i);
             int entryCount();

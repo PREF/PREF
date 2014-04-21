@@ -55,7 +55,7 @@ namespace PrefSDK
         extern "C"
         {
             void ProcessorLoader_addSegment(FormatList::FormatId formatid, const char* name, uint64_t segmenttype, uint64_t startoffset, uint64_t endoffset, uint64_t baseaddress);
-            void ProcessorLoader_addEntryPoint(FormatList::FormatId formatid, const char* name, uint64_t offset);
+            void ProcessorLoader_addEntry(FormatList::FormatId formatid, const char* name, uint64_t offset);
         }
     }
 }
