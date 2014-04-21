@@ -2,7 +2,6 @@
 #define PREFSDK_DISASSEMBLERLISTING_H
 
 #include "debugdialog/debugdialog.h"
-#include "prefsdk/io/bytebuffer.h"
 #include "processor/processordefinition.h"
 #include "listingitems/listingitem.h"
 #include "listingitems/instructionitem.h"
