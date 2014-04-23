@@ -37,8 +37,6 @@ class DebugDialog : public QDialog
         void luaOutText(QString);
 
     private:
-        int tableLength(int idx);
-        QString typeValue(int idx);
         QString stackDump();
         QString traceback();
 

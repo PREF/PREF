@@ -12,6 +12,60 @@ void LuaStackViewModel::updateTop()
     emit dataChanged(this->createIndex(0, 0), this->createIndex(this->_top, this->columnCount()));
 }
 
+int LuaStackViewModel::tableLength(int idx)
+{
+    if(lua_type(this->_state, idx) != LUA_TTABLE)
+        return 0;
+
+    int len = 0;
+    lua_pushvalue(this->_state, idx);
+    lua_pushnil(this->_state);
+
+    while(lua_next(this->_state, -2))
+    {
+        lua_pop(this->_state, 1);
+        len++;
+    }
+
+    lua_pop(this->_state, 1);
+    return len;
+}
+
+QString LuaStackViewModel::typeValue(int idx)
+{
+    QString s;
+    int t = lua_type(this->_state, idx);
+
+    switch(t)
+    {
+        case LUA_TNUMBER:
+            s = QString::number(lua_tonumber(this->_state, idx));
+            break;
+
+        case LUA_TSTRING:
+            s = QString("'%1'").arg(QString::fromUtf8(lua_tostring(this->_state, idx)));
+            break;
+
+        case LUA_TBOOLEAN:
+            s = (lua_toboolean(this->_state, idx) != 0 ? "true" : "false");
+            break;
+
+        case LUA_TUSERDATA:
+            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0'));
+            break;
+
+        case LUA_TNIL:
+            s = "nil";
+            break;
+
+        default:
+            s = QString::fromUtf8(lua_typename(this->_state, t));
+            break;
+    }
+
+    return s;
+}
+
 int LuaStackViewModel::columnCount(const QModelIndex &) const
 {
     return 2;
@@ -86,16 +140,16 @@ void LuaStackViewModel::generateStackList()
     for(int i = this->_top; i >= 1; i--)
     {
         StackItem si;
-        LuaTypes::LuaType t = luaT_typeof(this->_state, i);
+        int t = lua_type(this->_state, i);
 
-        if(t == LuaTypes::Table)
+        if(t == LUA_TTABLE)
         {
-            int len = luaT_tablelength(this->_state, i);
-            QString s = QString("Table with %1 %2").arg(QString::number(luaT_tablelength(this->_state, i)), (len > 0 ? "items" : "item"));
-            si = StackItem(luaT_typename(t), s);
+            int len = this->tableLength(i);
+            QString s = QString("Table with %1 %2").arg(QString::number(len), (len > 0 ? "items" : "item"));
+            si = StackItem(QString::fromUtf8(lua_typename(this->_state, t)), s);
         }
         else
-            si = StackItem(luaT_typename(t), luaT_typevalue(this->_state, i));
+            si = StackItem(lua_typename(this->_state, t), this->typeValue(i));
 
         this->_stacklist.append(si);
     }

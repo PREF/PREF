@@ -5,10 +5,10 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtOpenGL>
+#include <lua.hpp>
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/math.h"
 #include "prefsdk/bytecolors.h"
-#include "prefsdk/qlua.h"
 
 using namespace PrefSDK;
 

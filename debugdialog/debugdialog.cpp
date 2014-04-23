@@ -85,60 +85,6 @@ DebugDialog *DebugDialog::newLine(int count)
     return this;
 }
 
-int DebugDialog::tableLength(int idx)
-{
-    if(lua_type(this->_state, idx) != LUA_TTABLE)
-        return 0;
-
-    int len = 0;
-    lua_pushvalue(this->_state, idx);
-    lua_pushnil(this->_state);
-
-    while(lua_next(this->_state, -2))
-    {
-        lua_pop(this->_state, 1);
-        len++;
-    }
-
-    lua_pop(this->_state, 1);
-    return len;
-}
-
-QString DebugDialog::typeValue(int idx)
-{
-    QString s;
-    int t = lua_type(this->_state, idx);
-
-    switch(t)
-    {
-        case LUA_TNUMBER:
-            s = QString::number(lua_tonumber(this->_state, idx));
-            break;
-
-        case LUA_TSTRING:
-            s = QString("'%1'").arg(QString::fromUtf8(lua_tostring(this->_state, idx)));
-            break;
-
-        case LUA_TBOOLEAN:
-            s = (lua_toboolean(this->_state, idx) != 0 ? "true" : "false");
-            break;
-
-        case LUA_TUSERDATA:
-            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0'));
-            break;
-
-        case LUA_TNIL:
-            s = "nil";
-            break;
-
-        default:
-            s = QString::fromUtf8(lua_typename(this->_state, t));
-            break;
-    }
-
-    return s;
-}
-
 QString DebugDialog::stackDump()
 {
     int i = lua_gettop(this->_state);
@@ -155,17 +101,17 @@ QString DebugDialog::stackDump()
 
         if(t == LUA_TTABLE)
         {
-            s.append(QString(": Size %1\n  Items:\n").arg(this->tableLength(i)));
+            s.append(QString(": Size %1\n  Items:\n").arg(this->_stackmodel->tableLength(i)));
             lua_pushnil(this->_state);
 
             while(lua_next(this->_state, i))
             {
-                s.append(QString(" * %1 = %2\n").arg(this->typeValue(-2), this->typeValue(-1)));
+                s.append(QString(" * %1 = %2\n").arg(this->_stackmodel->typeValue(-2), this->_stackmodel->typeValue(-1)));
                 lua_pop(this->_state, 1);
             }
         }
         else
-            s.append(QString(": %1").arg(this->typeValue(i)));
+            s.append(QString(": %1").arg(this->_stackmodel->typeValue(i)));
 
         s.append("\n");
         i--;

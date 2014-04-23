@@ -54,29 +54,13 @@ SOURCES += main.cpp\
     views/formatview/disassemblerviewpage/disassemblerhelper.cpp \
     formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
-    prefsdk/lua/luatypes.cpp \
-    prefsdk/lua/luathread.cpp \
-    prefsdk/lua/luareference.cpp \
-    prefsdk/lua/luaobject.cpp \
-    prefsdk/lua/lua.cpp \
-    prefsdk/lua/function/luamethod.cpp \
-    prefsdk/lua/function/luafunction.cpp \
-    prefsdk/lua/function/luacmethod.cpp \
-    prefsdk/lua/function/luacfunction.cpp \
-    prefsdk/lua/table/luatable.cpp \
-    prefsdk/lua/table/luactable.cpp \
-    prefsdk/lua/utils/overloadtable.cpp \
-    prefsdk/lua/utils/callhelper.cpp \
     prefsdk/disassembler/disassemblerrange.cpp \
     prefsdk/disassembler/disassemblerfunction.cpp \
     prefsdk/disassembler/disassemblersegment.cpp \
     prefsdk/disassembler/processor/instruction.cpp \
     prefsdk/disassembler/processor/operand.cpp \
-    prefsdk/lua/utils/safecall.cpp \
     prefsdk/disassembler/referencetable.cpp \
     debugdialog/debugdialog.cpp \
-    prefsdk/lua/utils/mangler.cpp \
-    prefsdk/lua/luadebug.cpp \
     viewmodels/luatypeviewmodel/luastackviewmodel.cpp \
     prefsdk/bytecolors.cpp \
     prefsdk/math.cpp \
@@ -115,7 +99,6 @@ SOURCES += main.cpp\
     prefsdk/sqlitewrapper/sqlitestatement.cpp \
     prefsdk/sqlitewrapper/sqlitetransaction.cpp \
     qhexedit/qhexeditcomments.cpp \
-    prefsdk/lua/luadump.cpp \
     prefsdk/format/formattree.cpp \
     prefsdk/api/qhexeditdataapi.cpp \
     prefsdk/api/formatapi.cpp \
@@ -180,34 +163,13 @@ HEADERS  += mainwindow.h \
     views/formatview/disassemblerviewpage/disassemblerhelper.h \
     formattreeview/structuremenu.h \
     numericbasemenu.h \
-    prefsdk/lua/luatypes.h \
-    prefsdk/lua/luathread.h \
-    prefsdk/lua/luareference.h \
-    prefsdk/lua/luaobject.h \
-    prefsdk/lua/luaexception.h \
-    prefsdk/lua/lua.h \
-    prefsdk/lua/function/luamethod.h \
-    prefsdk/lua/function/luafunction.h \
-    prefsdk/lua/function/luacmethod.h \
-    prefsdk/lua/function/luacfunction.h \
-    prefsdk/lua/table/luatable.h \
-    prefsdk/lua/table/luactable.h \
-    prefsdk/lua/utils/tuplestack.h \
-    prefsdk/lua/utils/tupleforeach.h \
-    prefsdk/lua/utils/tuplecall.h \
-    prefsdk/lua/utils/overloadtable.h \
-    prefsdk/lua/utils/mangler.h \
-    prefsdk/lua/utils/callhelper.h \
-    prefsdk/qlua.h \
     prefsdk/disassembler/disassemblerrange.h \
     prefsdk/disassembler/disassemblerfunction.h \
     prefsdk/disassembler/disassemblersegment.h \
     prefsdk/disassembler/processor/instruction.h \
     prefsdk/disassembler/processor/operand.h \
-    prefsdk/lua/utils/safecall.h \
     prefsdk/disassembler/referencetable.h \
     debugdialog/debugdialog.h \
-    prefsdk/lua/luadebug.h \
     viewmodels/luatypeviewmodel/luastackviewmodel.h \
     prefsdk/bytecolors.h \
     prefsdk/math.h \
@@ -236,7 +198,6 @@ HEADERS  += mainwindow.h \
     actionwidget/findaction/findaction.h \
     elaboratetoolbar.h \
     actionwidget/actiontoolbar.h \
-    prefsdk/lua/luatypedefs.h \
     viewmodels/filefiltermodel/filefiltermodel.h \
     prefsdk/signatures/signaturedatabase.h \
     signaturedatabasedialog/signaturedatabasedialog.h \
@@ -249,7 +210,6 @@ HEADERS  += mainwindow.h \
     prefsdk/sqlitewrapper/sqlitestatement.h \
     prefsdk/sqlitewrapper/sqlitetransaction.h \
     qhexedit/qhexeditcomments.h \
-    prefsdk/lua/luadump.h \
     prefsdk/format/formattree.h \
     prefsdk/api/qhexeditdataapi.h \
     prefsdk/api/byteorderapi.h \

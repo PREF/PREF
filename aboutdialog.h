@@ -3,7 +3,7 @@
 
 #include <QDialog>
 #include "luajit.h"
-#include "prefsdk/lua/lua.h"
+#include <lua.hpp>
 #include "prefsdk/sdkmanager.h"
 
 using namespace PrefSDK;

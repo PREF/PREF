@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/qlua.h"
+#include <lua.hpp>
 
 class LuaStackViewModel : public QAbstractItemModel
 {
@@ -17,6 +17,8 @@ class LuaStackViewModel : public QAbstractItemModel
     public:
         explicit LuaStackViewModel(lua_State* l, QObject *parent = 0);
         void updateTop();
+        int tableLength(int idx);
+        QString typeValue(int idx);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
