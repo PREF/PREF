@@ -7,7 +7,6 @@
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/sdkmanager.h"
 #include "prefsdk/format/formatlist.h"
-#include "prefsdk/disassembler/addressqueue.h"
 
 using namespace PrefSDK;
 
@@ -21,7 +20,8 @@ class DisassemblerHelper : public QObject
         void stop();
 
     signals:
-        void finished();
+        void error(QString errmsg);
+        void finished(quint64 instructionscount);
 
     private:
         bool _cancontinue;

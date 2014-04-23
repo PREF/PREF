@@ -3,7 +3,9 @@
 
 #include <lua.hpp>
 #include <QtCore>
+#include "qhexedit/qhexeditdata.h"
 #include "prefsdk/categorymanager.h"
+#include "prefsdk/format/formattree.h"
 #include "prefsdk/disassembler/disassembler.h"
 #include "debugdialog/debugdialog.h"
 
@@ -58,6 +60,27 @@ namespace PrefSDK
                     QHash<int, Format::Option> _options;
             };
 
+            class LoadedFormat
+            {
+                public:
+                    typedef QList<uint64_t> AddressList;
+                    typedef QHash<uint64_t, uint64_t> AddressMap;
+
+                public:
+                    LoadedFormat(): _id(nullptr), _formattree(nullptr) { }
+                    LoadedFormat(FormatList::FormatId formatid, FormatTree* formattree): _id(formatid), _formattree(formattree) { }
+                    FormatList::FormatId id() const { return this->_id; }
+                    FormatTree* tree() { return this->_formattree; }
+                    void addAddress(uint64_t address) { return this->_addresslist.append(address); qSort(this->_addresslist.begin(), this->_addresslist.end()); }
+                    uint64_t addressAt(uint64_t i) const { return this->_addresslist.at(i); }
+
+                private:
+                    AddressList _addresslist;
+                    AddressMap _addressmap;
+                    FormatList::FormatId _id;
+                    FormatTree* _formattree;
+            };
+
         private:
             FormatList();
             static void loadFormats(lua_State* l, const QString &dir);
@@ -66,13 +89,17 @@ namespace PrefSDK
             static void load(lua_State *l);
             static void registerFormat(const QString& name, const QString& category, const QString& author, const QString& version, FormatList::FormatId formatid);
             static void registerOption(FormatList::FormatId formatid, int optionidx, const QString& name, const QString &description);
+            static void addLoadedFormat(FormatList::FormatId formatid, FormatTree* formattree, QHexEditData *hexeditdata);
+            static void removeLoadedFormat(QHexEditData* hexeditdata);
             static FormatList::Format& format(int i);
             static FormatList::Format& formatFromId(FormatList::FormatId id);
+            static FormatList::LoadedFormat& loadedFormat(QHexEditData* hexeditdata);
             static int length();
 
         private:
             static QList<Format> _formats;
             static QHash<FormatList::FormatId, int> _formatmap;
+            static QHash<QHexEditData*, LoadedFormat> _loadedformats;
 
         private:
             static const QString FORMATS_DIR;

@@ -23,8 +23,8 @@ DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *p
     ui->tvFunctions->setModel(this->_functionrefs);
     ui->tvStrings->setModel(this->_stringrefs);
 
-    connect(this->_disasmhelper, SIGNAL(finished()), this, SLOT(displayDisassembly()), Qt::QueuedConnection);
-    connect(this->_disasmhelper, SIGNAL(finished()), this, SLOT(resizeColumns()), Qt::QueuedConnection);
+    connect(this->_disasmhelper, SIGNAL(error(QString)), DebugDialog::instance(), SLOT(out(QString)), Qt::QueuedConnection);
+    connect(this->_disasmhelper, SIGNAL(finished(quint64)), this, SLOT(displayDisassembly(quint64)), Qt::QueuedConnection);
 
     connect(this->_toolbar, SIGNAL(stopTriggered()), this, SLOT(onActStopTriggered()));
     connect(this->_toolbar, SIGNAL(startTriggered()), this, SLOT(onActDisassembleTriggered()));
@@ -63,7 +63,8 @@ void DisassemblerViewPage::onActDisassembleTriggered()
 {
     this->_actgoto->setEnabled(false);
 
-    QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_hexeditdata);
+    //QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_hexeditdata);
+    this->_disasmhelper->run(this->_hexeditdata);
 }
 
 void DisassemblerViewPage::onFunctionsMenuXRefsTriggered()
@@ -99,21 +100,20 @@ void DisassemblerViewPage::selectVA()
     //ui->disassemblyView->gotoVA(func.VirtualAddress);
 }
 
-void DisassemblerViewPage::resizeColumns()
-{
-    for(int i = 0; i < ui->tvFunctions->model()->columnCount(); i++)
-        ui->tvFunctions->resizeColumnToContents(i);
-}
-
 void DisassemblerViewPage::on_tvFunctions_customContextMenuRequested(const QPoint &pos)
 {
     if(ui->tvFunctions->selectionModel())
         this->_functionsmenu->exec(ui->tvFunctions->mapToGlobal(pos));
 }
 
-void DisassemblerViewPage::displayDisassembly()
+void DisassemblerViewPage::displayDisassembly(quint64 instructionscount)
 {
     this->_actgoto->setEnabled(true);
+    ui->disassemblyView->setInstructionCount(instructionscount);
+    ui->disassemblyView->setData(this->_hexeditdata);
+
+    for(int i = 0; i < ui->tvFunctions->model()->columnCount(); i++)
+        ui->tvFunctions->resizeColumnToContents(i);
 
     /* Disassembly Page */
     //ui->disassemblyView->setListing(this->_disasmhelper->listing());
@@ -128,6 +128,8 @@ void DisassemblerViewPage::displayDisassembly()
     /* DataMap Page */
     //ui->dataMapView->setListing(this->_disasmlisting_old);
     //ui->dataMapView->setHexEditData(this->_hexeditdata);
+
+    this->_toolbar->elaborationCompleted();
 }
 
 void DisassemblerViewPage::on_tvFunctions_doubleClicked(const QModelIndex &index)

@@ -37,7 +37,7 @@ DebugDialog* DebugDialog::luaOut(QString s)
 
 DebugDialog* DebugDialog::out(QString s)
 {
-    emit outHtml(s);
+    emit outHtml(s.append("\n"));
     ui->tabWidget->setCurrentIndex(1);
 
     if(!this->isVisible())
@@ -85,6 +85,106 @@ DebugDialog *DebugDialog::newLine(int count)
     return this;
 }
 
+int DebugDialog::tableLength(int idx)
+{
+    if(lua_type(this->_state, idx) != LUA_TTABLE)
+        return 0;
+
+    int len = 0;
+    lua_pushvalue(this->_state, idx);
+    lua_pushnil(this->_state);
+
+    while(lua_next(this->_state, -2))
+    {
+        lua_pop(this->_state, 1);
+        len++;
+    }
+
+    lua_pop(this->_state, 1);
+    return len;
+}
+
+QString DebugDialog::typeValue(int idx)
+{
+    QString s;
+    int t = lua_type(this->_state, idx);
+
+    switch(t)
+    {
+        case LUA_TNUMBER:
+            s = QString::number(lua_tonumber(this->_state, idx));
+            break;
+
+        case LUA_TSTRING:
+            s = QString("'%1'").arg(QString::fromUtf8(lua_tostring(this->_state, idx)));
+            break;
+
+        case LUA_TBOOLEAN:
+            s = (lua_toboolean(this->_state, idx) != 0 ? "true" : "false");
+            break;
+
+        case LUA_TUSERDATA:
+            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0'));
+            break;
+
+        case LUA_TNIL:
+            s = "nil";
+            break;
+
+        default:
+            s = QString::fromUtf8(lua_typename(this->_state, t));
+            break;
+    }
+
+    return s;
+}
+
+QString DebugDialog::stackDump()
+{
+    int i = lua_gettop(this->_state);
+
+    if(!i)
+        return "The Stack is Empty";
+
+    QString s = QString("Stack Size: %1\n").arg(QString::number(i));
+
+    while(i)
+    {
+        int t = lua_type(this->_state, i);
+        s.append(QString("%1 = (%2)").arg(QString::number(i), QString::fromUtf8(lua_typename(this->_state, t))));
+
+        if(t == LUA_TTABLE)
+        {
+            s.append(QString(": Size %1\n  Items:\n").arg(this->tableLength(i)));
+            lua_pushnil(this->_state);
+
+            while(lua_next(this->_state, i))
+            {
+                s.append(QString(" * %1 = %2\n").arg(this->typeValue(-2), this->typeValue(-1)));
+                lua_pop(this->_state, 1);
+            }
+        }
+        else
+            s.append(QString(": %1").arg(this->typeValue(i)));
+
+        s.append("\n");
+        i--;
+    }
+
+    return s;
+}
+
+QString DebugDialog::traceback()
+{
+    lua_getglobal(this->_state, "debug");
+    lua_getfield(this->_state, -1, "traceback");
+    lua_pcall(this->_state, 0, 1, 0);
+
+    QString s = QString::fromUtf8(lua_tostring(this->_state, -1));
+    lua_pop(this->_state, 2);
+    return s;
+}
+
 DebugDialog::~DebugDialog()
 {
     delete ui;
@@ -98,8 +198,8 @@ void DebugDialog::closeEvent(QCloseEvent *e)
 
 void DebugDialog::showEvent(QShowEvent*)
 {
-    ui->teTraceback->setText(QString::fromLatin1(luaD_traceback(this->_state)));
-    ui->teStackDump->setText(QString::fromLatin1(luaD_stackdump(this->_state)));
+    ui->teTraceback->setText(this->traceback());
+    ui->teStackDump->setText(this->stackDump());
     this->_stackmodel->updateTop();
 
     QTextCursor tc = ui->teTraceback->textCursor();
@@ -118,5 +218,6 @@ void DebugDialog::on_pbClose_clicked()
 
 void DebugDialog::on_pbTerminate_clicked()
 {
+    lua_close(this->_state);
     qApp->exit(-1);
 }

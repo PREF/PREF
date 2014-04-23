@@ -36,6 +36,9 @@ class FormatView : public AbstractView
     public: /* Overriden Methods */
         virtual bool canSave() const;
 
+    protected:
+        virtual void closeEvent(QCloseEvent* event);
+
     signals:
         void viewChanged(FormatView::Views v);
 

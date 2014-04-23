@@ -18,6 +18,10 @@ namespace PrefSDK
             uint64_t address();
             uint64_t reg();
             uint64_t phrase();
+            void setOperandType(Operand::Type type);
+            void setDataType(DataType::Type datatype);
+            void setValue(uint64_t value);
+            void setAddress(uint64_t address);
 
         private:
             Operand::Type _optype;

@@ -1,10 +1,10 @@
 #include "disassemblerviewprivate.h"
 
-DisassemblerViewPrivate::DisassemblerViewPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent): QWidget(parent), _listing(nullptr)
+DisassemblerViewPrivate::DisassemblerViewPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent): QWidget(parent), _hexeditdata(nullptr)
 {
     this->_scrollArea = scrollarea;
     this->_vscrollbar = vscrollbar;
-    this->_charwidth = this->_charheight = this->_labelwidth = 0;
+    this->_instructioncount = this->_charwidth = this->_charheight = this->_labelwidth = 0;
 
     this->_nofeaturecolor = Qt::lightGray;
     this->_callcolor = Qt::blue;
@@ -17,11 +17,26 @@ DisassemblerViewPrivate::DisassemblerViewPrivate(QScrollArea* scrollarea, QScrol
     connect(this->_vscrollbar, SIGNAL(valueChanged(int)), this, SLOT(vScrollBarValueChanged(int)));
 
     /* Use Monospace Fonts! */
-    QFont f("Monospace", 10);
+    QFont f("Monospace", qApp->font().pointSize());
+    f.setStyleHint(QFont::TypeWriter); /* Use monospace fonts! */
 
     this->setFont(f);
     this->setFocusPolicy(Qt::StrongFocus);
     this->setBackgroundRole(QPalette::Base);
+}
+
+void DisassemblerViewPrivate::setInstructionCount(quint64 instructioncount)
+{
+    this->_instructioncount = instructioncount;
+}
+
+void DisassemblerViewPrivate::setData(QHexEditData *hexeditdata)
+{
+    this->_hexeditdata = hexeditdata;
+    this->_loadedformat = FormatList::loadedFormat(hexeditdata);
+
+    this->adjust();
+    this->update();
 }
 
 void DisassemblerViewPrivate::gotoVA(quint64 va)
@@ -62,14 +77,6 @@ void DisassemblerViewPrivate::setLoader(const ProcessorLoader &dl)
     this->_loader = dl;
 }
 
-void DisassemblerViewPrivate::setListing(DisassemblerListing* dl)
-{
-    this->_listing = dl;
-
-    this->adjust();
-    this->update();
-}
-
 void DisassemblerViewPrivate::adjust()
 {
     QFontMetrics fm = this->fontMetrics();
@@ -77,12 +84,12 @@ void DisassemblerViewPrivate::adjust()
     this->_charwidth = fm.width(" ");
     this->_charheight = fm.height();
     this->_labelwidth = this->_charwidth * 12;
-    this->_hexdumpwidth = this->_charwidth * (this->_listing->maxInstructionSize() * 3);
+    //this->_hexdumpwidth = this->_charwidth * (this->_listing->maxInstructionSize() * 3);
 
-    if(this->_listing)
+    if(this->_hexeditdata)
     {
         /* Setup ScrollBars */
-        qint64 totLines = this->_listing->itemCount();
+        qint64 totLines = this->_instructioncount;
         qint64 visLines = this->height() / this->_charheight;
 
         /* Setup Vertical ScrollBar */
@@ -114,6 +121,7 @@ qint64 DisassemblerViewPrivate::verticalSliderPosition64()
     return static_cast<qint64>(this->_vscrollbar->sliderPosition());
 }
 
+/*
 void DisassemblerViewPrivate::setCharColor(InstructionItem* ii, const QChar& ch, QPainter &painter)
 {
     this->setInstructionColor(ii, painter);
@@ -121,10 +129,11 @@ void DisassemblerViewPrivate::setCharColor(InstructionItem* ii, const QChar& ch,
     if(ch.isSymbol() || ch.isPunct())
         painter.setPen(this->_symbolcolor);
 }
+*/
 
+/*
 void DisassemblerViewPrivate::setInstructionColor(InstructionItem *ii, QPainter &painter)
 {
-    /* NOTE: !!!
     Instruction::Ptr instruction = ii->instruction();
     Instruction::InstructionFeatures features = this->_loader->processor()->features(instruction->instructionType());
 
@@ -138,15 +147,33 @@ void DisassemblerViewPrivate::setInstructionColor(InstructionItem *ii, QPainter 
         painter.setPen(this->_nofeaturecolor);
     else
         painter.setPen(Qt::black);
-    */
 }
+*/
 
-void DisassemblerViewPrivate::drawLine(QPainter &painter, QFontMetrics &fm, lua_Integer i, int y)
+bool DisassemblerViewPrivate::drawLine(DisassemblerViewDrawer* drawer, lua_Integer i)
 {
-    /* NOTE: !!!
-    int x = 0;
-    ListingItem* item = this->_listing->item(i);
+    bool b = false;
+    lua_State* l = SDKManager::state();
 
+    lua_getglobal(l, "Sdk");
+    lua_getfield(l, -1, "printInstruction");
+    lua_pushlightuserdata(l, drawer);
+    lua_pushlightuserdata(l, this->_hexeditdata);
+    lua_pushinteger(l, i + 1);
+    int res = lua_pcall(l, 3, 1, 0);
+
+    if(res != 0)
+        DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
+    else
+        b = (lua_toboolean(l, -1) != 0);
+
+    lua_pop(l, 2);
+    return !res && b;
+
+    //int x = 0;
+    //uint64_t address = this->_loadedformat.addressAt(i);
+
+    /*
     if(this->_loader->inSegment(item->address()))
     {
         DisassemblerSegment segment = this->_loader->segment(item->address());
@@ -166,6 +193,7 @@ void DisassemblerViewPrivate::drawLine(QPainter &painter, QFontMetrics &fm, lua_
     */
 }
 
+/*
 int DisassemblerViewPrivate::drawAddress(const QString& segmentname, QPainter &painter, QFontMetrics &fm, ListingItem* li, int y)
 {
     QString vaaddr = QString("%1:%2").arg(segmentname, QString("%1").arg(li->address(), 8, 16, QLatin1Char('0')).toUpper());
@@ -175,7 +203,9 @@ int DisassemblerViewPrivate::drawAddress(const QString& segmentname, QPainter &p
 
     return fm.width(vaaddr) + this->_charwidth;
 }
+*/
 
+/*
 void DisassemblerViewPrivate::drawHexDump(InstructionItem *ii, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     QHexEditData* hexeditdata = this->_listing->buffer();
@@ -193,7 +223,9 @@ void DisassemblerViewPrivate::drawHexDump(InstructionItem *ii, QPainter &painter
     painter.setPen(Qt::darkGray);
     painter.drawText(x, y, fm.width(hexdump), this->_charheight, Qt::AlignLeft | Qt::AlignTop, hexdump);
 }
+*/
 
+/*
 void DisassemblerViewPrivate::drawLabel(LabelItem *li, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     ReferenceTable* reftable = this->_listing->referenceTable();
@@ -204,10 +236,12 @@ void DisassemblerViewPrivate::drawLabel(LabelItem *li, QPainter &painter, QFontM
     painter.setPen(Qt::darkCyan);
     painter.drawText(x, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
 
-    //if(ref)
-        //NOTE: this->drawReference(ref, li->address(), painter, fm, x + w + this->_labelwidth, y);
+    if(ref)
+        this->drawReference(ref, li->address(), painter, fm, x + w + this->_labelwidth, y);
 }
+*/
 
+/*
 void DisassemblerViewPrivate::drawComment(const QString &s, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     if(!s.isEmpty())
@@ -216,7 +250,9 @@ void DisassemblerViewPrivate::drawComment(const QString &s, QPainter &painter, Q
         painter.drawText(x, y, fm.width(s), this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
     }
 }
+*/
 
+/*
 void DisassemblerViewPrivate::drawInstruction(InstructionItem* ii, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     QString instr = ii->stringValue();
@@ -230,7 +266,9 @@ void DisassemblerViewPrivate::drawInstruction(InstructionItem* ii, QPainter &pai
         x += fm.width(ch);
     }
 }
+*/
 
+/*
 void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference& ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y)
 {
     QString addresses;
@@ -268,12 +306,7 @@ void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference& ref
         painter.drawText(x, y, fm.width(s), this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
     }
 }
-
-void DisassemblerViewPrivate::onDisassemblerDataChanged(quint64)
-{
-    this->update();
-    this->adjust();  /* Update ScrollBars */
-}
+*/
 
 void DisassemblerViewPrivate::vScrollBarValueChanged(int)
 {
@@ -284,7 +317,7 @@ void DisassemblerViewPrivate::paintEvent(QPaintEvent *e)
 {
     QPainter painter(this);
 
-    if(this->_listing && this->_listing->itemCount())
+    if(this->_hexeditdata)
     {
         int y = 0;
         QRect r = e->rect();
@@ -294,9 +327,13 @@ void DisassemblerViewPrivate::paintEvent(QPaintEvent *e)
 
         painter.setBackgroundMode(Qt::TransparentMode);
 
-        for(qint64 i = start; (i < this->_listing->itemCount()) && (i < end); i++)
+        DisassemblerViewDrawer dd(this->_hexeditdata, painter, fm, this->_charwidth, this->_charheight, y);
+
+        for(qint64 i = start; i < end; i++)
         {
-            this->drawLine(painter, fm, i, y);
+            if(!this->drawLine(&dd, i))
+                break;
+
             y += fm.height();
         }
     }
@@ -309,7 +346,7 @@ void DisassemblerViewPrivate::mousePressEvent(QMouseEvent *)
 
 void DisassemblerViewPrivate::keyPressEvent(QKeyEvent *e)
 {
-    if(!this->_listing || !this->_listing->itemCount())
+    if(!this->_hexeditdata || !this->_instructioncount)
     {
         e->ignore();
         return;
@@ -330,8 +367,8 @@ void DisassemblerViewPrivate::keyPressEvent(QKeyEvent *e)
         {
             newline = this->verticalSliderPosition64() + (linecount - 1);
 
-            if(newline >= this->_listing->itemCount())
-                newline = this->_listing->itemCount() - 1;
+            if(newline >= this->_instructioncount)
+                newline = this->_instructioncount - 1;
         }
 
         this->_vscrollbar->setSliderPosition(newline);
@@ -341,7 +378,7 @@ void DisassemblerViewPrivate::keyPressEvent(QKeyEvent *e)
         qint64 newline = 0;
 
         if(e->matches(QKeySequence::MoveToEndOfDocument))
-            newline = this->_listing->itemCount() - 1;
+            newline = this->_instructioncount - 1;
 
         this->_vscrollbar->setSliderPosition(newline);
     }
@@ -352,13 +389,13 @@ void DisassemblerViewPrivate::keyPressEvent(QKeyEvent *e)
 
 void DisassemblerViewPrivate::resizeEvent(QResizeEvent*)
 {
-    if(this->_listing)
+    if(this->_hexeditdata)
         this->adjust();
 }
 
 void DisassemblerViewPrivate::wheelEvent(QWheelEvent *event)
 {
-    if(this->_listing && this->_listing->itemCount())
+    if(this->_hexeditdata && this->_instructioncount)
     {
         int numDegrees = event->delta() / 8;
         int numSteps = numDegrees / 15;
@@ -366,7 +403,7 @@ void DisassemblerViewPrivate::wheelEvent(QWheelEvent *event)
         if(event->orientation() == Qt::Vertical)
         {
             int pos = this->verticalSliderPosition64() - numSteps;
-            int maxLines = this->_listing->itemCount();
+            int maxLines = this->_instructioncount;
 
              /* Bounds Check */
             if(pos < 0)

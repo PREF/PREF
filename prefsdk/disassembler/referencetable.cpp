@@ -12,6 +12,7 @@ namespace PrefSDK
         return this->_refs.contains(address);
     }
 
+
     /*
     void ReferenceTable::codeRef(uint64_t address, uint64_t addressby, uint64_t flags)
     {
@@ -40,6 +41,7 @@ namespace PrefSDK
         emit codeReferenceAdded(address);
     }
     */
+
 
     ReferenceTable::Reference ReferenceTable::reference(uint64_t address)
     {

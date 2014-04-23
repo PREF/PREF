@@ -27,20 +27,21 @@ namespace PrefSDK
 
         public:
             Instruction(uint64_t address, uint64_t virtualaddress);
+            void setType(uint64_t type);
+            void updateSize(uint64_t size);
             uint64_t virtualAddress();
             uint64_t address();
             uint64_t instructionType();
-            uint instructionSize();
-            Operand& operand1();
-            Operand& operand2();
-            Operand& operand3();
-            Operand& operand4();
-            Operand& operand5();
-            Operand& operand6();
-            //lua_Integer next(lua_Integer datatype);
+            uint64_t instructionSize();
+            Operand* operand1();
+            Operand* operand2();
+            Operand* operand3();
+            Operand* operand4();
+            Operand* operand5();
+            Operand* operand6();
 
         private:
-            uint _size;
+            uint64_t _size;
             uint64_t _address;
             uint64_t _virtualaddress;
             uint64_t _type;

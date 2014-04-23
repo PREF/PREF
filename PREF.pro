@@ -72,15 +72,8 @@ SOURCES += main.cpp\
     prefsdk/disassembler/disassemblersegment.cpp \
     prefsdk/disassembler/processor/instruction.cpp \
     prefsdk/disassembler/processor/operand.cpp \
-    prefsdk/disassembler/processor/processordefinition.cpp \
     prefsdk/lua/utils/safecall.cpp \
-    prefsdk/disassembler/disassemblerlisting.cpp \
-    prefsdk/disassembler/addressqueue.cpp \
-    prefsdk/disassembler/listingitems/instructionitem.cpp \
-    prefsdk/disassembler/listingitems/listingitem.cpp \
-    prefsdk/disassembler/outputbuffer.cpp \
     prefsdk/disassembler/referencetable.cpp \
-    prefsdk/disassembler/listingitems/labelitem.cpp \
     debugdialog/debugdialog.cpp \
     prefsdk/lua/utils/mangler.cpp \
     prefsdk/lua/luadebug.cpp \
@@ -144,7 +137,8 @@ SOURCES += main.cpp\
     viewmodels/exportmodel/exportermodel.cpp \
     prefsdk/disassembler/processorloader.cpp \
     prefsdk/api/processorapi.cpp \
-    prefsdk/disassembler/disassembler.cpp
+    prefsdk/disassembler/disassembler.cpp \
+    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -210,15 +204,8 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/disassemblersegment.h \
     prefsdk/disassembler/processor/instruction.h \
     prefsdk/disassembler/processor/operand.h \
-    prefsdk/disassembler/processor/processordefinition.h \
     prefsdk/lua/utils/safecall.h \
-    prefsdk/disassembler/disassemblerlisting.h \
-    prefsdk/disassembler/addressqueue.h \
-    prefsdk/disassembler/listingitems/instructionitem.h \
-    prefsdk/disassembler/listingitems/listingitem.h \
-    prefsdk/disassembler/outputbuffer.h \
     prefsdk/disassembler/referencetable.h \
-    prefsdk/disassembler/listingitems/labelitem.h \
     debugdialog/debugdialog.h \
     prefsdk/lua/luadebug.h \
     viewmodels/luatypeviewmodel/luastackviewmodel.h \
@@ -283,7 +270,8 @@ HEADERS  += mainwindow.h \
     viewmodels/exportmodel/exportermodel.h \
     prefsdk/exporter/exporterlist.h \
     prefsdk/disassembler/processorloader.h \
-    prefsdk/api/processorapi.h
+    prefsdk/api/processorapi.h \
+    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

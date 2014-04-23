@@ -24,14 +24,19 @@ DisassemblerView::DisassemblerView(QWidget *parent): QFrame(parent)
     this->setLayout(this->_hlayout);
 }
 
+void DisassemblerView::setInstructionCount(quint64 instructioncount)
+{
+    this->_disasmview_p->setInstructionCount(instructioncount);
+}
+
+void DisassemblerView::setData(QHexEditData *hexeditdata)
+{
+    this->_disasmview_p->setData(hexeditdata);
+}
+
 void DisassemblerView::setLoader(const ProcessorLoader &dl)
 {
     this->_disasmview_p->setLoader(dl);
-}
-
-void DisassemblerView::setListing(DisassemblerListing* dl)
-{
-    this->_disasmview_p->setListing(dl);
 }
 
 void DisassemblerView::gotoVA(quint64 va)

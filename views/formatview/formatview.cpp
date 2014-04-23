@@ -60,6 +60,12 @@ bool FormatView::canSave() const
     return true;
 }
 
+void FormatView::closeEvent(QCloseEvent *event)
+{
+    FormatList::removeLoadedFormat(this->_hexeditdata);
+    AbstractView::closeEvent(event);
+}
+
 void FormatView::createHexView()
 {
     this->_hexeditview = new HexEditViewPage(this->_hexeditdata, this);
@@ -114,7 +120,9 @@ void FormatView::on_tbFormats_clicked()
         FormatList::Format& format = FormatList::formatFromId(this->_formatid);
 
         if(this->_hexeditview->loadFormat(this->_formatid, fd.offset()))
-        {   
+        {
+            FormatList::addLoadedFormat(this->_formatid, this->_hexeditview->tree(), this->_hexeditdata);
+
             this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatid);
             ui->tbFormatOptions->setEnabled(format.optionsCount() > 0);
         }

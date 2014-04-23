@@ -38,8 +38,7 @@ class DisassemblerViewPage : public QWidget
         void onFunctionsMenuXRefsTriggered();
         void selectVA();
         void on_tvFunctions_customContextMenuRequested(const QPoint &pos);
-        void displayDisassembly();
-        void resizeColumns();
+        void displayDisassembly(quint64 instructionscount);
         void on_tvFunctions_doubleClicked(const QModelIndex &index);
 
     private:

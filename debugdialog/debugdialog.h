@@ -6,8 +6,6 @@
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
 #include "viewmodels/luatypeviewmodel/luastackviewmodel.h"
-#include "prefsdk/qlua.h"
-#include "prefsdk/lua/luadebug.h"
 
 namespace Ui {
 class DebugDialog;
@@ -23,25 +21,32 @@ class DebugDialog : public QDialog
     public:
         static void createInstance(lua_State* l);
         static DebugDialog* instance();
+        ~DebugDialog();
+
+    public slots:
         DebugDialog* luaOut(QString s);
         DebugDialog* out(QString s);
         DebugDialog* outWord(QString s);
         DebugDialog* out(lua_Integer i, int base = 10, int fieldwidth = 0);
         DebugDialog* hexDump(QByteArray ba);
         DebugDialog* newLine(int count = 1);
-        ~DebugDialog();
 
     signals:
         void outHtml(QString);
         void outText(QString);
         void luaOutText(QString);
 
+    private:
+        int tableLength(int idx);
+        QString typeValue(int idx);
+        QString stackDump();
+        QString traceback();
+
     private slots:
         void on_pbClose_clicked();
-
         void on_pbTerminate_clicked();
 
-protected:
+    protected:
         virtual void closeEvent(QCloseEvent* e);
         virtual void showEvent(QShowEvent*);
 

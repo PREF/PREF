@@ -4,6 +4,7 @@ namespace PrefSDK
 {
     QList<FormatList::Format> FormatList::_formats;
     QHash<FormatList::FormatId, int> FormatList::_formatmap;
+    QHash<QHexEditData*, FormatList::LoadedFormat> FormatList::_loadedformats;
 
     const QString FormatList::FORMATS_DIR = "formats";
     const QString FormatList::FORMAT_MAIN_FILE = "main.lua";
@@ -62,6 +63,17 @@ namespace PrefSDK
         format.addOption(optionidx, name, description);
     }
 
+    void FormatList::addLoadedFormat(FormatList::FormatId formatid, FormatTree *formattree, QHexEditData* hexeditdata)
+    {
+        FormatList::_loadedformats[hexeditdata] = LoadedFormat(formatid, formattree);
+    }
+
+    void FormatList::removeLoadedFormat(QHexEditData *hexeditdata)
+    {
+        if(FormatList::_loadedformats.contains(hexeditdata))
+            FormatList::_loadedformats.remove(hexeditdata);
+    }
+
     int FormatList::length()
     {
         return FormatList::_formats.length();
@@ -75,5 +87,10 @@ namespace PrefSDK
     FormatList::Format &FormatList::formatFromId(FormatList::FormatId id)
     {
         return FormatList::_formats[FormatList::_formatmap[id]];
+    }
+
+    FormatList::LoadedFormat &FormatList::loadedFormat(QHexEditData *hexeditdata)
+    {
+        return FormatList::_loadedformats[hexeditdata];
     }
 }
