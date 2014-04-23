@@ -59,7 +59,6 @@ SOURCES += main.cpp\
     prefsdk/disassembler/disassemblersegment.cpp \
     prefsdk/disassembler/processor/instruction.cpp \
     prefsdk/disassembler/processor/operand.cpp \
-    prefsdk/disassembler/referencetable.cpp \
     debugdialog/debugdialog.cpp \
     viewmodels/luatypeviewmodel/luastackviewmodel.cpp \
     prefsdk/bytecolors.cpp \
@@ -168,7 +167,6 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/disassemblersegment.h \
     prefsdk/disassembler/processor/instruction.h \
     prefsdk/disassembler/processor/operand.h \
-    prefsdk/disassembler/referencetable.h \
     debugdialog/debugdialog.h \
     viewmodels/luatypeviewmodel/luastackviewmodel.h \
     prefsdk/bytecolors.h \
