@@ -2,16 +2,36 @@
 
 DisassemblerViewDrawer::DisassemblerViewDrawer(QHexEditData *hexeditdata, QPainter& painter, QFontMetrics& fontmetrics, int& charwidth, int& charheight, int& y): _painter(painter), _fontmetrics(fontmetrics), _charwidth(charwidth), _charheight(charheight), _y(y), _x(0), _hexeditdata(hexeditdata)
 {
+    this->_nofeaturecolor = Qt::lightGray;
+    this->_callcolor = Qt::blue;
+    this->_jumpcolor = Qt::darkRed;
+
+    this->_digitcolor = Qt::darkBlue;
+    this->_symbolcolor = Qt::darkCyan;
+    this->_stopcolor = QColor::fromRgb(192, 88, 0);
 }
 
-void DisassemblerViewDrawer::drawAddress(const QString &segment, const QString &address)
+QColor DisassemblerViewDrawer::instructionColor(InstructionFeatures::Features instructionfeatures)
 {
-    QString vaaddr = QString("%1:%2").arg(segment, address);
-    int w = this->_fontmetrics.width(vaaddr);
+    if(instructionfeatures & InstructionFeatures::Jump)
+        return this->_jumpcolor;
+    else if(instructionfeatures & InstructionFeatures::Call)
+        return this->_callcolor;
+    else if(instructionfeatures & InstructionFeatures::Stop)
+        return this->_stopcolor;
+    else if(instructionfeatures == 0)
+        return this->_nofeaturecolor;
 
-    this->_painter.setPen(Qt::darkBlue);
-    this->_painter.drawText(0, this->_y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, vaaddr);
-    this->_x = w + this->_charwidth;
+    return Qt::black;
+}
+
+void DisassemblerViewDrawer::drawVirtualAddress(const QString &segment, const QString &address)
+{
+    this->_x = 0; /* Reset x position first */
+
+    QString s = QString("%1:%2").arg(segment, address);
+    this->drawString(s, Qt::darkBlue);
+    this->_x += this->_charwidth;
 }
 
 void DisassemblerViewDrawer::drawHexDump(uint64_t offset, int dumplength, int maxwidth)
@@ -34,21 +54,33 @@ void DisassemblerViewDrawer::drawHexDump(uint64_t offset, int dumplength, int ma
     this->_x += w;
 }
 
-void DisassemblerViewDrawer::drawMnemonic(int width, const QString &mnemonic)
+void DisassemblerViewDrawer::drawMnemonic(int width, const QString &mnemonic, InstructionFeatures::Features instructionfeatures)
 {
     QString s = QString("%1%2").arg(QString(width, ' '), mnemonic);
-    int w = this->_fontmetrics.width(s);
+    this->drawString(s, this->instructionColor(instructionfeatures));
+    this->_x += this->_charwidth;
+}
 
-    this->_painter.setPen(Qt::black);
-    this->_painter.drawText(this->_x, this->_y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
-    this->_x += w + this->_charwidth;
+void DisassemblerViewDrawer::drawImmediate(const QString &s)
+{
+    this->drawString(s, Qt::darkBlue);
+}
+
+void DisassemblerViewDrawer::drawAddress(const QString &s)
+{
+    this->drawString(s, QColor::fromRgb(255, 90, 0));
 }
 
 void DisassemblerViewDrawer::drawString(const QString &s)
 {
+    this->drawString(s, Qt::black);
+}
+
+void DisassemblerViewDrawer::drawString(const QString &s, const QColor &color)
+{
     int w = this->_fontmetrics.width(s);
 
-    this->_painter.setPen(Qt::black);
+    this->_painter.setPen(color);
     this->_painter.drawText(this->_x, this->_y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
     this->_x += w;
 }

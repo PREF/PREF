@@ -84,7 +84,6 @@ void DisassemblerViewPrivate::adjust()
     this->_charwidth = fm.width(" ");
     this->_charheight = fm.height();
     this->_labelwidth = this->_charwidth * 12;
-    //this->_hexdumpwidth = this->_charwidth * (this->_listing->maxInstructionSize() * 3);
 
     if(this->_hexeditdata)
     {
@@ -121,35 +120,6 @@ qint64 DisassemblerViewPrivate::verticalSliderPosition64()
     return static_cast<qint64>(this->_vscrollbar->sliderPosition());
 }
 
-/*
-void DisassemblerViewPrivate::setCharColor(InstructionItem* ii, const QChar& ch, QPainter &painter)
-{
-    this->setInstructionColor(ii, painter);
-
-    if(ch.isSymbol() || ch.isPunct())
-        painter.setPen(this->_symbolcolor);
-}
-*/
-
-/*
-void DisassemblerViewPrivate::setInstructionColor(InstructionItem *ii, QPainter &painter)
-{
-    Instruction::Ptr instruction = ii->instruction();
-    Instruction::InstructionFeatures features = this->_loader->processor()->features(instruction->instructionType());
-
-    if(features & Instruction::Jump)
-        painter.setPen(this->_jumpcolor);
-    else if(features & Instruction::Call)
-        painter.setPen(this->_callcolor);
-    else if(features & Instruction::Stop)
-        painter.setPen(this->_stopcolor);
-    else if(features == 0)
-        painter.setPen(this->_nofeaturecolor);
-    else
-        painter.setPen(Qt::black);
-}
-*/
-
 bool DisassemblerViewPrivate::drawLine(DisassemblerViewDrawer* drawer, lua_Integer i)
 {
     bool b = false;
@@ -169,144 +139,7 @@ bool DisassemblerViewPrivate::drawLine(DisassemblerViewDrawer* drawer, lua_Integ
 
     lua_pop(l, 2);
     return !res && b;
-
-    //int x = 0;
-    //uint64_t address = this->_loadedformat.addressAt(i);
-
-    /*
-    if(this->_loader->inSegment(item->address()))
-    {
-        DisassemblerSegment segment = this->_loader->segment(item->address());
-        x = this->drawAddress(segment.name(), painter, fm, item, y);
-    }
-    else
-        x = this->drawAddress("???", painter, fm, item, y);
-
-    if(item->itemType() == ListingItem::Instruction)
-    {
-        InstructionItem* ii = dynamic_cast<InstructionItem*>(item);
-        this->drawHexDump(ii, painter, fm, x, y);
-        this->drawInstruction(ii, painter, fm, x + this->_hexdumpwidth + this->_labelwidth, y);
-    }
-    else if(item->itemType() == ListingItem::Label)
-        this->drawLabel(dynamic_cast<LabelItem*>(item), painter, fm, x + this->_hexdumpwidth, y);  
-    */
 }
-
-/*
-int DisassemblerViewPrivate::drawAddress(const QString& segmentname, QPainter &painter, QFontMetrics &fm, ListingItem* li, int y)
-{
-    QString vaaddr = QString("%1:%2").arg(segmentname, QString("%1").arg(li->address(), 8, 16, QLatin1Char('0')).toUpper());
-
-    painter.setPen(Qt::darkBlue);
-    painter.drawText(0, y, fm.width(vaaddr), this->_charheight, Qt::AlignLeft | Qt::AlignTop, vaaddr);
-
-    return fm.width(vaaddr) + this->_charwidth;
-}
-*/
-
-/*
-void DisassemblerViewPrivate::drawHexDump(InstructionItem *ii, QPainter &painter, QFontMetrics &fm, int x, int y)
-{
-    QHexEditData* hexeditdata = this->_listing->buffer();
-    QByteArray ba = hexeditdata->read(ii->address(), ii->instruction()->instructionSize());
-    QString hexdump;
-
-    for(int i = 0; i < ba.length(); i++)
-    {
-        if(!hexdump.isEmpty())
-            hexdump.append(" ");
-
-        hexdump.append(QString("%1").arg(static_cast<unsigned char>(ba.at(i)), 2, 16, QLatin1Char('0')).toUpper());
-    }
-
-    painter.setPen(Qt::darkGray);
-    painter.drawText(x, y, fm.width(hexdump), this->_charheight, Qt::AlignLeft | Qt::AlignTop, hexdump);
-}
-*/
-
-/*
-void DisassemblerViewPrivate::drawLabel(LabelItem *li, QPainter &painter, QFontMetrics &fm, int x, int y)
-{
-    ReferenceTable* reftable = this->_listing->referenceTable();
-    ReferenceTable::Reference ref = reftable->reference(li->address());
-    QString s = li->stringValue();
-    int w = fm.width(s);
-
-    painter.setPen(Qt::darkCyan);
-    painter.drawText(x, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
-
-    if(ref)
-        this->drawReference(ref, li->address(), painter, fm, x + w + this->_labelwidth, y);
-}
-*/
-
-/*
-void DisassemblerViewPrivate::drawComment(const QString &s, QPainter &painter, QFontMetrics &fm, int x, int y)
-{
-    if(!s.isEmpty())
-    {
-        painter.setPen(Qt::darkGreen);
-        painter.drawText(x, y, fm.width(s), this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
-    }
-}
-*/
-
-/*
-void DisassemblerViewPrivate::drawInstruction(InstructionItem* ii, QPainter &painter, QFontMetrics &fm, int x, int y)
-{
-    QString instr = ii->stringValue();
-
-    for(int i = 0; i < instr.length(); i++)
-    {
-        QChar ch = instr.at(i);
-        this->setCharColor(ii, ch, painter);
-
-        painter.drawText(x, y, fm.width(ch), this->_charheight, Qt::AlignLeft | Qt::AlignTop, ch);
-        x += fm.width(ch);
-    }
-}
-*/
-
-/*
-void DisassemblerViewPrivate::drawReference(const ReferenceTable::Reference& ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y)
-{
-    QString addresses;
-
-    for(int i = 0; i < ref.InstructionAddresses.length(); i++)
-    {
-        lua_Integer address = ref.InstructionAddresses[i];
-
-        if(address == ignoreaddress)
-            continue;
-
-        if(this->_loader.inSegment(address))
-        {
-            DisassemblerSegment ds = this->_loader.segment(address);
-
-            if(addresses.isEmpty())
-                addresses.append(QString("%1:%2").arg(ds.name(), QString::number(address, 16).toUpper()));
-            else
-                addresses.append(QString(" | %1:%2").arg(ds.name(), QString::number(address, 16).toUpper()));
-        }
-    }
-
-    if(!addresses.isEmpty())
-    {
-        QString reftype;
-
-        if(ref.Type == ReferenceTable::Code)
-            reftype = "CODE";
-        else
-            reftype = "DATA";
-
-        QString s = QString("%1 XREF: %2").arg(reftype, addresses);
-
-        painter.setPen(Qt::darkGreen);
-        painter.drawText(x, y, fm.width(s), this->_charheight, Qt::AlignLeft | Qt::AlignTop, s);
-    }
-}
-*/
 
 void DisassemblerViewPrivate::vScrollBarValueChanged(int)
 {
@@ -330,7 +163,7 @@ void DisassemblerViewPrivate::paintEvent(QPaintEvent *e)
         DisassemblerViewDrawer dd(this->_hexeditdata, painter, fm, this->_charwidth, this->_charheight, y);
 
         for(qint64 i = start; i < end; i++)
-        {
+        {            
             if(!this->drawLine(&dd, i))
                 break;
 

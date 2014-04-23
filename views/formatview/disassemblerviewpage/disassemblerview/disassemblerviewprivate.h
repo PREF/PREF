@@ -26,15 +26,7 @@ class DisassemblerViewPrivate : public QWidget
     private:
         void adjust();
         qint64 verticalSliderPosition64();
-        //void setCharColor(InstructionItem *ii, const QChar& ch, QPainter& painter);
-        //void setInstructionColor(InstructionItem* ii, QPainter& painter);
         bool drawLine(DisassemblerViewDrawer *drawer, lua_Integer i);
-        //int drawAddress(const QString &segmentname, QPainter &painter, QFontMetrics &fm, ListingItem *li, int y);
-        //void drawHexDump(InstructionItem *ii, QPainter &painter, QFontMetrics &fm, int x, int y);
-        //void drawLabel(LabelItem* li, QPainter &painter, QFontMetrics &fm, int x, int y);
-        //void drawComment(const QString& s, QPainter &painter, QFontMetrics &fm, int x, int y);
-        //void drawInstruction(InstructionItem *ii, QPainter& painter, QFontMetrics& fm, int x, int y);
-        //void drawReference(const ReferenceTable::Reference& ref, lua_Integer ignoreaddress, QPainter &painter, QFontMetrics &fm, int x, int y);
 
     private slots:
         void vScrollBarValueChanged(int);
