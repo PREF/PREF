@@ -63,12 +63,12 @@ void DisassemblerViewDrawer::drawMnemonic(int width, const QString &mnemonic, In
 
 void DisassemblerViewDrawer::drawImmediate(const QString &s)
 {
-    this->drawString(s, Qt::darkBlue);
+    this->drawString(s, Qt::darkGreen);
 }
 
 void DisassemblerViewDrawer::drawAddress(const QString &s)
 {
-    this->drawString(s, QColor::fromRgb(255, 90, 0));
+    this->drawString(s, Qt::darkBlue);
 }
 
 void DisassemblerViewDrawer::drawString(const QString &s)
