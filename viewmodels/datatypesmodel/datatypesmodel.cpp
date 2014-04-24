@@ -21,6 +21,8 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
         DataTypesModel::_botypes[QSysInfo::LittleEndian] = QHash<DataType::Type, DataType::Type>();
         DataTypesModel::_botypes[QSysInfo::BigEndian] = QHash<DataType::Type, DataType::Type>();
 
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int8] = DataType::Int8;
+        DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::UInt8] = DataType::UInt8;
         DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int16] = DataType::Int16_LE;
         DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::UInt16] = DataType::UInt16_LE;
         DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int32] = DataType::Int32_LE;
@@ -28,6 +30,8 @@ DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
         DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::Int64] = DataType::Int64_LE;
         DataTypesModel::_botypes[QSysInfo::LittleEndian][DataType::UInt64] = DataType::UInt64_LE;
 
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::Int8] = DataType::Int8;
+        DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::UInt8] = DataType::UInt8;
         DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::Int16] = DataType::Int16_BE;
         DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::UInt16] = DataType::UInt16_BE;
         DataTypesModel::_botypes[QSysInfo::BigEndian][DataType::Int32] = DataType::Int32_BE;
@@ -100,7 +104,7 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
 
     if(bytewidth && ((this->_offset + bytewidth) < this->_hexeditdata->length()))
     {
-        if(bytewidth > 1 && NumericLimits::willOverflow(this->_hexeditdata, this->_offset, DataTypesModel::_botypes[this->_endian][type]))
+        if(bytewidth >= 1 && NumericLimits::willOverflow(this->_hexeditdata, this->_offset, DataTypesModel::_botypes[this->_endian][type]))
         {
             if(overflow)
                 *overflow = true;
