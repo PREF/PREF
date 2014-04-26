@@ -48,6 +48,7 @@ namespace PrefSDK
             void DisassemblerDrawer_drawMnemonic(DisassemblerViewDrawer* __this, int width, const char* mnemonic, int instructionfeatures);
             void DisassemblerDrawer_drawImmediate(DisassemblerViewDrawer* __this, const char* s);
             void DisassemblerDrawer_drawAddress(DisassemblerViewDrawer* __this, const char* s);
+            void DisassemblerDrawer_drawRegister(DisassemblerViewDrawer* __this, const char* s);
             void DisassemblerDrawer_drawString(DisassemblerViewDrawer* __this, const char* s);
         }
     }

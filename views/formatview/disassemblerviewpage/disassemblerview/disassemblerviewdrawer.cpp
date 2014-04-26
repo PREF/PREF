@@ -5,10 +5,15 @@ DisassemblerViewDrawer::DisassemblerViewDrawer(QHexEditData *hexeditdata, QPaint
     this->_nofeaturecolor = Qt::lightGray;
     this->_callcolor = Qt::blue;
     this->_jumpcolor = Qt::darkRed;
-
-    this->_digitcolor = Qt::darkBlue;
-    this->_symbolcolor = Qt::darkCyan;
     this->_stopcolor = QColor::fromRgb(192, 88, 0);
+
+    this->_immediatecolor = Qt::darkGreen;
+    this->_addresscolor = Qt::darkBlue;
+    this->_registercolor = Qt::darkBlue;
+
+    this->_defaultfont = painter.font();
+    this->_boldfont = QFont(this->_defaultfont);
+    this->_boldfont.setBold(true);
 }
 
 QColor DisassemblerViewDrawer::instructionColor(InstructionFeatures::Features instructionfeatures)
@@ -63,12 +68,19 @@ void DisassemblerViewDrawer::drawMnemonic(int width, const QString &mnemonic, In
 
 void DisassemblerViewDrawer::drawImmediate(const QString &s)
 {
-    this->drawString(s, Qt::darkGreen);
+    this->drawString(s, this->_immediatecolor);
 }
 
 void DisassemblerViewDrawer::drawAddress(const QString &s)
 {
-    this->drawString(s, Qt::darkBlue);
+    this->drawString(s, this->_addresscolor);
+}
+
+void DisassemblerViewDrawer::drawRegister(const QString &s)
+{
+    this->_painter.setFont(this->_boldfont);
+    this->drawString(s, this->_registercolor);
+    this->_painter.setFont(this->_defaultfont);
 }
 
 void DisassemblerViewDrawer::drawString(const QString &s)

@@ -18,6 +18,7 @@ class DisassemblerViewDrawer
         void drawMnemonic(int width, const QString& mnemonic, InstructionFeatures::Features instructionfeatures);
         void drawImmediate(const QString& s);
         void drawAddress(const QString& s);
+        void drawRegister(const QString& s);
         void drawString(const QString& s);
 
     private:
@@ -33,12 +34,15 @@ class DisassemblerViewDrawer
     private:
         int _x;
         QHexEditData* _hexeditdata;
+        QFont _defaultfont;
+        QFont _boldfont;
         QColor _nofeaturecolor;
         QColor _callcolor;
         QColor _stopcolor;
         QColor _jumpcolor;
-        QColor _digitcolor;
-        QColor _symbolcolor;
+        QColor _immediatecolor;
+        QColor _addresscolor;
+        QColor _registercolor;
 };
 
 #endif // DISASSEMBLERVIEWDRAWER_H

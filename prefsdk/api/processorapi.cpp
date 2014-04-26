@@ -33,5 +33,10 @@ namespace PrefSDK
         {
             __this->drawAddress(QString::fromUtf8(s));
         }
+
+        void DisassemblerDrawer_drawRegister(DisassemblerViewDrawer *__this, const char *s)
+        {
+            __this->drawRegister(QString::fromUtf8(s));
+        }
     }
 }
