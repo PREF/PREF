@@ -34,6 +34,9 @@ namespace PrefSDK
 
         const char *QHexEditData_readString(QHexEditData *__this, int64_t pos, int64_t len)
         {
+            if(len == -1)
+                return __this->readString(pos).toUtf8().constData();
+
             QByteArray ba = __this->read(pos, len);
             return QString(ba).toUtf8().constData();
         }
