@@ -48,6 +48,12 @@ namespace PrefSDK
         return QString("%1[%2..%3]").arg(this->name(), QString::number(this->_bitstart), QString::number(this->_bitend));
     }
 
+    QString BitField::displayValue() const
+    {
+        quint64 val = this->_hexeditdata->readUInt64(this->offset(), DataType::byteOrder(this->dataType()));
+        return QString("%1").arg((val & this->_mask) >> this->_bitstart, 0, this->base()).toUpper();
+    }
+
     bool BitField::isOverflowed() const
     {
         return false;

@@ -20,6 +20,7 @@ namespace PrefSDK
             virtual uint64_t size() const;
             virtual QString displayType() const;
             virtual QString displayName() const;
+            virtual QString displayValue() const;
             virtual bool isOverflowed() const;
 
         private:
