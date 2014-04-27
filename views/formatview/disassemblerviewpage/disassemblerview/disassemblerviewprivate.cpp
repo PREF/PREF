@@ -187,7 +187,7 @@ void DisassemblerViewPrivate::keyPressEvent(QKeyEvent *e)
 
     if(e->matches(QKeySequence::MoveToNextPage) || e->matches(QKeySequence::MoveToPreviousPage))
     {
-        uint64_t newline = 0, linecount = this->height() / this->_charheight;
+        int64_t newline = 0, linecount = this->height() / this->_charheight;
 
         if(e->matches(QKeySequence::MoveToPreviousPage))
         {
@@ -208,7 +208,7 @@ void DisassemblerViewPrivate::keyPressEvent(QKeyEvent *e)
     }
     else if(e->matches(QKeySequence::MoveToStartOfDocument) || e->matches(QKeySequence::MoveToEndOfDocument))
     {
-        qint64 newline = 0;
+        int64_t newline = 0;
 
         if(e->matches(QKeySequence::MoveToEndOfDocument))
             newline = this->_instructioncount - 1;

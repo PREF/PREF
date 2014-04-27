@@ -50,7 +50,7 @@ class DisassemblerViewPrivate : public QWidget
         QColor _jumpcolor;
         QColor _digitcolor;
         QColor _symbolcolor;
-        uint64_t _instructioncount;
+        int64_t _instructioncount;
         int _labelwidth;
         int _charwidth;
         int _charheight;
