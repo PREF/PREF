@@ -25,8 +25,7 @@ namespace PrefSDK
             bool Format_checkInt64(QHexEditData* hexeditdata, uint64_t offset, int64_t value, int byteorder);
             bool Format_checkAsciiString(QHexEditData* hexeditdata, uint64_t offset, const char* value);
 
-            Structure* FormatTree_addStructure(FormatTree* __this, const char* name);
-            Structure* FormatTree_addStructureAtOffset(FormatTree* __this, const char* name, uint64_t offset);
+            Structure* FormatTree_addStructure(FormatTree* __this, const char* name, uint64_t offset);
             Structure* FormatTree_getStructure(FormatTree* __this, uint64_t i);
             uint64_t FormatTree_getStructureCount(FormatTree* __this);
 

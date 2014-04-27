@@ -118,7 +118,9 @@ SOURCES += main.cpp\
     prefsdk/disassembler/processorloader.cpp \
     prefsdk/api/processorapi.cpp \
     prefsdk/disassembler/disassembler.cpp \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp
+    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp \
+    prefsdk/api/prefuiapi.cpp \
+    prefsdk/ui/tablewidget.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -225,7 +227,9 @@ HEADERS  += mainwindow.h \
     prefsdk/exporter/exporterlist.h \
     prefsdk/disassembler/processorloader.h \
     prefsdk/api/processorapi.h \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h
+    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h \
+    prefsdk/api/prefuiapi.h \
+    prefsdk/ui/tablewidget.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -251,7 +255,8 @@ FORMS    += mainwindow.ui \
     actionwidget/byteopsaction/byteopsaction.ui \
     actionwidget/rangeselectoraction/rangeselectoraction.ui \
     actionwidget/findaction/findaction.ui \
-    signaturedatabasedialog/signaturedatabasedialog.ui
+    signaturedatabasedialog/signaturedatabasedialog.ui \
+    prefsdk/ui/tablewidget.ui
 
 RESOURCES += resources.qrc
 

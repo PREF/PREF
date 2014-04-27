@@ -83,12 +83,7 @@ namespace PrefSDK
             return false;
         }
 
-        Structure *FormatTree_addStructure(FormatTree *__this, const char *name)
-        {
-            return __this->addStructure(QString::fromUtf8(name));
-        }
-
-        Structure *FormatTree_addStructureAtOffset(FormatTree *__this, const char *name, uint64_t offset)
+        Structure *FormatTree_addStructure(FormatTree *__this, const char *name, uint64_t offset)
         {
             return __this->addStructure(QString::fromUtf8(name), offset);
         }
