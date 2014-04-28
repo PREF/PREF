@@ -20,10 +20,10 @@ namespace PrefSDK
             typedef QList<uint64_t> StructureOffsetList;
 
         public:
-            explicit FormatTree(lua_State* l, QHexEditData* hexeditdata, QObject* parent = 0);
+            explicit FormatTree(lua_State* l, QHexEditData* hexeditdata, int64_t baseoffset, QObject* parent = 0);
             bool isEmpty() const;
             Structure* addStructure(const QString& name);
-            Structure* addStructure(const QString& name, uint64_t offset);
+            Structure* insertStructure(const QString& name, uint64_t offset);
             Structure* structure(uint64_t i);
             uint64_t structureCount();
             FormatElement* elementFromPool(int64_t i, const FormatElement* parent = nullptr);
@@ -35,6 +35,7 @@ namespace PrefSDK
             StructureMap _structuremap;
             ElementPool _elementpool;
             lua_State* _state;
+            int64_t _baseoffset;
     };
 }
 

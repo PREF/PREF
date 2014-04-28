@@ -140,7 +140,7 @@ namespace PrefSDK
 
     FormatTree *SDKManager::parseFormat(FormatList::FormatId formatid, int64_t baseoffset, QHexEditData* hexeditdata)
     {
-        FormatTree* formattree = new FormatTree(SDKManager::_state, hexeditdata);
+        FormatTree* formattree = new FormatTree(SDKManager::_state, hexeditdata, baseoffset);
 
         lua_getglobal(SDKManager::_state, SDKManager::SDK_TABLE);
         lua_getfield(SDKManager::_state, -1, "parseFormat");

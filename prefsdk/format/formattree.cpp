@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    FormatTree::FormatTree(lua_State *l, QHexEditData* hexeditdata, QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _state(l)
+    FormatTree::FormatTree(lua_State *l, QHexEditData* hexeditdata, int64_t baseoffset, QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _state(l), _baseoffset(baseoffset)
     {
 
     }
@@ -14,7 +14,7 @@ namespace PrefSDK
 
     Structure *FormatTree::addStructure(const QString &name)
     {
-        uint64_t offset = 0;
+        uint64_t offset = this->_baseoffset;
 
         if(!this->_structuremap.isEmpty())
         {
@@ -23,11 +23,12 @@ namespace PrefSDK
             offset = lastoffset + lastelement->size();
         }
 
-        return this->addStructure(name, offset);
+        return this->insertStructure(name, offset);
     }
 
-    Structure *FormatTree::addStructure(const QString &name, uint64_t offset)
+    Structure *FormatTree::insertStructure(const QString &name, uint64_t offset)
     {
+        offset += this->_baseoffset;
         Structure* s = new Structure(this->_state, offset, name, QUuid(), this->_elementpool, this->_hexeditdata);
 
         this->_structureoffsets.append(offset);
