@@ -12,6 +12,8 @@
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/sdkmanager.h"
 #include "prefsdk/math.h"
+#include "formatoptionsdialog.h"
+#include "formatsdialog.h"
 #include "exportdialog.h"
 
 using namespace PrefSDK;
@@ -26,16 +28,16 @@ class HexEditViewPage: public QWidget
 
     public:
         explicit HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent = 0);
-        bool loadFormat(const FormatList::FormatId &formatid, int64_t baseoffset);
+        bool loadFormat(const FormatList::Format &format, int64_t baseoffset);
         void scanSignatures(bool canscan);
         BinaryNavigator* binaryNavigator();
-        const FormatList::Format& format();
         FormatTree* tree();
         QHexEdit* hexEdit();
         ~HexEditViewPage();
 
     signals:
         void hexEditPositionChanged(qint64 pos);
+        void formatLoaded(FormatList::FormatId id);
 
     public slots:
         void gotoOffset(qint64 offset, qint64 length = -1);
@@ -47,6 +49,10 @@ class HexEditViewPage: public QWidget
     private slots:
         void updateOffset(qint64 offset);
         void updateSelLength(qint64 size);
+        void onLoadFormatClicked();
+        void onFormatOptionsClicked();
+        void onSignatureScannerClicked();
+        void onByteViewClicked();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onSetBackColor(FormatElement *formatlement);
         void onRemoveBackColor(FormatElement *formatlement);
@@ -57,11 +63,15 @@ class HexEditViewPage: public QWidget
 
     private:
         Ui::HexEditViewPage *ui;
-        FormatList::Format _format;
+        FormatList::FormatId _formatid;
         FormatModel* _formatmodel;
         FormatTree* _formattree;
         QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;
+        QToolButton* _tbloadformat;
+        QToolButton* _tbscansignature;
+        QToolButton* _tbbyteview;
+        QToolButton* _tbformatoptions;
         QColor _signaturecolor;
         bool _signscanenabled;
         bool _entropyenabled;

@@ -35,10 +35,11 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-bool HexEditViewPage::loadFormat(const FormatList::FormatId &formatid, int64_t baseoffset)
+bool HexEditViewPage::loadFormat(const FormatList::Format& format, int64_t baseoffset)
 {
-    this->_formattree = SDKManager::parseFormat(formatid, baseoffset, this->_hexeditdata);
+    this->_formattree = SDKManager::parseFormat(format.id(), baseoffset, this->_hexeditdata);
     this->_formatmodel->setFormatTree(this->_formattree);
+    this->_tbformatoptions->setEnabled(format.optionsCount() > 0);
 
     for(int i = 0; i < this->_formatmodel->columnCount(); i++)
         ui->tvFormat->resizeColumnToContents(i);
@@ -64,11 +65,6 @@ BinaryNavigator *HexEditViewPage::binaryNavigator()
     return ui->binaryNavigator;
 }
 
-const FormatList::Format &HexEditViewPage::format()
-{
-    return this->_format;
-}
-
 FormatTree *HexEditViewPage::tree()
 {
     return this->_formattree;
@@ -85,7 +81,42 @@ void HexEditViewPage::gotoOffset(qint64 offset, qint64 length)
 void HexEditViewPage::createToolBar()
 {
     this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);
+    this->_tbloadformat = new QToolButton();
+    this->_tbformatoptions = new QToolButton();
+    this->_tbbyteview = new QToolButton();
+    this->_tbscansignature = new QToolButton();
+
+    this->_tbloadformat->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    this->_tbloadformat->setIcon(QIcon(":/misc_icons/res/format.png"));
+    this->_tbloadformat->setText("Formats");
+
+    this->_tbformatoptions->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    this->_tbformatoptions->setIcon(QIcon(":/misc_icons/res/formatoptions.png"));
+    this->_tbformatoptions->setText("Options");
+    this->_tbformatoptions->setPopupMode(QToolButton::MenuButtonPopup);
+    this->_tbformatoptions->setEnabled(false);
+
+    this->_tbbyteview->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    this->_tbbyteview->setIcon(QIcon(":/action_icons/res/entropy.png"));
+    this->_tbbyteview->setText("Map View");
+    this->_tbbyteview->setCheckable(true);
+
+    this->_tbscansignature->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    this->_tbscansignature->setIcon(QIcon(":/misc_icons/res/signature.png"));
+    this->_tbscansignature->setText("Signatures");
+    this->_tbscansignature->setCheckable(true);
+
+    this->_toolbar->addWidget(this->_tbloadformat);
+    this->_toolbar->addWidget(this->_tbformatoptions);
+    this->_toolbar->addWidget(this->_tbbyteview);
+    this->_toolbar->addWidget(this->_tbscansignature);
+    this->_toolbar->addSeparator();
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
+
+    connect(this->_tbloadformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
+    connect(this->_tbformatoptions, SIGNAL(clicked()), this, SLOT(onFormatOptionsClicked()));
+    connect(this->_tbbyteview, SIGNAL(clicked()), this, SLOT(onByteViewClicked()));
+    connect(this->_tbscansignature, SIGNAL(clicked()), this, SLOT(onSignatureScannerClicked()));
 
     QVBoxLayout* vl = new QVBoxLayout();
     vl->setContentsMargins(0, 0, 0, 0);
@@ -124,6 +155,43 @@ void HexEditViewPage::updateSelLength(qint64 size)
     }
     else
         this->_toolbar->setEditActionsEnabled(true);
+}
+
+void HexEditViewPage::onLoadFormatClicked()
+{
+    FormatsDialog fd(this->_hexeditdata->length(), this->topLevelWidget());
+    int res = fd.exec();
+
+    if(res == FormatsDialog::Accepted)
+    {
+        this->_formatid = fd.selectedFormat();
+        FormatList::Format& format = FormatList::formatFromId(this->_formatid);
+
+        if(this->loadFormat(format, fd.offset()))
+        {
+            FormatList::addLoadedFormat(this->_formatid, this->_formattree, this->_hexeditdata);
+            emit formatLoaded(this->_formatid);
+        }
+    }
+}
+
+void HexEditViewPage::onFormatOptionsClicked()
+{
+    FormatOptionsDialog fod(SDKManager::state(), this->_formatid, ui->hexEdit, this->topLevelWidget());
+    fod.exec();
+}
+
+void HexEditViewPage::onSignatureScannerClicked()
+{
+    this->scanSignatures(this->_tbscansignature->isChecked());
+}
+
+void HexEditViewPage::onByteViewClicked()
+{
+    if(this->_tbbyteview->isChecked())
+        ui->binaryNavigator->displayEntropy();
+    else
+        ui->binaryNavigator->displayDefault();
 }
 
 void HexEditViewPage::onHexEditCustomContextMenuRequested(const QPoint &pos)

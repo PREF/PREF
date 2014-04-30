@@ -1,14 +1,13 @@
 #include "formatview.h"
 #include "ui_formatview.h"
 
-FormatView::FormatView(QHexEditData* hexeditdata, QWidget *parent): AbstractView(parent), ui(new Ui::FormatView), _hexeditdata(hexeditdata)
+FormatView::FormatView(QHexEditData* hexeditdata, QWidget *parent): AbstractView(parent), ui(new Ui::FormatView), _formatid(nullptr), _hexeditdata(hexeditdata)
 {
     ui->setupUi(this);
 
     this->createHexView();
     this->createBinaryView();
     this->createChartView();
-    this->createDisassemblerView();
     this->createStringFinderView();
 }
 
@@ -38,10 +37,10 @@ FormatView::Views FormatView::currentView()
             return FormatView::ChartView;
 
         case 3:
-            return FormatView::DisassemblerView;
+            return FormatView::StringFinderView;
 
         case 4:
-            return FormatView::StringFinderView;
+            return FormatView::DisassemblerView;
 
         default:
             break;
@@ -69,6 +68,7 @@ void FormatView::closeEvent(QCloseEvent *event)
 void FormatView::createHexView()
 {
     this->_hexeditview = new HexEditViewPage(this->_hexeditdata, this);
+    connect(this->_hexeditview, SIGNAL(formatLoaded(FormatList::FormatId)), this, SLOT(onFormatLoaded(FormatList::FormatId)));
     ui->tabWidget->addTab(this->_hexeditview, "Hex Edit");
 }
 
@@ -85,9 +85,9 @@ void FormatView::createChartView()
     ui->tabWidget->addTab(this->_chartview, "Chart");
 }
 
-void FormatView::createDisassemblerView()
+void FormatView::createDisassemblerView(FormatTree* formattree)
 {
-    this->_disassemblerview = new DisassemblerViewPage(this->_hexeditdata, this);
+    this->_disassemblerview = new DisassemblerViewPage(this->_hexeditdata, formattree, this);
     ui->tabWidget->addTab(this->_disassemblerview, "Disassembler");
 }
 
@@ -109,41 +109,10 @@ void FormatView::jumpToOffset(qint64 offset, qint64 length)
     this->_hexeditview->gotoOffset(offset, length);
 }
 
-void FormatView::on_tbFormats_clicked()
+void FormatView::onFormatLoaded(FormatList::FormatId formatid)
 {
-    FormatsDialog fd(this->_hexeditdata->length(), this->topLevelWidget());
-    int res = fd.exec();
+    FormatList::Format& format = FormatList::formatFromId(formatid);
 
-    if(res == FormatsDialog::Accepted)
-    {
-        this->_formatid = fd.selectedFormat();
-        FormatList::Format& format = FormatList::formatFromId(this->_formatid);
-
-        if(this->_hexeditview->loadFormat(this->_formatid, fd.offset()))
-        {
-            FormatList::addLoadedFormat(this->_formatid, this->_hexeditview->tree(), this->_hexeditdata);
-
-            this->_disassemblerview->setData(this->_hexeditview->tree(), this->_formatid);
-            ui->tbFormatOptions->setEnabled(format.optionsCount() > 0);
-        }
-    }
-}
-
-void FormatView::on_tbFormatOptions_clicked()
-{
-    FormatOptionsDialog fod(SDKManager::state(), this->_formatid, this->_hexeditview->hexEdit(), this->topLevelWidget());
-    fod.exec();
-}
-
-void FormatView::on_tbSignatureScanner_clicked()
-{
-    this->_hexeditview->scanSignatures(ui->tbSignatureScanner->isChecked());
-}
-
-void FormatView::on_tbEntropy_clicked()
-{
-    if(ui->tbEntropy->isChecked())
-        this->_hexeditview->binaryNavigator()->displayEntropy();
-    else
-        this->_hexeditview->binaryNavigator()->displayDefault();
+    if(format.canDisassemble())
+        this->createDisassemblerView(this->_hexeditview->tree());
 }

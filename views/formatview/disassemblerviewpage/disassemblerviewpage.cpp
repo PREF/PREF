@@ -1,14 +1,12 @@
 #include "disassemblerviewpage.h"
 #include "ui_disassemblerviewpage.h"
 
-DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *parent): QWidget(parent), ui(new Ui::DisassemblerViewPage), _formattree(nullptr), _hexeditdata(hexeditdata)
+DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, FormatTree *formattree, QWidget *parent): QWidget(parent), ui(new Ui::DisassemblerViewPage), _formattree(formattree), _hexeditdata(hexeditdata)
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0, 1);
 
     this->_toolbar = new ElaborateToolBar();
-    this->_toolbar->setEnabled(false);
-
     ui->verticalLayout_2->insertWidget(0, this->_toolbar);
     this->createFunctionsMenu();
 
@@ -28,15 +26,6 @@ DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, QWidget *p
 
     connect(this->_toolbar, SIGNAL(stopTriggered()), this, SLOT(onActStopTriggered()));
     connect(this->_toolbar, SIGNAL(startTriggered()), this, SLOT(onActDisassembleTriggered()));
-}
-
-void DisassemblerViewPage::setData(FormatTree* formattree, const FormatList::FormatId& formatid)
-{
-    this->_formattree = formattree;
-    this->_formatid = formatid;
-
-    if(FormatList::formatFromId(formatid).canDisassemble())
-        this->_toolbar->setEnabled(true);
 }
 
 DisassemblerViewPage::~DisassemblerViewPage()

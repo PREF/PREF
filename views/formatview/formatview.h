@@ -12,8 +12,6 @@
 #include "disassemblerviewpage/disassemblerviewpage.h"
 #include "stringfinderviewpage/stringfinderviewpage.h"
 #include "prefsdk/sdkmanager.h"
-#include "formatoptionsdialog.h"
-#include "formatsdialog.h"
 
 using namespace PrefSDK;
 
@@ -43,19 +41,16 @@ class FormatView : public AbstractView
         void viewChanged(FormatView::Views v);
 
     private slots:
-        void on_tabWidget_currentChanged(int);
         void jumpToOffset(qint64 offset, qint64 length = 1);
-        void on_tbFormats_clicked();
-        void on_tbFormatOptions_clicked();
-        void on_tbSignatureScanner_clicked();
-        void on_tbEntropy_clicked();
+        void on_tabWidget_currentChanged(int);
+        void onFormatLoaded(FormatList::FormatId formatid);
 
     private:
         void createHexView();
         void createBinaryView();
         void createChartView();
-        void createDisassemblerView();
         void createStringFinderView();
+        void createDisassemblerView(FormatTree *formattree);
 
     private:
         Ui::FormatView *ui;
