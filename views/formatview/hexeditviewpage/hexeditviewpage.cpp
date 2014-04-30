@@ -35,10 +35,12 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-bool HexEditViewPage::loadFormat(const FormatList::Format& format, int64_t baseoffset)
+bool HexEditViewPage::loadFormat(FormatList::Format& format, int64_t baseoffset)
 {
     this->_formattree = SDKManager::parseFormat(format.id(), baseoffset, this->_hexeditdata);
     this->_formatmodel->setFormatTree(this->_formattree);
+
+    this->_tbformatoptions->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, format));
     this->_tbformatoptions->setEnabled(format.optionsCount() > 0);
 
     for(int i = 0; i < this->_formatmodel->columnCount(); i++)
@@ -177,8 +179,8 @@ void HexEditViewPage::onLoadFormatClicked()
 
 void HexEditViewPage::onFormatOptionsClicked()
 {
-    FormatOptionsDialog fod(SDKManager::state(), this->_formatid, ui->hexEdit, this->topLevelWidget());
-    fod.exec();
+    //FormatOptionsDialog fod(SDKManager::state(), this->_formatid, ui->hexEdit, this->topLevelWidget());
+    //fod.exec();
 }
 
 void HexEditViewPage::onSignatureScannerClicked()

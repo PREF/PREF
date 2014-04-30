@@ -56,11 +56,11 @@ namespace PrefSDK
         FormatList::_formatmap[formatid] = idx;
     }
 
-    void FormatList::registerOption(FormatList::FormatId formatid, int optionidx, const QString &name, const QString& description)
+    void FormatList::registerOption(FormatList::FormatId formatid, int optionidx, const QString &name)
     {
         int idx = FormatList::_formatmap[formatid];
         FormatList::Format& format = FormatList::_formats[idx];
-        format.addOption(optionidx, name, description);
+        format.addOption(optionidx, name);
     }
 
     void FormatList::addLoadedFormat(FormatList::FormatId formatid, FormatTree *formattree, QHexEditData* hexeditdata)

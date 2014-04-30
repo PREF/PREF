@@ -23,10 +23,9 @@ namespace PrefSDK
                     {
                         public:
                             Option(): _idx(-1) { }
-                            Option(int optionidx, const QString& name, const QString& description): _idx(optionidx), _name(name), _description(description) { }
+                            Option(int optionidx, const QString& name): _idx(optionidx), _name(name) { }
                             int index() const { return this->_idx; }
                             const QString& name() const { return this->_name; }
-                            const QString& description() const { return this->_description; }
 
                         private:
                             int _idx;
@@ -37,7 +36,7 @@ namespace PrefSDK
                 public:
                     Format(): _candisassemble(false), _id(nullptr) { }
                     Format(const QString& name, const QString& category, const QString& author, const QString& version, FormatId id): _name(name), _category(category), _author(author), _version(version), _candisassemble(false), _id(id) { }
-                    void addOption(int optionidx, const QString& name, const QString& description) { this->_options[optionidx] = Option(optionidx, name, description); }
+                    void addOption(int optionidx, const QString& name) { this->_options[optionidx] = Option(optionidx, name); }
                     void enableDisassembler() { this->_candisassemble = true; }
                     Option option(int idx) const { return this->_options[idx + 1]; }
                     ProcessorLoader& disassemblerLoader() { return this->_disassembler; }
@@ -88,7 +87,7 @@ namespace PrefSDK
         public:
             static void load(lua_State *l);
             static void registerFormat(const QString& name, const QString& category, const QString& author, const QString& version, FormatList::FormatId formatid);
-            static void registerOption(FormatList::FormatId formatid, int optionidx, const QString& name, const QString &description);
+            static void registerOption(FormatList::FormatId formatid, int optionidx, const QString& name);
             static void addLoadedFormat(FormatList::FormatId formatid, FormatTree* formattree, QHexEditData *hexeditdata);
             static void removeLoadedFormat(QHexEditData* hexeditdata);
             static FormatList::Format& format(int i);

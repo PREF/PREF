@@ -12,7 +12,7 @@ namespace PrefSDK
         extern "C"
         {
             void Format_register(const char* name, const char* category, const char* author, const char* version, FormatList::FormatId formatid);
-            void Format_registerOption(FormatList::FormatId formatid, int optionidx, const char* name, const char* description);
+            void Format_registerOption(FormatList::FormatId formatid, int optionidx, const char* name);
             void Format_enableDisassembler(FormatList::FormatId formatid);
 
             bool Format_checkUInt8(QHexEditData* hexeditdata, uint64_t offset,  uint8_t value);

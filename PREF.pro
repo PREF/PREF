@@ -73,8 +73,6 @@ SOURCES += main.cpp\
     views/formatview/chartviewpage/chartviewpage.cpp \
     views/formatview/chartviewpage/charthelper.cpp \
     datatypesview/datatypesmenu.cpp \
-    viewmodels/optionmodel/optionmodel.cpp \
-    formatoptionsdialog.cpp \
     qhexedit/qhexedithighlighter.cpp \
     views/abstractview.cpp \
     views/compareview/compareview.cpp \
@@ -120,7 +118,8 @@ SOURCES += main.cpp\
     prefsdk/disassembler/disassembler.cpp \
     views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp \
     prefsdk/api/prefuiapi.cpp \
-    prefsdk/ui/tablewidget.cpp
+    prefsdk/ui/tablewidget.cpp \
+    views/formatview/optionmenu.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -181,8 +180,6 @@ HEADERS  += mainwindow.h \
     views/formatview/chartviewpage/charthelper.h \
     views/formatview/chartviewpage/chartviewpage.h \
     datatypesview/datatypesmenu.h \
-    viewmodels/optionmodel/optionmodel.h \
-    formatoptionsdialog.h \
     qhexedit/qhexedithighlighter.h \
     views/abstractview.h \
     views/compareview/compareview.h \
@@ -229,7 +226,8 @@ HEADERS  += mainwindow.h \
     prefsdk/api/processorapi.h \
     views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h \
     prefsdk/api/prefuiapi.h \
-    prefsdk/ui/tablewidget.h
+    prefsdk/ui/tablewidget.h \
+    views/formatview/optionmenu.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

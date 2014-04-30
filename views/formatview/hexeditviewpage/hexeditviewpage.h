@@ -9,10 +9,10 @@
 #include "actionwidget/actiontoolbar.h"
 #include "binarynavigator/binarynavigator.h"
 #include "viewmodels/formatmodel/formatmodel.h"
+#include "views/formatview/optionmenu.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/sdkmanager.h"
 #include "prefsdk/math.h"
-#include "formatoptionsdialog.h"
 #include "formatsdialog.h"
 #include "exportdialog.h"
 
@@ -28,7 +28,7 @@ class HexEditViewPage: public QWidget
 
     public:
         explicit HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent = 0);
-        bool loadFormat(const FormatList::Format &format, int64_t baseoffset);
+        bool loadFormat(FormatList::Format &format, int64_t baseoffset);
         void scanSignatures(bool canscan);
         BinaryNavigator* binaryNavigator();
         FormatTree* tree();
