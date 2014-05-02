@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "prefsdk/ui/models/tablemodel.h"
 
 namespace PrefSDK
 {
@@ -28,11 +29,9 @@ namespace PrefSDK
             void Dialog_exec(QDialog* __this);
 
             /* QTableWidget API */
-            QTableWidget* TableWidget_create();
-            void TableWidget_setColumnCount(QTableWidget* __this, int count);
-            void TableWidget_setRowCount(QTableWidget* __this, int count);
-            void TableWidget_setHeaderItem(QTableWidget *__this, int column, const char* text);
-            void TableWidget_setItem(QTableWidget *__this, int row, int column, const char* text);
+            QTableView *TableWidget_create(int rows, int columns);
+            void TableWidget_setHeaderItem(QTableView *__this, int column, const char* text);
+            void TableWidget_setItem(QTableView *__this, int row, int column, FormatElement* element);
         }
     }
 }

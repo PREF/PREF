@@ -56,31 +56,25 @@ namespace PrefSDK
             __this->exec();
         }
 
-        QTableWidget *TableWidget_create()
+        QTableView *TableWidget_create(int rows, int columns)
         {
-            return new QTableWidget();
+            QTableView* tableview = new QTableView();
+            tableview->setModel(new TableModel(rows, columns));
+            return tableview;
         }
 
-        void TableWidget_setColumnCount(QTableWidget *__this, int count)
+        void TableWidget_setHeaderItem(QTableView *__this, int column, const char *text)
         {
-            __this->setColumnCount(count);
-        }
-
-        void TableWidget_setRowCount(QTableWidget *__this, int count)
-        {
-            __this->setRowCount(count);
-        }
-
-        void TableWidget_setHeaderItem(QTableWidget *__this, int column, const char *text)
-        {
-            __this->setHorizontalHeaderItem(column, new QTableWidgetItem(text));
+            TableModel* model = qobject_cast<TableModel*>(__this->model());
+            model->setHeaderItem(column, QString::fromUtf8(text));
             __this->resizeColumnsToContents();
             __this->resizeRowsToContents();
         }
 
-        void TableWidget_setItem(QTableWidget *__this, int row, int column, const char *text)
+        void TableWidget_setItem(QTableView *__this, int row, int column, FormatElement *element)
         {
-            __this->setItem(row, column, new QTableWidgetItem(text));
+            TableModel* model = qobject_cast<TableModel*>(__this->model());
+            model->setItem(row, column, element);
             __this->resizeColumnsToContents();
             __this->resizeRowsToContents();
         }
