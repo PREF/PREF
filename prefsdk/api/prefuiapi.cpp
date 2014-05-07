@@ -71,10 +71,18 @@ namespace PrefSDK
             __this->resizeRowsToContents();
         }
 
-        void TableWidget_setItem(QTableView *__this, int row, int column, FormatElement *element)
+        void TableWidget_setItemElement(QTableView *__this, int row, int column, FormatElement *element)
         {
             TableModel* model = qobject_cast<TableModel*>(__this->model());
             model->setItem(row, column, element);
+            __this->resizeColumnsToContents();
+            __this->resizeRowsToContents();
+        }
+
+        void TableWidget_setItemString(QTableView *__this, int row, int column, const char *s)
+        {
+            TableModel* model = qobject_cast<TableModel*>(__this->model());
+            model->setItem(row, column, QString::fromUtf8(s));
             __this->resizeColumnsToContents();
             __this->resizeRowsToContents();
         }

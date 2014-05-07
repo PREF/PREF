@@ -16,7 +16,7 @@ namespace PrefSDK
             ElementList elements;
 
             for(int j = 0; j < columns; j++)
-                elements.append(nullptr);
+                elements.append({ TableModel::Empty, nullptr, QString() });
 
             this->_items.append(elements);
         }
@@ -29,7 +29,20 @@ namespace PrefSDK
 
     void TableModel::setItem(int row, int column, FormatElement *element)
     {
-        this->_items[row][column] = element;
+        TableModel::TableItem& item = this->_items[row][column];
+
+        item.Type = TableModel::Element;
+        item.Element = element;
+        item.String = QString();
+    }
+
+    void TableModel::setItem(int row, int column, const QString &s)
+    {
+        TableModel::TableItem& item = this->_items[row][column];
+
+        item.Type = TableModel::String;
+        item.Element = nullptr;
+        item.String = s;
     }
 
     int TableModel::columnCount(const QModelIndex &) const
@@ -53,13 +66,21 @@ namespace PrefSDK
         if(role == Qt::DisplayRole || role == Qt::FontRole || role == Qt::ForegroundRole)
         {
             const TableModel::ElementList& elements = this->_items.at(index.row());
-            FormatElement* formatelement = elements.at(index.column());
+            const TableModel::TableItem& tableitem = elements.at(index.column());
 
-            if(!formatelement)
+            /* Empty Item */
+            if(tableitem.Type == TableModel::Empty)
                 return QVariant();
 
+            /* String Item */
+            if(role == Qt::DisplayRole && tableitem.Type == TableModel::String)
+                return tableitem.String;
+
+            /* Element Item */
+            FormatElement* formatelement = tableitem.Element;
+
             if(role == Qt::DisplayRole)
-                return elements.at(index.column())->displayValue();
+                return formatelement->displayValue();
             else if(role == Qt::FontRole)
             {
                 if(formatelement->elementType() == ElementType::Field || formatelement->elementType() == ElementType::FieldArray || formatelement->elementType() == ElementType::BitField)
@@ -133,6 +154,13 @@ namespace PrefSDK
         if(!index.isValid())
             return Qt::NoItemFlags;
 
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable; // | Qt::ItemIsEditable;
+        const TableModel::ElementList& elements = this->_items.at(index.row());
+        const TableModel::TableItem& tableitem = elements.at(index.column());
+        Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+        if(tableitem.Type == TableModel::Element)
+            flags |= Qt::ItemIsEditable;
+
+        return flags;
     }
 }

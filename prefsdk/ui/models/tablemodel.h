@@ -17,12 +17,15 @@ namespace PrefSDK
         Q_OBJECT
 
         private:
-            typedef QList<FormatElement*> ElementList;
+            enum ItemType { Empty, Element, String };
+            struct TableItem { TableModel::ItemType Type; FormatElement* Element; QString String; };
+            typedef QList<TableItem> ElementList;
 
         public:
             explicit TableModel(int rows, int columns, QObject *parent = 0);
             void setHeaderItem(int column, const QString& s);
             void setItem(int row, int column, FormatElement* element);
+            void setItem(int row, int column, const QString& s);
 
         public: /* Overriden Methods */
             virtual int columnCount(const QModelIndex& = QModelIndex()) const;

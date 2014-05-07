@@ -31,7 +31,8 @@ namespace PrefSDK
             /* QTableWidget API */
             QTableView *TableWidget_create(int rows, int columns);
             void TableWidget_setHeaderItem(QTableView *__this, int column, const char* text);
-            void TableWidget_setItem(QTableView *__this, int row, int column, FormatElement* element);
+            void TableWidget_setItemElement(QTableView *__this, int row, int column, FormatElement* element);
+            void TableWidget_setItemString(QTableView *__this, int row, int column, const char* s);
         }
     }
 }
