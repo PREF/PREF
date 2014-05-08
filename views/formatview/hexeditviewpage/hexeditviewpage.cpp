@@ -5,7 +5,7 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
 {
     ui->setupUi(this);
 
-    ui->hSplitter->setStretchFactor(1, 1);
+    ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
     ui->dataView->setData(hexeditdata);
     ui->hexEdit->setData(hexeditdata);
