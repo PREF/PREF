@@ -50,7 +50,8 @@ namespace PrefSDK
 
     QString BitField::displayValue() const
     {
-        quint64 val = this->_hexeditdata->readUInt64(this->offset(), DataType::byteOrder(this->dataType()));
+        QHexEditDataReader reader(this->_hexeditdata);
+        quint64 val = reader.readUInt64(this->offset(), DataType::byteOrder(this->dataType()));
         return QString("%1").arg((val & this->_mask) >> this->_bitstart, 0, this->base()).toUpper();
     }
 

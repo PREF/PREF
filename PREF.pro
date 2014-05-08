@@ -119,7 +119,10 @@ SOURCES += main.cpp\
     views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp \
     prefsdk/api/prefuiapi.cpp \
     views/formatview/optionmenu.cpp \
-    prefsdk/ui/models/tablemodel.cpp
+    prefsdk/ui/models/tablemodel.cpp \
+    qhexedit/qhexeditdatadevice.cpp \
+    qhexedit/qhexeditdatareader.cpp \
+    qhexedit/qhexeditdatawriter.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -227,7 +230,10 @@ HEADERS  += mainwindow.h \
     views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h \
     prefsdk/api/prefuiapi.h \
     views/formatview/optionmenu.h \
-    prefsdk/ui/models/tablemodel.h
+    prefsdk/ui/models/tablemodel.h \
+    qhexedit/qhexeditdatadevice.h \
+    qhexedit/qhexeditdatareader.h \
+    qhexedit/qhexeditdatawriter.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

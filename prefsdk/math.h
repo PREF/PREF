@@ -4,6 +4,7 @@
 #include <math.h>
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 
 namespace PrefSDK
 {

@@ -5,6 +5,8 @@
 #include <QtGui>
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
+#include "qhexedit/qhexeditdatawriter.h"
 #include "prefsdk/numericlimits.h"
 
 class DataTypesModel : public FieldDataModel

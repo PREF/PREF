@@ -64,6 +64,8 @@ namespace PrefSDK
 
     QString Field::displayValue() const
     {
+        QHexEditDataReader reader(this->_hexeditdata);
+
         if(DataType::isInteger(this->_datatype))
         {
             if(this->isOverflowed())
@@ -76,16 +78,16 @@ namespace PrefSDK
                 switch(DataType::bitWidth(this->_datatype))
                 {
                     case 8:
-                        return QString("%1").arg(static_cast<char>(this->_hexeditdata->at(this->offset())), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(static_cast<char>(reader.at(this->offset())), width, this->base(), QLatin1Char('0')).toUpper();
 
                     case 16:
-                        return QString("%1").arg(this->_hexeditdata->readInt16(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.readInt16(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
 
                     case 32:
-                        return QString("%1").arg(this->_hexeditdata->readInt32(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.readInt32(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
 
                     case 64:
-                        return QString("%1").arg(this->_hexeditdata->readInt64(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.readInt64(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
 
                     default:
                         break;
@@ -96,16 +98,16 @@ namespace PrefSDK
                 switch(DataType::bitWidth(this->_datatype))
                 {
                     case 8:
-                        return QString("%1").arg(this->_hexeditdata->at(this->offset()), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.at(this->offset()), width, this->base(), QLatin1Char('0')).toUpper();
 
                     case 16:
-                        return QString("%1").arg(this->_hexeditdata->readUInt16(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.readUInt16(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
 
                     case 32:
-                        return QString("%1").arg(this->_hexeditdata->readUInt32(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.readUInt32(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
 
                     case 64:
-                        return QString("%1").arg(this->_hexeditdata->readUInt64(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
+                        return QString("%1").arg(reader.readUInt64(this->offset(), DataType::byteOrder(this->_datatype)), width, this->base(), QLatin1Char('0')).toUpper();
 
                     default:
                         break;
@@ -113,7 +115,7 @@ namespace PrefSDK
             }
         }
         else if(this->_datatype == DataType::Character)
-            return QString("'%1'").arg(QString(QByteArray().append(this->_hexeditdata->at(this->offset()))));
+            return QString("'%1'").arg(QString(QByteArray().append(reader.at(this->offset()))));
 
         return QString();
     }

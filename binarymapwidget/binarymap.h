@@ -6,7 +6,7 @@
 #include <QtWidgets>
 #include <QtOpenGL>
 #include <lua.hpp>
-#include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/math.h"
 #include "prefsdk/bytecolors.h"
 

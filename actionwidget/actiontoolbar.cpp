@@ -168,12 +168,14 @@ void ActionToolBar::doAnd(qint64 start, qint64 end, uchar value)
         end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_hexeditdata->read(start, end - start);
+    QHexEditDataReader reader(this->_hexeditdata);
+    QHexEditDataWriter writer(this->_hexeditdata);
+    QByteArray ba = reader.read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] & value;
 
-    this->_hexeditdata->replace(start, l, ba);
+    writer.replace(start, l, ba);
 }
 
 void ActionToolBar::doOr(qint64 end, qint64 start, uchar value)
@@ -182,12 +184,14 @@ void ActionToolBar::doOr(qint64 end, qint64 start, uchar value)
         end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_hexeditdata->read(start, end - start);
+    QHexEditDataReader reader(this->_hexeditdata);
+    QHexEditDataWriter writer(this->_hexeditdata);
+    QByteArray ba = reader.read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] | value;
 
-    this->_hexeditdata->replace(start, l, ba);
+    writer.replace(start, l, ba);
 }
 
 void ActionToolBar::doXor(qint64 start, qint64 end, uchar value)
@@ -196,12 +200,14 @@ void ActionToolBar::doXor(qint64 start, qint64 end, uchar value)
         end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_hexeditdata->read(start, end - start);
+    QHexEditDataReader reader(this->_hexeditdata);
+    QHexEditDataWriter writer(this->_hexeditdata);
+    QByteArray ba = reader.read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] ^ value;
 
-    this->_hexeditdata->replace(start, l, ba);
+    writer.replace(start, l, ba);
 }
 
 void ActionToolBar::doMod(qint64 start, qint64 end, uchar value)
@@ -210,12 +216,14 @@ void ActionToolBar::doMod(qint64 start, qint64 end, uchar value)
         end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_hexeditdata->read(start, end - start);
+    QHexEditDataReader reader(this->_hexeditdata);
+    QHexEditDataWriter writer(this->_hexeditdata);
+    QByteArray ba = reader.read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = ba[i] % value;
 
-    this->_hexeditdata->replace(start, l, ba);
+    writer.replace(start, l, ba);
 }
 
 void ActionToolBar::doNot(qint64 start, qint64 end)
@@ -224,12 +232,14 @@ void ActionToolBar::doNot(qint64 start, qint64 end)
         end = this->_hexeditdata->length();
 
     qint64 l = end - start;
-    QByteArray ba = this->_hexeditdata->read(start, end - start);
+    QHexEditDataReader reader(this->_hexeditdata);
+    QHexEditDataWriter writer(this->_hexeditdata);
+    QByteArray ba = reader.read(start, end - start);
 
     for(int i = 0; i < ba.length(); i++)
         ba[i] = !ba[i];
 
-    this->_hexeditdata->replace(start, l, ba);
+    writer.replace(start, l, ba);
 }
 
 void ActionToolBar::addMenuSeparatorIfNeeded()

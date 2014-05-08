@@ -6,6 +6,7 @@
 #include <lua.hpp>
 #include "elementtype.h"
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 #include "debugdialog/debugdialog.h"
 
 namespace PrefSDK

@@ -187,7 +187,8 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
 
             if(valid)
             {
-                this->_hexeditdata->replace(fieldelement->offset(), newdata.length(), newdata);
+                QHexEditDataWriter writer(this->_hexeditdata);
+                writer.replace(fieldelement->offset(), newdata.length(), newdata);
                 return true;
             }
 

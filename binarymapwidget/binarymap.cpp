@@ -94,7 +94,9 @@ QByteArray BinaryMap::data()
 {
     qint64 s = this->start();
     qint64 l = qMin(this->_hexeditdata->length(), this->_width * this->preferredHeight());
-    return this->_hexeditdata->read(s, l);
+
+    QHexEditDataReader reader(this->_hexeditdata);
+    return reader.read(s, l);
 }
 
 qint64 BinaryMap::calcOffset(const QPoint &cursorpos)
@@ -149,6 +151,7 @@ void BinaryMap::renderByteClassMap(QPainter& p)
 void BinaryMap::renderDotPlotMap(QPainter& p)
 {
     qint64 s = qMin(static_cast<qint64>(500), this->_hexeditdata->length());
+    QHexEditDataReader reader(this->_hexeditdata);
 
     QImage img(s, s, QImage::Format_RGB888);
     img.fill(QColor(Qt::black));
@@ -158,14 +161,14 @@ void BinaryMap::renderDotPlotMap(QPainter& p)
         if((this->start() + i) >= this->_hexeditdata->length())
             break;
 
-        uchar ib = this->_hexeditdata->at(this->start() + i);
+        uchar ib = reader.at(this->start() + i);
 
         for(qint64 j = 0; j < s; j++)
         {
             if((this->start() + j) >= this->_hexeditdata->length())
                 break;
 
-            uchar jb = this->_hexeditdata->at(this->start() + j);
+            uchar jb = reader.at(this->start() + j);
 
             if(jb == ib)
                 img.setPixel(j, i, qRgb(0, static_cast<uchar>((static_cast<qreal>(jb) * 0.75) + 64), 0));

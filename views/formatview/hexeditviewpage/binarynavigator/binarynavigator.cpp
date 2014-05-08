@@ -50,7 +50,8 @@ void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cur
 
 void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
-    uchar b = this->_hexeditdata->at(this->_offset);
+    QHexEditDataReader reader(this->_hexeditdata);
+    uchar b = reader.at(this->_offset);
     QColor c = ByteColors::byteClassColor(b);
     QRectF r = QRectF(x, y, this->_size, this->_size);
     p.fillRect(r, c);

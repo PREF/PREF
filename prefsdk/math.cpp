@@ -16,12 +16,14 @@ namespace PrefSDK
         else
             start -= size / 2;
 
+        QHexEditDataReader reader(hexeditdata);
+
         for(qint64 i = start; i < start + size; i++)
         {
             if(i >= static_cast<uint>(hexeditdata->length()))
                 break;
 
-            uchar b = hexeditdata->at(i);
+            uchar b = reader.at(i);
             occlist[b] += 1;
         }
 

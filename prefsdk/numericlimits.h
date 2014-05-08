@@ -4,6 +4,7 @@
 #include <limits>
 #include "prefsdk/datatype.h"
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 
 namespace PrefSDK
 {
@@ -16,7 +17,8 @@ namespace PrefSDK
             template<typename TYPE> static bool willOverflowT(QHexEditData* hexeditdata, uint64_t pos, DataType::Type datatype)
             {
                 TYPE val;
-                QByteArray ba = hexeditdata->read(pos, DataType::sizeOf(datatype));
+                QHexEditDataReader reader(hexeditdata);
+                QByteArray ba = reader.read(pos, DataType::sizeOf(datatype));
 
                 QDataStream ds(ba);
 

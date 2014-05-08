@@ -4,14 +4,17 @@
 #include <QtCore>
 #include <QtGui>
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/disassembler/disassembler.h"
 
 using namespace PrefSDK;
 
-class DisassemblerViewDrawer
+class DisassemblerViewDrawer: public QObject
 {
+    Q_OBJECT
+
     public:
-        DisassemblerViewDrawer(QHexEditData* hexeditdata, QPainter& painter, QFontMetrics& fontmetrics, int &charwidth, int& charheight, int& y);
+        explicit DisassemblerViewDrawer(QHexEditData* hexeditdata, QPainter& painter, QFontMetrics& fontmetrics, int &charwidth, int& charheight, int& y, QObject* parent = 0);
         QColor instructionColor(InstructionFeatures::Features instructionfeatures);
         void drawVirtualAddress(const QString& segment, const QString& address);
         void drawHexDump(uint64_t offset, int dumplength, int maxwidth);
@@ -34,6 +37,7 @@ class DisassemblerViewDrawer
     private:
         int _x;
         QHexEditData* _hexeditdata;
+        QHexEditDataReader* _reader;
         QFont _defaultfont;
         QFont _boldfont;
         QColor _nofeaturecolor;

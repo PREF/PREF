@@ -22,16 +22,16 @@ void ChartHelper::run(QHexEditData *hexeditdata, qint64 start, qint64 end)
 {
     if(hexeditdata->length())
     {
+        QHexEditDataReader reader(hexeditdata);
         this->_cancontinue = true;
         this->_maxocc = 0;
 
         emit progressChanged(0); /* Set progress bar to 0% */
-
         this->initMap();
 
         for(qint64 i = start; this->_cancontinue && (i < end); i++)
         {
-            uchar b = hexeditdata->at(i);
+            uchar b = reader.at(i);
             this->_occlist[b] += 1;
 
             if(this->_maxocc < this->_occlist[b])

@@ -250,7 +250,8 @@ void HexEditViewPage::importData(FormatElement* formatelement)
         if (size > 0)
         {
             QByteArray ba = f.read(size);
-            this->_hexeditdata->replace(offset, size, ba);
+            QHexEditDataWriter writer(this->_hexeditdata);
+            writer.replace(offset, size, ba);
         }
     }
 }
@@ -261,14 +262,15 @@ void HexEditViewPage::scanSignatures()
         return;
 
     QByteArray foundsig;
+    QHexEditDataReader reader(this->_hexeditdata);
     qint64 sigid, depth = 0, offset = ui->hexEdit->visibleStartOffset(), endoffset = ui->hexEdit->visibleEndOffset();
 
     while(offset <= endoffset)
     {
-        bool stepdone = SignatureDatabase::database()->step(this->_hexeditdata->at(offset), depth, sigid, foundsig);
+        bool stepdone = SignatureDatabase::database()->step(reader.at(offset), depth, sigid, foundsig);
 
         /* We have found a good byte, check if it is a dead path */
-        if(stepdone && !SignatureDatabase::database()->canContinue(this->_hexeditdata->at(offset + 1), depth))
+        if(stepdone && !SignatureDatabase::database()->canContinue(reader.at(offset + 1), depth))
         {
             depth = 0;
             foundsig.clear();
@@ -277,7 +279,7 @@ void HexEditViewPage::scanSignatures()
         }
 
         /* We have completed a path, verify depth and if it is valid, highlight it in QHexEdit */
-        if(!stepdone && (depth > 0) && (offset < endoffset) && !SignatureDatabase::database()->canContinue(this->_hexeditdata->at(offset + 1), depth))
+        if(!stepdone && (depth > 0) && (offset < endoffset) && !SignatureDatabase::database()->canContinue(reader.at(offset + 1), depth))
         {
             /* Check False Positives: ignore it and continue the analysis */
             if(depth != SignatureDatabase::database()->signatureMaxDepth(sigid) || !SignatureDatabase::database()->isSignatureValid(foundsig, sigid))

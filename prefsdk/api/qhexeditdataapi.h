@@ -2,6 +2,9 @@
 #define PREFSDK_API_QHEXEDITDATAAPI_H
 
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatadevice.h"
+#include "qhexedit/qhexeditdatareader.h"
+#include "qhexedit/qhexeditdatawriter.h"
 
 namespace PrefSDK
 {
@@ -9,23 +12,26 @@ namespace PrefSDK
     {
         extern "C"
         {
+            QHexEditDataReader* QHexEditData_createReader(QHexEditData* __this);
+            QHexEditDataWriter* QHexEditData_createWriter(QHexEditData* __this);
             void QHexEditData_copyTo(QHexEditData* __this, QHexEditData* hexeditdata);
-            int64_t QHexEditData_indexOf(QHexEditData* __this, int64_t pos, const char* s);
             int64_t QHexEditData_length(QHexEditData* __this);
 
-            char QHexEditData_readAsciiChar(QHexEditData* __this, int64_t pos);
-            const char* QHexEditData_readString(QHexEditData* __this, int64_t pos, int64_t len);
-            const char* QHexEditData_readLine(QHexEditData* __this, int64_t pos);
+            int64_t QHexEditDataReader_indexOf(QHexEditDataReader* __this, int64_t pos, const char* s);
 
-            uint8_t QHexEditData_readUInt8(QHexEditData* __this, uint64_t pos);
-            uint16_t QHexEditData_readUInt16(QHexEditData* __this, uint64_t pos, int endian);
-            uint32_t QHexEditData_readUInt32(QHexEditData* __this, uint64_t pos, int endian);
-            uint64_t QHexEditData_readUInt64(QHexEditData* __this, uint64_t pos, int endian);
+            char QHexEditDataReader_readAsciiChar(QHexEditDataReader* __this, int64_t pos);
+            const char* QHexEditDataReader_readString(QHexEditDataReader* __this, int64_t pos, int64_t len);
+            const char* QHexEditDataReader_readLine(QHexEditDataReader *__this, int64_t pos);
 
-            int8_t QHexEditData_readInt8(QHexEditData* __this, uint64_t pos);
-            int16_t QHexEditData_readInt16(QHexEditData* __this, uint64_t pos, int endian);
-            int32_t QHexEditData_readInt32(QHexEditData* __this, uint64_t pos, int endian);
-            int64_t QHexEditData_readInt64(QHexEditData* __this, uint64_t pos, int endian);
+            uint8_t QHexEditDataReader_readUInt8(QHexEditDataReader* __this, uint64_t pos);
+            uint16_t QHexEditDataReader_readUInt16(QHexEditDataReader* __this, uint64_t pos, int endian);
+            uint32_t QHexEditDataReader_readUInt32(QHexEditDataReader* __this, uint64_t pos, int endian);
+            uint64_t QHexEditDataReader_readUInt64(QHexEditDataReader* __this, uint64_t pos, int endian);
+
+            int8_t QHexEditDataReader_readInt8(QHexEditDataReader* __this, uint64_t pos);
+            int16_t QHexEditDataReader_readInt16(QHexEditDataReader* __this, uint64_t pos, int endian);
+            int32_t QHexEditDataReader_readInt32(QHexEditDataReader* __this, uint64_t pos, int endian);
+            int64_t QHexEditDataReader_readInt64(QHexEditDataReader* __this, uint64_t pos, int endian);
         }
     }
 }

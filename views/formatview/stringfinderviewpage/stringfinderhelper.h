@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 
 class StringFinderHelper : public QObject
 {

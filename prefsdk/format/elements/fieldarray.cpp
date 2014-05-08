@@ -56,7 +56,10 @@ namespace PrefSDK
     QString FieldArray::displayValue() const
     {
         if(this->_itemtype == DataType::Character)
-            return QString("'%1'").arg(QString(this->_hexeditdata->read(this->offset(), this->size())).simplified());
+        {
+            QHexEditDataReader reader(this->_hexeditdata);
+            return QString("'%1'").arg(QString(reader.read(this->offset(), this->size())).simplified());
+        }
 
         return FieldElement::displayValue();
     }

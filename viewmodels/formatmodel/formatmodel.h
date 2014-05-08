@@ -5,6 +5,8 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
+#include "qhexedit/qhexeditdatawriter.h"
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
 #include "prefsdk/format/formattree.h"
 

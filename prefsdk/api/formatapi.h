@@ -15,15 +15,15 @@ namespace PrefSDK
             void Format_registerOption(FormatList::FormatId formatid, int optionidx, const char* name);
             void Format_enableDisassembler(FormatList::FormatId formatid);
 
-            bool Format_checkUInt8(QHexEditData* hexeditdata, uint64_t offset,  uint8_t value);
-            bool Format_checkUInt16(QHexEditData* hexeditdata, uint64_t offset, uint16_t value, int byteorder);
-            bool Format_checkUInt32(QHexEditData* hexeditdata, uint64_t offset, uint32_t value, int byteorder);
-            bool Format_checkUInt64(QHexEditData* hexeditdata, uint64_t offset, uint64_t value, int byteorder);
-            bool Format_checkInt8(QHexEditData* hexeditdata, uint64_t offset, int8_t value);
-            bool Format_checkInt16(QHexEditData* hexeditdata, uint64_t offset, int16_t value, int byteorder);
-            bool Format_checkInt32(QHexEditData* hexeditdata, uint64_t offset, int32_t value, int byteorder);
-            bool Format_checkInt64(QHexEditData* hexeditdata, uint64_t offset, int64_t value, int byteorder);
-            bool Format_checkAsciiString(QHexEditData* hexeditdata, uint64_t offset, const char* value);
+            bool Format_checkUInt8(QHexEditDataReader* reader, uint64_t offset,  uint8_t value);
+            bool Format_checkUInt16(QHexEditDataReader* reader, uint64_t offset, uint16_t value, int byteorder);
+            bool Format_checkUInt32(QHexEditDataReader* reader, uint64_t offset, uint32_t value, int byteorder);
+            bool Format_checkUInt64(QHexEditDataReader* reader, uint64_t offset, uint64_t value, int byteorder);
+            bool Format_checkInt8(QHexEditDataReader* reader, uint64_t offset, int8_t value);
+            bool Format_checkInt16(QHexEditDataReader* reader, uint64_t offset, int16_t value, int byteorder);
+            bool Format_checkInt32(QHexEditDataReader* reader, uint64_t offset, int32_t value, int byteorder);
+            bool Format_checkInt64(QHexEditDataReader* hexeditdata, uint64_t offset, int64_t value, int byteorder);
+            bool Format_checkAsciiString(QHexEditDataReader *reader, uint64_t offset, const char* value);
 
             Structure* FormatTree_addStructure(FormatTree* __this, const char* name);
             Structure* FormatTree_insertStructure(FormatTree* __this, const char* name, int64_t offset);

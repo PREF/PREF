@@ -25,9 +25,11 @@ void StringFinderHelper::run(QHexEditData* hexeditdata, int minlength, int maxle
     this->_cancontinue = true;
     emit progressChanged(0); /* Set Progressbar to 0% */
 
+    QHexEditDataReader reader(hexeditdata);
+
     while(this->_cancontinue && (static_cast<quint64>(offset) < static_cast<quint64>(hexeditdata->length())))
     {
-        uchar ch = hexeditdata->at(offset);
+        uchar ch = reader.at(offset);
 
         if(s.length() == maxlength)
         {

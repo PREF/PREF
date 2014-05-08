@@ -1,7 +1,9 @@
 #include "disassemblerviewdrawer.h"
 
-DisassemblerViewDrawer::DisassemblerViewDrawer(QHexEditData *hexeditdata, QPainter& painter, QFontMetrics& fontmetrics, int& charwidth, int& charheight, int& y): _painter(painter), _fontmetrics(fontmetrics), _charwidth(charwidth), _charheight(charheight), _y(y), _x(0), _hexeditdata(hexeditdata)
+DisassemblerViewDrawer::DisassemblerViewDrawer(QHexEditData *hexeditdata, QPainter& painter, QFontMetrics& fontmetrics, int& charwidth, int& charheight, int& y, QObject *parent): QObject(parent), _painter(painter), _fontmetrics(fontmetrics), _charwidth(charwidth), _charheight(charheight), _y(y), _x(0), _hexeditdata(hexeditdata)
 {
+    this->_reader = new QHexEditDataReader(hexeditdata, this);
+
     this->_nofeaturecolor = Qt::lightGray;
     this->_callcolor = Qt::blue;
     this->_jumpcolor = Qt::darkRed;
@@ -41,7 +43,7 @@ void DisassemblerViewDrawer::drawVirtualAddress(const QString &segment, const QS
 
 void DisassemblerViewDrawer::drawHexDump(uint64_t offset, int dumplength, int maxwidth)
 {
-    QByteArray ba = this->_hexeditdata->read(offset, dumplength);
+    QByteArray ba = this->_reader->read(offset, dumplength);
     QString hexdump;
 
     for(int i = 0; i < ba.length(); i++)

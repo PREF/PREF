@@ -46,6 +46,8 @@ void CompareView::compare()
 {
     qint64 start = qMin(ui->hexEditLeft->visibleStartOffset(), ui->hexEditRight->visibleStartOffset()), i = start;
     qint64 end = qMax(ui->hexEditLeft->visibleEndOffset(), ui->hexEditRight->visibleEndOffset());
+    QHexEditDataReader leftreader(this->_lefthexeditdata);
+    QHexEditDataReader rightreader(this->_righthexeditdata);
 
     while(i < end)
     {
@@ -59,28 +61,28 @@ void CompareView::compare()
             break;
         }
 
-        if(!this->_lefthexeditdata->at(i) && !this->_righthexeditdata->at(i))
+        if(!leftreader.at(i) && !rightreader.at(i))
         {
             i++;
             continue;
         }
 
-        if(this->_lefthexeditdata->at(i) == this->_righthexeditdata->at(i))
+        if(leftreader.at(i) == rightreader.at(i))
         {
             qint64 s = i;
 
-            while(((i < this->_lefthexeditdata->length()) && (i < this->_righthexeditdata->length())) && (this->_lefthexeditdata->at(i) == this->_righthexeditdata->at(i)))
+            while(((i < this->_lefthexeditdata->length()) && (i < this->_righthexeditdata->length())) && (leftreader.at(i) == rightreader.at(i)))
                 i++;
 
             ui->hexEditLeft->highlightBackground(s, i - 1, this->_samecolor);
             ui->hexEditRight->highlightBackground(s, i - 1, this->_samecolor);
             continue;
         }
-        else if(this->_lefthexeditdata->at(i) != this->_righthexeditdata->at(i))
+        else if(leftreader.at(i) != rightreader.at(i))
         {
             qint64 s = i;
 
-            while(((i < this->_lefthexeditdata->length()) && (i < this->_righthexeditdata->length())) && (this->_lefthexeditdata->at(i) != this->_righthexeditdata->at(i)))
+            while(((i < this->_lefthexeditdata->length()) && (i < this->_righthexeditdata->length())) && (leftreader.at(i) != rightreader.at(i)))
                 i++;
 
             ui->hexEditLeft->highlightBackground(s, i - 1, this->_diffcolor);

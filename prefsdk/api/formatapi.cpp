@@ -20,63 +20,63 @@ namespace PrefSDK
             format.enableDisassembler();
         }
 
-        bool Format_checkUInt8(QHexEditData* hexeditdata, uint64_t offset, uint8_t value)
+        bool Format_checkUInt8(QHexEditDataReader* reader, uint64_t offset, uint8_t value)
         {
-            uint8_t dataval = static_cast<uint8_t>(hexeditdata->at(offset));
+            uint8_t dataval = static_cast<uint8_t>(reader->at(offset));
             return value == dataval;
         }
 
-        bool Format_checkUInt16(QHexEditData* hexeditdata, uint64_t offset, uint16_t value, int byteorder)
+        bool Format_checkUInt16(QHexEditDataReader* reader, uint64_t offset, uint16_t value, int byteorder)
         {
-            uint16_t dataval = hexeditdata->readUInt16(offset, static_cast<QSysInfo::Endian>(byteorder));
+            uint16_t dataval = reader->readUInt16(offset, static_cast<QSysInfo::Endian>(byteorder));
             return value == dataval;
         }
 
-        bool Format_checkUInt32(QHexEditData* hexeditdata, uint64_t offset, uint32_t value, int byteorder)
+        bool Format_checkUInt32(QHexEditDataReader* reader, uint64_t offset, uint32_t value, int byteorder)
         {
-            uint32_t dataval = hexeditdata->readUInt32(offset, static_cast<QSysInfo::Endian>(byteorder));
+            uint32_t dataval = reader->readUInt32(offset, static_cast<QSysInfo::Endian>(byteorder));
             return value == dataval;
         }
 
-        bool Format_checkUInt64(QHexEditData* hexeditdata, uint64_t offset, uint64_t value, int byteorder)
+        bool Format_checkUInt64(QHexEditDataReader* reader, uint64_t offset, uint64_t value, int byteorder)
         {
-            uint64_t dataval = hexeditdata->readUInt64(offset, static_cast<QSysInfo::Endian>(byteorder));
+            uint64_t dataval = reader->readUInt64(offset, static_cast<QSysInfo::Endian>(byteorder));
             return value == dataval;
         }
 
-        bool Format_checkInt8(QHexEditData* hexeditdata, uint64_t offset, int8_t value)
+        bool Format_checkInt8(QHexEditDataReader* reader, uint64_t offset, int8_t value)
         {
-            int8_t dataval = static_cast<int8_t>(hexeditdata->at(offset));
+            int8_t dataval = static_cast<int8_t>(reader->at(offset));
             return value == dataval;
         }
 
-        bool Format_checkInt16(QHexEditData* hexeditdata, uint64_t offset, int16_t value, int byteorder)
+        bool Format_checkInt16(QHexEditDataReader *reader, uint64_t offset, int16_t value, int byteorder)
         {
-            int16_t dataval = hexeditdata->readInt16(offset, static_cast<QSysInfo::Endian>(byteorder));
+            int16_t dataval = reader->readInt16(offset, static_cast<QSysInfo::Endian>(byteorder));
             return value == dataval;
         }
 
-        bool Format_checkInt32(QHexEditData* hexeditdata, uint64_t offset, int32_t value, int byteorder)
+        bool Format_checkInt32(QHexEditDataReader* reader, uint64_t offset, int32_t value, int byteorder)
         {
-            int32_t dataval = hexeditdata->readInt32(offset, static_cast<QSysInfo::Endian>(byteorder));
+            int32_t dataval = reader->readInt32(offset, static_cast<QSysInfo::Endian>(byteorder));
             return value == dataval;
         }
 
-        bool Format_checkInt64(QHexEditData* hexeditdata, uint64_t offset, int64_t value, int byteorder)
+        bool Format_checkInt64(QHexEditDataReader* reader, uint64_t offset, int64_t value, int byteorder)
         {
-            int64_t dataval = hexeditdata->readInt64(offset, static_cast<QSysInfo::Endian>(byteorder));
+            int64_t dataval = reader->readInt64(offset, static_cast<QSysInfo::Endian>(byteorder));
             return value == dataval;
         }
 
-        bool Format_checkAsciiString(QHexEditData *hexeditdata, uint64_t offset, const char *value)
+        bool Format_checkAsciiString(QHexEditDataReader* reader, uint64_t offset, const char *value)
         {
             /* Test First Byte */
-            uint8_t b = hexeditdata->at(offset);
+            uint8_t b = reader->at(offset);
 
             if(b == static_cast<uint8_t>(value[0])) /* The first byte is equal, check entire string */
             {
                 QString s = QString::fromUtf8(value);
-                QByteArray dataval = hexeditdata->read(offset, s.length());
+                QByteArray dataval = reader->read(offset, s.length());
                 return QString::compare(s, QString(dataval), Qt::CaseSensitive) == 0;
             }
 

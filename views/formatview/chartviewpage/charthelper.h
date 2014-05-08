@@ -3,6 +3,7 @@
 
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 
 class ChartHelper: public QObject
 {

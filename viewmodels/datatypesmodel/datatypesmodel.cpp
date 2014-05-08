@@ -112,41 +112,46 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
             return "Overflow";
         }
 
+        QHexEditDataReader reader(this->_hexeditdata);
+
         switch(type)
         {
             case DataType::Character:
-                return QString("%1").arg(static_cast<char>(this->_hexeditdata->at(this->_offset)));
+                return QString("%1").arg(static_cast<char>(reader.at(this->_offset)));
 
             case DataType::Int8:
-                return QString("%1").arg(static_cast<char>(this->_hexeditdata->at(this->_offset)), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(static_cast<char>(reader.at(this->_offset)), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::UInt8:
-                return QString("%1").arg(static_cast<uchar>(this->_hexeditdata->at(this->_offset)), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(static_cast<uchar>(reader.at(this->_offset)), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::Int16:
-                return QString("%1").arg(this->_hexeditdata->readInt16(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(reader.readInt16(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::UInt16:
-                return QString("%1").arg(this->_hexeditdata->readUInt16(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(reader.readUInt16(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::Int32:
-                return QString("%1").arg(this->_hexeditdata->readInt32(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(reader.readInt32(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::UInt32:
-                return QString("%1").arg(this->_hexeditdata->readUInt32(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(reader.readUInt32(this->_offset, this->_endian), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::Int64:
-                return QString("%1").arg(static_cast<qint64>(this->_hexeditdata->readInt64(this->_offset, this->_endian)), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(static_cast<qint64>(reader.readInt64(this->_offset, this->_endian)), bytewidth, this->_base, QLatin1Char('0'));
 
             case DataType::UInt64:
-                return QString("%1").arg(static_cast<quint64>(this->_hexeditdata->readUInt64(this->_offset, this->_endian)), bytewidth, this->_base, QLatin1Char('0'));
+                return QString("%1").arg(static_cast<quint64>(reader.readUInt64(this->_offset, this->_endian)), bytewidth, this->_base, QLatin1Char('0'));
 
             default:
                 break;
         }
     }
     else if(type == DataType::Array)
-        return this->_hexeditdata->readString(this->_offset, DataTypesModel::STRING_LENGTH);
+    {
+        QHexEditDataReader reader(this->_hexeditdata);
+        return reader.readString(this->_offset, DataTypesModel::STRING_LENGTH);
+    }
 
     return QString();
 }
@@ -251,7 +256,8 @@ bool DataTypesModel::setData(const QModelIndex &index, const QVariant &value, in
 
         if(valid)
         {
-            this->_hexeditdata->replace(this->_offset, newdata.length(), newdata);
+            QHexEditDataWriter writer(this->_hexeditdata);
+            writer.replace(this->_offset, newdata.length(), newdata);
             return true;
         }
 
