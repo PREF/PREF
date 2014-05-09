@@ -43,7 +43,6 @@ SOURCES += main.cpp\
     viewmodels/datamapmodel/datamapmodel.cpp \
     views/hexview/stringfinderviewpage/stringfinderviewpage.cpp \
     viewmodels/stringfindermodel/stringfindermodel.cpp \
-    views/hexview/hexeditviewpage/hexeditviewpage.cpp \
     prefsdk/format/formatlist.cpp \
     formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
@@ -153,7 +152,6 @@ HEADERS  += mainwindow.h \
     datatypes/indexkeymap.h \
     views/hexview/stringfinderviewpage/stringfinderviewpage.h \
     viewmodels/stringfindermodel/stringfindermodel.h \
-    views/hexview/hexeditviewpage/hexeditviewpage.h \
     prefsdk/format/formatlist.h \
     formatsdialog.h \
     prefsdk/categorymanager.h \
@@ -247,7 +245,6 @@ FORMS    += mainwindow.ui \
     formatsdialog.ui \
     debugdialog/debugdialog.ui \
     bytecolorswidget/bytecolorswidget.ui \
-    views/hexview/hexeditviewpage/hexeditviewpage.ui \
     views/hexview/binaryviewpage/binaryviewpage.ui \
     views/hexview/binaryviewpage/displaymodewidget.ui \
     formatoptionsdialog.ui \
