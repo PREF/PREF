@@ -69,8 +69,6 @@ SOURCES += main.cpp\
     views/hexview/binaryviewpage/binaryviewpage.cpp \
     views/hexview/binarynavigator/binarynavigator.cpp \
     views/hexview/binaryviewpage/displaymodewidget.cpp \
-    views/hexview/chartviewpage/chartviewpage.cpp \
-    views/hexview/chartviewpage/charthelper.cpp \
     datatypesview/datatypesmenu.cpp \
     qhexedit/qhexedithighlighter.cpp \
     views/abstractview.cpp \
@@ -181,8 +179,6 @@ HEADERS  += mainwindow.h \
     views/hexview/binaryviewpage/binaryviewpage.h \
     views/hexview/binarynavigator/binarynavigator.h \
     views/hexview/binaryviewpage/displaymodewidget.h \
-    views/hexview/chartviewpage/charthelper.h \
-    views/hexview/chartviewpage/chartviewpage.h \
     datatypesview/datatypesmenu.h \
     qhexedit/qhexedithighlighter.h \
     views/abstractview.h \
@@ -254,7 +250,6 @@ FORMS    += mainwindow.ui \
     views/hexview/hexeditviewpage/hexeditviewpage.ui \
     views/hexview/binaryviewpage/binaryviewpage.ui \
     views/hexview/binaryviewpage/displaymodewidget.ui \
-    views/hexview/chartviewpage/chartviewpage.ui \
     formatoptionsdialog.ui \
     views/compareview/compareview.ui \
     views/compareview/comparedialog/comparedialog.ui \
