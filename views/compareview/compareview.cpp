@@ -32,8 +32,6 @@ CompareView::CompareView(QString leftfile, QString rightfile, QLabel *labelinfo,
     else
         connect(ui->hexEditRight, SIGNAL(visibleLinesChanged()), this, SLOT(compare()));
 
-    this->updateLeftInfo(0);
-    this->updateRightInfo(0);
     this->compare();
 }
 
@@ -94,14 +92,14 @@ void CompareView::compare()
     }
 }
 
-void CompareView::updateLeftInfo(qint64 pos)
+void CompareView::updateLeftInfo(qint64)
 {
-    ui->lblInfoLeft->setText(QString("Offset: %1h").arg(pos, 8, 16, QLatin1Char('0')));
+    this->updateStatusBar();
 }
 
-void CompareView::updateRightInfo(qint64 pos)
+void CompareView::updateRightInfo(qint64)
 {
-    ui->lblInfoRight->setText(QString("Offset %1h").arg(pos, 8, 16, QLatin1Char('0')));
+    this->updateStatusBar();
 }
 
 void CompareView::createToolbar(QHexEdit* hexedit, QWidget *tbcontainer, ActionWidget* actionwidget)
@@ -123,5 +121,7 @@ bool CompareView::canSave() const
 
 void CompareView::updateStatusBar()
 {
-
+    QString leftoffset = QString("%1").arg(ui->hexEditLeft->cursorPos(), ui->hexEditLeft->addressWidth(), 16, QLatin1Char('0')).toUpper();
+    QString rightoffset = QString("%1").arg(ui->hexEditRight->cursorPos(), ui->hexEditRight->addressWidth(), 16, QLatin1Char('0')).toUpper();
+    this->updateInfoText(QString("<b>Left Offset</b>: %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Right Offset</b>: %2h").arg(leftoffset, rightoffset));
 }

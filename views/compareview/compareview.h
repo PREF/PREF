@@ -25,8 +25,8 @@ class CompareView : public AbstractView
 
     private slots:
         void compare();
-        void updateLeftInfo(qint64 pos);
-        void updateRightInfo(qint64 pos);
+        void updateLeftInfo(qint64);
+        void updateRightInfo(qint64);
 
     private:
         void createToolbar(QHexEdit *hexedit, QWidget* tbcontainer, ActionWidget *actionwidget);

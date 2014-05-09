@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>749</width>
-    <height>492</height>
+    <width>747</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <widget class="QWidget" name="layoutWidget">
-      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1,0">
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
        <item>
         <widget class="QLabel" name="lblLeft">
          <property name="text">
@@ -40,17 +40,10 @@
        <item>
         <widget class="QHexEdit" name="hexEditLeft" native="true"/>
        </item>
-       <item>
-        <widget class="QLabel" name="lblInfoLeft">
-         <property name="text">
-          <string>Info Left</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="layoutWidget_1">
-      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1,0">
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,1">
        <property name="spacing">
         <number>-1</number>
        </property>
@@ -69,13 +62,6 @@
        </item>
        <item>
         <widget class="QHexEdit" name="hexEditRight" native="true"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="lblInfoRight">
-         <property name="text">
-          <string>Info Right</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>
