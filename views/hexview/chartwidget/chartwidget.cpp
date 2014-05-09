@@ -3,26 +3,38 @@
 
 QMap<uchar, QString> ChartWidget::_nonasciichars;
 
-ChartWidget::ChartWidget(QWidget *parent): QWidget(parent), ui(new Ui::ChartWidget)
+ChartWidget::ChartWidget(QWidget *parent): QWidget(parent), ui(new Ui::ChartWidget), _hexeditdata(nullptr)
 {
     if(ChartWidget::_nonasciichars.isEmpty())
         ChartWidget::initNonAsciiChars();
 
     ui->setupUi(this);
-
+    ui->splitter->setStretchFactor(1, 1);
     this->createListModel();
+
+    connect(&this->_worker, SIGNAL(finished()), this, SLOT(onElaborationCompleted()));
 }
 
 void ChartWidget::plot(QHexEditData *hexeditdata)
 {
-    if(!hexeditdata->length())
+    if(!hexeditdata || !hexeditdata->length())
         return;
 
-    QtConcurrent::run(this, &ChartWidget::elaborate, hexeditdata);
+    this->_hexeditdata = hexeditdata;
+    this->updateEntropyText("Calculating...", qApp->palette().text().color());
+
+    this->_worker.setData(hexeditdata);
+    this->_worker.start(QThread::LowPriority);
 }
 
 ChartWidget::~ChartWidget()
 {
+    if(this->_worker.isRunning())
+    {
+        this->_worker.quit();
+        this->_worker.wait();
+    }
+
     delete ui;
 }
 
@@ -89,23 +101,65 @@ void ChartWidget::createListModel()
         ui->lisOccurrence->resizeColumnToContents(i);
 }
 
-void ChartWidget::elaborate(QHexEditData *hexeditdata)
+void ChartWidget::onElaborationCompleted()
 {
-    qint64 maxocc = 0;
-    QList<qint64> occurrences;
-    QHexEditDataReader reader(hexeditdata);
+    QList<qint64> occurrences = this->_worker.occurrences();
+    ui->histogram->setData(occurrences);
+    this->updateModel(occurrences);
+    this->updateEntropy(occurrences);
+}
 
-    for(int c = 0x00; c <= 0xFF; c++)
-        occurrences.append(0);
+void ChartWidget::updateModel(const QList<qint64>& occurrences)
+{
+    uint imax = 0xFFFFFFFF;
+    qint64 max = 0;
+    QStandardItemModel* model = qobject_cast<QStandardItemModel*>(ui->lisOccurrence->model());
 
-    for(qint64 i = 0; i < hexeditdata->length(); i++)
+    for(uint i = 0; i <= 0xFF; i++)
     {
-        uchar b = reader.at(i);
-        occurrences[b] += i;
+        QModelIndex idx1 = model->index(i, 2);
+        QModelIndex idx2 = model->index(i, 3);
 
-        if(occurrences[b] > maxocc)
-            maxocc = occurrences[b];
+        qint64 count = occurrences[i];
+
+        if(count > max)
+        {
+            imax = i;
+            max = count;
+        }
+
+        model->setData(idx1, count, Qt::DisplayRole);
+        model->setData(idx2, QString("%1%").arg((static_cast<qreal>(count) / static_cast<qreal>(this->_hexeditdata->length())) * 100));
     }
 
-    ui->histogram->setData(occurrences);
+    if(imax != 0xFFFFFFFF)
+    {
+        QModelIndex idx0 = model->index(imax, 0);
+        QModelIndex idx1 = model->index(imax, 1);
+        QModelIndex idx2 = model->index(imax, 2);
+        QModelIndex idx3 = model->index(imax, 3);
+
+        model->setData(idx0, QColor(Qt::yellow), Qt::BackgroundRole);
+        model->setData(idx1, QColor(Qt::yellow), Qt::BackgroundRole);
+        model->setData(idx2, QColor(Qt::yellow), Qt::BackgroundRole);
+        model->setData(idx3, QColor(Qt::yellow), Qt::BackgroundRole);
+    }
+
+    for(int i = 0; i < model->columnCount(); i++)
+        ui->lisOccurrence->resizeColumnToContents(i);
+}
+
+void ChartWidget::updateEntropy(const QList<qint64> &occurrences)
+{
+    qreal e = entropy(occurrences, this->_hexeditdata->length());
+    this->updateEntropyText(QString::number(e), ByteColors::entropyColor(e));
+}
+
+void ChartWidget::updateEntropyText(const QString &text, const QColor &forecolor)
+{
+    ui->lblEntropy->setText(text);
+
+    QPalette p = ui->lblEntropy->palette();
+    p.setColor(ui->lblEntropy->foregroundRole(), forecolor);
+    ui->lblEntropy->setPalette(p);
 }

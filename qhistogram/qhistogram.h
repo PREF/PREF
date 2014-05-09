@@ -13,8 +13,10 @@ class QHistogram : public QWidget
 
     public:
         explicit QHistogram(QWidget *parent = 0);
-        void setData(const QList<qint64> &data);
         qint64 maxValue();
+
+    public slots:
+        void setData(const QList<qint64> &data);
 
     private:
         void drawAxis(QPainter &p);

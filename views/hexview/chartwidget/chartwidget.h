@@ -6,7 +6,11 @@
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
 #include "qhexedit/qhexeditdata.h"
-#include "qhexedit/qhexeditdatareader.h"
+#include "prefsdk/bytecolors.h"
+#include "prefsdk/math.h"
+#include "chartworker.h"
+
+using namespace PrefSDK;
 
 namespace Ui {
 class ChartWidget;
@@ -24,11 +28,18 @@ class ChartWidget : public QWidget
     private:
         static void initNonAsciiChars();
         void createListModel();
-        void elaborate(QHexEditData* hexeditdata);
+        void updateModel(const QList<qint64>& occurrences);
+        void updateEntropy(const QList<qint64>& occurrences);
+        void updateEntropyText(const QString& text, const QColor& forecolor);
+
+    private slots:
+        void onElaborationCompleted();
 
     private:
         static QMap<uchar, QString> _nonasciichars;
         Ui::ChartWidget *ui;
+        QHexEditData* _hexeditdata;
+        ChartWorker _worker;
 };
 
 #endif // CHARTWIDGET_H

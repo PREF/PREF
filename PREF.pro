@@ -123,7 +123,8 @@ SOURCES += main.cpp\
     qhexedit/qhexeditdatareader.cpp \
     qhexedit/qhexeditdatawriter.cpp \
     views/hexview/chartwidget/chartwidget.cpp \
-    views/hexview/hexview.cpp
+    views/hexview/hexview.cpp \
+    views/hexview/chartwidget/chartworker.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -235,7 +236,8 @@ HEADERS  += mainwindow.h \
     qhexedit/qhexeditdatareader.h \
     qhexedit/qhexeditdatawriter.h \
     views/hexview/chartwidget/chartwidget.h \
-    views/hexview/hexview.h
+    views/hexview/hexview.h \
+    views/hexview/chartwidget/chartworker.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
