@@ -68,7 +68,7 @@ SOURCES += main.cpp\
     binarymapwidget/entropywidget.cpp \
     binarymapwidget/binarymap.cpp \
     views/formatview/binaryviewpage/binaryviewpage.cpp \
-    views/formatview/hexeditviewpage/binarynavigator/binarynavigator.cpp \
+    views/formatview/binarynavigator/binarynavigator.cpp \
     views/formatview/binaryviewpage/displaymodewidget.cpp \
     views/formatview/chartviewpage/chartviewpage.cpp \
     views/formatview/chartviewpage/charthelper.cpp \
@@ -179,7 +179,7 @@ HEADERS  += mainwindow.h \
     binarymapwidget/entropywidget.h \
     binarymapwidget/binarymap.h \
     views/formatview/binaryviewpage/binaryviewpage.h \
-    views/formatview/hexeditviewpage/binarynavigator/binarynavigator.h \
+    views/formatview/binarynavigator/binarynavigator.h \
     views/formatview/binaryviewpage/displaymodewidget.h \
     views/formatview/chartviewpage/charthelper.h \
     views/formatview/chartviewpage/chartviewpage.h \

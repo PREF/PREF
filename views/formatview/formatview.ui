@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1014</width>
-    <height>640</height>
+    <width>1012</width>
+    <height>638</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -239,7 +239,7 @@
   <customwidget>
    <class>BinaryNavigator</class>
    <extends>QWidget</extends>
-   <header>views/formatview/hexeditviewpage/binarynavigator/binarynavigator.h</header>
+   <header>views/formatview/binarynavigator/binarynavigator.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

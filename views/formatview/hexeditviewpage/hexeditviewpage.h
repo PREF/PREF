@@ -7,7 +7,7 @@
 #include "qhexedit/qhexedit.h"
 #include "actionwidget/actionwidget.h"
 #include "actionwidget/actiontoolbar.h"
-#include "binarynavigator/binarynavigator.h"
+#include "../binarynavigator/binarynavigator.h"
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/formatview/optionmenu.h"
 #include "prefsdk/format/formatlist.h"
