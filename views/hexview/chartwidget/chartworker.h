@@ -3,7 +3,9 @@
 
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
-#include "qhexedit/qhexeditdatareader.h"
+#include "prefsdk/math.h"
+
+using namespace PrefSDK;
 
 class ChartWorker : public QThread
 {
@@ -11,14 +13,14 @@ class ChartWorker : public QThread
 
     public:
         explicit ChartWorker(QObject *parent = 0);
-        const QList<qint64>& occurrences() const;
+        const OccurrenceList& occurrences() const;
         void setData(QHexEditData *hexeditdata);
 
     protected:
         virtual void run();
 
     private:
-        QList<qint64> _occurrences;
+        OccurrenceList _occurrences;
         QHexEditData* _hexeditdata;
 };
 

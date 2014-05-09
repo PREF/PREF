@@ -54,7 +54,7 @@ namespace PrefSDK
         qreal f = 0.0;
 
         if(e > 0.5)
-            f = qMax(pow((4*(e - 0.5) - 4*pow(e - 0.5, 2)), 4), 0.0);
+            f = qMax(pow((4*(e - 0.5) - 4 * pow(e - 0.5, 2)), 4), 0.0);
 
         return QColor::fromRgb(255 * f, 0, 255 * pow(e, 2));
     }

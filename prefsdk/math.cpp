@@ -37,20 +37,8 @@ namespace PrefSDK
 
     qreal entropy(QHexEditData *hexeditdata, qint64 start, qint64 size)
     {
-        qreal e = 0.0;
-        qint64 base = qMin(size, static_cast<qint64>(256));
-        OccurrenceList occs = generateOccList(hexeditdata, start, size);
-
-        for(int i = 0; i < occs.length(); i++)
-        {
-            if(occs[i])
-            {
-                qreal freq = static_cast<qreal>(occs[i]) / static_cast<qreal>(size);
-                e += freq * (log(freq) / log(base));
-            }
-        }
-
-        return -e;
+        OccurrenceList occurences = generateOccList(hexeditdata, start, size);
+        return entropy(occurences, size);
     }
 
     qreal entropy(OccurrenceList occlist, qint64 size)
