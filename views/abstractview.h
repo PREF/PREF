@@ -10,15 +10,18 @@ class AbstractView : public QWidget
     Q_OBJECT
 
     public:
-        explicit AbstractView(QStatusBar* statusbar, QWidget *parent = 0);
+        explicit AbstractView(QLabel *labelinfo, QWidget *parent = 0);
         virtual ~AbstractView();
+
+    protected:
+        void updateInfoText(const QString& s);
 
     public: /* Abstract Methods */
         virtual bool canSave() const = 0;
         virtual void updateStatusBar() = 0;
 
-    protected:
-        QStatusBar* _statusbar;
+    private:
+        QLabel* _lblinfo;
 };
 
 #endif // ABSTRACTVIEW_H

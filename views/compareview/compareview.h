@@ -20,7 +20,7 @@ class CompareView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit CompareView(QString leftfile, QString rightfile, QStatusBar* statusbar, QWidget *parent = 0);
+        explicit CompareView(QString leftfile, QString rightfile, QLabel* labelinfo, QWidget *parent = 0);
         ~CompareView();
 
     private slots:

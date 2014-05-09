@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow
 
     private:
         Ui::MainWindow *ui;
+        QLabel* _lblinfo;
         bool _sdkloaded;
 };
 

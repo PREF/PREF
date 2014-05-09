@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     ui->setupUi(this);
     this->centerWindowToScreen();
 
+    this->_lblinfo = new QLabel();
+    ui->statusBar->addWidget(this->_lblinfo, 1);
+
     connect(ui->tabWidget, SIGNAL(fileDragged(QString)), this, SLOT(loadFile(QString)));
     lua_State* l = SDKManager::initializeLua();
 
@@ -92,7 +95,7 @@ bool MainWindow::closeApplication()
 
 void MainWindow::loadFile(QString file)
 {
-    HexView* fv = new HexView(QHexEditData::fromFile(file), ui->statusBar);
+    HexView* fv = new HexView(QHexEditData::fromFile(file), this->_lblinfo);
     ui->tabWidget->addTab(fv, QFileInfo(file).fileName());
 }
 
@@ -192,7 +195,7 @@ void MainWindow::on_actionCompare_triggered()
     {
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
-        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare(), ui->statusBar), QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName()));
+        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare(), this->_lblinfo), QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName()));
     }
 }
 
@@ -231,7 +234,7 @@ void MainWindow::on_actionHex_File_triggered()
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
-        HexView* fv = new HexView(QHexEditData::fromMemory(ba), ui->statusBar);
+        HexView* fv = new HexView(QHexEditData::fromMemory(ba), this->_lblinfo);
         ui->tabWidget->addTab(fv, QFileInfo(s).fileName());
     }
 }

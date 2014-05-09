@@ -1,7 +1,7 @@
 #include "hexview.h"
 #include "ui_hexview.h"
 
-HexView::HexView(QHexEditData* hexeditdata, QStatusBar* statusbar, QWidget *parent): AbstractView(statusbar, parent), ui(new Ui::HexView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, QLabel *labelinfo, QWidget *parent): AbstractView(labelinfo, parent), ui(new Ui::HexView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
 

@@ -1,6 +1,6 @@
 #include "abstractview.h"
 
-AbstractView::AbstractView(QStatusBar* statusbar, QWidget *parent): QWidget(parent), _statusbar(statusbar)
+AbstractView::AbstractView(QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo)
 {
 
 }
@@ -8,4 +8,9 @@ AbstractView::AbstractView(QStatusBar* statusbar, QWidget *parent): QWidget(pare
 AbstractView::~AbstractView()
 {
 
+}
+
+void AbstractView::updateInfoText(const QString &s)
+{
+    this->_lblinfo->setText(s);
 }

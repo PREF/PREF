@@ -24,7 +24,7 @@ class HexView : public AbstractView
     Q_OBJECT
     
     public:
-        explicit HexView(QHexEditData* hexeditdata, QStatusBar *statusbar, QWidget *parent = 0);
+        explicit HexView(QHexEditData* hexeditdata, QLabel* labelinfo, QWidget *parent = 0);
         bool loadFormat(FormatList::Format &format, int64_t baseoffset);
         void scanSignatures(bool canscan);
         void save(QString filename);
