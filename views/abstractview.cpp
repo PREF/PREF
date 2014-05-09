@@ -1,6 +1,6 @@
 #include "abstractview.h"
 
-AbstractView::AbstractView(QWidget *parent): QWidget(parent)
+AbstractView::AbstractView(QStatusBar* statusbar, QWidget *parent): QWidget(parent), _statusbar(statusbar)
 {
 
 }

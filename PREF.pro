@@ -122,7 +122,8 @@ SOURCES += main.cpp\
     prefsdk/ui/models/tablemodel.cpp \
     qhexedit/qhexeditdatadevice.cpp \
     qhexedit/qhexeditdatareader.cpp \
-    qhexedit/qhexeditdatawriter.cpp
+    qhexedit/qhexeditdatawriter.cpp \
+    views/formatview/chartwidget/chartwidget.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -233,7 +234,8 @@ HEADERS  += mainwindow.h \
     prefsdk/ui/models/tablemodel.h \
     qhexedit/qhexeditdatadevice.h \
     qhexedit/qhexeditdatareader.h \
-    qhexedit/qhexeditdatawriter.h
+    qhexedit/qhexeditdatawriter.h \
+    views/formatview/chartwidget/chartwidget.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -259,7 +261,8 @@ FORMS    += mainwindow.ui \
     actionwidget/byteopsaction/byteopsaction.ui \
     actionwidget/rangeselectoraction/rangeselectoraction.ui \
     actionwidget/findaction/findaction.ui \
-    signaturedatabasedialog/signaturedatabasedialog.ui
+    signaturedatabasedialog/signaturedatabasedialog.ui \
+    views/formatview/chartwidget/chartwidget.ui
 
 RESOURCES += resources.qrc
 

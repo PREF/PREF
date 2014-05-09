@@ -92,7 +92,7 @@ bool MainWindow::closeApplication()
 
 void MainWindow::loadFile(QString file)
 {
-    FormatView* fv = new FormatView(QHexEditData::fromFile(file));
+    FormatView* fv = new FormatView(QHexEditData::fromFile(file), ui->statusBar);
     ui->tabWidget->addTab(fv, QFileInfo(file).fileName());
 }
 
@@ -192,7 +192,7 @@ void MainWindow::on_actionCompare_triggered()
     {
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
-        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare()), QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName()));
+        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare(), ui->statusBar), QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName()));
     }
 }
 
@@ -231,7 +231,7 @@ void MainWindow::on_actionHex_File_triggered()
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
-        FormatView* fv = new FormatView(QHexEditData::fromMemory(ba));
+        FormatView* fv = new FormatView(QHexEditData::fromMemory(ba), ui->statusBar);
         ui->tabWidget->addTab(fv, QFileInfo(s).fileName());
     }
 }

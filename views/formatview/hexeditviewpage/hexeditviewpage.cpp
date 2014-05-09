@@ -19,6 +19,7 @@ HexEditViewPage::HexEditViewPage(QHexEditData* hexeditdata, QWidget *parent): QW
     this->_formatmodel = new FormatModel(hexeditdata);
     ui->tvFormat->setModel(this->_formatmodel);
     ui->binaryNavigator->setData(ui->hexEdit);
+    ui->chartWidget->plot(hexeditdata);
 
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));

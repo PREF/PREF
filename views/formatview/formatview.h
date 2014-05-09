@@ -24,43 +24,51 @@ class FormatView : public AbstractView
     Q_OBJECT
     
     public:
-        enum Views {HexView, BinaryView, ChartView, DisassemblerView, StringFinderView, CustomView};
-        explicit FormatView(QHexEditData* hexeditdata, QWidget *parent = 0);
-        void save();
+        explicit FormatView(QHexEditData* hexeditdata, QStatusBar *statusbar, QWidget *parent = 0);
+        bool loadFormat(FormatList::Format &format, int64_t baseoffset);
+        void scanSignatures(bool canscan);
         void save(QString filename);
-        FormatView::Views currentView();
+        void save();
         ~FormatView();
 
     public: /* Overriden Methods */
         virtual bool canSave() const;
+        virtual void updateStatusBar();
 
     protected:
         virtual void closeEvent(QCloseEvent* event);
 
-    signals:
-        void viewChanged(FormatView::Views v);
+    private:
+        void createToolBar();
 
     private slots:
-        void jumpToOffset(qint64 offset, qint64 length = 1);
-        void on_tabWidget_currentChanged(int);
-        void onFormatLoaded(FormatList::FormatId formatid);
-
-    private:
-        void createHexView();
-        void createBinaryView();
-        void createChartView();
-        void createStringFinderView();
-        void createDisassemblerView(FormatTree *formattree);
+        void updateOffset(qint64 offset);
+        void updateSelLength(qint64 size);
+        void onLoadFormatClicked();
+        void onSignatureScannerClicked();
+        void onByteViewClicked();
+        void onHexEditCustomContextMenuRequested(const QPoint& pos);
+        void onSetBackColor(FormatElement *formatelement);
+        void onRemoveBackColor(FormatElement *formatelement);
+        void onFormatObjectSelected(FormatElement* formatelement);
+        void exportData(FormatElement* formatelement);
+        void importData(FormatElement *formatelement);
+        void scanSignatures();
 
     private:
         Ui::FormatView *ui;
         FormatList::FormatId _formatid;
-        HexEditViewPage* _hexeditview;
-        BinaryViewPage* _binaryview;
-        ChartViewPage* _chartview;
-        DisassemblerViewPage* _disassemblerview;
-        StringFinderViewPage* _stringfinderview;
+        FormatModel* _formatmodel;
+        FormatTree* _formattree;
         QHexEditData* _hexeditdata;
+        ActionToolBar* _toolbar;
+        QToolButton* _tbloadformat;
+        QToolButton* _tbscansignature;
+        QToolButton* _tbbyteview;
+        QToolButton* _tbformatoptions;
+        QColor _signaturecolor;
+        bool _signscanenabled;
+        bool _entropyenabled;
 };
 
 #endif // FILEFORMATVIEW_H

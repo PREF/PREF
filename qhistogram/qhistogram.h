@@ -13,7 +13,7 @@ class QHistogram : public QWidget
 
     public:
         explicit QHistogram(QWidget *parent = 0);
-        void setData(QList<qint64> data);
+        void setData(const QList<qint64> &data);
         qint64 maxValue();
 
     private:

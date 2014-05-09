@@ -1,7 +1,7 @@
 #include "compareview.h"
 #include "ui_compareview.h"
 
-CompareView::CompareView(QString leftfile, QString rightfile, QWidget *parent): AbstractView(parent), ui(new Ui::CompareView)
+CompareView::CompareView(QString leftfile, QString rightfile, QStatusBar *statusbar, QWidget *parent): AbstractView(statusbar, parent), ui(new Ui::CompareView)
 {
     ui->setupUi(this);
 
@@ -119,4 +119,9 @@ void CompareView::createToolbar(QHexEdit* hexedit, QWidget *tbcontainer, ActionW
 bool CompareView::canSave() const
 {
     return false;
+}
+
+void CompareView::updateStatusBar()
+{
+    this->_statusbar->clearMessage();
 }

@@ -20,7 +20,7 @@ class CompareView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit CompareView(QString leftfile, QString rightfile, QWidget *parent = 0);
+        explicit CompareView(QString leftfile, QString rightfile, QStatusBar* statusbar, QWidget *parent = 0);
         ~CompareView();
 
     private slots:
@@ -33,6 +33,7 @@ class CompareView : public AbstractView
 
     public: /* Overriden Methods */
         virtual bool canSave() const;
+        virtual void updateStatusBar();
 
     private:
         Ui::CompareView *ui;

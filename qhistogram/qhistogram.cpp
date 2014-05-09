@@ -9,7 +9,7 @@ QHistogram::QHistogram(QWidget *parent): QWidget(parent)
     this->_endaxisY = this->_margin;
 }
 
-void QHistogram::setData(QList<qint64> data)
+void QHistogram::setData(const QList<qint64>& data)
 {
     this->_data = data;
     this->update();
