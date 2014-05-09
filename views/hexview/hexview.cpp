@@ -1,7 +1,7 @@
-#include "formatview.h"
-#include "ui_formatview.h"
+#include "hexview.h"
+#include "ui_hexview.h"
 
-FormatView::FormatView(QHexEditData* hexeditdata, QStatusBar* statusbar, QWidget *parent): AbstractView(statusbar, parent), ui(new Ui::FormatView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, QStatusBar* statusbar, QWidget *parent): AbstractView(statusbar, parent), ui(new Ui::HexView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
 
@@ -36,7 +36,7 @@ FormatView::FormatView(QHexEditData* hexeditdata, QStatusBar* statusbar, QWidget
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
 }
 
-bool FormatView::loadFormat(FormatList::Format &format, int64_t baseoffset)
+bool HexView::loadFormat(FormatList::Format &format, int64_t baseoffset)
 {
     this->_formattree = SDKManager::parseFormat(format.id(), baseoffset, this->_hexeditdata);
     this->_formatmodel->setFormatTree(this->_formattree);
@@ -50,7 +50,7 @@ bool FormatView::loadFormat(FormatList::Format &format, int64_t baseoffset)
     return !this->_formattree->isEmpty();
 }
 
-void FormatView::scanSignatures(bool canscan)
+void HexView::scanSignatures(bool canscan)
 {
     this->_signscanenabled = canscan;
 
@@ -63,40 +63,40 @@ void FormatView::scanSignatures(bool canscan)
     }
 }
 
-void FormatView::save()
+void HexView::save()
 {
     this->_hexeditdata->save();
 }
 
-void FormatView::save(QString filename)
+void HexView::save(QString filename)
 {
     QFile f(filename);
     this->_hexeditdata->saveTo(&f);
     f.close();
 }
 
-FormatView::~FormatView()
+HexView::~HexView()
 {
     delete ui;
 }
 
-bool FormatView::canSave() const
+bool HexView::canSave() const
 {
     return true;
 }
 
-void FormatView::updateStatusBar()
+void HexView::updateStatusBar()
 {
 
 }
 
-void FormatView::closeEvent(QCloseEvent *event)
+void HexView::closeEvent(QCloseEvent *event)
 {
     FormatList::removeLoadedFormat(this->_hexeditdata);
     AbstractView::closeEvent(event);
 }
 
-void FormatView::createToolBar()
+void HexView::createToolBar()
 {
     this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);
     this->_tbloadformat = new QToolButton();
@@ -142,13 +142,13 @@ void FormatView::createToolBar()
     ui->tbContainer->setLayout(vl);
 }
 
-void FormatView::updateOffset(qint64 offset)
+void HexView::updateOffset(qint64 offset)
 {
     ui->lblOffset->setText("Offset: 0x" + QString("%1").arg(offset, ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper() + "  ");
     ui->lblOffset->setFixedWidth(ui->lblOffset->fontMetrics().width(ui->lblOffset->text()));
 }
 
-void FormatView::updateSelLength(qint64 size)
+void HexView::updateSelLength(qint64 size)
 {
     ui->lblSize->setText("Size: 0x" + QString("%1").arg(size, ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper());
 
@@ -164,7 +164,7 @@ void FormatView::updateSelLength(qint64 size)
         this->_toolbar->setEditActionsEnabled(true);
 }
 
-void FormatView::onLoadFormatClicked()
+void HexView::onLoadFormatClicked()
 {
     FormatsDialog fd(this->_hexeditdata->length(), this->topLevelWidget());
     int res = fd.exec();
@@ -186,12 +186,12 @@ void FormatView::onLoadFormatClicked()
     }
 }
 
-void FormatView::onSignatureScannerClicked()
+void HexView::onSignatureScannerClicked()
 {
     this->scanSignatures(this->_tbscansignature->isChecked());
 }
 
-void FormatView::onByteViewClicked()
+void HexView::onByteViewClicked()
 {
     if(this->_tbbyteview->isChecked())
         ui->binaryNavigator->displayEntropy();
@@ -199,13 +199,13 @@ void FormatView::onByteViewClicked()
         ui->binaryNavigator->displayDefault();
 }
 
-void FormatView::onHexEditCustomContextMenuRequested(const QPoint &pos)
+void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
 {
     QPoint newpos = ui->hexEdit->mapToGlobal(pos);
     this->_toolbar->actionMenu()->popup(newpos);
 }
 
-void FormatView::onSetBackColor(FormatElement *formatelement)
+void HexView::onSetBackColor(FormatElement *formatelement)
 {
     QColor c = QColorDialog::getColor(Qt::white, this);
 
@@ -216,19 +216,19 @@ void FormatView::onSetBackColor(FormatElement *formatelement)
     }
 }
 
-void FormatView::onRemoveBackColor(FormatElement *formatelement)
+void HexView::onRemoveBackColor(FormatElement *formatelement)
 {
     uint64_t offset = formatelement->offset();
     ui->hexEdit->clearHighlight(offset, (offset + formatelement->size() - 1));
 }
 
-void FormatView::onFormatObjectSelected(FormatElement *formatelement)
+void HexView::onFormatObjectSelected(FormatElement *formatelement)
 {
     uint64_t offset = formatelement->offset();
     ui->hexEdit->setSelection(offset, offset + formatelement->size());
 }
 
-void FormatView::exportData(FormatElement *formatelement)
+void HexView::exportData(FormatElement *formatelement)
 {
     ExportDialog ed(ui->hexEdit, this);
     ed.setFixedRange(formatelement->offset(), formatelement->endOffset());
@@ -238,7 +238,7 @@ void FormatView::exportData(FormatElement *formatelement)
         ExporterList::exportData(ed.selectedExporter().id(), ed.fileName(), this->_hexeditdata, ed.startOffset(), ed.endOffset());
 }
 
-void FormatView::importData(FormatElement *formatelement)
+void HexView::importData(FormatElement *formatelement)
 {
     QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
 
@@ -259,7 +259,7 @@ void FormatView::importData(FormatElement *formatelement)
     }
 }
 
-void FormatView::scanSignatures()
+void HexView::scanSignatures()
 {
     if(!this->_signscanenabled)
         return;

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>781</width>
-    <height>601</height>
+    <width>779</width>
+    <height>599</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -150,12 +150,12 @@
   <customwidget>
    <class>DisassemblerView</class>
    <extends>QPlainTextEdit</extends>
-   <header>views/formatview/disassemblerviewpage/disassemblerview/disassemblerview.h</header>
+   <header>views/hexview/disassemblerviewpage/disassemblerview/disassemblerview.h</header>
   </customwidget>
   <customwidget>
    <class>DataMapView</class>
    <extends>QWidget</extends>
-   <header>views/formatview/disassemblerviewpage/datamapview/datamapview.h</header>
+   <header>views/hexview/disassemblerviewpage/datamapview/datamapview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

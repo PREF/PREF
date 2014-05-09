@@ -92,7 +92,7 @@ bool MainWindow::closeApplication()
 
 void MainWindow::loadFile(QString file)
 {
-    FormatView* fv = new FormatView(QHexEditData::fromFile(file), ui->statusBar);
+    HexView* fv = new HexView(QHexEditData::fromFile(file), ui->statusBar);
     ui->tabWidget->addTab(fv, QFileInfo(file).fileName());
 }
 
@@ -150,7 +150,7 @@ void MainWindow::on_action_Save_As_triggered()
     QString filename = QFileDialog::getSaveFileName(this, "Save as...");
 
     if(!filename.isEmpty())
-        ((FormatView*)ui->tabWidget->currentWidget())->save(filename);
+        ((HexView*)ui->tabWidget->currentWidget())->save(filename);
 }
 
 void MainWindow::on_action_Save_triggered()
@@ -166,7 +166,7 @@ void MainWindow::on_action_Save_triggered()
     switch(ret)
     {
         case QMessageBox::Yes:
-            dynamic_cast<FormatView*>(ui->tabWidget->currentWidget())->save();
+            dynamic_cast<HexView*>(ui->tabWidget->currentWidget())->save();
             break;
 
         case QMessageBox::No:
@@ -231,7 +231,7 @@ void MainWindow::on_actionHex_File_triggered()
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
-        FormatView* fv = new FormatView(QHexEditData::fromMemory(ba), ui->statusBar);
+        HexView* fv = new HexView(QHexEditData::fromMemory(ba), ui->statusBar);
         ui->tabWidget->addTab(fv, QFileInfo(s).fileName());
     }
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>821</width>
-    <height>545</height>
+    <width>819</width>
+    <height>543</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,7 +31,7 @@
      <item>
       <widget class="QLabel" name="lblCtrl">
        <property name="frameShape">
-        <enum>QFrame::Box</enum>
+        <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -44,7 +44,7 @@
      <item>
       <widget class="QLabel" name="lblShift">
        <property name="frameShape">
-        <enum>QFrame::Box</enum>
+        <enum>QFrame::StyledPanel</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -105,7 +105,7 @@
   <customwidget>
    <class>DisplayModeWidget</class>
    <extends>QWidget</extends>
-   <header>views/formatview/binaryviewpage/displaymodewidget.h</header>
+   <header>views/hexview/binaryviewpage/displaymodewidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

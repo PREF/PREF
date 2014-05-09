@@ -30,28 +30,27 @@ SOURCES += main.cpp\
     prefsdk/datatype.cpp \
     aboutdialog.cpp \
     exportdialog.cpp \
-    views/formatview/disassemblerviewpage/disassemblerviewpage.cpp \
+    views/hexview/disassemblerviewpage/disassemblerviewpage.cpp \
     viewmodels/datatypesmodel/datatypesmodel.cpp \
     viewmodels/formatmodel/formatmodel.cpp \
     viewmodels/stringoffsetmodel/stringoffsetmodel.cpp \
     viewmodels/functionoffsetmodel/functionoffsetmodel.cpp \
-    views/formatview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.cpp \
+    views/hexview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.cpp \
     viewmodels/crossreferencemodel/crossreferencemodel.cpp \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerview.cpp \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewprivate.cpp \
-    views/formatview/disassemblerviewpage/datamapview/datamapview.cpp \
+    views/hexview/disassemblerviewpage/disassemblerview/disassemblerview.cpp \
+    views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewprivate.cpp \
+    views/hexview/disassemblerviewpage/datamapview/datamapview.cpp \
     viewmodels/datamapmodel/datamapmodel.cpp \
-    views/formatview/stringfinderviewpage/stringfinderviewpage.cpp \
+    views/hexview/stringfinderviewpage/stringfinderviewpage.cpp \
     viewmodels/stringfindermodel/stringfindermodel.cpp \
-    views/formatview/hexeditviewpage/hexeditviewpage.cpp \
-    views/formatview/formatview.cpp \
+    views/hexview/hexeditviewpage/hexeditviewpage.cpp \
     prefsdk/format/formatlist.cpp \
     formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
     viewmodels/categorymodel/categorymodel.cpp \
-    views/formatview/stringfinderviewpage/stringfinderhelper.cpp \
-    views/formatview/disassemblerviewpage/disassemblerhelper.cpp \
+    views/hexview/stringfinderviewpage/stringfinderhelper.cpp \
+    views/hexview/disassemblerviewpage/disassemblerhelper.cpp \
     formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
     prefsdk/disassembler/disassemblerrange.cpp \
@@ -67,11 +66,11 @@ SOURCES += main.cpp\
     qnumberlineedit.cpp \
     binarymapwidget/entropywidget.cpp \
     binarymapwidget/binarymap.cpp \
-    views/formatview/binaryviewpage/binaryviewpage.cpp \
-    views/formatview/binarynavigator/binarynavigator.cpp \
-    views/formatview/binaryviewpage/displaymodewidget.cpp \
-    views/formatview/chartviewpage/chartviewpage.cpp \
-    views/formatview/chartviewpage/charthelper.cpp \
+    views/hexview/binaryviewpage/binaryviewpage.cpp \
+    views/hexview/binarynavigator/binarynavigator.cpp \
+    views/hexview/binaryviewpage/displaymodewidget.cpp \
+    views/hexview/chartviewpage/chartviewpage.cpp \
+    views/hexview/chartviewpage/charthelper.cpp \
     datatypesview/datatypesmenu.cpp \
     qhexedit/qhexedithighlighter.cpp \
     views/abstractview.cpp \
@@ -116,14 +115,15 @@ SOURCES += main.cpp\
     prefsdk/disassembler/processorloader.cpp \
     prefsdk/api/processorapi.cpp \
     prefsdk/disassembler/disassembler.cpp \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp \
+    views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.cpp \
     prefsdk/api/prefuiapi.cpp \
-    views/formatview/optionmenu.cpp \
+    views/hexview/optionmenu.cpp \
     prefsdk/ui/models/tablemodel.cpp \
     qhexedit/qhexeditdatadevice.cpp \
     qhexedit/qhexeditdatareader.cpp \
     qhexedit/qhexeditdatawriter.cpp \
-    views/formatview/chartwidget/chartwidget.cpp
+    views/hexview/chartwidget/chartwidget.cpp \
+    views/hexview/hexview.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -139,30 +139,29 @@ HEADERS  += mainwindow.h \
     prefsdk/datatype.h \
     aboutdialog.h \
     exportdialog.h \
-    views/formatview/disassemblerviewpage/disassemblerviewpage.h \
+    views/hexview/disassemblerviewpage/disassemblerviewpage.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
     viewmodels/formatmodel/formatmodel.h \
     viewmodels/stringoffsetmodel/stringoffsetmodel.h \
     viewmodels/functionoffsetmodel/functionoffsetmodel.h \
-    views/formatview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.h \
+    views/hexview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.h \
     viewmodels/crossreferencemodel/crossreferencemodel.h \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerview.h \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewprivate.h \
+    views/hexview/disassemblerviewpage/disassemblerview/disassemblerview.h \
+    views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewprivate.h \
     prefsdk/disassembler/disassembler.h \
-    views/formatview/disassemblerviewpage/datamapview/datamapview.h \
+    views/hexview/disassemblerviewpage/datamapview/datamapview.h \
     viewmodels/datamapmodel/datamapmodel.h \
     datatypes/indexkeymap.h \
-    views/formatview/stringfinderviewpage/stringfinderviewpage.h \
+    views/hexview/stringfinderviewpage/stringfinderviewpage.h \
     viewmodels/stringfindermodel/stringfindermodel.h \
-    views/formatview/hexeditviewpage/hexeditviewpage.h \
-    views/formatview/formatview.h \
+    views/hexview/hexeditviewpage/hexeditviewpage.h \
     prefsdk/format/formatlist.h \
     formatsdialog.h \
     prefsdk/categorymanager.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
     viewmodels/categorymodel/categorymodel.h \
-    views/formatview/stringfinderviewpage/stringfinderhelper.h \
-    views/formatview/disassemblerviewpage/disassemblerhelper.h \
+    views/hexview/stringfinderviewpage/stringfinderhelper.h \
+    views/hexview/disassemblerviewpage/disassemblerhelper.h \
     formattreeview/structuremenu.h \
     numericbasemenu.h \
     prefsdk/disassembler/disassemblerrange.h \
@@ -178,11 +177,11 @@ HEADERS  += mainwindow.h \
     qnumberlineedit.h \
     binarymapwidget/entropywidget.h \
     binarymapwidget/binarymap.h \
-    views/formatview/binaryviewpage/binaryviewpage.h \
-    views/formatview/binarynavigator/binarynavigator.h \
-    views/formatview/binaryviewpage/displaymodewidget.h \
-    views/formatview/chartviewpage/charthelper.h \
-    views/formatview/chartviewpage/chartviewpage.h \
+    views/hexview/binaryviewpage/binaryviewpage.h \
+    views/hexview/binarynavigator/binarynavigator.h \
+    views/hexview/binaryviewpage/displaymodewidget.h \
+    views/hexview/chartviewpage/charthelper.h \
+    views/hexview/chartviewpage/chartviewpage.h \
     datatypesview/datatypesmenu.h \
     qhexedit/qhexedithighlighter.h \
     views/abstractview.h \
@@ -228,32 +227,32 @@ HEADERS  += mainwindow.h \
     prefsdk/exporter/exporterlist.h \
     prefsdk/disassembler/processorloader.h \
     prefsdk/api/processorapi.h \
-    views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h \
+    views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h \
     prefsdk/api/prefuiapi.h \
-    views/formatview/optionmenu.h \
+    views/hexview/optionmenu.h \
     prefsdk/ui/models/tablemodel.h \
     qhexedit/qhexeditdatadevice.h \
     qhexedit/qhexeditdatareader.h \
     qhexedit/qhexeditdatawriter.h \
-    views/formatview/chartwidget/chartwidget.h
+    views/hexview/chartwidget/chartwidget.h \
+    views/hexview/hexview.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
     datatypesview/datatypesview.ui \
     aboutdialog.ui \
     exportdialog.ui \
-    views/formatview/disassemblerviewpage/disassemblerviewpage.ui \
-    views/formatview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.ui \
-    views/formatview/disassemblerviewpage/datamapview/datamapview.ui \
-    views/formatview/stringfinderviewpage/stringfinderviewpage.ui \
-    views/formatview/formatview.ui \
+    views/hexview/disassemblerviewpage/disassemblerviewpage.ui \
+    views/hexview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.ui \
+    views/hexview/disassemblerviewpage/datamapview/datamapview.ui \
+    views/hexview/stringfinderviewpage/stringfinderviewpage.ui \
     formatsdialog.ui \
     debugdialog/debugdialog.ui \
     bytecolorswidget/bytecolorswidget.ui \
-    views/formatview/hexeditviewpage/hexeditviewpage.ui \
-    views/formatview/binaryviewpage/binaryviewpage.ui \
-    views/formatview/binaryviewpage/displaymodewidget.ui \
-    views/formatview/chartviewpage/chartviewpage.ui \
+    views/hexview/hexeditviewpage/hexeditviewpage.ui \
+    views/hexview/binaryviewpage/binaryviewpage.ui \
+    views/hexview/binaryviewpage/displaymodewidget.ui \
+    views/hexview/chartviewpage/chartviewpage.ui \
     formatoptionsdialog.ui \
     views/compareview/compareview.ui \
     views/compareview/comparedialog/comparedialog.ui \
@@ -262,7 +261,8 @@ FORMS    += mainwindow.ui \
     actionwidget/rangeselectoraction/rangeselectoraction.ui \
     actionwidget/findaction/findaction.ui \
     signaturedatabasedialog/signaturedatabasedialog.ui \
-    views/formatview/chartwidget/chartwidget.ui
+    views/hexview/chartwidget/chartwidget.ui \
+    views/hexview/hexview.ui
 
 RESOURCES += resources.qrc
 

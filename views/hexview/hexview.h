@@ -1,5 +1,5 @@
-#ifndef FILEFORMATVIEW_H
-#define FILEFORMATVIEW_H
+#ifndef HEXVIEW_H
+#define HEXVIEW_H
 
 #include <QtCore>
 #include <QtGui>
@@ -16,20 +16,20 @@
 using namespace PrefSDK;
 
 namespace Ui {
-class FormatView;
+class HexView;
 }
 
-class FormatView : public AbstractView
+class HexView : public AbstractView
 {
     Q_OBJECT
     
     public:
-        explicit FormatView(QHexEditData* hexeditdata, QStatusBar *statusbar, QWidget *parent = 0);
+        explicit HexView(QHexEditData* hexeditdata, QStatusBar *statusbar, QWidget *parent = 0);
         bool loadFormat(FormatList::Format &format, int64_t baseoffset);
         void scanSignatures(bool canscan);
         void save(QString filename);
         void save();
-        ~FormatView();
+        ~HexView();
 
     public: /* Overriden Methods */
         virtual bool canSave() const;
@@ -56,7 +56,7 @@ class FormatView : public AbstractView
         void scanSignatures();
 
     private:
-        Ui::FormatView *ui;
+        Ui::HexView *ui;
         FormatList::FormatId _formatid;
         FormatModel* _formatmodel;
         FormatTree* _formattree;
@@ -71,4 +71,4 @@ class FormatView : public AbstractView
         bool _entropyenabled;
 };
 
-#endif // FILEFORMATVIEW_H
+#endif // HEXVIEW_H

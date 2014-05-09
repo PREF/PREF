@@ -6,7 +6,7 @@
 #include <QtWidgets>
 #include "debugdialog/debugdialog.h"
 #include "prefsdk/sdkmanager.h"
-#include "views/formatview/formatview.h"
+#include "views/hexview/hexview.h"
 #include "views/compareview/compareview.h"
 #include "views/compareview/comparedialog/comparedialog.h"
 #include "signaturedatabasedialog/signaturedatabasedialog.h"

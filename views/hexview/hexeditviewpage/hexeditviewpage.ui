@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>832</width>
-    <height>529</height>
+    <width>830</width>
+    <height>527</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -239,7 +239,7 @@
   <customwidget>
    <class>BinaryNavigator</class>
    <extends>QWidget</extends>
-   <header>views/formatview/binarynavigator/binarynavigator.h</header>
+   <header>views/hexview/binarynavigator/binarynavigator.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -251,7 +251,7 @@
   <customwidget>
    <class>ChartWidget</class>
    <extends>QWidget</extends>
-   <header>views/formatview/chartwidget/chartwidget.h</header>
+   <header>views/hexview/chartwidget/chartwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>FormatView</class>
- <widget class="QWidget" name="FormatView">
+ <class>HexView</class>
+ <widget class="QWidget" name="HexView">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1012</width>
-    <height>638</height>
+    <width>1008</width>
+    <height>634</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -239,7 +239,7 @@
   <customwidget>
    <class>BinaryNavigator</class>
    <extends>QWidget</extends>
-   <header>views/formatview/binarynavigator/binarynavigator.h</header>
+   <header>views/hexview/binarynavigator/binarynavigator.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -251,7 +251,7 @@
   <customwidget>
    <class>ChartWidget</class>
    <extends>QWidget</extends>
-   <header>views/formatview/chartwidget/chartwidget.h</header>
+   <header>views/hexview/chartwidget/chartwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

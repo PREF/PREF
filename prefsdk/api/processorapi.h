@@ -4,7 +4,7 @@
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/disassembler.h"
-#include "views/formatview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h"
+#include "views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h"
 
 namespace PrefSDK
 {
