@@ -4,14 +4,13 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "actionwidget/actiontoolbar.h"
+#include "viewmodels/formatmodel/formatmodel.h"
 #include "views/abstractview.h"
+#include "views/hexview/optionmenu.h"
 #include "datatypesview/datatypesview.h"
-#include "hexeditviewpage/hexeditviewpage.h"
-#include "binaryviewpage/binaryviewpage.h"
-#include "chartviewpage/chartviewpage.h"
-#include "disassemblerviewpage/disassemblerviewpage.h"
-#include "stringfinderviewpage/stringfinderviewpage.h"
 #include "prefsdk/sdkmanager.h"
+#include "formatsdialog.h"
 
 using namespace PrefSDK;
 
