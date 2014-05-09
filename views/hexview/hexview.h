@@ -42,7 +42,7 @@ class HexView : public AbstractView
         void createToolBar();
 
     private slots:
-        void updateOffset(qint64 offset);
+        void updateOffset(qint64);
         void updateSelLength(qint64 size);
         void onLoadFormatClicked();
         void onSignatureScannerClicked();

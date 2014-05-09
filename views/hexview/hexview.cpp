@@ -11,9 +11,6 @@ HexView::HexView(QHexEditData* hexeditdata, QLabel *labelinfo, QWidget *parent):
     ui->hexEdit->setData(hexeditdata);
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
-
-    this->updateOffset(0);
-    this->updateSelLength(0);
     this->createToolBar();
 
     this->_formatmodel = new FormatModel(hexeditdata);
@@ -87,7 +84,9 @@ bool HexView::canSave() const
 
 void HexView::updateStatusBar()
 {
-
+    QString offset = QString("%1").arg(ui->hexEdit->cursorPos(), ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper();
+    QString size = QString("%1").arg(ui->hexEdit->selectionLength(), ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper();
+    this->updateInfoText(QString("<b>Offset:</b> %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Size:</b> %2h").arg(offset, size));
 }
 
 void HexView::closeEvent(QCloseEvent *event)
@@ -142,15 +141,14 @@ void HexView::createToolBar()
     ui->tbContainer->setLayout(vl);
 }
 
-void HexView::updateOffset(qint64 offset)
+void HexView::updateOffset(qint64)
 {
-    ui->lblOffset->setText("Offset: 0x" + QString("%1").arg(offset, ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper() + "  ");
-    ui->lblOffset->setFixedWidth(ui->lblOffset->fontMetrics().width(ui->lblOffset->text()));
+    this->updateStatusBar();
 }
 
 void HexView::updateSelLength(qint64 size)
 {
-    ui->lblSize->setText("Size: 0x" + QString("%1").arg(size, ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper());
+    this->updateStatusBar();
 
     if(!this->_toolbar)
         return;

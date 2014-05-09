@@ -136,7 +136,10 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
         case QMessageBox::Yes:
         {
             if(ui->tabWidget->count() == 1)
+            {
+                this->_lblinfo->clear(); /* Clear Status Bar Information */
                 this->enableMenuAndActions(false);
+            }
 
             ui->tabWidget->widget(index)->deleteLater(); /* Shedule object for deletion */
             ui->tabWidget->removeTab(index);
@@ -214,6 +217,7 @@ void MainWindow::on_tabWidget_currentChanged(int index)
     }
 
     AbstractView* av = dynamic_cast<AbstractView*>(ui->tabWidget->widget(index));
+    av->updateStatusBar();
     this->enableMenuAndActions(av->canSave());
 }
 
