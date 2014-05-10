@@ -22,7 +22,7 @@ class StringsWidget : public QWidget
 
     private:
         void createStringListActions();
-        void displayNotFoundMessasge();
+        void displayNotFoundMessage();
         QModelIndex search(StringsModel::SearchDirection direction);
 
     private slots:

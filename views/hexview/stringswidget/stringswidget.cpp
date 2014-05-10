@@ -48,7 +48,7 @@ void StringsWidget::createStringListActions()
     connect(this->_actcopyoffset, SIGNAL(triggered()), this, SLOT(onCopyOffsetTriggered()));
 }
 
-void StringsWidget::displayNotFoundMessasge()
+void StringsWidget::displayNotFoundMessage()
 {
     QMessageBox m;
     m.setWindowTitle("Search Error");
@@ -145,7 +145,7 @@ void StringsWidget::on_tbSearchUp_clicked()
     if(index.isValid())
         selmodel->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     else
-        this->displayNotFoundMessasge();
+        this->displayNotFoundMessage();
 }
 
 void StringsWidget::on_tbSearchDown_clicked()
@@ -156,5 +156,5 @@ void StringsWidget::on_tbSearchDown_clicked()
     if(index.isValid())
         selmodel->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
     else
-        this->displayNotFoundMessasge();
+        this->displayNotFoundMessage();
 }
