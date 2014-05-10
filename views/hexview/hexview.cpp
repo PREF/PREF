@@ -145,6 +145,7 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     ui->binaryNavigator->setData(ui->hexEdit);
     ui->chartWidget->plot(hexeditdata);
     ui->stringsWidget->scan(hexeditdata);
+    ui->signaturesWidget->scan(hexeditdata);
 
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
 }

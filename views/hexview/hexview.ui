@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>998</width>
-    <height>624</height>
+    <width>994</width>
+    <height>620</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,16 +103,16 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabSignature">
+      <widget class="QWidget" name="tabSignatures">
        <attribute name="title">
-        <string>Signature</string>
+        <string>Signatures</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <property name="margin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QWidget" name="signatureWidget" native="true"/>
+         <widget class="SignaturesWidget" name="signaturesWidget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -227,6 +227,12 @@
    <class>StringsWidget</class>
    <extends>QWidget</extends>
    <header>views/hexview/stringswidget/stringswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>SignaturesWidget</class>
+   <extends>QWidget</extends>
+   <header>views/hexview/signatureswidget/signatureswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
