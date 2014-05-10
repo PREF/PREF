@@ -149,7 +149,6 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/disassembler.h \
     views/hexview/disassemblerviewpage/datamapview/datamapview.h \
     viewmodels/datamapmodel/datamapmodel.h \
-    datatypes/indexkeymap.h \
     prefsdk/format/formatlist.h \
     formatsdialog.h \
     prefsdk/categorymanager.h \
