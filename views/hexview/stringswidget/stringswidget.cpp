@@ -5,6 +5,8 @@ StringsWidget::StringsWidget(QWidget *parent) : QWidget(parent), ui(new Ui::Stri
 {
     ui->setupUi(this);
     this->createStringListActions();
+
+    connect(ui->leSearch, SIGNAL(returnPressed()), this, SLOT(on_tbSearchDown_clicked()));
 }
 
 void StringsWidget::scan(QHexEditData *hexeditdata)
@@ -44,6 +46,27 @@ void StringsWidget::createStringListActions()
     connect(this->_actcopy, SIGNAL(triggered()), this, SLOT(onCopyTriggered()));
     connect(this->_actcopystring, SIGNAL(triggered()), this, SLOT(onCopyStringTriggered()));
     connect(this->_actcopyoffset, SIGNAL(triggered()), this, SLOT(onCopyOffsetTriggered()));
+}
+
+void StringsWidget::displayNotFoundMessasge()
+{
+    QMessageBox m;
+    m.setWindowTitle("String not found");
+    m.setText(QString("String '%1' not found").arg(ui->leSearch->text()));
+    m.setIcon(QMessageBox::Information);
+    m.setDefaultButton(QMessageBox::Ok);
+    m.exec();
+}
+
+QModelIndex StringsWidget::search(StringsModel::SearchDirection direction)
+{
+    QModelIndex index;
+    QItemSelectionModel* selmodel = ui->stringList->selectionModel();
+
+    if(selmodel && selmodel->selectedRows().length() == 1)
+        index = selmodel->selectedRows()[0];
+
+    return this->_stringsmodel->indexOf(ui->leSearch->text(), direction, index);
 }
 
 void StringsWidget::onStringsWorkerFinished()
@@ -112,4 +135,26 @@ void StringsWidget::on_stringList_doubleClicked(const QModelIndex &index)
 
     StringsModel::StringRange range = this->_stringsmodel->range(index.row());
     emit gotoTriggered(range.first, range.second);
+}
+
+void StringsWidget::on_tbSearchUp_clicked()
+{
+    QItemSelectionModel* selmodel = ui->stringList->selectionModel();
+    QModelIndex index = this->search(StringsModel::Up);
+
+    if(index.isValid())
+        selmodel->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    else
+        this->displayNotFoundMessasge();
+}
+
+void StringsWidget::on_tbSearchDown_clicked()
+{
+    QItemSelectionModel* selmodel = ui->stringList->selectionModel();
+    QModelIndex index = this->search(StringsModel::Down);
+
+    if(index.isValid())
+        selmodel->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+    else
+        this->displayNotFoundMessasge();
 }

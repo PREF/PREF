@@ -22,6 +22,8 @@ class StringsWidget : public QWidget
 
     private:
         void createStringListActions();
+        void displayNotFoundMessasge();
+        QModelIndex search(StringsModel::SearchDirection direction);
 
     private slots:
         void onStringsWorkerFinished();
@@ -30,10 +32,11 @@ class StringsWidget : public QWidget
         void onCopyOffsetTriggered();
         void onCopyStringTriggered();
         void on_stringList_customContextMenuRequested(const QPoint &pos);
-
         void on_stringList_doubleClicked(const QModelIndex &index);
+        void on_tbSearchUp_clicked();
+        void on_tbSearchDown_clicked();
 
-signals:
+    signals:
         void gotoTriggered(qint64 offset, qint64 length);
 
     private:

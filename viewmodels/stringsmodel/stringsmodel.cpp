@@ -13,6 +13,23 @@ void StringsModel::setData(const StringsModel::OffsetList &offsetlist, const Str
     this->endInsertRows();
 }
 
+QModelIndex StringsModel::indexOf(const QString &searchstring, StringsModel::SearchDirection direction, const QModelIndex &startindex)
+{
+    switch(direction)
+    {
+        case StringsModel::Down:
+            return this->searchDown(searchstring, startindex);
+
+        case StringsModel::Up:
+            return this->searchUp(searchstring, startindex);
+
+        default:
+            break;
+    }
+
+    return QModelIndex();
+}
+
 qint64 StringsModel::offset(int i) const
 {
     return this->_offsetlist[i];
@@ -28,6 +45,46 @@ QString StringsModel::string(int i) const
 {
     const StringsModel::StringRange& range = this->range(i);
     return this->_reader->read(range.first, range.second).simplified();
+}
+
+QModelIndex StringsModel::searchUp(const QString &searchstring, const QModelIndex &startindex)
+{
+    for(int i = (startindex.isValid() ? startindex.row() - 1 : this->_offsetlist.length() - 1); i >= 0; i--)
+    {
+        QString s = this->string(i);
+
+        if(s.length() < searchstring.length())
+            continue;
+
+        int idx = s.indexOf(searchstring, 0, Qt::CaseInsensitive);
+
+        if(idx == -1)
+            continue;
+
+        return this->createIndex(i, 0);
+    }
+
+    return QModelIndex();
+}
+
+QModelIndex StringsModel::searchDown(const QString &searchstring, const QModelIndex &startindex)
+{
+    for(int i = (startindex.isValid() ? startindex.row() + 1 : 0); i < this->_offsetlist.length(); i++)
+    {
+        QString s = this->string(i);
+
+        if(s.length() < searchstring.length())
+            continue;
+
+        int idx = s.indexOf(searchstring, 0, Qt::CaseInsensitive);
+
+        if(idx == -1)
+            continue;
+
+        return this->createIndex(i, 0);
+    }
+
+    return QModelIndex();
 }
 
 int StringsModel::columnCount(const QModelIndex&) const

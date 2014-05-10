@@ -15,13 +15,19 @@ class StringsModel : public QAbstractItemModel
         typedef QList<qint64> OffsetList;
         typedef QPair<qint64, qint64> StringRange;
         typedef QHash<qint64, StringRange> StringMap;
+        enum SearchDirection { Up, Down };
 
     public:
         explicit StringsModel(QHexEditData* hexeditdata, QObject *parent = 0);
         void setData(const StringsModel::OffsetList& offsetlist, const StringsModel::StringMap& strings);
+        QModelIndex indexOf(const QString& searchstring, StringsModel::SearchDirection direction, const QModelIndex& startindex = QModelIndex());
         qint64 offset(int i) const;
         StringsModel::StringRange range(int i) const;
         QString string(int i) const;
+
+    private:
+        QModelIndex searchUp(const QString& searchstring, const QModelIndex& startindex);
+        QModelIndex searchDown(const QString& searchstring, const QModelIndex& startindex);
     
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
