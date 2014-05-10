@@ -51,7 +51,7 @@ void StringsWidget::createStringListActions()
 void StringsWidget::displayNotFoundMessasge()
 {
     QMessageBox m;
-    m.setWindowTitle("String not found");
+    m.setWindowTitle("Search Error");
     m.setText(QString("String '%1' not found").arg(ui->leSearch->text()));
     m.setIcon(QMessageBox::Information);
     m.setDefaultButton(QMessageBox::Ok);
