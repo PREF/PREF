@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1006</width>
-    <height>632</height>
+    <width>998</width>
+    <height>624</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -178,7 +178,7 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QWidget" name="stringsWidget" native="true"/>
+         <widget class="StringsWidget" name="stringsWidget" native="true"/>
         </item>
        </layout>
       </widget>
@@ -221,6 +221,12 @@
    <class>ChartWidget</class>
    <extends>QWidget</extends>
    <header>views/hexview/chartwidget/chartwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StringsWidget</class>
+   <extends>QWidget</extends>
+   <header>views/hexview/stringswidget/stringswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -11,12 +11,11 @@ HexView::HexView(QHexEditData* hexeditdata, QLabel *labelinfo, QWidget *parent):
     ui->hexEdit->setData(hexeditdata);
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
-    this->createToolBar();
-
     this->_formatmodel = new FormatModel(hexeditdata);
     ui->tvFormat->setModel(this->_formatmodel);
-    ui->binaryNavigator->setData(ui->hexEdit);
-    ui->chartWidget->plot(hexeditdata);
+
+    this->createToolBar();
+    this->inspectData(hexeditdata);
 
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));
@@ -139,6 +138,15 @@ void HexView::createToolBar()
     vl->addWidget(this->_toolbar);
 
     ui->tbContainer->setLayout(vl);
+}
+
+void HexView::inspectData(QHexEditData *hexeditdata)
+{
+    ui->binaryNavigator->setData(ui->hexEdit);
+    ui->chartWidget->plot(hexeditdata);
+    ui->stringsWidget->scan(hexeditdata);
+
+    connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
 }
 
 void HexView::updateOffset(qint64)

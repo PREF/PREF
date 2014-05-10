@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
-#include "viewmodels/stringfindermodel/stringfindermodel.h"
+#include "viewmodels/stringsmodel/stringsmodel.h"
 #include "qhexedit/qhexeditdata.h"
 #include "elaboratetoolbar.h"
 #include "stringfinderhelper.h"
@@ -46,7 +46,7 @@ class StringFinderViewPage : public QWidget
     private:
         Ui::StringFinderViewPage *ui;
         QHexEditData* _hexeditdata;
-        StringFinderModel* _stringfindermodel;
+        StringsModel* _stringfindermodel;
         StringFinderHelper* _stringfinderhelper;
         ElaborateToolBar* _toolbar;
         QMenu* _slmenu;

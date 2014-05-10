@@ -39,6 +39,7 @@ class HexView : public AbstractView
 
     private:
         void createToolBar();
+        void inspectData(QHexEditData* hexeditdata);
 
     private slots:
         void updateOffset(qint64);

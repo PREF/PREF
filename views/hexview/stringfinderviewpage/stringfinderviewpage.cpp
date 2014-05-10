@@ -9,8 +9,8 @@ StringFinderViewPage::StringFinderViewPage(QHexEditData* hexeditdata, QWidget *p
     this->_hexeditdata = hexeditdata;
     this->_stringfinderhelper = new StringFinderHelper();
 
-    this->_stringfindermodel = new StringFinderModel();
-    ui->stringList->setModel(this->_stringfindermodel);
+    //this->_stringfindermodel = new StringsModel();
+    //ui->stringList->setModel(this->_stringfindermodel);
 
     this->createToolBar();
     this->createStringListActions();
@@ -80,14 +80,17 @@ void StringFinderViewPage::on_sbMaxLength_valueChanged(int)
 
 void StringFinderViewPage::onStartTriggered()
 {
-    dynamic_cast<StringFinderModel*>(ui->stringList->model())->clearItems();
+    /*
+    dynamic_cast<StringsModel*>(ui->stringList->model())->clearItems();
     this->_actexportcsv->setEnabled(false);
 
     QtConcurrent::run(this->_stringfinderhelper, &StringFinderHelper::run, this->_hexeditdata, ui->sbMinLength->value(), ui->sbMaxLength->value());
+    */
 }
 
 void StringFinderViewPage::onGotoTriggered()
 {
+    /*
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
     if(selmodel && selmodel->selectedRows().length() == 1)
@@ -95,10 +98,12 @@ void StringFinderViewPage::onGotoTriggered()
         QModelIndex mi = selmodel->selectedRows()[0];
         emit gotoTriggered(this->_stringfindermodel->offset(mi.row()), this->_stringfindermodel->string(mi.row()).length());
     }
+    */
 }
 
 void StringFinderViewPage::onExportCsvTriggered()
 {
+    /*
     QString s = QFileDialog::getSaveFileName(this, "Export Strings...", QString(), "CSV File (*.csv)");
 
     if(!s.isEmpty())
@@ -114,10 +119,12 @@ void StringFinderViewPage::onExportCsvTriggered()
 
         f.close();
     }
+    */
 }
 
 void StringFinderViewPage::onCopyAddressTriggered()
 {
+    /*
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
     if(selmodel && selmodel->selectedRows().length() == 1)
@@ -125,10 +132,12 @@ void StringFinderViewPage::onCopyAddressTriggered()
         QModelIndex mi = selmodel->selectedRows()[0];
         qApp->clipboard()->setText(QString::number(this->_stringfindermodel->offset(mi.row()), 16).toUpper());
     }
+    */
 }
 
 void StringFinderViewPage::onCopyStringTriggered()
 {
+    /*
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
     if(selmodel && selmodel->selectedRows().length() == 1)
@@ -136,18 +145,22 @@ void StringFinderViewPage::onCopyStringTriggered()
         QModelIndex mi = selmodel->selectedRows()[0];
         qApp->clipboard()->setText(this->_stringfindermodel->string(mi.row()));
     }
+    */
 }
 
 void StringFinderViewPage::onFilterChanged()
 {
+    /*
     if(this->_stringfindermodel->visibleStringsCount())
         this->_actexportcsv->setEnabled(true);
     else
         this->_actexportcsv->setEnabled(false);
+    */
 }
 
 void StringFinderViewPage::onStringFinderFinished()
 {
+    /*
     for(int i = 0; i < ui->stringList->model()->columnCount(); i++)
         ui->stringList->resizeColumnToContents(i);
 
@@ -160,18 +173,21 @@ void StringFinderViewPage::onStringFinderFinished()
         this->_actexportcsv->setEnabled(false);
 
     this->_toolbar->elaborationCompleted();
+    */
 }
 
 void StringFinderViewPage::on_stringList_customContextMenuRequested(const QPoint &pos)
 {
+    /*
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
     if(selmodel && selmodel->selectedRows().length() == 1)
         this->_slmenu->exec(ui->stringList->mapToGlobal(pos));
+    */
 }
 
 void StringFinderViewPage::on_stringList_doubleClicked(const QModelIndex &index)
 {
-    if(index.isValid())
-        emit gotoTriggered(this->_stringfindermodel->offset(index.row()), this->_stringfindermodel->string(index.row()).length());
+    //if(index.isValid())
+        //emit gotoTriggered(this->_stringfindermodel->offset(index.row()), this->_stringfindermodel->string(index.row()).length());
 }

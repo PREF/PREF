@@ -6,7 +6,7 @@
 
 # Portable Reverse Engineering Framework
 
-QT       += core gui opengl
+QT += core gui opengl
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -42,7 +42,6 @@ SOURCES += main.cpp\
     views/hexview/disassemblerviewpage/datamapview/datamapview.cpp \
     viewmodels/datamapmodel/datamapmodel.cpp \
     views/hexview/stringfinderviewpage/stringfinderviewpage.cpp \
-    viewmodels/stringfindermodel/stringfindermodel.cpp \
     prefsdk/format/formatlist.cpp \
     formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
@@ -121,7 +120,10 @@ SOURCES += main.cpp\
     qhexedit/qhexeditdatawriter.cpp \
     views/hexview/chartwidget/chartwidget.cpp \
     views/hexview/hexview.cpp \
-    views/hexview/chartwidget/chartworker.cpp
+    views/hexview/chartwidget/chartworker.cpp \
+    views/hexview/stringswidget/stringswidget.cpp \
+    views/hexview/stringswidget/stringsworker.cpp \
+    viewmodels/stringsmodel/stringsmodel.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -151,7 +153,6 @@ HEADERS  += mainwindow.h \
     viewmodels/datamapmodel/datamapmodel.h \
     datatypes/indexkeymap.h \
     views/hexview/stringfinderviewpage/stringfinderviewpage.h \
-    viewmodels/stringfindermodel/stringfindermodel.h \
     prefsdk/format/formatlist.h \
     formatsdialog.h \
     prefsdk/categorymanager.h \
@@ -231,7 +232,10 @@ HEADERS  += mainwindow.h \
     qhexedit/qhexeditdatawriter.h \
     views/hexview/chartwidget/chartwidget.h \
     views/hexview/hexview.h \
-    views/hexview/chartwidget/chartworker.h
+    views/hexview/chartwidget/chartworker.h \
+    views/hexview/stringswidget/stringswidget.h \
+    views/hexview/stringswidget/stringsworker.h \
+    viewmodels/stringsmodel/stringsmodel.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -256,7 +260,8 @@ FORMS    += mainwindow.ui \
     actionwidget/findaction/findaction.ui \
     signaturedatabasedialog/signaturedatabasedialog.ui \
     views/hexview/chartwidget/chartwidget.ui \
-    views/hexview/hexview.ui
+    views/hexview/hexview.ui \
+    views/hexview/stringswidget/stringswidget.ui
 
 RESOURCES += resources.qrc
 
