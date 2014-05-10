@@ -41,13 +41,11 @@ SOURCES += main.cpp\
     views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewprivate.cpp \
     views/hexview/disassemblerviewpage/datamapview/datamapview.cpp \
     viewmodels/datamapmodel/datamapmodel.cpp \
-    views/hexview/stringfinderviewpage/stringfinderviewpage.cpp \
     prefsdk/format/formatlist.cpp \
     formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
     viewmodels/categorymodel/categorymodel.cpp \
-    views/hexview/stringfinderviewpage/stringfinderhelper.cpp \
     views/hexview/disassemblerviewpage/disassemblerhelper.cpp \
     formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
@@ -152,13 +150,11 @@ HEADERS  += mainwindow.h \
     views/hexview/disassemblerviewpage/datamapview/datamapview.h \
     viewmodels/datamapmodel/datamapmodel.h \
     datatypes/indexkeymap.h \
-    views/hexview/stringfinderviewpage/stringfinderviewpage.h \
     prefsdk/format/formatlist.h \
     formatsdialog.h \
     prefsdk/categorymanager.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
     viewmodels/categorymodel/categorymodel.h \
-    views/hexview/stringfinderviewpage/stringfinderhelper.h \
     views/hexview/disassemblerviewpage/disassemblerhelper.h \
     formattreeview/structuremenu.h \
     numericbasemenu.h \
@@ -245,7 +241,6 @@ FORMS    += mainwindow.ui \
     views/hexview/disassemblerviewpage/disassemblerviewpage.ui \
     views/hexview/disassemblerviewpage/crossreferencedialog/crossreferencedialog.ui \
     views/hexview/disassemblerviewpage/datamapview/datamapview.ui \
-    views/hexview/stringfinderviewpage/stringfinderviewpage.ui \
     formatsdialog.ui \
     debugdialog/debugdialog.ui \
     bytecolorswidget/bytecolorswidget.ui \
