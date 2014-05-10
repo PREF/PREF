@@ -182,6 +182,7 @@ void HexView::onLoadFormatClicked()
 
         if(this->loadFormat(format, fd.offset()))
         {
+            ui->tabWidget->setCurrentIndex(2); /* Select Format Page */
             FormatList::addLoadedFormat(this->_formatid, this->_formattree, this->_hexeditdata);
 
             if(format.canDisassemble())
