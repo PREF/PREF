@@ -121,7 +121,10 @@ SOURCES += main.cpp\
     views/hexview/chartwidget/chartworker.cpp \
     views/hexview/stringswidget/stringswidget.cpp \
     views/hexview/stringswidget/stringsworker.cpp \
-    viewmodels/stringsmodel/stringsmodel.cpp
+    viewmodels/stringsmodel/stringsmodel.cpp \
+    views/hexview/signatureswidget/signatureswidget.cpp \
+    viewmodels/signaturesmodel/signaturesmodel.cpp \
+    views/hexview/signatureswidget/signaturesworker.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -230,7 +233,10 @@ HEADERS  += mainwindow.h \
     views/hexview/chartwidget/chartworker.h \
     views/hexview/stringswidget/stringswidget.h \
     views/hexview/stringswidget/stringsworker.h \
-    viewmodels/stringsmodel/stringsmodel.h
+    viewmodels/stringsmodel/stringsmodel.h \
+    views/hexview/signatureswidget/signatureswidget.h \
+    viewmodels/signaturesmodel/signaturesmodel.h \
+    views/hexview/signatureswidget/signaturesworker.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -255,7 +261,8 @@ FORMS    += mainwindow.ui \
     signaturedatabasedialog/signaturedatabasedialog.ui \
     views/hexview/chartwidget/chartwidget.ui \
     views/hexview/hexview.ui \
-    views/hexview/stringswidget/stringswidget.ui
+    views/hexview/stringswidget/stringswidget.ui \
+    views/hexview/signatureswidget/signatureswidget.ui
 
 RESOURCES += resources.qrc
 
