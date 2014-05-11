@@ -238,7 +238,7 @@ void BinaryMap::keyPressEvent(QKeyEvent *event)
     QGLWidget::keyPressEvent(event);
 }
 
-void BinaryMap::mouseDoubleClickEvent(QMouseEvent *event)
+void BinaryMap::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() == Qt::LeftButton)
     {
@@ -251,7 +251,7 @@ void BinaryMap::mouseDoubleClickEvent(QMouseEvent *event)
         }
     }
 
-    QGLWidget::mouseDoubleClickEvent(event);
+    QGLWidget::mousePressEvent(event);
 }
 
 void BinaryMap::mouseMoveEvent(QMouseEvent *event)
