@@ -62,9 +62,8 @@ SOURCES += main.cpp\
     qnumberlineedit.cpp \
     binarymapwidget/entropywidget.cpp \
     binarymapwidget/binarymap.cpp \
-    views/hexview/binaryviewpage/binaryviewpage.cpp \
     views/hexview/binarynavigator/binarynavigator.cpp \
-    views/hexview/binaryviewpage/displaymodewidget.cpp \
+    views/hexview/binaryviewdialog/displaymodewidget.cpp \
     datatypesview/datatypesmenu.cpp \
     qhexedit/qhexedithighlighter.cpp \
     views/abstractview.cpp \
@@ -124,7 +123,8 @@ SOURCES += main.cpp\
     viewmodels/stringsmodel/stringsmodel.cpp \
     views/hexview/signatureswidget/signatureswidget.cpp \
     viewmodels/signaturesmodel/signaturesmodel.cpp \
-    views/hexview/signatureswidget/signaturesworker.cpp
+    views/hexview/signatureswidget/signaturesworker.cpp \
+    views/hexview/binaryviewdialog/binaryviewdialog.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -173,9 +173,8 @@ HEADERS  += mainwindow.h \
     qnumberlineedit.h \
     binarymapwidget/entropywidget.h \
     binarymapwidget/binarymap.h \
-    views/hexview/binaryviewpage/binaryviewpage.h \
     views/hexview/binarynavigator/binarynavigator.h \
-    views/hexview/binaryviewpage/displaymodewidget.h \
+    views/hexview/binaryviewdialog/displaymodewidget.h \
     datatypesview/datatypesmenu.h \
     qhexedit/qhexedithighlighter.h \
     views/abstractview.h \
@@ -236,7 +235,8 @@ HEADERS  += mainwindow.h \
     viewmodels/stringsmodel/stringsmodel.h \
     views/hexview/signatureswidget/signatureswidget.h \
     viewmodels/signaturesmodel/signaturesmodel.h \
-    views/hexview/signatureswidget/signaturesworker.h
+    views/hexview/signatureswidget/signaturesworker.h \
+    views/hexview/binaryviewdialog/binaryviewdialog.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -250,7 +250,7 @@ FORMS    += mainwindow.ui \
     debugdialog/debugdialog.ui \
     bytecolorswidget/bytecolorswidget.ui \
     views/hexview/binaryviewpage/binaryviewpage.ui \
-    views/hexview/binaryviewpage/displaymodewidget.ui \
+    views/hexview/binaryviewdialog/displaymodewidget.ui \
     formatoptionsdialog.ui \
     views/compareview/compareview.ui \
     views/compareview/comparedialog/comparedialog.ui \
@@ -262,7 +262,8 @@ FORMS    += mainwindow.ui \
     views/hexview/chartwidget/chartwidget.ui \
     views/hexview/hexview.ui \
     views/hexview/stringswidget/stringswidget.ui \
-    views/hexview/signatureswidget/signatureswidget.ui
+    views/hexview/signatureswidget/signatureswidget.ui \
+    views/hexview/binaryviewdialog/binaryviewdialog.ui
 
 RESOURCES += resources.qrc
 

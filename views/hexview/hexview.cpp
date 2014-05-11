@@ -1,17 +1,19 @@
 #include "hexview.h"
 #include "ui_hexview.h"
 
-HexView::HexView(QHexEditData* hexeditdata, QLabel *labelinfo, QWidget *parent): AbstractView(labelinfo, parent), ui(new Ui::HexView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::HexView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
-
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
     ui->dataView->setData(hexeditdata);
     ui->hexEdit->setData(hexeditdata);
 
+    this->_binaryviewdialog = new BinaryViewDialog(hexeditdata, this);
+    this->_binaryviewdialog->setWindowTitle(QString("'%1' Binary View").arg(viewname));
+
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
-    this->_formatmodel = new FormatModel(hexeditdata);
+    this->_formatmodel = new FormatModel(hexeditdata, this);
     ui->tvFormat->setModel(this->_formatmodel);
 
     this->createToolBar();
@@ -29,6 +31,8 @@ HexView::HexView(QHexEditData* hexeditdata, QLabel *labelinfo, QWidget *parent):
     connect(ui->tvFormat, SIGNAL(exportAction(FormatElement*)), this, SLOT(exportData(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(importAction(FormatElement*)), this, SLOT(importData(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), ui->hexEdit, SLOT(setCursorPos(qint64)));
+
+    connect(this->_binaryviewdialog, SIGNAL(gotoTriggered(qint64)), ui->hexEdit, SLOT(selectPos(qint64)));
 }
 
 bool HexView::loadFormat(FormatList::Format &format, int64_t baseoffset)
@@ -67,6 +71,7 @@ void HexView::save(QString filename)
 
 HexView::~HexView()
 {
+    FormatList::removeLoadedFormat(this->_hexeditdata);
     delete ui;
 }
 
@@ -80,12 +85,6 @@ void HexView::updateStatusBar()
     QString offset = QString("%1").arg(ui->hexEdit->cursorPos(), ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper();
     QString size = QString("%1").arg(ui->hexEdit->selectionLength(), ui->hexEdit->addressWidth(), 16, QLatin1Char('0')).toUpper();
     this->updateInfoText(QString("<b>Offset:</b> %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Size:</b> %2h").arg(offset, size));
-}
-
-void HexView::closeEvent(QCloseEvent *event)
-{
-    FormatList::removeLoadedFormat(this->_hexeditdata);
-    AbstractView::closeEvent(event);
 }
 
 void HexView::createToolBar()
@@ -109,6 +108,7 @@ void HexView::createToolBar()
 
     connect(this->_tbformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
     connect(this->_actbyteview, SIGNAL(triggered()), this, SLOT(onMapViewTriggered()));
+    connect(this->_actbinaryview, SIGNAL(triggered()), this, SLOT(onBinaryViewTriggered()));
 
     QVBoxLayout* vl = new QVBoxLayout();
     vl->setContentsMargins(0, 0, 0, 0);
@@ -174,6 +174,14 @@ void HexView::onMapViewTriggered()
         ui->binaryNavigator->displayEntropy();
     else
         ui->binaryNavigator->displayDefault();
+}
+
+void HexView::onBinaryViewTriggered()
+{
+    if(this->_binaryviewdialog->isVisible())
+        this->_binaryviewdialog->raise();
+    else
+        this->_binaryviewdialog->show();
 }
 
 void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)

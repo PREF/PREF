@@ -10,12 +10,13 @@
 #include "views/hexview/optionmenu.h"
 #include "datatypesview/datatypesview.h"
 #include "prefsdk/sdkmanager.h"
+#include "binaryviewdialog/binaryviewdialog.h"
 #include "formatsdialog.h"
 
 using namespace PrefSDK;
 
 namespace Ui {
-class HexView;
+    class HexView;
 }
 
 class HexView : public AbstractView
@@ -23,7 +24,7 @@ class HexView : public AbstractView
     Q_OBJECT
     
     public:
-        explicit HexView(QHexEditData* hexeditdata, QLabel* labelinfo, QWidget *parent = 0);
+        explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent = 0);
         bool loadFormat(FormatList::Format &format, int64_t baseoffset);
         void save(QString filename);
         void save();
@@ -32,9 +33,6 @@ class HexView : public AbstractView
     public: /* Overriden Methods */
         virtual bool canSave() const;
         virtual void updateStatusBar();
-
-    protected:
-        virtual void closeEvent(QCloseEvent* event);
 
     private:
         void createToolBar();
@@ -45,6 +43,7 @@ class HexView : public AbstractView
         void updateSelLength(qint64 size);
         void onLoadFormatClicked();
         void onMapViewTriggered();
+        void onBinaryViewTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onSetBackColor(FormatElement *formatelement);
         void onRemoveBackColor(FormatElement *formatelement);
@@ -54,6 +53,7 @@ class HexView : public AbstractView
 
     private:
         Ui::HexView *ui;
+        BinaryViewDialog* _binaryviewdialog;
         FormatList::FormatId _formatid;
         FormatModel* _formatmodel;
         FormatTree* _formattree;

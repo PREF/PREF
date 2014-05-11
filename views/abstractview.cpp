@@ -1,6 +1,6 @@
 #include "abstractview.h"
 
-AbstractView::AbstractView(QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo)
+AbstractView::AbstractView(const QString &viewname, QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo), _viewname(viewname)
 {
 
 }
@@ -8,6 +8,11 @@ AbstractView::AbstractView(QLabel* labelinfo, QWidget *parent): QWidget(parent),
 AbstractView::~AbstractView()
 {
 
+}
+
+const QString &AbstractView::viewName() const
+{
+    return this->_viewname;
 }
 
 void AbstractView::updateInfoText(const QString &s)

@@ -10,8 +10,11 @@ class AbstractView : public QWidget
     Q_OBJECT
 
     public:
-        explicit AbstractView(QLabel *labelinfo, QWidget *parent = 0);
+        explicit AbstractView(const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~AbstractView();
+
+    private:
+        const QString& viewName() const;
 
     protected:
         void updateInfoText(const QString& s);
@@ -22,6 +25,7 @@ class AbstractView : public QWidget
 
     private:
         QLabel* _lblinfo;
+        QString _viewname;
 };
 
 #endif // ABSTRACTVIEW_H

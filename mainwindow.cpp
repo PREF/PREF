@@ -95,8 +95,9 @@ bool MainWindow::closeApplication()
 
 void MainWindow::loadFile(QString file)
 {
-    HexView* fv = new HexView(QHexEditData::fromFile(file), this->_lblinfo);
-    ui->tabWidget->addTab(fv, QFileInfo(file).fileName());
+    QString viewname = QFileInfo(file).fileName();
+    HexView* fv = new HexView(QHexEditData::fromFile(file), viewname, this->_lblinfo, ui->tabWidget);
+    ui->tabWidget->addTab(fv, viewname);
 }
 
 void MainWindow::enableMenuAndActions(bool b)
@@ -198,7 +199,8 @@ void MainWindow::on_actionCompare_triggered()
     {
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
-        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare(), this->_lblinfo), QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName()));
+        QString viewname = QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName());
+        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo, ui->tabWidget), viewname);
     }
 }
 
@@ -238,7 +240,8 @@ void MainWindow::on_actionHex_File_triggered()
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
-        HexView* fv = new HexView(QHexEditData::fromMemory(ba), this->_lblinfo);
-        ui->tabWidget->addTab(fv, QFileInfo(s).fileName());
+        QString viewname = QFileInfo(s).fileName();
+        HexView* fv = new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, ui->tabWidget);
+        ui->tabWidget->addTab(fv, viewname);
     }
 }
