@@ -7,7 +7,7 @@
 #include "prefsdk/sdkmanager.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/processorloader.h"
-#include "views/hexview/disassemblerviewpage/disassemblerview/disassemblerviewdrawer.h"
+#include "views/hexview/disassemblerdialog/disassemblerview/disassemblerviewdrawer.h"
 
 using namespace PrefSDK;
 

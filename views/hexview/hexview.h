@@ -11,6 +11,7 @@
 #include "datatypesview/datatypesview.h"
 #include "prefsdk/sdkmanager.h"
 #include "binaryviewdialog/binaryviewdialog.h"
+#include "disassemblerdialog/disassemblerdialog.h"
 #include "formatsdialog.h"
 
 using namespace PrefSDK;
@@ -44,6 +45,7 @@ class HexView : public AbstractView
         void onLoadFormatClicked();
         void onMapViewTriggered();
         void onBinaryViewTriggered();
+        void onDisassemblerTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onSetBackColor(FormatElement *formatelement);
         void onRemoveBackColor(FormatElement *formatelement);
@@ -54,6 +56,7 @@ class HexView : public AbstractView
     private:
         Ui::HexView *ui;
         BinaryViewDialog* _binaryviewdialog;
+        DisassemblerDialog* _disassemblerdialog;
         FormatList::FormatId _formatid;
         FormatModel* _formatmodel;
         FormatTree* _formattree;
@@ -62,7 +65,7 @@ class HexView : public AbstractView
         QToolButton* _tbformat;
         QAction* _actbyteview;
         QAction* _actbinaryview;
-        QAction* _actdisassemble;
+        QAction* _actdisassembler;
         QColor _signaturecolor;
         bool _signscanenabled;
         bool _entropyenabled;

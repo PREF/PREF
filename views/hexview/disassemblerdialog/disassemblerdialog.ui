@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DisassemblerViewPage</class>
- <widget class="QWidget" name="DisassemblerViewPage">
+ <class>DisassemblerDialog</class>
+ <widget class="QDialog" name="DisassemblerDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>779</width>
-    <height>599</height>
+    <width>847</width>
+    <height>560</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="margin">
-    <number>0</number>
+    <number>4</number>
    </property>
    <item>
     <widget class="QTabWidget" name="tabMain">
      <property name="tabPosition">
-      <enum>QTabWidget::South</enum>
+      <enum>QTabWidget::North</enum>
      </property>
      <property name="tabShape">
       <enum>QTabWidget::Rounded</enum>
@@ -48,6 +48,9 @@
             <width>300</width>
             <height>0</height>
            </size>
+          </property>
+          <property name="tabPosition">
+           <enum>QTabWidget::South</enum>
           </property>
           <property name="currentIndex">
            <number>0</number>
@@ -150,12 +153,12 @@
   <customwidget>
    <class>DisassemblerView</class>
    <extends>QPlainTextEdit</extends>
-   <header>views/hexview/disassemblerviewpage/disassemblerview/disassemblerview.h</header>
+   <header>views/hexview/disassemblerdialog/disassemblerview/disassemblerview.h</header>
   </customwidget>
   <customwidget>
    <class>DataMapView</class>
    <extends>QWidget</extends>
-   <header>views/hexview/disassemblerviewpage/datamapview/datamapview.h</header>
+   <header>views/hexview/disassemblerdialog/datamapview/datamapview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -1,39 +1,44 @@
-#include "disassemblerviewpage.h"
-#include "ui_disassemblerviewpage.h"
+#include "disassemblerdialog.h"
+#include "ui_disassemblerdialog.h"
 
-DisassemblerViewPage::DisassemblerViewPage(QHexEditData *hexeditdata, FormatTree *formattree, QWidget *parent): QWidget(parent), ui(new Ui::DisassemblerViewPage), _formattree(formattree), _hexeditdata(hexeditdata)
+DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, FormatTree *formattree, QWidget *parent): QDialog(parent), ui(new Ui::DisassemblerDialog), _formattree(formattree), _hexeditdata(hexeditdata)
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0, 1);
 
-    this->_toolbar = new ElaborateToolBar();
+    this->_toolbar = new QToolBar();
+    this->_toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     ui->verticalLayout_2->insertWidget(0, this->_toolbar);
     this->createFunctionsMenu();
 
-    this->_toolbar->addSeparator();
     this->_actgoto = this->_toolbar->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
     this->_actgoto->setEnabled(false);
 
-    this->_disasmhelper = new DisassemblerHelper(this);
     this->_functionrefs = new FunctionOffsetModel(ui->tvFunctions);
     this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
 
     ui->tvFunctions->setModel(this->_functionrefs);
     ui->tvStrings->setModel(this->_stringrefs);
 
-    connect(this->_disasmhelper, SIGNAL(error(QString)), DebugDialog::instance(), SLOT(out(QString)), Qt::QueuedConnection);
-    connect(this->_disasmhelper, SIGNAL(finished(quint64)), this, SLOT(displayDisassembly(quint64)), Qt::QueuedConnection);
+    connect(&this->_worker, SIGNAL(error(QString)), this, SLOT(onDisassemblerError(QString)));
+    connect(&this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
 
-    connect(this->_toolbar, SIGNAL(stopTriggered()), this, SLOT(onActStopTriggered()));
-    connect(this->_toolbar, SIGNAL(startTriggered()), this, SLOT(onActDisassembleTriggered()));
+    this->_worker.setData(hexeditdata);
+    this->_worker.start(QThread::LowPriority);
 }
 
-DisassemblerViewPage::~DisassemblerViewPage()
+DisassemblerDialog::~DisassemblerDialog()
 {
     delete ui;
 }
 
-void DisassemblerViewPage::createFunctionsMenu()
+void DisassemblerDialog::closeEvent(QCloseEvent *event)
+{
+    this->hide();
+    event->ignore();
+}
+
+void DisassemblerDialog::createFunctionsMenu()
 {
     this->_functionsmenu = new QMenu();
     QAction* actgoto = this->_functionsmenu->addAction("Goto Address");
@@ -43,20 +48,7 @@ void DisassemblerViewPage::createFunctionsMenu()
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
 
-void DisassemblerViewPage::onActStopTriggered()
-{
-    this->_disasmhelper->stop();
-}
-
-void DisassemblerViewPage::onActDisassembleTriggered()
-{
-    this->_actgoto->setEnabled(false);
-
-    //QtConcurrent::run(this->_disasmhelper, &DisassemblerHelper::run, this->_hexeditdata);
-    this->_disasmhelper->run(this->_hexeditdata);
-}
-
-void DisassemblerViewPage::onFunctionsMenuXRefsTriggered()
+void DisassemblerDialog::onFunctionsMenuXRefsTriggered()
 {
     QItemSelectionModel* model = ui->tvFunctions->selectionModel();
     QModelIndex index = model->currentIndex();
@@ -73,7 +65,13 @@ void DisassemblerViewPage::onFunctionsMenuXRefsTriggered()
     }
 }
 
-void DisassemblerViewPage::selectVA()
+void DisassemblerDialog::onDisassemblerError(QString msg)
+{
+    this->_worker.quit();
+    DebugDialog::instance()->out(msg);
+}
+
+void DisassemblerDialog::selectVA()
 {
     QItemSelectionModel* model = ui->tvFunctions->selectionModel();
 
@@ -89,16 +87,16 @@ void DisassemblerViewPage::selectVA()
     //ui->disassemblyView->gotoVA(func.VirtualAddress);
 }
 
-void DisassemblerViewPage::on_tvFunctions_customContextMenuRequested(const QPoint &pos)
+void DisassemblerDialog::on_tvFunctions_customContextMenuRequested(const QPoint &pos)
 {
     if(ui->tvFunctions->selectionModel())
         this->_functionsmenu->exec(ui->tvFunctions->mapToGlobal(pos));
 }
 
-void DisassemblerViewPage::displayDisassembly(quint64 instructionscount)
+void DisassemblerDialog::displayDisassembly()
 {
     this->_actgoto->setEnabled(true);
-    ui->disassemblyView->setInstructionCount(instructionscount);
+    ui->disassemblyView->setInstructionCount(this->_worker.instructionCount());
     ui->disassemblyView->setData(this->_hexeditdata);
 
     for(int i = 0; i < ui->tvFunctions->model()->columnCount(); i++)
@@ -117,11 +115,9 @@ void DisassemblerViewPage::displayDisassembly(quint64 instructionscount)
     /* DataMap Page */
     //ui->dataMapView->setListing(this->_disasmlisting_old);
     //ui->dataMapView->setHexEditData(this->_hexeditdata);
-
-    this->_toolbar->elaborationCompleted();
 }
 
-void DisassemblerViewPage::on_tvFunctions_doubleClicked(const QModelIndex &index)
+void DisassemblerDialog::on_tvFunctions_doubleClicked(const QModelIndex &index)
 {
     if(index.isValid())
         this->selectVA();

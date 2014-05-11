@@ -1,7 +1,7 @@
 #include "hexview.h"
 #include "ui_hexview.h"
 
-HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::HexView), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::HexView), _disassemblerdialog(nullptr), _formattree(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _signscanenabled(false), _entropyenabled(false)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -100,8 +100,8 @@ void HexView::createToolBar()
     this->_actbyteview = this->_toolbar->addAction(QIcon(":/action_icons/res/entropy.png"), "Map View");
     this->_actbyteview->setCheckable(true);
     this->_actbinaryview = this->_toolbar->addAction(QIcon(":/action_icons/res/binview.png"), "Binary View");
-    this->_actdisassemble = this->_toolbar->addAction(QIcon(":/action_icons/res/cpu.png"), "Disassembler");
-    this->_actdisassemble->setVisible(false);
+    this->_actdisassembler = this->_toolbar->addAction(QIcon(":/action_icons/res/cpu.png"), "Disassembler");
+    this->_actdisassembler->setVisible(false);
 
     this->_toolbar->addSeparator();
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
@@ -109,6 +109,7 @@ void HexView::createToolBar()
     connect(this->_tbformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
     connect(this->_actbyteview, SIGNAL(triggered()), this, SLOT(onMapViewTriggered()));
     connect(this->_actbinaryview, SIGNAL(triggered()), this, SLOT(onBinaryViewTriggered()));
+    connect(this->_actdisassembler, SIGNAL(triggered()), this, SLOT(onDisassemblerTriggered()));
 
     QVBoxLayout* vl = new QVBoxLayout();
     vl->setContentsMargins(0, 0, 0, 0);
@@ -163,7 +164,18 @@ void HexView::onLoadFormatClicked()
         {
             FormatList::addLoadedFormat(this->_formatid, this->_formattree, this->_hexeditdata);
             ui->tabWidget->setCurrentIndex(2); /* Select Format Page */
-            this->_actdisassemble->setVisible(format.canDisassemble());
+
+            if(format.canDisassemble())
+            {
+                this->_disassemblerdialog = new DisassemblerDialog(this->_hexeditdata, this->_formattree, this);
+                this->_disassemblerdialog->setWindowTitle(QString("'%1' Disassembly").arg(this->viewName()));
+                this->_actdisassembler->setVisible(true);
+            }
+            else
+            {
+                this->_actdisassembler->setVisible(false);
+                this->_disassemblerdialog = nullptr;
+            }
         }
     }
 }
@@ -178,10 +190,24 @@ void HexView::onMapViewTriggered()
 
 void HexView::onBinaryViewTriggered()
 {
+    if(!this->_binaryviewdialog)
+        return;
+
     if(this->_binaryviewdialog->isVisible())
         this->_binaryviewdialog->raise();
     else
         this->_binaryviewdialog->show();
+}
+
+void HexView::onDisassemblerTriggered()
+{
+    if(!this->_disassemblerdialog)
+        return;
+
+    if(this->_disassemblerdialog->isVisible())
+        this->_disassemblerdialog->raise();
+    else
+        this->_disassemblerdialog->show();
 }
 
 void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
