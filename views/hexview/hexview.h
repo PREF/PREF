@@ -44,7 +44,7 @@ class HexView : public AbstractView
         void updateOffset(qint64);
         void updateSelLength(qint64 size);
         void onLoadFormatClicked();
-        void onByteViewClicked();
+        void onMapViewTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onSetBackColor(FormatElement *formatelement);
         void onRemoveBackColor(FormatElement *formatelement);
@@ -59,10 +59,10 @@ class HexView : public AbstractView
         FormatTree* _formattree;
         QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;
-        QToolButton* _tbloadformat;
-        QToolButton* _tbscansignature;
-        QToolButton* _tbbyteview;
-        QToolButton* _tbformatoptions;
+        QToolButton* _tbformat;
+        QAction* _actbyteview;
+        QAction* _actbinaryview;
+        QAction* _actdisassemble;
         QColor _signaturecolor;
         bool _signscanenabled;
         bool _entropyenabled;

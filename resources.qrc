@@ -22,6 +22,8 @@
         <file>res/select.png</file>
         <file>res/entropy.png</file>
         <file>res/import.png</file>
+        <file>res/binview.png</file>
+        <file>res/cpu.png</file>
     </qresource>
     <qresource prefix="/app_icons">
         <file>res/app.png</file>
@@ -33,7 +35,6 @@
         <file>res/disassemble.png</file>
         <file>res/formatoptions.png</file>
         <file>res/stop.png</file>
-        <file>res/cpu.png</file>
         <file>res/start.png</file>
         <file>res/cpu_format.png</file>
         <file>res/render.png</file>

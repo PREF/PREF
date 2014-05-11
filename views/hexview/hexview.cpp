@@ -36,8 +36,16 @@ bool HexView::loadFormat(FormatList::Format &format, int64_t baseoffset)
     this->_formattree = SDKManager::parseFormat(format.id(), baseoffset, this->_hexeditdata);
     this->_formatmodel->setFormatTree(this->_formattree);
 
-    this->_tbformatoptions->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, format));
-    this->_tbformatoptions->setEnabled(format.optionsCount() > 0);
+    if(format.optionsCount() > 0)
+    {
+        this->_tbformat->setPopupMode(QToolButton::MenuButtonPopup);
+        this->_tbformat->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, format));
+    }
+    else
+    {
+        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
+        this->_tbformat->setMenu(nullptr);
+    }
 
     for(int i = 0; i < this->_formatmodel->columnCount(); i++)
         ui->tvFormat->resizeColumnToContents(i);
@@ -83,33 +91,24 @@ void HexView::closeEvent(QCloseEvent *event)
 void HexView::createToolBar()
 {
     this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);
-    this->_tbloadformat = new QToolButton();
-    this->_tbformatoptions = new QToolButton();
-    this->_tbbyteview = new QToolButton();
 
-    this->_tbloadformat->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    this->_tbloadformat->setIcon(QIcon(":/misc_icons/res/format.png"));
-    this->_tbloadformat->setText("Formats");
+    this->_tbformat = new QToolButton();
+    this->_tbformat->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    this->_tbformat->setIcon(QIcon(":/misc_icons/res/format.png"));
+    this->_tbformat->setText("Formats");
+    this->_toolbar->addWidget(this->_tbformat);
 
-    this->_tbformatoptions->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    this->_tbformatoptions->setIcon(QIcon(":/misc_icons/res/formatoptions.png"));
-    this->_tbformatoptions->setText("Options");
-    this->_tbformatoptions->setPopupMode(QToolButton::MenuButtonPopup);
-    this->_tbformatoptions->setEnabled(false);
+    this->_actbyteview = this->_toolbar->addAction(QIcon(":/action_icons/res/entropy.png"), "Map View");
+    this->_actbyteview->setCheckable(true);
+    this->_actbinaryview = this->_toolbar->addAction(QIcon(":/action_icons/res/binview.png"), "Binary View");
+    this->_actdisassemble = this->_toolbar->addAction(QIcon(":/action_icons/res/cpu.png"), "Disassembler");
+    this->_actdisassemble->setVisible(false);
 
-    this->_tbbyteview->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    this->_tbbyteview->setIcon(QIcon(":/action_icons/res/entropy.png"));
-    this->_tbbyteview->setText("Map View");
-    this->_tbbyteview->setCheckable(true);
-
-    this->_toolbar->addWidget(this->_tbloadformat);
-    this->_toolbar->addWidget(this->_tbformatoptions);
-    this->_toolbar->addWidget(this->_tbbyteview);
     this->_toolbar->addSeparator();
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
 
-    connect(this->_tbloadformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
-    connect(this->_tbbyteview, SIGNAL(clicked()), this, SLOT(onByteViewClicked()));
+    connect(this->_tbformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
+    connect(this->_actbyteview, SIGNAL(triggered()), this, SLOT(onMapViewTriggered()));
 
     QVBoxLayout* vl = new QVBoxLayout();
     vl->setContentsMargins(0, 0, 0, 0);
@@ -162,20 +161,16 @@ void HexView::onLoadFormatClicked()
 
         if(this->loadFormat(format, fd.offset()))
         {
-            ui->tabWidget->setCurrentIndex(2); /* Select Format Page */
             FormatList::addLoadedFormat(this->_formatid, this->_formattree, this->_hexeditdata);
-
-            if(format.canDisassemble())
-            {
-                //NOTE: Can Disassemble...
-            }
+            ui->tabWidget->setCurrentIndex(2); /* Select Format Page */
+            this->_actdisassemble->setVisible(format.canDisassemble());
         }
     }
 }
 
-void HexView::onByteViewClicked()
+void HexView::onMapViewTriggered()
 {
-    if(this->_tbbyteview->isChecked())
+    if(this->_actbyteview->isChecked())
         ui->binaryNavigator->displayEntropy();
     else
         ui->binaryNavigator->displayDefault();
