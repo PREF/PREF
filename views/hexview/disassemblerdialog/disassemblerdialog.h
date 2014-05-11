@@ -4,13 +4,14 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <lua.hpp>
+#include "prefsdk/sdkmanager.h"
 #include "prefsdk/format/formattree.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/disassembler.h"
 #include "crossreferencedialog/crossreferencedialog.h"
 #include "viewmodels/functionoffsetmodel/functionoffsetmodel.h"
 #include "viewmodels/stringoffsetmodel/stringoffsetmodel.h"
-#include "disassemblerworker.h"
 
 using namespace PrefSDK;
 
@@ -28,6 +29,7 @@ class DisassemblerDialog : public QDialog
 
     private:
         void createFunctionsMenu();
+        void disassemble();
 
     protected:
         virtual void closeEvent(QCloseEvent* event);
@@ -36,13 +38,11 @@ class DisassemblerDialog : public QDialog
         void on_tvFunctions_customContextMenuRequested(const QPoint &pos);
         void on_tvFunctions_doubleClicked(const QModelIndex &index);
         void onFunctionsMenuXRefsTriggered();
-        void onDisassemblerError(QString msg);
-        void displayDisassembly();
+        void displayDisassembly(qint64 instructionscount);
         void selectVA();
 
     private:
         Ui::DisassemblerDialog *ui;
-        DisassemblerWorker _worker;
         FormatTree* _formattree;
         StringOffsetModel* _stringrefs;
         FunctionOffsetModel* _functionrefs;

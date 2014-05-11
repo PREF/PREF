@@ -20,11 +20,7 @@ DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, FormatTree *fo
     ui->tvFunctions->setModel(this->_functionrefs);
     ui->tvStrings->setModel(this->_stringrefs);
 
-    connect(&this->_worker, SIGNAL(error(QString)), this, SLOT(onDisassemblerError(QString)));
-    connect(&this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
-
-    this->_worker.setData(hexeditdata);
-    this->_worker.start(QThread::LowPriority);
+    this->disassemble();
 }
 
 DisassemblerDialog::~DisassemblerDialog()
@@ -48,6 +44,32 @@ void DisassemblerDialog::createFunctionsMenu()
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
 
+void DisassemblerDialog::disassemble()
+{
+    if(!this->_hexeditdata)
+        return;
+
+    qint64 instructionscount = 0;
+
+    lua_State* l = SDKManager::state();
+    lua_State* thread = lua_newthread(l);
+
+    lua_getglobal(thread, "Sdk");
+    lua_getfield(thread, -1, "disassembleFormat");
+    lua_pushlightuserdata(thread, this->_hexeditdata);
+    int res = lua_resume(thread, 1);
+
+    if(res)
+        DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(thread, -1)));
+    else
+        instructionscount = lua_tointeger(thread, -1);
+
+    lua_pop(thread, 2);
+    lua_pop(l, 1);
+
+    this->displayDisassembly(instructionscount);
+}
+
 void DisassemblerDialog::onFunctionsMenuXRefsTriggered()
 {
     QItemSelectionModel* model = ui->tvFunctions->selectionModel();
@@ -63,12 +85,6 @@ void DisassemblerDialog::onFunctionsMenuXRefsTriggered()
         //if(res == CrossReferenceDialog::Accepted)
             //ui->disassemblyView->gotoVA(crd.instruction().VirtualAddress);
     }
-}
-
-void DisassemblerDialog::onDisassemblerError(QString msg)
-{
-    this->_worker.quit();
-    DebugDialog::instance()->out(msg);
 }
 
 void DisassemblerDialog::selectVA()
@@ -93,10 +109,10 @@ void DisassemblerDialog::on_tvFunctions_customContextMenuRequested(const QPoint 
         this->_functionsmenu->exec(ui->tvFunctions->mapToGlobal(pos));
 }
 
-void DisassemblerDialog::displayDisassembly()
+void DisassemblerDialog::displayDisassembly(qint64 instructionscount)
 {
     this->_actgoto->setEnabled(true);
-    ui->disassemblyView->setInstructionCount(this->_worker.instructionCount());
+    ui->disassemblyView->setInstructionCount(instructionscount);
     ui->disassemblyView->setData(this->_hexeditdata);
 
     for(int i = 0; i < ui->tvFunctions->model()->columnCount(); i++)

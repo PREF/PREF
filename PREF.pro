@@ -123,8 +123,7 @@ SOURCES += main.cpp\
     viewmodels/signaturesmodel/signaturesmodel.cpp \
     views/hexview/signatureswidget/signaturesworker.cpp \
     views/hexview/binaryviewdialog/binaryviewdialog.cpp \
-    views/hexview/disassemblerdialog/disassemblerdialog.cpp \
-    views/hexview/disassemblerdialog/disassemblerworker.cpp
+    views/hexview/disassemblerdialog/disassemblerdialog.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -237,8 +236,7 @@ HEADERS  += mainwindow.h \
     viewmodels/signaturesmodel/signaturesmodel.h \
     views/hexview/signatureswidget/signaturesworker.h \
     views/hexview/binaryviewdialog/binaryviewdialog.h \
-    views/hexview/disassemblerdialog/disassemblerdialog.h \
-    views/hexview/disassemblerdialog/disassemblerworker.h
+    views/hexview/disassemblerdialog/disassemblerdialog.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
