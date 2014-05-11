@@ -36,13 +36,10 @@ void StringsWidget::createStringListActions()
 {
     this->_slmenu = new QMenu(this);
 
-    this->_actgoto = this->_slmenu->addAction("Goto");
-    this->_slmenu->addSeparator();
     this->_actcopy = this->_slmenu->addAction("Copy");
     this->_actcopyoffset = this->_slmenu->addAction("Copy Offset");
     this->_actcopystring = this->_slmenu->addAction("Copy String");
 
-    connect(this->_actgoto, SIGNAL(triggered()), this, SLOT(onGotoTriggered()));
     connect(this->_actcopy, SIGNAL(triggered()), this, SLOT(onCopyTriggered()));
     connect(this->_actcopystring, SIGNAL(triggered()), this, SLOT(onCopyStringTriggered()));
     connect(this->_actcopyoffset, SIGNAL(triggered()), this, SLOT(onCopyOffsetTriggered()));
@@ -72,18 +69,6 @@ QModelIndex StringsWidget::search(StringsModel::SearchDirection direction)
 void StringsWidget::onStringsWorkerFinished()
 {
     this->_stringsmodel->setData(this->_worker.offsetList(), this->_worker.strings());
-}
-
-void StringsWidget::onGotoTriggered()
-{
-    QItemSelectionModel* selmodel = ui->stringList->selectionModel();
-
-    if(selmodel && selmodel->selectedRows().length() == 1)
-    {
-        QModelIndex mi = selmodel->selectedRows()[0];
-        StringsModel::StringRange range = this->_stringsmodel->range(mi.row());
-        emit gotoTriggered(range.first, range.second);
-    }
 }
 
 void StringsWidget::onCopyTriggered()

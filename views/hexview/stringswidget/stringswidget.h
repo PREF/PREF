@@ -27,7 +27,6 @@ class StringsWidget : public QWidget
 
     private slots:
         void onStringsWorkerFinished();
-        void onGotoTriggered();
         void onCopyTriggered();
         void onCopyOffsetTriggered();
         void onCopyStringTriggered();
