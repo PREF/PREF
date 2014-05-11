@@ -30,3 +30,13 @@ void SignaturesWidget::onSignaturesWorkerFinished()
 {
     this->_signaturesmodel->setData(this->_worker.offsetList(), this->_worker.signatures());
 }
+
+void SignaturesWidget::on_signaturesTree_doubleClicked(const QModelIndex &index)
+{
+    if(!index.isValid())
+        return;
+
+    qint64 offset = this->_signaturesmodel->signatureOffset(index.row());
+    qint64 length = this->_signaturesmodel->signatureLength(index.row());
+    emit gotoTriggered(offset, length);
+}

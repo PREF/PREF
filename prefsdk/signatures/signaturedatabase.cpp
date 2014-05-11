@@ -306,41 +306,6 @@ namespace PrefSDK
         }
     }
 
-    bool SignatureDatabase::canContinue(uchar b, qint64 depth)
-    {
-        SQLiteStatement s(SignatureDatabase::database()->_signaturedb, "SELECT COUNT(SignatureID) FROM DecisionTable WHERE Byte=? AND Depth=?");
-        s.bind(1, static_cast<int>(b));
-        s.bind(2, depth);
-        s.step();
-
-        return s.count() > 0;
-    }
-
-    bool SignatureDatabase::isSignatureValid(const QByteArray ba, qint64 sigid)
-    {
-        SQLiteStatement s1(SignatureDatabase::database()->_signaturedb, "SELECT MaxDepth FROM SignatureTable WHERE SignatureID=?");
-        s1.bind(1, sigid);
-        s1.step();
-
-        qint64 maxdepth = static_cast<qint64>(s1.column(0).integer64());
-
-        if(ba.length() != maxdepth)
-            return false;
-
-        for(qint64 i = 0; i < maxdepth; i++)
-        {
-            SQLiteStatement s2(SignatureDatabase::database()->_signaturedb, "SELECT Byte FROM SignatureData WHERE SignatureID=? AND Depth=?");
-            s2.bind(1, sigid);
-            s2.bind(2, i);
-            s2.step();
-
-            if(static_cast<uchar>(ba.at(i)) != static_cast<uchar>(s2.column(0).integer()))
-                return false;
-        }
-
-        return true;
-    }
-
     uchar SignatureDatabase::majorVersion()
     {
         return (this->queryVersion() & 0xFF00) >> 8;
@@ -420,25 +385,16 @@ namespace PrefSDK
         return ba;
     }
 
-    bool SignatureDatabase::step(uchar b, qint64& depth, qint64& sigid, QByteArray& foundsig)
+    bool SignatureDatabase::step(qint64 depth, uchar b, qint64& sigid)
     {
-        sigid = -1;
-
-        SQLiteStatement s(SignatureDatabase::database()->_signaturedb, "SELECT COUNT(SignatureID), SignatureID, Byte FROM DecisionTable WHERE Byte=? AND Depth=?");
+        SQLiteStatement s(SignatureDatabase::database()->_signaturedb, "SELECT COUNT(SignatureID), SignatureID FROM DecisionTable WHERE Byte=? AND Depth=?");
         s.bind(1, static_cast<int>(b));
         s.bind(2, depth);
         s.step();
 
         if(s.count())
-        {
-            depth++;
             sigid = static_cast<qint64>(s.column(1).integer64());
-            foundsig.append(static_cast<uchar>(s.column(2).integer()));
 
-            if(sigid == -1)
-                return true;
-        }
-
-        return false;
+        return s.count() > 0;
     }
 }

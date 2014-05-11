@@ -25,7 +25,6 @@ class HexView : public AbstractView
     public:
         explicit HexView(QHexEditData* hexeditdata, QLabel* labelinfo, QWidget *parent = 0);
         bool loadFormat(FormatList::Format &format, int64_t baseoffset);
-        void scanSignatures(bool canscan);
         void save(QString filename);
         void save();
         ~HexView();
@@ -45,7 +44,6 @@ class HexView : public AbstractView
         void updateOffset(qint64);
         void updateSelLength(qint64 size);
         void onLoadFormatClicked();
-        void onSignatureScannerClicked();
         void onByteViewClicked();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onSetBackColor(FormatElement *formatelement);
@@ -53,7 +51,6 @@ class HexView : public AbstractView
         void onFormatObjectSelected(FormatElement* formatelement);
         void exportData(FormatElement* formatelement);
         void importData(FormatElement *formatelement);
-        void scanSignatures();
 
     private:
         Ui::HexView *ui;

@@ -24,6 +24,10 @@ class SignaturesWidget : public QWidget
 
     private slots:
         void onSignaturesWorkerFinished();
+        void on_signaturesTree_doubleClicked(const QModelIndex &index);
+
+    signals:
+        void gotoTriggered(qint64 offset, qint64 length);
 
     private:
         Ui::SignaturesWidget *ui;

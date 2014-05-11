@@ -22,7 +22,6 @@ HexView::HexView(QHexEditData* hexeditdata, QLabel *labelinfo, QWidget *parent):
     connect(ui->hexEdit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateSelLength(qint64)));
     connect(ui->hexEdit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onHexEditCustomContextMenuRequested(QPoint)));
     connect(ui->hexEdit, SIGNAL(verticalScrollBarValueChanged(int)), ui->binaryNavigator, SLOT(renderMap(int)));
-    connect(ui->hexEdit, SIGNAL(visibleLinesChanged()), this, SLOT(scanSignatures()));
 
     connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(removeBackColor(FormatElement*)), this, SLOT(onRemoveBackColor(FormatElement*)));
@@ -44,19 +43,6 @@ bool HexView::loadFormat(FormatList::Format &format, int64_t baseoffset)
         ui->tvFormat->resizeColumnToContents(i);
 
     return !this->_formattree->isEmpty();
-}
-
-void HexView::scanSignatures(bool canscan)
-{
-    this->_signscanenabled = canscan;
-
-    if(this->_signscanenabled)
-        this->scanSignatures();
-    else
-    {
-        ui->hexEdit->clearHighlight();
-        ui->hexEdit->clearComments();
-    }
 }
 
 void HexView::save()
@@ -100,7 +86,6 @@ void HexView::createToolBar()
     this->_tbloadformat = new QToolButton();
     this->_tbformatoptions = new QToolButton();
     this->_tbbyteview = new QToolButton();
-    this->_tbscansignature = new QToolButton();
 
     this->_tbloadformat->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->_tbloadformat->setIcon(QIcon(":/misc_icons/res/format.png"));
@@ -117,21 +102,14 @@ void HexView::createToolBar()
     this->_tbbyteview->setText("Map View");
     this->_tbbyteview->setCheckable(true);
 
-    this->_tbscansignature->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    this->_tbscansignature->setIcon(QIcon(":/misc_icons/res/signature.png"));
-    this->_tbscansignature->setText("Signatures");
-    this->_tbscansignature->setCheckable(true);
-
     this->_toolbar->addWidget(this->_tbloadformat);
     this->_toolbar->addWidget(this->_tbformatoptions);
     this->_toolbar->addWidget(this->_tbbyteview);
-    this->_toolbar->addWidget(this->_tbscansignature);
     this->_toolbar->addSeparator();
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
 
     connect(this->_tbloadformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
     connect(this->_tbbyteview, SIGNAL(clicked()), this, SLOT(onByteViewClicked()));
-    connect(this->_tbscansignature, SIGNAL(clicked()), this, SLOT(onSignatureScannerClicked()));
 
     QVBoxLayout* vl = new QVBoxLayout();
     vl->setContentsMargins(0, 0, 0, 0);
@@ -148,6 +126,7 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     ui->signaturesWidget->scan(hexeditdata);
 
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
+    connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
 }
 
 void HexView::updateOffset(qint64)
@@ -192,11 +171,6 @@ void HexView::onLoadFormatClicked()
             }
         }
     }
-}
-
-void HexView::onSignatureScannerClicked()
-{
-    this->scanSignatures(this->_tbscansignature->isChecked());
 }
 
 void HexView::onByteViewClicked()
@@ -264,58 +238,5 @@ void HexView::importData(FormatElement *formatelement)
             QHexEditDataWriter writer(this->_hexeditdata);
             writer.replace(offset, size, ba);
         }
-    }
-}
-
-void HexView::scanSignatures()
-{
-    if(!this->_signscanenabled)
-        return;
-
-    QByteArray foundsig;
-    QHexEditDataReader reader(this->_hexeditdata);
-    qint64 sigid, depth = 0, offset = ui->hexEdit->visibleStartOffset(), endoffset = ui->hexEdit->visibleEndOffset();
-
-    while(offset <= endoffset)
-    {
-        bool stepdone = SignatureDatabase::database()->step(reader.at(offset), depth, sigid, foundsig);
-
-        /* We have found a good byte, check if it is a dead path */
-        if(stepdone && !SignatureDatabase::database()->canContinue(reader.at(offset + 1), depth))
-        {
-            depth = 0;
-            foundsig.clear();
-            offset++;
-            continue;
-        }
-
-        /* We have completed a path, verify depth and if it is valid, highlight it in QHexEdit */
-        if(!stepdone && (depth > 0) && (offset < endoffset) && !SignatureDatabase::database()->canContinue(reader.at(offset + 1), depth))
-        {
-            /* Check False Positives: ignore it and continue the analysis */
-            if(depth != SignatureDatabase::database()->signatureMaxDepth(sigid) || !SignatureDatabase::database()->isSignatureValid(foundsig, sigid))
-            {
-                depth = 0;
-                foundsig.clear();
-                offset += depth;
-                continue;
-            }
-
-            qint64 olddepth = depth;
-            depth = 0;
-
-            if(olddepth > 1)
-            {
-                qint64 startoffset = (offset - olddepth) + 1;
-
-                ui->hexEdit->highlightBackground(startoffset, offset, this->_signaturecolor);
-                ui->hexEdit->commentRange(startoffset, offset, SignatureDatabase::database()->signatureName(sigid));
-
-                offset += olddepth;
-                continue;
-            }
-        }
-
-        offset++;
     }
 }

@@ -12,9 +12,14 @@ void SignaturesModel::setData(const SignaturesModel::OffsetList &offsetlist, con
     this->endInsertRows();
 }
 
-qint64 SignaturesModel::offset(int i) const
+qint64 SignaturesModel::signatureOffset(int i) const
 {
     return this->_offsetlist[i];
+}
+
+qint64 SignaturesModel::signatureLength(int i) const
+{
+    return this->_signatures[this->_offsetlist[i]].first;
 }
 
 QString SignaturesModel::signatureName(int i) const

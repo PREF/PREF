@@ -35,9 +35,7 @@ namespace PrefSDK
             QByteArray signaturePattern(qint64 id);
 
         public:
-            bool step(uchar b, qint64& depth, qint64 &sigid, QByteArray &foundsig);
-            bool canContinue(uchar b, qint64 depth);
-            bool isSignatureValid(const QByteArray ba, qint64 sigid);
+            bool step(qint64 depth, uchar b, qint64 &sigid);
             void updateDB(const QString& name, qint64 samples, const QByteArray &sp);
             void updateName(qint64 primarykey, const QString& newname);
             void removeSignature(qint64 id);

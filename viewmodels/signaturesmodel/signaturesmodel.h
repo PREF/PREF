@@ -16,7 +16,8 @@ class SignaturesModel : public QAbstractItemModel
     public:
         explicit SignaturesModel(QObject *parent = 0);
         void setData(const SignaturesModel::OffsetList& offsetlist, const SignaturesModel::SignatureMap& signatures);
-        qint64 offset(int i) const;
+        qint64 signatureOffset(int i) const;
+        qint64 signatureLength(int i) const;
         QString signatureName(int i) const;
 
     public: /* Overriden Methods */
