@@ -18,7 +18,7 @@ class CompareWorker : public QThread
         const CompareWorker::OffsetList& offsetList() const;
         const CompareWorker::DifferenceMap& differences() const;
 
-    public:
+    protected:
         virtual void run();
 
     private:
