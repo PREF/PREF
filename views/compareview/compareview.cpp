@@ -5,8 +5,14 @@ CompareView::CompareView(QString leftfile, QString rightfile, const QString& vie
 {
     ui->setupUi(this);
 
+    QList<int> l;
+    l.append(this->width() / 2);
+    l.append(this->width() / 2);
+
+    ui->hSplitter->setSizes(l);
+    ui->vSplitter->setStretchFactor(0, 1);
+
     this->_diffcolor = QColor(0xFF, 0xD5, 0xD5);
-    this->_samecolor = QColor(0xBF, 0xFF, 0xD0);
     this->_lefthexeditdata = QHexEditData::fromFile(leftfile);
     this->_righthexeditdata = QHexEditData::fromFile(rightfile);
 
@@ -17,6 +23,11 @@ CompareView::CompareView(QString leftfile, QString rightfile, const QString& vie
     ui->hexEditRight->setData(this->_righthexeditdata);
     ui->hexEditRight->setReadOnly(true);
 
+    this->_comparemodel = new CompareModel(ui->diffList);
+    ui->diffList->setModel(this->_comparemodel);
+
+    this->_worker.setData(this->_lefthexeditdata, this->_righthexeditdata);
+
     this->createToolbar(ui->hexEditLeft, ui->tbContainerLeft, ui->actionWidgetLeft);
     this->createToolbar(ui->hexEditRight, ui->tbContainerRight, ui->actionWidgetRight);
 
@@ -26,13 +37,14 @@ CompareView::CompareView(QString leftfile, QString rightfile, const QString& vie
     connect(ui->hexEditLeft, SIGNAL(verticalScrollBarValueChanged(int)), ui->hexEditRight, SLOT(setVerticalScrollBarValue(int)));
     connect(ui->hexEditRight, SIGNAL(positionChanged(qint64)), this, SLOT(updateRightInfo(qint64)));
     connect(ui->hexEditRight, SIGNAL(verticalScrollBarValueChanged(int)), ui->hexEditLeft, SLOT(setVerticalScrollBarValue(int)));
+    connect(&this->_worker, SIGNAL(finished()), this, SLOT(onCompareWorkerFinished()));
 
     if(this->_lefthexeditdata->length() >= this->_righthexeditdata->length())
-        connect(ui->hexEditLeft, SIGNAL(visibleLinesChanged()), this, SLOT(compare()));
+        connect(ui->hexEditLeft, SIGNAL(visibleLinesChanged()), this, SLOT(highlightDifferences()));
     else
-        connect(ui->hexEditRight, SIGNAL(visibleLinesChanged()), this, SLOT(compare()));
+        connect(ui->hexEditRight, SIGNAL(visibleLinesChanged()), this, SLOT(highlightDifferences()));
 
-    this->compare();
+    this->_worker.start(QThread::LowPriority);
 }
 
 CompareView::~CompareView()
@@ -40,56 +52,13 @@ CompareView::~CompareView()
     delete ui;
 }
 
-void CompareView::compare()
+void CompareView::onCompareWorkerFinished()
 {
-    qint64 start = qMin(ui->hexEditLeft->visibleStartOffset(), ui->hexEditRight->visibleStartOffset()), i = start;
-    qint64 end = qMax(ui->hexEditLeft->visibleEndOffset(), ui->hexEditRight->visibleEndOffset());
-    QHexEditDataReader leftreader(this->_lefthexeditdata);
-    QHexEditDataReader rightreader(this->_righthexeditdata);
+    this->_offsetlist = this->_worker.offsetList();
+    this->_differencemap = this->_worker.differences();
 
-    while(i < end)
-    {
-        if((i >= this->_lefthexeditdata->length()) || (i >= this->_righthexeditdata->length()))
-        {
-            if(i >= this->_righthexeditdata->length())
-                ui->hexEditLeft->highlightBackground(i, end, this->_diffcolor);
-            else
-                ui->hexEditRight->highlightBackground(i, end, this->_diffcolor);
-
-            break;
-        }
-
-        if(!leftreader.at(i) && !rightreader.at(i))
-        {
-            i++;
-            continue;
-        }
-
-        if(leftreader.at(i) == rightreader.at(i))
-        {
-            qint64 s = i;
-
-            while(((i < this->_lefthexeditdata->length()) && (i < this->_righthexeditdata->length())) && (leftreader.at(i) == rightreader.at(i)))
-                i++;
-
-            ui->hexEditLeft->highlightBackground(s, i - 1, this->_samecolor);
-            ui->hexEditRight->highlightBackground(s, i - 1, this->_samecolor);
-            continue;
-        }
-        else if(leftreader.at(i) != rightreader.at(i))
-        {
-            qint64 s = i;
-
-            while(((i < this->_lefthexeditdata->length()) && (i < this->_righthexeditdata->length())) && (leftreader.at(i) != rightreader.at(i)))
-                i++;
-
-            ui->hexEditLeft->highlightBackground(s, i - 1, this->_diffcolor);
-            ui->hexEditRight->highlightBackground(s, i - 1, this->_diffcolor);
-            continue;
-        }
-
-        i++;
-    }
+    this->_comparemodel->setData(this->_worker.offsetList(), this->_worker.differences());
+    this->highlightDifferences();
 }
 
 void CompareView::updateLeftInfo(qint64)
@@ -100,6 +69,29 @@ void CompareView::updateLeftInfo(qint64)
 void CompareView::updateRightInfo(qint64)
 {
     this->updateStatusBar();
+}
+
+void CompareView::highlightDifferences()
+{
+    if(this->_offsetlist.isEmpty())
+        return;
+
+    QHexEdit* hexedit = ((this->_lefthexeditdata->length() >= this->_righthexeditdata->length()) ? ui->hexEditLeft : ui->hexEditRight);
+    qint64 offset = hexedit->visibleStartOffset(), endoffset = hexedit->visibleEndOffset();
+
+    while(offset <= endoffset)
+    {
+        if(!this->_differencemap.contains(offset))
+        {
+            offset++;
+            continue;
+        }
+
+        qint64 diffend = this->_differencemap[offset];
+        ui->hexEditLeft->highlightBackground(offset, diffend, this->_diffcolor);
+        ui->hexEditRight->highlightBackground(offset, diffend, this->_diffcolor);
+        offset = diffend + 1;
+    }
 }
 
 void CompareView::createToolbar(QHexEdit* hexedit, QWidget *tbcontainer, ActionWidget* actionwidget)

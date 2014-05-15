@@ -5,9 +5,11 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
-#include "views/abstractview.h"
 #include "actionwidget/actiontoolbar.h"
 #include "prefsdk/sdkmanager.h"
+#include "views/abstractview.h"
+#include "viewmodels/comparemodel/comparemodel.h"
+#include "compareworker.h"
 
 using namespace PrefSDK;
 
@@ -24,9 +26,10 @@ class CompareView : public AbstractView
         ~CompareView();
 
     private slots:
-        void compare();
+        void onCompareWorkerFinished();
         void updateLeftInfo(qint64);
         void updateRightInfo(qint64);
+        void highlightDifferences();
 
     private:
         void createToolbar(QHexEdit *hexedit, QWidget* tbcontainer, ActionWidget *actionwidget);
@@ -37,10 +40,13 @@ class CompareView : public AbstractView
 
     private:
         Ui::CompareView *ui;
+        CompareWorker _worker;
+        CompareWorker::OffsetList _offsetlist;
+        CompareWorker::DifferenceMap _differencemap;
+        CompareModel* _comparemodel;
         QHexEditData* _lefthexeditdata;
         QHexEditData* _righthexeditdata;
         QColor _diffcolor;
-        QColor _samecolor;
 };
 
 #endif // COMPAREVIEW_H
