@@ -117,3 +117,15 @@ void CompareView::updateStatusBar()
     QString rightoffset = QString("%1").arg(ui->hexEditRight->cursorPos(), ui->hexEditRight->addressWidth(), 16, QLatin1Char('0')).toUpper();
     this->updateInfoText(QString("<b>Left Offset</b>: %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Right Offset</b>: %2h").arg(leftoffset, rightoffset));
 }
+
+void CompareView::on_diffList_doubleClicked(const QModelIndex &index)
+{
+    if(!index.isValid())
+        return;
+
+    qint64 startoffset = this->_offsetlist[index.row()];
+    qint64 endoffset = this->_differencemap[startoffset];
+
+    ui->hexEditLeft->setSelection(startoffset, endoffset);
+    ui->hexEditRight->setSelection(startoffset, endoffset);
+}

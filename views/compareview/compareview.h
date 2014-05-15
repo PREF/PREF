@@ -31,7 +31,9 @@ class CompareView : public AbstractView
         void updateRightInfo(qint64);
         void highlightDifferences();
 
-    private:
+        void on_diffList_doubleClicked(const QModelIndex &index);
+
+private:
         void createToolbar(QHexEdit *hexedit, QWidget* tbcontainer, ActionWidget *actionwidget);
 
     public: /* Overriden Methods */
