@@ -4,8 +4,9 @@
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
+#include "views/hexview/worker.h"
 
-class StringsWorker : public QThread
+class StringsWorker : public Worker
 {
     Q_OBJECT
 

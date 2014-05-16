@@ -4,10 +4,11 @@
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/math.h"
+#include "views/hexview/worker.h"
 
 using namespace PrefSDK;
 
-class ChartWorker : public QThread
+class ChartWorker : public Worker
 {
     Q_OBJECT
 

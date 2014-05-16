@@ -126,7 +126,8 @@ SOURCES += main.cpp\
     views/hexview/disassemblerdialog/disassemblerdialog.cpp \
     views/compareview/compareworker.cpp \
     viewmodels/comparemodel/comparemodel.cpp \
-    views/hexview/workertab.cpp
+    views/hexview/workertab.cpp \
+    views/hexview/worker.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -242,7 +243,8 @@ HEADERS  += mainwindow.h \
     views/hexview/disassemblerdialog/disassemblerdialog.h \
     views/compareview/compareworker.h \
     viewmodels/comparemodel/comparemodel.h \
-    views/hexview/workertab.h
+    views/hexview/workertab.h \
+    views/hexview/worker.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

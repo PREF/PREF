@@ -5,10 +5,11 @@
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/signatures/signaturedatabase.h"
+#include "views/hexview/worker.h"
 
 using namespace PrefSDK;
 
-class SignaturesWorker : public QThread
+class SignaturesWorker : public Worker
 {
     Q_OBJECT
 

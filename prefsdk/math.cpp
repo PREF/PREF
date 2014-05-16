@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size)
+    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size, bool *cancontinue)
     {
         OccurrenceList occlist;
 
@@ -20,6 +20,9 @@ namespace PrefSDK
 
         for(qint64 i = start; i < start + size; i++)
         {
+            if(cancontinue && ((*cancontinue) == false))
+                return OccurrenceList();
+
             if(i >= static_cast<uint>(hexeditdata->length()))
                 break;
 

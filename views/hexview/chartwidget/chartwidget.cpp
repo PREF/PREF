@@ -33,7 +33,7 @@ ChartWidget::~ChartWidget()
 {
     if(this->_worker.isRunning())
     {
-        this->_worker.quit();
+        this->_worker.abort();
         this->_worker.wait();
     }
 

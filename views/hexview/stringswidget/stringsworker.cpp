@@ -3,7 +3,7 @@
 const qint64 StringsWorker::MIN_LENGTH = 4;
 const qint64 StringsWorker::MAX_LENGTH = 256;
 
-StringsWorker::StringsWorker(QObject *parent): QThread(parent), _hexeditdata(nullptr)
+StringsWorker::StringsWorker(QObject *parent): Worker(parent), _hexeditdata(nullptr)
 {
 }
 
@@ -35,7 +35,7 @@ void StringsWorker::run()
     qint64 len = 0;
     QHexEditDataReader reader(this->_hexeditdata);
 
-    for(qint64 i = 0; i < this->_hexeditdata->length(); i++)
+    for(qint64 i = 0; this->_cancontinue && (i < this->_hexeditdata->length()); i++)
     {
         uchar ch = reader.at(i);
 

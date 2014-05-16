@@ -25,6 +25,12 @@ void SignaturesWidget::scan(QHexEditData *hexeditdata)
 
 SignaturesWidget::~SignaturesWidget()
 {
+    if(this->_worker.isRunning())
+    {
+        this->_worker.abort();
+        this->_worker.wait();
+    }
+
     delete ui;
 }
 

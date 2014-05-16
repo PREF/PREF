@@ -31,6 +31,12 @@ void StringsWidget::scan(QHexEditData *hexeditdata)
 
 StringsWidget::~StringsWidget()
 {
+    if(this->_worker.isRunning())
+    {
+        this->_worker.abort();
+        this->_worker.wait();
+    }
+
     delete ui;
 }
 

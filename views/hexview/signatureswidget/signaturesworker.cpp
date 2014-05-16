@@ -1,6 +1,6 @@
 #include "signaturesworker.h"
 
-SignaturesWorker::SignaturesWorker(QObject *parent): QThread(parent), _hexeditdata(nullptr)
+SignaturesWorker::SignaturesWorker(QObject *parent): Worker(parent), _hexeditdata(nullptr)
 {
 }
 
@@ -114,7 +114,7 @@ void SignaturesWorker::run()
     QHexEditDataReader reader(this->_hexeditdata);
     qint64 lastsigid = -1, depth = 0, i = 0;
 
-    while(i < this->_hexeditdata->length())
+    while(this->_cancontinue && i < this->_hexeditdata->length())
     {
         uchar b = reader.at(i);
         bool stepdone = this->step(depth, b, lastsigid);
