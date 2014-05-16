@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1043</width>
-    <height>711</height>
+    <width>1041</width>
+    <height>709</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="1">
+  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
    <property name="margin">
     <number>0</number>
    </property>
@@ -90,31 +90,15 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tabChart">
+      <widget class="ChartWidget" name="chartWidget">
        <attribute name="title">
         <string>Chart</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="ChartWidget" name="chartWidget" native="true"/>
-        </item>
-       </layout>
       </widget>
-      <widget class="QWidget" name="tabSignatures">
+      <widget class="SignaturesWidget" name="signaturesWidget">
        <attribute name="title">
         <string>Signatures</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="SignaturesWidget" name="signaturesWidget" native="true"/>
-        </item>
-       </layout>
       </widget>
       <widget class="QWidget" name="tabFormat">
        <attribute name="title">
@@ -169,18 +153,10 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tabStrings">
+      <widget class="StringsWidget" name="stringsWidget">
        <attribute name="title">
         <string>Strings</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="StringsWidget" name="stringsWidget" native="true"/>
-        </item>
-       </layout>
       </widget>
      </widget>
     </widget>

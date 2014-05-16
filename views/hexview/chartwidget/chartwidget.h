@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
+#include "views/hexview/workertab.h"
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/bytecolors.h"
 #include "prefsdk/math.h"
@@ -16,7 +17,7 @@ namespace Ui {
 class ChartWidget;
 }
 
-class ChartWidget : public QWidget
+class ChartWidget : public WorkerTab
 {
     Q_OBJECT
 

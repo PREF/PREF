@@ -42,6 +42,8 @@ class HexView : public AbstractView
     private slots:
         void updateOffset(qint64);
         void updateSelLength(qint64 size);
+        void onWorkStarted();
+        void onWorkFinished();
         void onLoadFormatClicked();
         void onMapViewTriggered();
         void onBinaryViewTriggered();

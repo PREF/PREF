@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
+#include "views/hexview/workertab.h"
 #include "viewmodels/signaturesmodel/signaturesmodel.h"
 #include "signaturesworker.h"
 
@@ -13,7 +14,7 @@ namespace Ui {
 class SignaturesWidget;
 }
 
-class SignaturesWidget : public QWidget
+class SignaturesWidget : public WorkerTab
 {
     Q_OBJECT
 

@@ -5,13 +5,14 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "stringsworker.h"
+#include "views/hexview/workertab.h"
 #include "viewmodels/stringsmodel/stringsmodel.h"
 
 namespace Ui {
 class StringsWidget;
 }
 
-class StringsWidget : public QWidget
+class StringsWidget : public WorkerTab
 {
     Q_OBJECT
 

@@ -3,7 +3,7 @@
 
 QMap<uchar, QString> ChartWidget::_nonasciichars;
 
-ChartWidget::ChartWidget(QWidget *parent): QWidget(parent), ui(new Ui::ChartWidget), _hexeditdata(nullptr)
+ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWidget), _hexeditdata(nullptr)
 {
     if(ChartWidget::_nonasciichars.isEmpty())
         ChartWidget::initNonAsciiChars();
@@ -12,7 +12,9 @@ ChartWidget::ChartWidget(QWidget *parent): QWidget(parent), ui(new Ui::ChartWidg
     ui->splitter->setStretchFactor(1, 1);
     this->createListModel();
 
+    connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
     connect(&this->_worker, SIGNAL(finished()), this, SLOT(onElaborationCompleted()));
+    connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
 }
 
 void ChartWidget::plot(QHexEditData *hexeditdata)

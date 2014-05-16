@@ -1,12 +1,14 @@
 #include "stringswidget.h"
 #include "ui_stringswidget.h"
 
-StringsWidget::StringsWidget(QWidget *parent) : QWidget(parent), ui(new Ui::StringsWidget), _hexeditdata(nullptr), _stringsmodel(nullptr)
+StringsWidget::StringsWidget(QWidget *parent) : WorkerTab(parent), ui(new Ui::StringsWidget), _hexeditdata(nullptr), _stringsmodel(nullptr)
 {
     ui->setupUi(this);
     this->createStringListActions();
 
     connect(ui->leSearch, SIGNAL(returnPressed()), this, SLOT(on_tbSearchDown_clicked()));
+    connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
+    connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
 }
 
 void StringsWidget::scan(QHexEditData *hexeditdata)

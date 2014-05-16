@@ -19,6 +19,14 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     this->createToolBar();
     this->inspectData(hexeditdata);
 
+    connect(ui->chartWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+    connect(ui->signaturesWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+    connect(ui->stringsWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+
+    connect(ui->chartWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+    connect(ui->signaturesWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+    connect(ui->stringsWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateSelLength(qint64)));
@@ -237,6 +245,22 @@ void HexView::onFormatObjectSelected(FormatElement *formatelement)
 {
     uint64_t offset = formatelement->offset();
     ui->hexEdit->setSelection(offset, offset + formatelement->size());
+}
+
+void HexView::onWorkStarted()
+{
+    int idx = ui->tabWidget->indexOf(qobject_cast<QWidget*>(this->sender()));
+
+    if(idx != -1)
+        ui->tabWidget->setTabIcon(idx, QIcon(":/misc_icons/res/busy.png"));
+}
+
+void HexView::onWorkFinished()
+{
+    int idx = ui->tabWidget->indexOf(qobject_cast<QWidget*>(this->sender()));
+
+    if(idx != -1)
+        ui->tabWidget->setTabIcon(idx, QIcon());
 }
 
 void HexView::exportData(FormatElement *formatelement)
