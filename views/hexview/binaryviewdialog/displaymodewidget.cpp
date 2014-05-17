@@ -6,7 +6,7 @@ DisplayModeWidget::DisplayModeWidget(QWidget *parent): QWidget(parent), ui(new U
     ui->setupUi(this);
 
     ui->comboBox->addItem("Dot Plot", BinaryMap::DotPlot);
-    ui->comboBox->addItem("Byte Class", BinaryMap::ByteClass);
+    ui->comboBox->addItem("Bytes as Pixel", BinaryMap::BytesAsPixel);
 }
 
 DisplayModeWidget::~DisplayModeWidget()

@@ -2,7 +2,7 @@
 
 const QString BinaryMap::NO_DATA_AVAILABLE = "No Data Available";
 
-BinaryMap::BinaryMap(QWidget *parent): QGLWidget(parent), _displaymode(BinaryMap::None), _hexeditdata(nullptr), _step(0), _start(-1), _end(-1), _width(-1)
+BinaryMap::BinaryMap(QWidget *parent): QGLWidget(parent), _viewmode(BinaryMap::DotPlot), _hexeditdata(nullptr), _step(0), _start(-1), _end(-1), _width(256)
 {
     QFont f("Monospace", qApp->font().pointSize());
     f.setStyleHint(QFont::TypeWriter);
@@ -48,8 +48,6 @@ void BinaryMap::setWidth(int w)
 {
     if(w < 0)
         w = 0;
-    else if(w > this->width())
-        w = this->width();
 
     this->_width = w;
 
@@ -64,7 +62,7 @@ void BinaryMap::setStep(qint64 step)
 
 void BinaryMap::setDisplayMode(BinaryMap::DisplayMode mode)
 {
-    this->_displaymode = mode;
+    this->_viewmode = mode;
 
     if(this->_hexeditdata)
         this->update();
@@ -73,6 +71,7 @@ void BinaryMap::setDisplayMode(BinaryMap::DisplayMode mode)
 void BinaryMap::setData(QHexEditData *hexeditdata)
 {
     this->_hexeditdata = hexeditdata;
+    this->populateViewModes();
 }
 
 qint64 BinaryMap::start()
@@ -90,92 +89,16 @@ qint64 BinaryMap::preferredHeight()
     return qMin((this->end() - this->start()) / this->_width, static_cast<qint64>(this->height()));
 }
 
-QByteArray BinaryMap::data()
-{
-    qint64 s = this->start();
-    qint64 l = qMin(this->_hexeditdata->length(), this->_width * this->preferredHeight());
-
-    QHexEditDataReader reader(this->_hexeditdata);
-    return reader.read(s, l);
-}
-
 qint64 BinaryMap::calcOffset(const QPoint &cursorpos)
 {
-   qint64 offset = -1;
-
-   if(this->_displaymode == BinaryMap::DotPlot)
-       offset = this->calcDotPlotOffset(cursorpos);
-   else if(this->_displaymode == BinaryMap::ByteClass)
-       offset = this->calcByteClassOffset(cursorpos);
-
-   return offset;
+    return this->_viewmodes[this->_viewmode]->offset(QVector2D(cursorpos));
 }
 
-qint64 BinaryMap::calcDotPlotOffset(const QPoint &cursorpos)
+void BinaryMap::populateViewModes()
 {
-    qint64 s = qMin(static_cast<qint64>(500), this->_hexeditdata->length());
-
-    if(cursorpos.x() > s || cursorpos.y() > s)
-        return -1;
-
-    qint64 offset = this->_start + (cursorpos.x() + (cursorpos.y() / s));
-
-    if((offset >= 0) && (offset <= this->_end))
-        return offset;
-
-    return -1;
-}
-
-qint64 BinaryMap::calcByteClassOffset(const QPoint &cursorpos)
-{
-    if(cursorpos.x() > this->_width)
-        return -1;
-
-    qint64 offset = this->_start + (cursorpos.x() + (cursorpos.y() * this->_width));
-
-    if((offset >= 0) && (offset <= this->_end))
-        return offset;
-
-    return -1;
-}
-
-void BinaryMap::renderByteClassMap(QPainter& p)
-{
-    this->_bits = this->data();
-
-    QImage img(reinterpret_cast<const uchar*>(this->_bits.constData()), this->_width, this->preferredHeight(), this->_width, QImage::Format_Indexed8);
-    img.setColorTable(ByteColors::byteClassColorTable());
-    p.drawImage(0, 0, img);
-}
-
-void BinaryMap::renderDotPlotMap(QPainter& p)
-{
-    qint64 s = qMin(static_cast<qint64>(500), this->_hexeditdata->length());
-    QHexEditDataReader reader(this->_hexeditdata);
-
-    QImage img(s, s, QImage::Format_RGB888);
-    img.fill(QColor(Qt::black));
-
-    for(qint64 i = 0; i < s; i++)
-    {
-        if((this->start() + i) >= this->_hexeditdata->length())
-            break;
-
-        uchar ib = reader.at(this->start() + i);
-
-        for(qint64 j = 0; j < s; j++)
-        {
-            if((this->start() + j) >= this->_hexeditdata->length())
-                break;
-
-            uchar jb = reader.at(this->start() + j);
-
-            if(jb == ib)
-                img.setPixel(j, i, qRgb(0, static_cast<uchar>((static_cast<qreal>(jb) * 0.75) + 64), 0));
-        }
-    }
-
-    p.drawImage(0, 0, img);
+    this->_viewmodes.clear();
+    this->_viewmodes[BinaryMap::DotPlot] = new DotPlotViewMode(this->_hexeditdata, this);
+    this->_viewmodes[BinaryMap::BytesAsPixel] = new PixelViewMode(this->_hexeditdata, this);
 }
 
 void BinaryMap::drawNoDataAvailable(QPainter &p)
@@ -279,8 +202,15 @@ void BinaryMap::wheelEvent(QWheelEvent* event)
         if(event->modifiers() == Qt::ShiftModifier)
             this->setEnd(this->_end - (numsteps * this->_step));
 
-        if(this->_displaymode == BinaryMap::ByteClass && (event->modifiers() == Qt::ControlModifier))
-            this->setWidth(this->_width - (numsteps * this->_step));
+        if(this->_viewmode == BinaryMap::BytesAsPixel && (event->modifiers() == Qt::ControlModifier))
+        {
+            qint64 neww = this->_width - (numsteps * this->_step);
+
+            if(neww <= 0)
+                neww = 1;
+
+            this->setWidth(neww);
+        }
     }
 
     QGLWidget::wheelEvent(event);
@@ -288,7 +218,7 @@ void BinaryMap::wheelEvent(QWheelEvent* event)
 
 void BinaryMap::paintEvent(QPaintEvent *)
 {
-    if(this->_start == -1 || this->_end == -1 || this->_width == -1)
+    if(!this->_viewmodes.contains(this->_viewmode) || this->_start == -1 || this->_end == -1 || this->_width == -1)
         return;
 
     QPainter p(this);
@@ -299,22 +229,6 @@ void BinaryMap::paintEvent(QPaintEvent *)
         return;
     }
 
-    if(this->_displaymode != BinaryMap::None)
-    {
-        switch(this->_displaymode)
-        {
-            case BinaryMap::ByteClass:
-                this->renderByteClassMap(p);
-                break;
-
-            case BinaryMap::DotPlot:
-                this->renderDotPlotMap(p);
-                break;
-
-            default:
-                break;
-        }
-
-        this->drawInfo(p);
-    }
+    this->_viewmodes[this->_viewmode]->render(p, this->_start, this->_end, this->_width);
+    this->drawInfo(p);
 }

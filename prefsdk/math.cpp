@@ -2,6 +2,11 @@
 
 namespace PrefSDK
 {
+    qreal logn(qint64 n, qint64 base)
+    {
+        return log(n) / log(base);
+    }
+
     OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size, bool *cancontinue)
     {
         OccurrenceList occlist;

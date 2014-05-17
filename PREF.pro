@@ -127,7 +127,10 @@ SOURCES += main.cpp\
     views/compareview/compareworker.cpp \
     viewmodels/comparemodel/comparemodel.cpp \
     views/hexview/workertab.cpp \
-    views/hexview/worker.cpp
+    views/hexview/worker.cpp \
+    binarymapwidget/viewmodes/abstractviewmode.cpp \
+    binarymapwidget/viewmodes/dotplotviewmode.cpp \
+    binarymapwidget/viewmodes/pixelviewmode.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -244,7 +247,10 @@ HEADERS  += mainwindow.h \
     views/compareview/compareworker.h \
     viewmodels/comparemodel/comparemodel.h \
     views/hexview/workertab.h \
-    views/hexview/worker.h
+    views/hexview/worker.h \
+    binarymapwidget/viewmodes/abstractviewmode.h \
+    binarymapwidget/viewmodes/dotplotviewmode.h \
+    binarymapwidget/viewmodes/pixelviewmode.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

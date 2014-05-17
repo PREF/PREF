@@ -9,6 +9,9 @@
 #include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/math.h"
 #include "prefsdk/bytecolors.h"
+#include "viewmodes/abstractviewmode.h"
+#include "viewmodes/dotplotviewmode.h"
+#include "viewmodes/pixelviewmode.h"
 
 using namespace PrefSDK;
 
@@ -17,7 +20,10 @@ class BinaryMap : public QGLWidget
     Q_OBJECT
 
     public:
-        enum DisplayMode { None, ByteClass, DotPlot };
+        enum DisplayMode { BytesAsPixel, DotPlot };
+
+    private:
+        typedef QHash<BinaryMap::DisplayMode, AbstractViewMode*> ViewMode;
 
     public:
         explicit BinaryMap(QWidget *parent = 0);
@@ -34,12 +40,8 @@ class BinaryMap : public QGLWidget
         qint64 start();
         qint64 end();
         qint64 preferredHeight();
-        QByteArray data();
         qint64 calcOffset(const QPoint &cursorpos);
-        qint64 calcDotPlotOffset(const QPoint& cursorpos);
-        qint64 calcByteClassOffset(const QPoint& cursorpos);
-        void renderByteClassMap(QPainter &p);
-        void renderDotPlotMap(QPainter &p);
+        void populateViewModes();
         void drawNoDataAvailable(QPainter& p);
         void drawInfo(QPainter& p);
 
@@ -60,8 +62,8 @@ class BinaryMap : public QGLWidget
 
     private:
         static const QString NO_DATA_AVAILABLE;
-        QHash<lua_Integer, lua_Integer> _drawedoffset;
-        DisplayMode _displaymode;
+        ViewMode _viewmodes;
+        DisplayMode _viewmode;
         QHexEditData* _hexeditdata;
         QByteArray _bits;
         qint64 _step;
