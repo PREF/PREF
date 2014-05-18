@@ -1,7 +1,7 @@
-#include "datatypesview.h"
-#include "ui_datatypesview.h"
+#include "datatypeswidget.h"
+#include "ui_datatypeswidget.h"
 
-DataTypesView::DataTypesView(QWidget *parent): QWidget(parent), ui(new Ui::DataTypesView)
+DataTypesWidget::DataTypesWidget(QWidget *parent): QWidget(parent), ui(new Ui::DataTypesWidget)
 {
     ui->setupUi(this);
 
@@ -17,28 +17,28 @@ DataTypesView::DataTypesView(QWidget *parent): QWidget(parent), ui(new Ui::DataT
     ui->tvDataTypes->setModel(this->_datatypesmodel);
 }
 
-DataTypesModel *DataTypesView::model()
+DataTypesModel *DataTypesWidget::model()
 {
     return this->_datatypesmodel;
 }
 
-void DataTypesView::setData(QHexEditData* hexeditdata)
+void DataTypesWidget::setData(QHexEditData* hexeditdata)
 {
     this->_datatypesmodel->setData(hexeditdata);
 }
 
-DataTypesView::~DataTypesView()
+DataTypesWidget::~DataTypesWidget()
 {
     delete ui;
 }
 
-void DataTypesView::resizeColumns(QModelIndex, QModelIndex)
+void DataTypesWidget::resizeColumns(QModelIndex, QModelIndex)
 {
     for(int i = 0; i < this->_datatypesmodel->columnCount(); i++)
         ui->tvDataTypes->resizeColumnToContents(i);
 }
 
-void DataTypesView::on_tvDataTypes_customContextMenuRequested(const QPoint &pos)
+void DataTypesWidget::on_tvDataTypes_customContextMenuRequested(const QPoint &pos)
 {
     this->_datatypesmenu->exec(this->mapToGlobal(pos));
 }

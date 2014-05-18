@@ -6,7 +6,7 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
-    ui->dataView->setData(hexeditdata);
+    ui->dataTypesWidget->setData(hexeditdata);
     ui->hexEdit->setData(hexeditdata);
 
     this->_binaryviewdialog = new BinaryViewDialog(hexeditdata, this);
@@ -17,7 +17,7 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     this->createToolBar();
     this->inspectData(hexeditdata);
 
-    connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
+    connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataTypesWidget->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateSelLength(qint64)));
     connect(ui->hexEdit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onHexEditCustomContextMenuRequested(QPoint)));

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DataTypesView</class>
- <widget class="QWidget" name="DataTypesView">
+ <class>DataTypesWidget</class>
+ <widget class="QWidget" name="DataTypesWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>206</width>
-    <height>119</height>
+    <width>204</width>
+    <height>117</height>
    </rect>
   </property>
   <property name="windowTitle">

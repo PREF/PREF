@@ -1,36 +1,36 @@
-#ifndef DATATYPESVIEW_H
-#define DATATYPESVIEW_H
+#ifndef DATATYPESWIDGET_H
+#define DATATYPESWIDGET_H
 
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
 #include "viewmodels/datatypesmodel/datatypesmodel.h"
-#include "datatypesview/datatypesmenu.h"
+#include "datatypesmenu.h"
 
 using namespace PrefSDK;
 
 namespace Ui {
-class DataTypesView;
+class DataTypesWidget;
 }
 
-class DataTypesView : public QWidget
+class DataTypesWidget : public QWidget
 {
     Q_OBJECT
     
     public:
-        explicit DataTypesView(QWidget *parent = 0);
+        explicit DataTypesWidget(QWidget *parent = 0);
         DataTypesModel* model();
         void setData(QHexEditData *hexeditdata);
-        ~DataTypesView();
+        ~DataTypesWidget();
 
     private slots:
         void resizeColumns(QModelIndex, QModelIndex);
         void on_tvDataTypes_customContextMenuRequested(const QPoint &pos);
 
     private:
-        Ui::DataTypesView *ui;
+        Ui::DataTypesWidget *ui;
         DataTypesModel* _datatypesmodel;
         DataTypesMenu* _datatypesmenu;
 };
 
-#endif // DATATYPESVIEW_H
+#endif // DATATYPESWIDGET_H

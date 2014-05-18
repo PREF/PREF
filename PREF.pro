@@ -23,7 +23,7 @@ SOURCES += main.cpp\
     spinboxbaseselector/spinboxbaseselector.cpp \
     spinboxbaseselector/qnumberspinbox.cpp \
     qhexedit/qhexeditdata.cpp \
-    datatypesview/datatypesview.cpp \
+    views/hexview/datatypeswidget/datatypeswidget.cpp \
     views/hexview/formatwidget/formattreeview/formattreeview.cpp \
     prefsdk/sdkmanager.cpp \
     viewmodels/fielddatamodel/fielddatamodel.cpp \
@@ -62,7 +62,7 @@ SOURCES += main.cpp\
     binarymapwidget/binarymap.cpp \
     views/hexview/binarynavigator/binarynavigator.cpp \
     views/hexview/binaryviewdialog/displaymodewidget.cpp \
-    datatypesview/datatypesmenu.cpp \
+    views/hexview/datatypeswidget/datatypesmenu.cpp \
     qhexedit/qhexedithighlighter.cpp \
     views/abstractview.cpp \
     views/compareview/compareview.cpp \
@@ -141,7 +141,7 @@ HEADERS  += mainwindow.h \
     spinboxbaseselector/spinboxbaseselector.h \
     spinboxbaseselector/qnumberspinbox.h \
     qhexedit/qhexeditdata.h \
-    datatypesview/datatypesview.h \
+    views/hexview/datatypeswidget/datatypeswidget.h \
     views/hexview/formatwidget/formattreeview/formattreeview.h \
     prefsdk/sdkmanager.h \
     viewmodels/fielddatamodel/fielddatamodel.h \
@@ -181,7 +181,7 @@ HEADERS  += mainwindow.h \
     binarymapwidget/binarymap.h \
     views/hexview/binarynavigator/binarynavigator.h \
     views/hexview/binaryviewdialog/displaymodewidget.h \
-    datatypesview/datatypesmenu.h \
+    views/hexview/datatypeswidget/datatypesmenu.h \
     qhexedit/qhexedithighlighter.h \
     views/abstractview.h \
     views/compareview/compareview.h \
@@ -256,7 +256,7 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
-    datatypesview/datatypesview.ui \
+    views/hexview/datatypeswidget/datatypeswidget.ui \
     aboutdialog.ui \
     exportdialog.ui \
     views/hexview/disassemblerdialog/crossreferencedialog/crossreferencedialog.ui \

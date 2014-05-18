@@ -8,7 +8,7 @@
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/abstractview.h"
 #include "views/hexview/optionmenu.h"
-#include "datatypesview/datatypesview.h"
+#include "datatypeswidget/datatypeswidget.h"
 #include "prefsdk/sdkmanager.h"
 #include "binaryviewdialog/binaryviewdialog.h"
 #include "disassemblerdialog/disassemblerdialog.h"

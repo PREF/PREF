@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1035</width>
-    <height>703</height>
+    <width>1033</width>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -59,7 +59,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="DataTypesView" name="dataView" native="true">
+         <widget class="DataTypesWidget" name="dataTypesWidget" native="true">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -123,9 +123,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>DataTypesView</class>
+   <class>DataTypesWidget</class>
    <extends>QWidget</extends>
-   <header>datatypesview/datatypesview.h</header>
+   <header>views/hexview/datatypeswidget/datatypeswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
