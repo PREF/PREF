@@ -14,7 +14,7 @@ namespace PrefSDK
         {
             QHexEditDataReader* QHexEditData_createReader(QHexEditData* __this);
             QHexEditDataWriter* QHexEditData_createWriter(QHexEditData* __this);
-            void QHexEditData_copyTo(QHexEditData* __this, QHexEditData* hexeditdata);
+            void QHexEditData_copyTo(QHexEditData* __this, QHexEditData* hexeditdata, qint64 start, qint64 end);
             int64_t QHexEditData_length(QHexEditData* __this);
 
             int64_t QHexEditDataReader_indexOf(QHexEditDataReader* __this, int64_t pos, const char* s);

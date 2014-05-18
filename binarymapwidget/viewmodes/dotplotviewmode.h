@@ -3,6 +3,9 @@
 
 #include "abstractviewmode.h"
 #include "qhexedit/qhexeditdatareader.h"
+#include "prefsdk/bytecolors.h"
+
+using namespace PrefSDK;
 
 class DotPlotViewMode : public AbstractViewMode
 {

@@ -19,15 +19,16 @@ namespace PrefSDK
             return __this->length();
         }
 
-        void QHexEditData_copyTo(QHexEditData *__this, QHexEditData *hexeditdata)
+        void QHexEditData_copyTo(QHexEditData *__this, QHexEditData *hexeditdata, qint64 start, qint64 end)
         {
             QHexEditDataDevice datain(__this);
-            QHexEditDataDevice dataout(__this);
+            QHexEditDataDevice dataout(hexeditdata);
 
             datain.open(QIODevice::ReadOnly);
             dataout.open(QIODevice::WriteOnly);
 
-            dataout.write(datain.readAll());
+            datain.seek(start);
+            dataout.write(datain.read(end - start));
 
             dataout.close();
             datain.close();

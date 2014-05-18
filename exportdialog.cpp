@@ -54,12 +54,12 @@ const QString &ExportDialog::fileName() const
 
 quint64 ExportDialog::startOffset() const
 {
-    return this->_endoffset;
+    return qMin(this->_startoffset, this->_endoffset);
 }
 
 quint64 ExportDialog::endOffset() const
 {
-    return this->_startoffset;
+    return qMax(this->_startoffset, this->_endoffset);
 }
 
 ExportDialog::~ExportDialog()
