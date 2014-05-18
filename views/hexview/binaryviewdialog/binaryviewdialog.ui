@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>770</width>
-    <height>517</height>
+    <width>768</width>
+    <height>515</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -100,21 +100,21 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>SpinBoxBaseSelector</class>
+   <extends>QWidget</extends>
+   <header>spinboxbaseselector/spinboxbaseselector.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>BinaryMap</class>
    <extends>QWidget</extends>
-   <header>binarymapwidget/binarymap.h</header>
+   <header>views/hexview/binaryviewdialog/binarymapwidget/binarymap.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>DisplayModeWidget</class>
    <extends>QWidget</extends>
    <header>views/hexview/binaryviewdialog/displaymodewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>SpinBoxBaseSelector</class>
-   <extends>QWidget</extends>
-   <header>spinboxbaseselector/spinboxbaseselector.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -5,6 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtConcurrent/QtConcurrent>
+#include "views/hexview/bytecolorsdialog/bytecolorsdialog.h"
 #include "views/hexview/workertab.h"
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/bytecolors.h"
@@ -35,6 +36,7 @@ class ChartWidget : public WorkerTab
 
     private slots:
         void onElaborationCompleted();
+        void on_tbHelp_clicked();
 
     private:
         static QMap<uchar, QString> _nonasciichars;

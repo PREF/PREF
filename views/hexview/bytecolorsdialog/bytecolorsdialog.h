@@ -9,19 +9,19 @@
 using namespace PrefSDK;
 
 namespace Ui {
-class ByteColorsWidget;
+class ByteColorsDialog;
 }
 
-class ByteColorsWidget : public QWidget
+class ByteColorsDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        explicit ByteColorsWidget(QWidget *parent = 0);
-        ~ByteColorsWidget();
+        explicit ByteColorsDialog(QWidget *parent = 0);
+        ~ByteColorsDialog();
 
     private:
-        Ui::ByteColorsWidget *ui;
+        Ui::ByteColorsDialog *ui;
 };
 
 #endif // BYTECOLORSWIDGET_H

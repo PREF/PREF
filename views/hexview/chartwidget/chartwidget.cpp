@@ -165,3 +165,9 @@ void ChartWidget::updateEntropyText(const QString &text, const QColor &forecolor
     p.setColor(ui->lblEntropy->foregroundRole(), forecolor);
     ui->lblEntropy->setPalette(p);
 }
+
+void ChartWidget::on_tbHelp_clicked()
+{
+    ByteColorsDialog bcd(this);
+    bcd.exec();
+}

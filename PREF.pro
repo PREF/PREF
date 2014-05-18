@@ -54,12 +54,11 @@ SOURCES += main.cpp\
     viewmodels/luatypeviewmodel/luastackviewmodel.cpp \
     prefsdk/bytecolors.cpp \
     prefsdk/math.cpp \
-    bytecolorswidget/bytecolorswidget.cpp \
     preftabwidget/preftabwidget.cpp \
     views/hexview/formatwidget/formattreeview/copymenu.cpp \
     qnumberlineedit.cpp \
-    binarymapwidget/entropywidget.cpp \
-    binarymapwidget/binarymap.cpp \
+    views/hexview/bytecolorsdialog/entropywidget/entropywidget.cpp \
+    views/hexview/binaryviewdialog/binarymapwidget/binarymap.cpp \
     views/hexview/binarynavigator/binarynavigator.cpp \
     views/hexview/binaryviewdialog/displaymodewidget.cpp \
     views/hexview/datatypeswidget/datatypesmenu.cpp \
@@ -128,11 +127,12 @@ SOURCES += main.cpp\
     viewmodels/comparemodel/comparemodel.cpp \
     views/hexview/workertab.cpp \
     views/hexview/worker.cpp \
-    binarymapwidget/viewmodes/abstractviewmode.cpp \
-    binarymapwidget/viewmodes/dotplotviewmode.cpp \
-    binarymapwidget/viewmodes/pixelviewmode.cpp \
+    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/abstractviewmode.cpp \
+    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/dotplotviewmode.cpp \
+    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/pixelviewmode.cpp \
     views/hexview/formatwidget/formatwidget.cpp \
-    views/hexview/formatwidget/formatworker.cpp
+    views/hexview/formatwidget/formatworker.cpp \
+    views/hexview/bytecolorsdialog/bytecolorsdialog.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -173,12 +173,11 @@ HEADERS  += mainwindow.h \
     viewmodels/luatypeviewmodel/luastackviewmodel.h \
     prefsdk/bytecolors.h \
     prefsdk/math.h \
-    bytecolorswidget/bytecolorswidget.h \
     preftabwidget/preftabwidget.h \
     views/hexview/formatwidget/formattreeview/copymenu.h \
     qnumberlineedit.h \
-    binarymapwidget/entropywidget.h \
-    binarymapwidget/binarymap.h \
+    views/hexview/bytecolorsdialog/entropywidget/entropywidget.h \
+    views/hexview/binaryviewdialog/binarymapwidget/binarymap.h \
     views/hexview/binarynavigator/binarynavigator.h \
     views/hexview/binaryviewdialog/displaymodewidget.h \
     views/hexview/datatypeswidget/datatypesmenu.h \
@@ -248,11 +247,12 @@ HEADERS  += mainwindow.h \
     viewmodels/comparemodel/comparemodel.h \
     views/hexview/workertab.h \
     views/hexview/worker.h \
-    binarymapwidget/viewmodes/abstractviewmode.h \
-    binarymapwidget/viewmodes/dotplotviewmode.h \
-    binarymapwidget/viewmodes/pixelviewmode.h \
+    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/abstractviewmode.h \
+    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/dotplotviewmode.h \
+    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/pixelviewmode.h \
     views/hexview/formatwidget/formatwidget.h \
-    views/hexview/formatwidget/formatworker.h
+    views/hexview/formatwidget/formatworker.h \
+    views/hexview/bytecolorsdialog/bytecolorsdialog.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -263,7 +263,6 @@ FORMS    += mainwindow.ui \
     views/hexview/disassemblerdialog/datamapview/datamapview.ui \
     views/hexview/formatwidget/formatsdialog/formatsdialog.ui \
     debugdialog/debugdialog.ui \
-    bytecolorswidget/bytecolorswidget.ui \
     views/hexview/binaryviewdialog/displaymodewidget.ui \
     formatoptionsdialog.ui \
     views/compareview/compareview.ui \
@@ -279,7 +278,8 @@ FORMS    += mainwindow.ui \
     views/hexview/signatureswidget/signatureswidget.ui \
     views/hexview/binaryviewdialog/binaryviewdialog.ui \
     views/hexview/disassemblerdialog/disassemblerdialog.ui \
-    views/hexview/formatwidget/formatwidget.ui
+    views/hexview/formatwidget/formatwidget.ui \
+    views/hexview/bytecolorsdialog/bytecolorsdialog.ui
 
 RESOURCES += resources.qrc
 

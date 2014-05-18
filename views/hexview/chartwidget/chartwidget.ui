@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>696</width>
-    <height>194</height>
+    <width>694</width>
+    <height>192</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,6 +37,23 @@
           <widget class="QLabel" name="lblEntropy">
            <property name="text">
             <string>0.00000000</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="tbHelp">
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../../resources.qrc">
+             <normaloff>:/misc_icons/res/help.png</normaloff>:/misc_icons/res/help.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>16</width>
+             <height>16</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -119,6 +136,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -1,9 +1,10 @@
-#include "bytecolorswidget.h"
-#include "ui_bytecolorswidget.h"
+#include "bytecolorsdialog.h"
+#include "ui_bytecolorsdialog.h"
 
-ByteColorsWidget::ByteColorsWidget(QWidget *parent): QWidget(parent), ui(new Ui::ByteColorsWidget)
+ByteColorsDialog::ByteColorsDialog(QWidget *parent): QDialog(parent), ui(new Ui::ByteColorsDialog)
 {
     ui->setupUi(this);
+    this->setFixedSize(this->size());
 
     QPalette p;
 
@@ -32,7 +33,7 @@ ByteColorsWidget::ByteColorsWidget(QWidget *parent): QWidget(parent), ui(new Ui:
     ui->lblUncategorized->setPalette(p);
 }
 
-ByteColorsWidget::~ByteColorsWidget()
+ByteColorsDialog::~ByteColorsDialog()
 {
     delete ui;
 }
