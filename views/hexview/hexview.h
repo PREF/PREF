@@ -43,11 +43,12 @@ class HexView : public AbstractView
         void updateSelLength(qint64 size);
         void onWorkStarted();
         void onWorkFinished();
-        void onLoadFormatClicked();
         void onMapViewTriggered();
         void onBinaryViewTriggered();
         void onDisassemblerTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
+        void onFormatParseFinished(FormatList::FormatId formatid, FormatTree* formattree);
+        void disableFormatButton();
 
     private:
         Ui::HexView *ui;

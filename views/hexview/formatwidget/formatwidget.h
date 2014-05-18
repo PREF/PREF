@@ -4,13 +4,13 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/sdkmanager.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/exporter/exporterlist.h"
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/hexview/workertab.h"
 #include "formattreeview/formattreeview.h"
 #include "formatsdialog.h"
+#include "formatworker.h"
 
 using namespace PrefSDK;
 
@@ -24,28 +24,33 @@ class FormatWidget : public WorkerTab
 
     public:
         explicit FormatWidget(QWidget *parent = 0);
-        FormatTree* tree();
         void setData(QHexEdit *hexedit);
         ~FormatWidget();
+
+    public slots:
+        void loadFormat();
 
     private:
         FormatTree* parseFormat(FormatList::FormatId formatid, qint64 baseoffset);
 
     private slots:
+        void onParsingFinished();
         void onSetBackColor(FormatElement *formatelement);
         void onRemoveBackColor(FormatElement *formatelement);
         void onFormatObjectSelected(FormatElement* formatelement);
         void exportData(FormatElement* formatelement);
         void importData(FormatElement *formatelement);
 
-    public slots:
-        FormatList::FormatId loadFormat();
+    signals:
+        void parseStarted();
+        void parseFinished(FormatList::FormatId formatid, FormatTree* formattree);
 
     private:
         Ui::FormatWidget *ui;
+        FormatWorker _worker;
         FormatModel* _formatmodel;
         QHexEdit* _hexedit;
-        FormatTree* _formattree;
+        FormatList::FormatId _formatid;
 };
 
 #endif // FORMATWIDGET_H

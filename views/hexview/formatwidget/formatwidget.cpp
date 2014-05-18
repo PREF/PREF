@@ -1,13 +1,23 @@
 #include "formatwidget.h"
 #include "ui_formatwidget.h"
 
-FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _formattree(nullptr)
+FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _formatid(nullptr)
 {
     ui->setupUi(this);
+
+    connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
+    connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
+    connect(&this->_worker, SIGNAL(finished()), this, SLOT(onParsingFinished()));
 }
 
 FormatWidget::~FormatWidget()
 {
+    if(this->_worker.isRunning())
+    {
+        this->_worker.abort();
+        this->_worker.wait();
+    }
+
     delete ui;
 }
 
@@ -36,9 +46,19 @@ FormatTree* FormatWidget::parseFormat(FormatList::FormatId formatid, qint64 base
     return formattree;
 }
 
-FormatTree *FormatWidget::tree()
+void FormatWidget::onParsingFinished()
 {
-    return this->_formattree;
+    FormatTree* formattree = this->_worker.tree();
+
+    if(!formattree->isEmpty())
+    {
+        this->_formatmodel->setFormatTree(formattree);
+
+        for(int i = 0; i < this->_formatmodel->columnCount(); i++)
+            ui->tvFormat->resizeColumnToContents(i);
+    }
+
+    emit parseFinished(this->_formatid, formattree);
 }
 
 void FormatWidget::setData(QHexEdit *hexedit)
@@ -56,26 +76,19 @@ void FormatWidget::setData(QHexEdit *hexedit)
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), this->_hexedit, SLOT(setCursorPos(qint64)));
 }
 
-FormatList::FormatId FormatWidget::loadFormat()
+void FormatWidget::loadFormat()
 {
     FormatsDialog fd(this->_hexedit->data()->length(), this->topLevelWidget());
     int res = fd.exec();
 
-    if(res != FormatsDialog::Accepted)
-        return nullptr;
+    if(res == FormatsDialog::Accepted)
+    {
+        emit parseStarted();
 
-    FormatList::FormatId formatid = fd.selectedFormat();
-    this->_formattree = this->parseFormat(formatid, fd.offset());
-
-    if(this->_formattree->isEmpty())
-        return nullptr;
-
-    this->_formatmodel->setFormatTree(this->_formattree);
-
-    for(int i = 0; i < this->_formatmodel->columnCount(); i++)
-        ui->tvFormat->resizeColumnToContents(i);
-
-    return formatid;
+        this->_formatid = fd.selectedFormat();
+        this->_worker.setData(this->_hexedit->data(), this->_formatid, fd.offset());
+        this->_worker.start(QThread::LowPriority);
+    }
 }
 
 void FormatWidget::onSetBackColor(FormatElement *formatelement)

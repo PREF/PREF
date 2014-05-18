@@ -131,7 +131,8 @@ SOURCES += main.cpp\
     binarymapwidget/viewmodes/abstractviewmode.cpp \
     binarymapwidget/viewmodes/dotplotviewmode.cpp \
     binarymapwidget/viewmodes/pixelviewmode.cpp \
-    views/hexview/formatwidget/formatwidget.cpp
+    views/hexview/formatwidget/formatwidget.cpp \
+    views/hexview/formatwidget/formatworker.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -252,7 +253,8 @@ HEADERS  += mainwindow.h \
     binarymapwidget/viewmodes/abstractviewmode.h \
     binarymapwidget/viewmodes/dotplotviewmode.h \
     binarymapwidget/viewmodes/pixelviewmode.h \
-    views/hexview/formatwidget/formatwidget.h
+    views/hexview/formatwidget/formatwidget.h \
+    views/hexview/formatwidget/formatworker.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

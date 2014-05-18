@@ -17,14 +17,6 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     this->createToolBar();
     this->inspectData(hexeditdata);
 
-    connect(ui->chartWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
-    connect(ui->signaturesWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
-    connect(ui->stringsWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
-
-    connect(ui->chartWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
-    connect(ui->signaturesWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
-    connect(ui->stringsWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
-
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), ui->dataView->model(), SLOT(setOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(positionChanged(qint64)), this, SLOT(updateOffset(qint64)));
     connect(ui->hexEdit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateSelLength(qint64)));
@@ -83,7 +75,7 @@ void HexView::createToolBar()
     this->_toolbar->addSeparator();
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
 
-    connect(this->_tbformat, SIGNAL(clicked()), this, SLOT(onLoadFormatClicked()));
+    connect(this->_tbformat, SIGNAL(clicked()), ui->formatWidget, SLOT(loadFormat()));
     connect(this->_actbyteview, SIGNAL(triggered()), this, SLOT(onMapViewTriggered()));
     connect(this->_actbinaryview, SIGNAL(triggered()), this, SLOT(onBinaryViewTriggered()));
     connect(this->_actdisassembler, SIGNAL(triggered()), this, SLOT(onDisassemblerTriggered()));
@@ -103,8 +95,20 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     ui->formatWidget->setData(ui->hexEdit);
     ui->stringsWidget->scan(hexeditdata);
 
+    connect(ui->chartWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+    connect(ui->signaturesWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+    connect(ui->formatWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+    connect(ui->stringsWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
+
+    connect(ui->chartWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+    connect(ui->signaturesWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+    connect(ui->formatWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+    connect(ui->stringsWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
+
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
+    connect(ui->formatWidget, SIGNAL(parseStarted()), this, SLOT(disableFormatButton()));
+    connect(ui->formatWidget, SIGNAL(parseFinished(FormatList::FormatId,FormatTree*)), this, SLOT(onFormatParseFinished(FormatList::FormatId,FormatTree*)));
 }
 
 void HexView::updateOffset(qint64)
@@ -126,45 +130,6 @@ void HexView::updateSelLength(qint64 size)
     }
     else
         this->_toolbar->setEditActionsEnabled(true);
-}
-
-void HexView::onLoadFormatClicked()
-{
-    FormatList::FormatId formatid = ui->formatWidget->loadFormat();
-
-    if(!formatid)
-    {
-        this->_actdisassembler->setVisible(false);
-        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
-        this->_tbformat->setMenu(nullptr);
-    }
-
-    FormatList::Format& format = FormatList::formatFromId(formatid);
-
-    if(format.canDisassemble())
-    {
-        this->_disassemblerdialog = new DisassemblerDialog(this->_hexeditdata, ui->formatWidget->tree(), this);
-        this->_disassemblerdialog->setWindowTitle(QString("'%1' Disassembly").arg(this->viewName()));
-        this->_actdisassembler->setVisible(true);
-    }
-    else
-    {
-        this->_actdisassembler->setVisible(false);
-        this->_disassemblerdialog = nullptr;
-    }
-
-    if(format.optionsCount() > 0)
-    {
-        this->_tbformat->setPopupMode(QToolButton::MenuButtonPopup);
-        this->_tbformat->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, format));
-    }
-    else
-    {
-        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
-        this->_tbformat->setMenu(nullptr);
-    }
-
-    ui->tabWidget->setCurrentIndex(2); /* Select Format Page */
 }
 
 void HexView::onMapViewTriggered()
@@ -201,6 +166,48 @@ void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
 {
     QPoint newpos = ui->hexEdit->mapToGlobal(pos);
     this->_toolbar->actionMenu()->popup(newpos);
+}
+
+void HexView::onFormatParseFinished(FormatList::FormatId formatid, FormatTree *formattree)
+{
+    this->_tbformat->setEnabled(true);
+
+    if(!formatid)
+    {
+        this->_actdisassembler->setVisible(false);
+        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
+        this->_tbformat->setMenu(nullptr);
+    }
+
+    FormatList::Format& format = FormatList::formatFromId(formatid);
+
+    if(format.canDisassemble())
+    {
+        this->_disassemblerdialog = new DisassemblerDialog(this->_hexeditdata, formattree, this);
+        this->_disassemblerdialog->setWindowTitle(QString("'%1' Disassembly").arg(this->viewName()));
+        this->_actdisassembler->setVisible(true);
+    }
+    else
+    {
+        this->_actdisassembler->setVisible(false);
+        this->_disassemblerdialog = nullptr;
+    }
+
+    if(format.optionsCount() > 0)
+    {
+        this->_tbformat->setPopupMode(QToolButton::MenuButtonPopup);
+        this->_tbformat->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, format));
+    }
+    else
+    {
+        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
+        this->_tbformat->setMenu(nullptr);
+    }
+}
+
+void HexView::disableFormatButton()
+{
+    this->_tbformat->setEnabled(false);
 }
 
 void HexView::onWorkStarted()

@@ -11,7 +11,7 @@ class Worker : public QThread
         explicit Worker(QObject *parent = 0);
 
     public slots:
-        void abort();
+        virtual void abort();
 
     protected:
         bool _cancontinue;
