@@ -137,23 +137,4 @@ namespace PrefSDK
     {
         return SDKManager::_state;
     }
-
-    FormatTree *SDKManager::parseFormat(FormatList::FormatId formatid, int64_t baseoffset, QHexEditData* hexeditdata)
-    {
-        FormatTree* formattree = new FormatTree(SDKManager::_state, hexeditdata, baseoffset);
-
-        lua_getglobal(SDKManager::_state, SDKManager::SDK_TABLE);
-        lua_getfield(SDKManager::_state, -1, "parseFormat");
-        lua_pushstring(SDKManager::_state, formatid);
-        lua_pushinteger(SDKManager::_state, static_cast<lua_Integer>(baseoffset));
-        lua_pushlightuserdata(SDKManager::_state, hexeditdata);
-        lua_pushlightuserdata(SDKManager::_state, formattree);
-        int res = lua_pcall(SDKManager::_state, 4, 0, 0);
-
-        if(res != 0)
-            DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(SDKManager::_state, -1)));
-
-        lua_pop(SDKManager::_state, (res ? 2 : 1));
-        return formattree;
-    }
 }

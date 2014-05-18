@@ -26,7 +26,6 @@ class HexView : public AbstractView
     
     public:
         explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent = 0);
-        bool loadFormat(FormatList::Format &format, int64_t baseoffset);
         void save(QString filename);
         void save();
         ~HexView();
@@ -49,19 +48,11 @@ class HexView : public AbstractView
         void onBinaryViewTriggered();
         void onDisassemblerTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
-        void onSetBackColor(FormatElement *formatelement);
-        void onRemoveBackColor(FormatElement *formatelement);
-        void onFormatObjectSelected(FormatElement* formatelement);
-        void exportData(FormatElement* formatelement);
-        void importData(FormatElement *formatelement);
 
     private:
         Ui::HexView *ui;
         BinaryViewDialog* _binaryviewdialog;
         DisassemblerDialog* _disassemblerdialog;
-        FormatList::FormatId _formatid;
-        FormatModel* _formatmodel;
-        FormatTree* _formattree;
         QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;
         QToolButton* _tbformat;
@@ -69,7 +60,6 @@ class HexView : public AbstractView
         QAction* _actbinaryview;
         QAction* _actdisassembler;
         QColor _signaturecolor;
-        bool _signscanenabled;
         bool _entropyenabled;
 };
 

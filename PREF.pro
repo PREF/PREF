@@ -24,7 +24,7 @@ SOURCES += main.cpp\
     spinboxbaseselector/qnumberspinbox.cpp \
     qhexedit/qhexeditdata.cpp \
     datatypesview/datatypesview.cpp \
-    formattreeview/formattreeview.cpp \
+    views/hexview/formatwidget/formattreeview/formattreeview.cpp \
     prefsdk/sdkmanager.cpp \
     viewmodels/fielddatamodel/fielddatamodel.cpp \
     prefsdk/datatype.cpp \
@@ -45,7 +45,7 @@ SOURCES += main.cpp\
     prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
     viewmodels/categorymodel/categorymodel.cpp \
-    formattreeview/structuremenu.cpp \
+    views/hexview/formatwidget/formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
     prefsdk/disassembler/disassemblerrange.cpp \
     prefsdk/disassembler/disassemblerfunction.cpp \
@@ -56,7 +56,7 @@ SOURCES += main.cpp\
     prefsdk/math.cpp \
     bytecolorswidget/bytecolorswidget.cpp \
     preftabwidget/preftabwidget.cpp \
-    formattreeview/copymenu.cpp \
+    views/hexview/formatwidget/formattreeview/copymenu.cpp \
     qnumberlineedit.cpp \
     binarymapwidget/entropywidget.cpp \
     binarymapwidget/binarymap.cpp \
@@ -130,7 +130,8 @@ SOURCES += main.cpp\
     views/hexview/worker.cpp \
     binarymapwidget/viewmodes/abstractviewmode.cpp \
     binarymapwidget/viewmodes/dotplotviewmode.cpp \
-    binarymapwidget/viewmodes/pixelviewmode.cpp
+    binarymapwidget/viewmodes/pixelviewmode.cpp \
+    views/hexview/formatwidget/formatwidget.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -140,7 +141,7 @@ HEADERS  += mainwindow.h \
     spinboxbaseselector/qnumberspinbox.h \
     qhexedit/qhexeditdata.h \
     datatypesview/datatypesview.h \
-    formattreeview/formattreeview.h \
+    views/hexview/formatwidget/formattreeview/formattreeview.h \
     prefsdk/sdkmanager.h \
     viewmodels/fielddatamodel/fielddatamodel.h \
     prefsdk/datatype.h \
@@ -164,7 +165,7 @@ HEADERS  += mainwindow.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
     viewmodels/categorymodel/categorymodel.h \
     views/hexview/disassemblerviewpage/disassemblerhelper.h \
-    formattreeview/structuremenu.h \
+    views/hexview/formatwidget/formattreeview/structuremenu.h \
     numericbasemenu.h \
     prefsdk/disassembler/disassemblerrange.h \
     prefsdk/disassembler/disassemblerfunction.h \
@@ -175,7 +176,7 @@ HEADERS  += mainwindow.h \
     prefsdk/math.h \
     bytecolorswidget/bytecolorswidget.h \
     preftabwidget/preftabwidget.h \
-    formattreeview/copymenu.h \
+    views/hexview/formatwidget/formattreeview/copymenu.h \
     qnumberlineedit.h \
     binarymapwidget/entropywidget.h \
     binarymapwidget/binarymap.h \
@@ -250,7 +251,8 @@ HEADERS  += mainwindow.h \
     views/hexview/worker.h \
     binarymapwidget/viewmodes/abstractviewmode.h \
     binarymapwidget/viewmodes/dotplotviewmode.h \
-    binarymapwidget/viewmodes/pixelviewmode.h
+    binarymapwidget/viewmodes/pixelviewmode.h \
+    views/hexview/formatwidget/formatwidget.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -276,7 +278,8 @@ FORMS    += mainwindow.ui \
     views/hexview/stringswidget/stringswidget.ui \
     views/hexview/signatureswidget/signatureswidget.ui \
     views/hexview/binaryviewdialog/binaryviewdialog.ui \
-    views/hexview/disassemblerdialog/disassemblerdialog.ui
+    views/hexview/disassemblerdialog/disassemblerdialog.ui \
+    views/hexview/formatwidget/formatwidget.ui
 
 RESOURCES += resources.qrc
 

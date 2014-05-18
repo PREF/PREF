@@ -42,9 +42,6 @@ namespace PrefSDK
             static QString version();
             static lua_State* state();
 
-        public: /* PrefSDK Public Functions */
-            static FormatTree* parseFormat(FormatList::FormatId formatid, int64_t baseoffset, QHexEditData* hexeditdata);
-
         private:
             static SdkVersion _sdkversion;
 

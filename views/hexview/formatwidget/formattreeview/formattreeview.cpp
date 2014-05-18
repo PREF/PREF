@@ -149,6 +149,8 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 {
     if(!this->_formatobjectmenu)
     {
+        this->setContextMenuPolicy(Qt::CustomContextMenu);
+
         this->_formatobjectmenu = new QMenu(this);
         this->_highlightmenu = new QMenu("Highlight");
         this->_copymenu = new CopyMenu(this);
