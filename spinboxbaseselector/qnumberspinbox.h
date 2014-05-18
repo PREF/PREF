@@ -12,12 +12,8 @@ class QNumberSpinBox : public QSpinBox
 
     public:
         explicit QNumberSpinBox(QWidget *parent = 0);
-        virtual void setMaximum(int max);
         int base();
         void setBase(int b);
-
-    private:
-        void updateRegExp();
 
     protected:
         virtual QValidator::State validate(QString &input, int &pos) const;
