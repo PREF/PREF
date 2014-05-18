@@ -12,7 +12,6 @@
 #include "prefsdk/sdkmanager.h"
 #include "binaryviewdialog/binaryviewdialog.h"
 #include "disassemblerdialog/disassemblerdialog.h"
-#include "formatsdialog.h"
 
 using namespace PrefSDK;
 

@@ -9,7 +9,7 @@
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/hexview/workertab.h"
 #include "formattreeview/formattreeview.h"
-#include "formatsdialog.h"
+#include "formatsdialog/formatsdialog.h"
 #include "formatworker.h"
 
 using namespace PrefSDK;

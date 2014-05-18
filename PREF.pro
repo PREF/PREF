@@ -41,7 +41,7 @@ SOURCES += main.cpp\
     views/hexview/disassemblerdialog/datamapview/datamapview.cpp \
     viewmodels/datamapmodel/datamapmodel.cpp \
     prefsdk/format/formatlist.cpp \
-    formatsdialog.cpp \
+    views/hexview/formatwidget/formatsdialog/formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
     viewmodels/categorymodel/categorymodel.cpp \
@@ -148,7 +148,6 @@ HEADERS  += mainwindow.h \
     prefsdk/datatype.h \
     aboutdialog.h \
     exportdialog.h \
-    views/hexview/disassemblerviewpage/disassemblerviewpage.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
     viewmodels/formatmodel/formatmodel.h \
     viewmodels/stringoffsetmodel/stringoffsetmodel.h \
@@ -161,11 +160,10 @@ HEADERS  += mainwindow.h \
     views/hexview/disassemblerdialog/datamapview/datamapview.h \
     viewmodels/datamapmodel/datamapmodel.h \
     prefsdk/format/formatlist.h \
-    formatsdialog.h \
+    views/hexview/formatwidget/formatsdialog/formatsdialog.h \
     prefsdk/categorymanager.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
     viewmodels/categorymodel/categorymodel.h \
-    views/hexview/disassemblerviewpage/disassemblerhelper.h \
     views/hexview/formatwidget/formattreeview/structuremenu.h \
     numericbasemenu.h \
     prefsdk/disassembler/disassemblerrange.h \
@@ -263,7 +261,7 @@ FORMS    += mainwindow.ui \
     exportdialog.ui \
     views/hexview/disassemblerdialog/crossreferencedialog/crossreferencedialog.ui \
     views/hexview/disassemblerdialog/datamapview/datamapview.ui \
-    formatsdialog.ui \
+    views/hexview/formatwidget/formatsdialog/formatsdialog.ui \
     debugdialog/debugdialog.ui \
     bytecolorswidget/bytecolorswidget.ui \
     views/hexview/binaryviewdialog/displaymodewidget.ui \
