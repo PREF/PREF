@@ -11,9 +11,9 @@ DebugDialog::DebugDialog(lua_State* l, QWidget *parent): QDialog(parent), ui(new
     this->_stackmodel = new LuaStackViewModel(l);
     ui->tvStackView->setModel(this->_stackmodel);
 
-    connect(this, SIGNAL(outHtml(QString)), ui->tePrefOutput, SLOT(insertHtml(QString)), Qt::QueuedConnection);
-    connect(this, SIGNAL(outText(QString)), ui->tePrefOutput, SLOT(insertPlainText(QString)), Qt::QueuedConnection);
-    connect(this, SIGNAL(luaOutText(QString)), ui->teLuaOutput, SLOT(insertPlainText(QString)), Qt::QueuedConnection);
+    connect(this, SIGNAL(outHtml(QString)), ui->tePrefOutput, SLOT(insertHtml(QString)));
+    connect(this, SIGNAL(outText(QString)), ui->tePrefOutput, SLOT(insertPlainText(QString)));
+    connect(this, SIGNAL(luaOutText(QString)), ui->teLuaOutput, SLOT(insertPlainText(QString)));
 }
 
 void DebugDialog::createInstance(lua_State *l)

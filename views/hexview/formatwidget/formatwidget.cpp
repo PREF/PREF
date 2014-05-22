@@ -7,6 +7,7 @@ FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::Forma
 
     connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
     connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
+    connect(&this->_worker, SIGNAL(error(QString)), DebugDialog::instance(), SLOT(out(QString)));
     connect(&this->_worker, SIGNAL(finished()), this, SLOT(onParsingFinished()));
 }
 

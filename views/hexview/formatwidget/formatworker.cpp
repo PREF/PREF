@@ -42,7 +42,10 @@ void FormatWorker::run()
     lua_pushlightuserdata(this->_thread, this->_formattree);
 
     if(lua_resume(this->_thread, 4))
-        DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(this->_thread, -1)));
+    {
+        emit error(QString::fromUtf8(lua_tostring(this->_thread, -1)));
+        lua_pop(this->_thread, 1);
+    }
 
     lua_pop(this->_thread, 1);
     lua_pop(this->_state, 1);

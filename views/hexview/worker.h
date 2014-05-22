@@ -13,6 +13,9 @@ class Worker : public QThread
     public slots:
         virtual void abort();
 
+    signals:
+        void error(QString errmsg);
+
     protected:
         bool _cancontinue;
 };
