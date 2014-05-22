@@ -23,6 +23,7 @@ class FormatWorker : public Worker
         virtual void abort();
 
     protected:
+
         virtual void run();
 
     private:

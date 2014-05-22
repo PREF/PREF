@@ -49,6 +49,12 @@ FormatTree* FormatWidget::parseFormat(FormatList::FormatId formatid, qint64 base
 
 void FormatWidget::onParsingFinished()
 {
+    if(this->_worker.inError())
+    {
+        emit parseFinished(nullptr, nullptr);
+        return;
+    }
+
     FormatTree* formattree = this->_worker.tree();
 
     if(!formattree->isEmpty())
@@ -66,7 +72,6 @@ void FormatWidget::setData(QHexEdit *hexedit)
 {
     this->_hexedit = hexedit;
     this->_formatmodel = new FormatModel(this->_hexedit->data(), this);
-
     ui->tvFormat->setModel(this->_formatmodel);
 
     connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));
@@ -75,6 +80,12 @@ void FormatWidget::setData(QHexEdit *hexedit)
     connect(ui->tvFormat, SIGNAL(exportAction(FormatElement*)), this, SLOT(exportData(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(importAction(FormatElement*)), this, SLOT(importData(FormatElement*)));
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), this->_hexedit, SLOT(setCursorPos(qint64)));
+}
+
+void FormatWidget::resetData()
+{
+    this->_formatmodel = new FormatModel(this->_hexedit->data(), this);
+    ui->tvFormat->setModel(this->_formatmodel);
 }
 
 void FormatWidget::loadFormat()

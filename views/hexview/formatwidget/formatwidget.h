@@ -25,6 +25,7 @@ class FormatWidget : public WorkerTab
     public:
         explicit FormatWidget(QWidget *parent = 0);
         void setData(QHexEdit *hexedit);
+        void resetData();
         ~FormatWidget();
 
     public slots:

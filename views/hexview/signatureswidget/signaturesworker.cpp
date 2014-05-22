@@ -104,6 +104,8 @@ bool SignaturesWorker::isSignatureValid(const QByteArray &ba, qint64 sigid)
 
 void SignaturesWorker::run()
 {
+    Worker::run();
+
     if(!this->_hexeditdata)
         return;
 

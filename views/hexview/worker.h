@@ -9,15 +9,21 @@ class Worker : public QThread
 
     public:
         explicit Worker(QObject *parent = 0);
+        bool inError() const;
 
     public slots:
         virtual void abort();
+        virtual void run();
+
+    protected:
+        void workerError(const QString& s);
 
     signals:
         void error(QString errmsg);
 
     protected:
         bool _cancontinue;
+        bool _inerror;
 };
 
 #endif // WORKER_H

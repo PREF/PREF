@@ -172,11 +172,16 @@ void HexView::onFormatParseFinished(FormatList::FormatId formatid, FormatTree *f
 {
     this->_tbformat->setEnabled(true);
 
-    if(!formatid)
+    if(!formatid || !formattree)
     {
         this->_actdisassembler->setVisible(false);
+        this->_disassemblerdialog = nullptr;
+
         this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
         this->_tbformat->setMenu(nullptr);
+
+        ui->formatWidget->resetData();
+        return;
     }
 
     FormatList::Format& format = FormatList::formatFromId(formatid);
