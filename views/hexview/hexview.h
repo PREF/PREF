@@ -10,7 +10,6 @@
 #include "views/hexview/optionmenu.h"
 #include "datatypeswidget/datatypeswidget.h"
 #include "prefsdk/sdkmanager.h"
-#include "binaryviewdialog/binaryviewdialog.h"
 #include "disassemblerdialog/disassemblerdialog.h"
 
 using namespace PrefSDK;
@@ -43,7 +42,6 @@ class HexView : public AbstractView
         void onWorkStarted();
         void onWorkFinished();
         void onMapViewTriggered();
-        void onBinaryViewTriggered();
         void onDisassemblerTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onFormatParseFinished(FormatList::FormatId formatid, FormatTree* formattree);
@@ -51,7 +49,6 @@ class HexView : public AbstractView
 
     private:
         Ui::HexView *ui;
-        BinaryViewDialog* _binaryviewdialog;
         DisassemblerDialog* _disassemblerdialog;
         QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;

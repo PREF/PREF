@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DataTypesWidget</class>
- <widget class="QWidget" name="DataTypesWidget">
+ <class>VisualMapWidget</class>
+ <widget class="QWidget" name="VisualMapWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>117</height>
+    <width>839</width>
+    <height>252</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -27,42 +30,41 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTreeView" name="tvDataTypes">
-     <property name="contextMenuPolicy">
-      <enum>Qt::CustomContextMenu</enum>
-     </property>
+    <widget class="BinaryMap" name="binaryMap" native="true"/>
+   </item>
+   <item>
+    <widget class="QTableView" name="mapOptions">
      <property name="styleSheet">
       <string notr="true">background-color: white;
 alternate-background-color: whitesmoke;</string>
      </property>
      <property name="editTriggers">
-      <set>QAbstractItemView::DoubleClicked</set>
+      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::SingleSelection</enum>
-     </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="uniformRowHeights">
+     <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
-     </property>
-     <property name="itemsExpandable">
+     </attribute>
+     <attribute name="verticalHeaderStretchLastSection">
       <bool>false</bool>
-     </property>
-     <property name="expandsOnDoubleClick">
-      <bool>false</bool>
-     </property>
+     </attribute>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BinaryMap</class>
+   <extends>QWidget</extends>
+   <header>views/hexview/visualmapwidget/binarymap/binarymap.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

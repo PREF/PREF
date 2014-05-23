@@ -9,9 +9,6 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     ui->dataTypesWidget->setData(hexeditdata);
     ui->hexEdit->setData(hexeditdata);
 
-    this->_binaryviewdialog = new BinaryViewDialog(hexeditdata, this);
-    this->_binaryviewdialog->setWindowTitle(QString("'%1' Binary View").arg(viewname));
-
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
 
     this->createToolBar();
@@ -22,8 +19,6 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     connect(ui->hexEdit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateSelLength(qint64)));
     connect(ui->hexEdit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onHexEditCustomContextMenuRequested(QPoint)));
     connect(ui->hexEdit, SIGNAL(verticalScrollBarValueChanged(int)), ui->binaryNavigator, SLOT(renderMap(int)));
-
-    connect(this->_binaryviewdialog, SIGNAL(gotoTriggered(qint64)), ui->hexEdit, SLOT(selectPos(qint64)));
 }
 
 void HexView::save()
@@ -68,7 +63,6 @@ void HexView::createToolBar()
 
     this->_actbyteview = this->_toolbar->addAction(QIcon(":/action_icons/res/entropy.png"), "Map View");
     this->_actbyteview->setCheckable(true);
-    this->_actbinaryview = this->_toolbar->addAction(QIcon(":/action_icons/res/binview.png"), "Binary View");
     this->_actdisassembler = this->_toolbar->addAction(QIcon(":/action_icons/res/cpu.png"), "Disassembler");
     this->_actdisassembler->setVisible(false);
 
@@ -77,7 +71,6 @@ void HexView::createToolBar()
 
     connect(this->_tbformat, SIGNAL(clicked()), ui->formatWidget, SLOT(loadFormat()));
     connect(this->_actbyteview, SIGNAL(triggered()), this, SLOT(onMapViewTriggered()));
-    connect(this->_actbinaryview, SIGNAL(triggered()), this, SLOT(onBinaryViewTriggered()));
     connect(this->_actdisassembler, SIGNAL(triggered()), this, SLOT(onDisassemblerTriggered()));
 
     QVBoxLayout* vl = new QVBoxLayout();
@@ -89,6 +82,7 @@ void HexView::createToolBar()
 
 void HexView::inspectData(QHexEditData *hexeditdata)
 {
+    ui->visualMapWidget->map(ui->hexEdit);
     ui->binaryNavigator->setData(ui->hexEdit);
     ui->chartWidget->plot(hexeditdata);
     ui->signaturesWidget->scan(hexeditdata);
@@ -105,6 +99,7 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     connect(ui->formatWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
     connect(ui->stringsWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
 
+    connect(ui->visualMapWidget, SIGNAL(gotoTriggered(qint64)), ui->hexEdit, SLOT(selectPos(qint64)));
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->formatWidget, SIGNAL(parseStarted()), this, SLOT(disableFormatButton()));
@@ -138,17 +133,6 @@ void HexView::onMapViewTriggered()
         ui->binaryNavigator->displayEntropy();
     else
         ui->binaryNavigator->displayDefault();
-}
-
-void HexView::onBinaryViewTriggered()
-{
-    if(!this->_binaryviewdialog)
-        return;
-
-    if(this->_binaryviewdialog->isVisible())
-        this->_binaryviewdialog->raise();
-    else
-        this->_binaryviewdialog->show();
 }
 
 void HexView::onDisassemblerTriggered()

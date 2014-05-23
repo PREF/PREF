@@ -58,9 +58,8 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formattreeview/copymenu.cpp \
     qnumberlineedit.cpp \
     views/hexview/bytecolorsdialog/entropywidget/entropywidget.cpp \
-    views/hexview/binaryviewdialog/binarymapwidget/binarymap.cpp \
+    views/hexview/visualmapwidget/binarymap/binarymap.cpp \
     views/hexview/binarynavigator/binarynavigator.cpp \
-    views/hexview/binaryviewdialog/displaymodewidget.cpp \
     views/hexview/datatypeswidget/datatypesmenu.cpp \
     qhexedit/qhexedithighlighter.cpp \
     views/abstractview.cpp \
@@ -121,18 +120,20 @@ SOURCES += main.cpp\
     views/hexview/signatureswidget/signatureswidget.cpp \
     viewmodels/signaturesmodel/signaturesmodel.cpp \
     views/hexview/signatureswidget/signaturesworker.cpp \
-    views/hexview/binaryviewdialog/binaryviewdialog.cpp \
     views/hexview/disassemblerdialog/disassemblerdialog.cpp \
     views/compareview/compareworker.cpp \
     viewmodels/comparemodel/comparemodel.cpp \
     views/hexview/workertab.cpp \
     views/hexview/worker.cpp \
-    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/abstractviewmode.cpp \
-    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/dotplotviewmode.cpp \
-    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/pixelviewmode.cpp \
+    views/hexview/visualmapwidget/binarymap/viewmodes/abstractviewmode.cpp \
+    views/hexview/visualmapwidget/binarymap/viewmodes/dotplotviewmode.cpp \
+    views/hexview/visualmapwidget/binarymap/viewmodes/pixelviewmode.cpp \
     views/hexview/formatwidget/formatwidget.cpp \
     views/hexview/formatwidget/formatworker.cpp \
-    views/hexview/bytecolorsdialog/bytecolorsdialog.cpp
+    views/hexview/bytecolorsdialog/bytecolorsdialog.cpp \
+    views/hexview/visualmapwidget/visualmapwidget.cpp \
+    viewmodels/visualmapmodel/visualmapmodel.cpp \
+    viewmodels/visualmapmodel/visualmapdelegate.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -177,9 +178,8 @@ HEADERS  += mainwindow.h \
     views/hexview/formatwidget/formattreeview/copymenu.h \
     qnumberlineedit.h \
     views/hexview/bytecolorsdialog/entropywidget/entropywidget.h \
-    views/hexview/binaryviewdialog/binarymapwidget/binarymap.h \
+    views/hexview/visualmapwidget/binarymap/binarymap.h \
     views/hexview/binarynavigator/binarynavigator.h \
-    views/hexview/binaryviewdialog/displaymodewidget.h \
     views/hexview/datatypeswidget/datatypesmenu.h \
     qhexedit/qhexedithighlighter.h \
     views/abstractview.h \
@@ -241,18 +241,20 @@ HEADERS  += mainwindow.h \
     views/hexview/signatureswidget/signatureswidget.h \
     viewmodels/signaturesmodel/signaturesmodel.h \
     views/hexview/signatureswidget/signaturesworker.h \
-    views/hexview/binaryviewdialog/binaryviewdialog.h \
     views/hexview/disassemblerdialog/disassemblerdialog.h \
     views/compareview/compareworker.h \
     viewmodels/comparemodel/comparemodel.h \
     views/hexview/workertab.h \
     views/hexview/worker.h \
-    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/abstractviewmode.h \
-    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/dotplotviewmode.h \
-    views/hexview/binaryviewdialog/binarymapwidget/viewmodes/pixelviewmode.h \
+    views/hexview/visualmapwidget/binarymap/viewmodes/abstractviewmode.h \
+    views/hexview/visualmapwidget/binarymap/viewmodes/dotplotviewmode.h \
+    views/hexview/visualmapwidget/binarymap/viewmodes/pixelviewmode.h \
     views/hexview/formatwidget/formatwidget.h \
     views/hexview/formatwidget/formatworker.h \
-    views/hexview/bytecolorsdialog/bytecolorsdialog.h
+    views/hexview/bytecolorsdialog/bytecolorsdialog.h \
+    views/hexview/visualmapwidget/visualmapwidget.h \
+    viewmodels/visualmapmodel/visualmapmodel.h \
+    viewmodels/visualmapmodel/visualmapdelegate.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -263,7 +265,6 @@ FORMS    += mainwindow.ui \
     views/hexview/disassemblerdialog/datamapview/datamapview.ui \
     views/hexview/formatwidget/formatsdialog/formatsdialog.ui \
     debugdialog/debugdialog.ui \
-    views/hexview/binaryviewdialog/displaymodewidget.ui \
     formatoptionsdialog.ui \
     views/compareview/compareview.ui \
     views/compareview/comparedialog/comparedialog.ui \
@@ -276,10 +277,10 @@ FORMS    += mainwindow.ui \
     views/hexview/hexview.ui \
     views/hexview/stringswidget/stringswidget.ui \
     views/hexview/signatureswidget/signatureswidget.ui \
-    views/hexview/binaryviewdialog/binaryviewdialog.ui \
     views/hexview/disassemblerdialog/disassemblerdialog.ui \
     views/hexview/formatwidget/formatwidget.ui \
-    views/hexview/bytecolorsdialog/bytecolorsdialog.ui
+    views/hexview/bytecolorsdialog/bytecolorsdialog.ui \
+    views/hexview/visualmapwidget/visualmapwidget.ui
 
 RESOURCES += resources.qrc
 

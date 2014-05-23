@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -90,6 +99,11 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
+      <widget class="VisualMapWidget" name="visualMapWidget">
+       <attribute name="title">
+        <string>Visual Map</string>
+       </attribute>
+      </widget>
       <widget class="ChartWidget" name="chartWidget">
        <attribute name="title">
         <string>Chart</string>
@@ -162,6 +176,12 @@
    <class>FormatWidget</class>
    <extends>QWidget</extends>
    <header>views/hexview/formatwidget/formatwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VisualMapWidget</class>
+   <extends>QWidget</extends>
+   <header>views/hexview/visualmapwidget/visualmapwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

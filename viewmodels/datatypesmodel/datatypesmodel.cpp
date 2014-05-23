@@ -180,7 +180,7 @@ QVariant DataTypesModel::headerData(int section, Qt::Orientation orientation, in
         switch(section)
         {
             case 0:
-                return "Name";
+                return "Type";
 
             case 1:
                 return "Value";

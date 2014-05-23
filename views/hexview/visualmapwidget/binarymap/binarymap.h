@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include <QtOpenGL>
 #include <lua.hpp>
+#include "qhexedit/qhexedit.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/math.h"
 #include "prefsdk/bytecolors.h"
@@ -20,7 +21,7 @@ class BinaryMap : public QGLWidget
     Q_OBJECT
 
     public:
-        enum DisplayMode { BytesAsPixel, DotPlot };
+        enum DisplayMode { DotPlot, BytesAsPixel };
 
     private:
         typedef QHash<BinaryMap::DisplayMode, AbstractViewMode*> ViewMode;
@@ -29,46 +30,35 @@ class BinaryMap : public QGLWidget
         explicit BinaryMap(QWidget *parent = 0);
 
     public slots:
-        void setStart(int start);
-        void setEnd(int end);
-        void setWidth(int w);
-        void setStep(qint64 step);
+        void setWidth(qint64 w);
         void setDisplayMode(BinaryMap::DisplayMode mode);
-        void setData(QHexEditData* hexeditdata);
+        void setData(QHexEdit *hexedit);
 
     private:
-        qint64 start();
-        qint64 end();
-        qint64 preferredHeight();
         qint64 calcOffset(const QPoint &cursorpos);
         void populateViewModes();
         void drawNoDataAvailable(QPainter& p);
-        void drawInfo(QPainter& p);
+
+    private slots:
+        void updateMap(int);
+        void updateMap(qint64);
 
     protected:
-        virtual void keyReleaseEvent(QKeyEvent* event);
-        virtual void keyPressEvent(QKeyEvent* event);
         virtual void mousePressEvent(QMouseEvent* event);
         virtual void mouseMoveEvent(QMouseEvent* event);
         virtual void wheelEvent(QWheelEvent* event);
         virtual void paintEvent(QPaintEvent*);
 
     signals:
-        void ctrlModifier(bool pressed);
-        void shiftModifier(bool pressed);
-        void stepChanged(qint64 step);
-        void offsetChanged(QString offsetstring);
+        void offsetChanged(qint64 offset);
         void gotoTriggered(qint64);
 
     private:
         static const QString NO_DATA_AVAILABLE;
         ViewMode _viewmodes;
         DisplayMode _viewmode;
-        QHexEditData* _hexeditdata;
-        QByteArray _bits;
+        QHexEdit* _hexedit;
         qint64 _step;
-        qint64 _start;
-        qint64 _end;
         qint64 _width;
 
     friend class BinaryViewPage;
