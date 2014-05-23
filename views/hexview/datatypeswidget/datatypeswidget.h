@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "viewmodels/datatypesmodel/datatypesdelegate.h"
 #include "viewmodels/datatypesmodel/datatypesmodel.h"
 #include "datatypesmenu.h"
 
@@ -24,12 +25,12 @@ class DataTypesWidget : public QWidget
         ~DataTypesWidget();
 
     private slots:
-        void resizeColumns(QModelIndex, QModelIndex);
-        void on_tvDataTypes_customContextMenuRequested(const QPoint &pos);
+        void on_dataTypesTable_customContextMenuRequested(const QPoint &pos);
 
     private:
         Ui::DataTypesWidget *ui;
         DataTypesModel* _datatypesmodel;
+        DataTypesDelegate* _datatypesdelegate;
         DataTypesMenu* _datatypesmenu;
 };
 

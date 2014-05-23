@@ -3,13 +3,15 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "viewmodels/fielddatamodel/fielddatamodel.h"
+#include "prefsdk/datatype.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "qhexedit/qhexeditdatawriter.h"
 #include "prefsdk/numericlimits.h"
 
-class DataTypesModel : public FieldDataModel
+using namespace PrefSDK;
+
+class DataTypesModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -26,6 +28,7 @@ class DataTypesModel : public FieldDataModel
 
     private:
         QString readValue(int row, bool *overflow = nullptr) const;
+        QVariant readType(int row) const;
         void updateData();
 
     private:

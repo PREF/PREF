@@ -27,7 +27,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTreeView" name="tvDataTypes">
+    <widget class="QTableView" name="dataTypesTable">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
@@ -36,7 +36,7 @@
 alternate-background-color: whitesmoke;</string>
      </property>
      <property name="editTriggers">
-      <set>QAbstractItemView::DoubleClicked</set>
+      <set>QAbstractItemView::CurrentChanged</set>
      </property>
      <property name="alternatingRowColors">
       <bool>true</bool>
@@ -47,18 +47,9 @@ alternate-background-color: whitesmoke;</string>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="uniformRowHeights">
+     <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
-     </property>
-     <property name="itemsExpandable">
-      <bool>false</bool>
-     </property>
-     <property name="expandsOnDoubleClick">
-      <bool>false</bool>
-     </property>
+     </attribute>
     </widget>
    </item>
   </layout>

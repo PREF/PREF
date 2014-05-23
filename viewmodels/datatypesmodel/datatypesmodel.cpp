@@ -5,7 +5,7 @@ QHash<QSysInfo::Endian, QHash<DataType::Type, DataType::Type> > DataTypesModel::
 QList<DataType::Type> DataTypesModel::_types;
 QList<QString> DataTypesModel::_typenames;
 
-DataTypesModel::DataTypesModel(QObject *parent): FieldDataModel(parent)
+DataTypesModel::DataTypesModel(QObject *parent): QAbstractItemModel(parent)
 {
     this->_offset = 0;
     this->_base = 16;
@@ -156,6 +156,53 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
     return QString();
 }
 
+QVariant DataTypesModel::readType(int row) const
+{
+    DataType::Type type = this->_types.at(row);
+    QHexEditDataReader reader(this->_hexeditdata);
+
+    switch(type)
+    {
+        case DataType::Character:
+            return QString(static_cast<char>(reader.at(this->_offset)));
+
+        case DataType::Int8:
+            return static_cast<char>(reader.at(this->_offset));
+
+        case DataType::UInt8:
+            return static_cast<uchar>(reader.at(this->_offset));
+
+        case DataType::Int16:
+            return reader.readInt16(this->_offset, this->_endian);
+
+        case DataType::UInt16:
+            return reader.readUInt16(this->_offset, this->_endian);
+
+        case DataType::Int32:
+            return reader.readInt32(this->_offset, this->_endian);
+
+        case DataType::UInt32:
+            return reader.readUInt32(this->_offset, this->_endian);
+
+        case DataType::Int64:
+            return static_cast<qint64>(reader.readInt64(this->_offset, this->_endian));
+
+        case DataType::UInt64:
+            return static_cast<quint64>(reader.readUInt64(this->_offset, this->_endian));
+
+        case DataType::Array:
+        {
+            QHexEditDataReader reader(this->_hexeditdata);
+            return reader.readString(this->_offset, DataTypesModel::STRING_LENGTH);
+        }
+
+        default:
+            break;
+    }
+
+    return QVariant();
+}
+
 void DataTypesModel::updateData()
 {
     emit dataChanged(this->index(0, 1), this->index(this->rowCount() - 1, 1));
@@ -198,7 +245,7 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
     if(!index.isValid() || !this->_hexeditdata)
         return QVariant();
 
-    if(role == Qt::DisplayRole || role == Qt::EditRole)
+    if(role == Qt::DisplayRole)
     {
         if(index.column() == 0 && role == Qt::DisplayRole)
             return DataTypesModel::_typenames.at(index.row());
@@ -216,6 +263,8 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
             return s;
         }
     }
+    else if((role == Qt::EditRole) && (index.column() == 1))
+        return this->readType(index.row());
     else if(role == Qt::ForegroundRole)
     {
         if(index.column() == 1)
@@ -237,6 +286,10 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
         if(index.column() == 1)
             return this->_monospacefont;
     }
+    else if(role == (Qt::UserRole + 1))
+        return DataType::isSigned(this->_types.at(index.row()));
+    else if(role == (Qt::UserRole + 2))
+        return this->_base;
 
     return QVariant();
 }
@@ -245,26 +298,59 @@ bool DataTypesModel::setData(const QModelIndex &index, const QVariant &value, in
 {
     if(role == Qt::EditRole && index.isValid() && (index.column() == 1))
     {
-        QString currvalue = this->data(index, Qt::DisplayRole).toString();
-        QString newvalue = value.toString();
+        QHexEditDataWriter writer(this->_hexeditdata);
 
-        if(!QString::compare(currvalue, newvalue, Qt::CaseInsensitive)) /* Does 'currvalue == newvalue' ? */
-            return false;
-
-        QByteArray newdata;
-        bool valid = DataTypesModel::validateValue(value, this->_types.at(index.row()), this->_base, this->_endian, newdata);
-
-        if(valid)
+        if((index.row() == 0) || (index.row() == this->rowCount() - 1))
         {
-            QHexEditDataWriter writer(this->_hexeditdata);
-            writer.replace(this->_offset, newdata.length(), newdata);
+            writer.replace(this->_offset, value.toString().toUtf8());
             return true;
+        }
+
+        DataType::Type type = this->_types.at(index.row());
+
+        switch(type)
+        {
+
+            case DataType::Int8:
+                writer.writeInt8(this->_offset, value.toInt());
+                return true;
+
+            case DataType::UInt8:
+                writer.writeUInt8(this->_offset, value.toUInt());
+                return true;
+
+            case DataType::Int16:
+                writer.writeInt16(this->_offset, value.toInt(), this->_endian);
+                return true;
+
+            case DataType::UInt16:
+                writer.writeUInt16(this->_offset, value.toUInt(), this->_endian);
+                return true;
+
+            case DataType::Int32:
+                writer.writeInt32(this->_offset, value.toInt(), this->_endian);
+                return true;
+
+            case DataType::UInt32:
+                writer.writeUInt32(this->_offset, value.toUInt(), this->_endian);
+                return true;
+
+            case DataType::Int64:
+                writer.writeInt64(this->_offset, value.toLongLong(), this->_endian);
+                return true;
+
+            case DataType::UInt64:
+                writer.writeUInt64(this->_offset, value.toULongLong(), this->_endian);
+                return true;
+
+            default:
+                break;
         }
 
         return false;
     }
 
-    return FieldDataModel::setData(index, value, role);
+    return QAbstractItemModel::setData(index, value, role);
 }
 
 QModelIndex DataTypesModel::index(int row, int column, const QModelIndex &parent) const

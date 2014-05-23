@@ -133,7 +133,8 @@ SOURCES += main.cpp\
     views/hexview/bytecolorsdialog/bytecolorsdialog.cpp \
     views/hexview/visualmapwidget/visualmapwidget.cpp \
     viewmodels/visualmapmodel/visualmapmodel.cpp \
-    viewmodels/visualmapmodel/visualmapdelegate.cpp
+    viewmodels/visualmapmodel/visualmapdelegate.cpp \
+    viewmodels/datatypesmodel/datatypesdelegate.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -254,7 +255,8 @@ HEADERS  += mainwindow.h \
     views/hexview/bytecolorsdialog/bytecolorsdialog.h \
     views/hexview/visualmapwidget/visualmapwidget.h \
     viewmodels/visualmapmodel/visualmapmodel.h \
-    viewmodels/visualmapmodel/visualmapdelegate.h
+    viewmodels/visualmapmodel/visualmapdelegate.h \
+    viewmodels/datatypesmodel/datatypesdelegate.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
