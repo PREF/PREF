@@ -14,12 +14,6 @@ namespace PrefSDK
             FormatList::registerOption(hexeditdata, optionidx, QString::fromUtf8(name));
         }
 
-        void Format_enableDisassembler(FormatList::FormatId formatid)
-        {
-            FormatList::Format& format = FormatList::formatFromId(formatid);
-            format.enableDisassembler();
-        }
-
         bool Format_checkUInt8(QHexEditDataReader* reader, uint64_t offset, uint8_t value)
         {
             uint8_t dataval = static_cast<uint8_t>(reader->at(offset));

@@ -13,7 +13,6 @@ namespace PrefSDK
         {
             void Format_register(const char* name, const char* category, const char* author, const char* version, FormatList::FormatId formatid);
             void Format_registerOption(QHexEditData *hexeditdata, int optionidx, const char* name);
-            void Format_enableDisassembler(FormatList::FormatId formatid);
 
             bool Format_checkUInt8(QHexEditDataReader* reader, uint64_t offset,  uint8_t value);
             bool Format_checkUInt16(QHexEditDataReader* reader, uint64_t offset, uint16_t value, int byteorder);

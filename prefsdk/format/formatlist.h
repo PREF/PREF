@@ -6,7 +6,6 @@
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/categorymanager.h"
 #include "prefsdk/format/formattree.h"
-#include "prefsdk/disassembler/disassembler.h"
 #include "debugdialog/debugdialog.h"
 
 namespace PrefSDK
@@ -19,15 +18,12 @@ namespace PrefSDK
             class Format
             {
                 public:
-                    Format(): _candisassemble(false), _id(nullptr) { }
-                    Format(const QString& name, const QString& category, const QString& author, const QString& version, FormatId id): _name(name), _category(category), _author(author), _version(version), _candisassemble(false), _id(id) { }
-                    void enableDisassembler() { this->_candisassemble = true; }
-                    ProcessorLoader& disassemblerLoader() { return this->_disassembler; }
+                    Format(): _id(nullptr) { }
+                    Format(const QString& name, const QString& category, const QString& author, const QString& version, FormatId id): _name(name), _category(category), _author(author), _version(version), _id(id) { }
                     const QString& name() const { return this->_name; }
                     const QString& category() const { return this->_category; }
                     const QString& author() const { return this->_author; }
                     const QString& version() const { return this->_version; }
-                    bool canDisassemble() const { return this->_candisassemble; }
                     FormatList::FormatId id() const { return this->_id; }
 
                 private:
@@ -35,9 +31,7 @@ namespace PrefSDK
                     QString _category;
                     QString _author;
                     QString _version;
-                    bool _candisassemble;
                     FormatId _id;
-                    ProcessorLoader _disassembler;
 
             };
 
