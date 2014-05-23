@@ -99,8 +99,7 @@ void ChartWidget::createListModel()
         model->setItem(item->row(), 1, new QStandardItem(QString("0x").append(QString("%1").arg(i, 2, 16, QLatin1Char('0')).toUpper())));
     }
 
-    for(int i = 0; i < model->columnCount(); i++)
-        ui->lisOccurrence->resizeColumnToContents(i);
+    ui->lisOccurrence->resizeRowsToContents();
 }
 
 void ChartWidget::onElaborationCompleted()
