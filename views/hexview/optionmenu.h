@@ -15,7 +15,7 @@ class OptionMenu : public QMenu
     Q_OBJECT
 
     public:
-        explicit OptionMenu(lua_State *l, QHexEdit *hexedit, FormatList::Format &format, QWidget *parent = 0);
+        explicit OptionMenu(lua_State *l, QHexEdit *hexedit, FormatList::LoadedFormat &loadedformat, QWidget *parent = 0);
         void executeOption(int optionidx);
 
     private slots:

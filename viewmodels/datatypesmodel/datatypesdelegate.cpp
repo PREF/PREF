@@ -1,6 +1,6 @@
 #include "datatypesdelegate.h"
 
-DataTypesDelegate::DataTypesDelegate(QHexEditData* hexeditdata, QObject *parent): QStyledItemDelegate(parent), _hexeditdata(hexeditdata)
+DataTypesDelegate::DataTypesDelegate(QObject *parent): QStyledItemDelegate(parent)
 {
 }
 

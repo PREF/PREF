@@ -6,6 +6,7 @@ DataTypesWidget::DataTypesWidget(QWidget *parent): QWidget(parent), ui(new Ui::D
     ui->setupUi(this);
 
     this->_datatypesmodel = new DataTypesModel(this);
+    this->_datatypesdelegate = new DataTypesDelegate();
     this->_datatypesmenu = new DataTypesMenu(this);
 
     connect(this->_datatypesmenu, SIGNAL(endianChanged(QSysInfo::Endian)),this->_datatypesmodel, SLOT(setEndian(QSysInfo::Endian)));
@@ -14,6 +15,7 @@ DataTypesWidget::DataTypesWidget(QWidget *parent): QWidget(parent), ui(new Ui::D
     this->_datatypesmenu->setBase(16); /* Hex By Default */
     this->_datatypesmenu->setEndian(QSysInfo::ByteOrder);
     ui->dataTypesTable->setModel(this->_datatypesmodel);
+    ui->dataTypesTable->setItemDelegate(this->_datatypesdelegate);
 }
 
 DataTypesModel *DataTypesWidget::model()
@@ -23,10 +25,7 @@ DataTypesModel *DataTypesWidget::model()
 
 void DataTypesWidget::setData(QHexEditData* hexeditdata)
 {
-    this->_datatypesdelegate = new DataTypesDelegate(hexeditdata);
     this->_datatypesmodel->setData(hexeditdata);
-
-    ui->dataTypesTable->setItemDelegate(this->_datatypesdelegate);
     ui->dataTypesTable->resizeRowsToContents();
 }
 

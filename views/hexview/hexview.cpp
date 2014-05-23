@@ -182,10 +182,12 @@ void HexView::onFormatParseFinished(FormatList::FormatId formatid, FormatTree *f
         this->_disassemblerdialog = nullptr;
     }
 
-    if(format.optionsCount() > 0)
+    FormatList::LoadedFormat& loadedformat = FormatList::loadedFormat(this->_hexeditdata);
+
+    if(loadedformat.optionsCount() > 0)
     {
         this->_tbformat->setPopupMode(QToolButton::MenuButtonPopup);
-        this->_tbformat->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, format));
+        this->_tbformat->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, loadedformat));
     }
     else
     {

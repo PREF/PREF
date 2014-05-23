@@ -19,7 +19,16 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
@@ -40,7 +49,7 @@
      <x>0</x>
      <y>0</y>
      <width>1025</width>
-     <height>22</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -58,13 +67,15 @@
      <addaction name="actionHex_File"/>
     </widget>
     <addaction name="action_Open"/>
-    <addaction name="menuImport"/>
+    <addaction name="actionDisassemble"/>
     <addaction name="actionCompare"/>
+    <addaction name="menuImport"/>
     <addaction name="separator"/>
     <addaction name="action_Save"/>
     <addaction name="action_Save_As"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
@@ -110,6 +121,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="action_Open"/>
+   <addaction name="actionDisassemble"/>
    <addaction name="actionCompare"/>
    <addaction name="action_Save"/>
    <addaction name="separator"/>
@@ -200,6 +212,15 @@
   <action name="actionSettings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="actionDisassemble">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/action_icons/res/cpu.png</normaloff>:/action_icons/res/cpu.png</iconset>
+   </property>
+   <property name="text">
+    <string>Disassemble</string>
    </property>
   </action>
  </widget>

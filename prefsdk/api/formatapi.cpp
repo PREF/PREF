@@ -9,9 +9,9 @@ namespace PrefSDK
             FormatList::registerFormat(QString::fromUtf8(name), QString::fromUtf8(category), QString::fromUtf8(author), QString::fromUtf8(version), formatid);
         }
 
-        void Format_registerOption(FormatList::FormatId formatid, int optionidx, const char *name)
+        void Format_registerOption(QHexEditData* hexeditdata, int optionidx, const char *name)
         {
-            FormatList::registerOption(formatid, optionidx, QString::fromUtf8(name));
+            FormatList::registerOption(hexeditdata, optionidx, QString::fromUtf8(name));
         }
 
         void Format_enableDisassembler(FormatList::FormatId formatid)

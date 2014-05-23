@@ -1,10 +1,10 @@
 #include "optionmenu.h"
 
-OptionMenu::OptionMenu(lua_State *l, QHexEdit* hexedit, FormatList::Format& format, QWidget *parent): QMenu(parent), _state(l), _hexedit(hexedit)
+OptionMenu::OptionMenu(lua_State *l, QHexEdit* hexedit, FormatList::LoadedFormat &loadedformat, QWidget *parent): QMenu(parent), _state(l), _hexedit(hexedit)
 {
-    for(int i = 0; i < format.optionsCount(); i++)
+    for(int i = 0; i < loadedformat.optionsCount(); i++)
     {
-        FormatList::Format::Option opt = format.option(i);
+        FormatList::LoadedFormat::Option opt = loadedformat.option(i);
         QAction* action = this->addAction(opt.name());
         action->setData(i);
     }
