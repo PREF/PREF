@@ -1,7 +1,7 @@
 #include "hexview.h"
 #include "ui_hexview.h"
 
-HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::HexView), _disassemblerdialog(nullptr), _hexeditdata(hexeditdata), _toolbar(nullptr), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::HexView), _hexeditdata(hexeditdata), _toolbar(nullptr), _entropyenabled(false)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -62,15 +62,12 @@ void HexView::createToolBar()
 
     this->_actbyteview = this->_toolbar->addAction(QIcon(":/action_icons/res/entropy.png"), "Map View");
     this->_actbyteview->setCheckable(true);
-    this->_actdisassembler = this->_toolbar->addAction(QIcon(":/action_icons/res/cpu.png"), "Disassembler");
-    this->_actdisassembler->setVisible(false);
 
     this->_toolbar->addSeparator();
     this->_toolbar->createActions(ui->actionWidget, ActionToolBar::AllActions);
 
     connect(this->_tbformat, SIGNAL(clicked()), ui->formatWidget, SLOT(loadFormat()));
     connect(this->_actbyteview, SIGNAL(triggered()), this, SLOT(onMapViewTriggered()));
-    connect(this->_actdisassembler, SIGNAL(triggered()), this, SLOT(onDisassemblerTriggered()));
 
     QVBoxLayout* vl = new QVBoxLayout();
     vl->setContentsMargins(0, 0, 0, 0);
@@ -135,17 +132,6 @@ void HexView::onMapViewTriggered()
         ui->binaryNavigator->displayDefault();
 }
 
-void HexView::onDisassemblerTriggered()
-{
-    if(!this->_disassemblerdialog)
-        return;
-
-    if(this->_disassemblerdialog->isVisible())
-        this->_disassemblerdialog->raise();
-    else
-        this->_disassemblerdialog->show();
-}
-
 void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
 {
     QPoint newpos = ui->hexEdit->mapToGlobal(pos);
@@ -158,28 +144,11 @@ void HexView::onFormatParseFinished(FormatList::FormatId formatid, FormatTree *f
 
     if(!formatid || !formattree)
     {
-        this->_actdisassembler->setVisible(false);
-        this->_disassemblerdialog = nullptr;
-
         this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
         this->_tbformat->setMenu(nullptr);
 
         ui->formatWidget->resetData();
         return;
-    }
-
-    FormatList::Format& format = FormatList::formatFromId(formatid);
-
-    if(format.canDisassemble())
-    {
-        this->_disassemblerdialog = new DisassemblerDialog(this->_hexeditdata, formattree, this);
-        this->_disassemblerdialog->setWindowTitle(QString("'%1' Disassembly").arg(this->viewName()));
-        this->_actdisassembler->setVisible(true);
-    }
-    else
-    {
-        this->_actdisassembler->setVisible(false);
-        this->_disassemblerdialog = nullptr;
     }
 
     FormatList::LoadedFormat& loadedformat = FormatList::loadedFormat(this->_hexeditdata);

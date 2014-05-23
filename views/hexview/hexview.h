@@ -10,7 +10,6 @@
 #include "views/hexview/optionmenu.h"
 #include "datatypeswidget/datatypeswidget.h"
 #include "prefsdk/sdkmanager.h"
-#include "disassemblerdialog/disassemblerdialog.h"
 
 using namespace PrefSDK;
 
@@ -42,20 +41,17 @@ class HexView : public AbstractView
         void onWorkStarted();
         void onWorkFinished();
         void onMapViewTriggered();
-        void onDisassemblerTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onFormatParseFinished(FormatList::FormatId formatid, FormatTree* formattree);
         void disableFormatButton();
 
     private:
         Ui::HexView *ui;
-        DisassemblerDialog* _disassemblerdialog;
         QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;
         QToolButton* _tbformat;
         QAction* _actbyteview;
         QAction* _actbinaryview;
-        QAction* _actdisassembler;
         QColor _signaturecolor;
         bool _entropyenabled;
 };
