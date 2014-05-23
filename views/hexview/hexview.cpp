@@ -6,7 +6,6 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
-    ui->dataTypesWidget->setData(hexeditdata);
     ui->hexEdit->setData(hexeditdata);
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
@@ -82,6 +81,7 @@ void HexView::createToolBar()
 
 void HexView::inspectData(QHexEditData *hexeditdata)
 {
+    ui->dataTypesWidget->setData(hexeditdata);
     ui->visualMapWidget->map(ui->hexEdit);
     ui->binaryNavigator->setData(ui->hexEdit);
     ui->chartWidget->plot(hexeditdata);
