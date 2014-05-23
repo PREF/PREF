@@ -7,6 +7,8 @@
 #include "debugdialog/debugdialog.h"
 #include "prefsdk/sdkmanager.h"
 #include "views/hexview/hexview.h"
+#include "views/disassemblerview/disassemblerview.h"
+#include "views/disassemblerview/disassemblerdialog/disassemblerdialog.h"
 #include "views/compareview/compareview.h"
 #include "views/compareview/comparedialog/comparedialog.h"
 #include "signaturedatabasedialog/signaturedatabasedialog.h"
@@ -33,13 +35,13 @@ class MainWindow : public QMainWindow
     private:
         void checkCommandLine();
         bool closeApplication();
-        void enableMenuAndActions(bool b);
+        void setSaveVisible(bool b);
         void centerWindowToScreen();
         void adjustSplitterPosition();
 
     private slots:
         void loadFile(QString file);
-        void on_action_Open_triggered();
+        void on_action_Analyze_triggered();
         void on_action_Save_As_triggered();
         void on_action_Save_triggered();
         void on_actionExit_triggered();
@@ -49,6 +51,7 @@ class MainWindow : public QMainWindow
         void on_tabWidget_currentChanged(int index);
         void on_actionSignature_DB_triggered();
         void on_actionHex_File_triggered();
+        void on_actionDisassemble_triggered();
 
     private:
         Ui::MainWindow *ui;

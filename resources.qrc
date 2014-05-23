@@ -24,6 +24,7 @@
         <file>res/import.png</file>
         <file>res/binview.png</file>
         <file>res/cpu.png</file>
+        <file>res/analyze.png</file>
     </qresource>
     <qresource prefix="/app_icons">
         <file>res/app.png</file>

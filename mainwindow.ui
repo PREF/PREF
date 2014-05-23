@@ -66,7 +66,7 @@
      </property>
      <addaction name="actionHex_File"/>
     </widget>
-    <addaction name="action_Open"/>
+    <addaction name="action_Analyze"/>
     <addaction name="actionDisassemble"/>
     <addaction name="actionCompare"/>
     <addaction name="menuImport"/>
@@ -120,7 +120,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_Open"/>
+   <addaction name="action_Analyze"/>
    <addaction name="actionDisassemble"/>
    <addaction name="actionCompare"/>
    <addaction name="action_Save"/>
@@ -130,22 +130,25 @@
    <addaction name="actionAbout_PREF"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="action_Open">
+  <action name="action_Analyze">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/action_icons/res/open.png</normaloff>:/action_icons/res/open.png</iconset>
+     <normaloff>:/action_icons/res/analyze.png</normaloff>:/action_icons/res/analyze.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Open</string>
+    <string>&amp;Analyze</string>
+   </property>
+   <property name="iconText">
+    <string>Analyze</string>
+   </property>
+   <property name="toolTip">
+    <string>Analyze</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
   </action>
   <action name="action_Save">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
      <normaloff>:/action_icons/res/save.png</normaloff>:/action_icons/res/save.png</iconset>
@@ -156,13 +159,16 @@
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
-  </action>
-  <action name="action_Save_As">
-   <property name="enabled">
+   <property name="visible">
     <bool>false</bool>
    </property>
+  </action>
+  <action name="action_Save_As">
    <property name="text">
     <string>Save As...</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionExit">

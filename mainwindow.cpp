@@ -100,10 +100,10 @@ void MainWindow::loadFile(QString file)
     ui->tabWidget->addTab(fv, viewname);
 }
 
-void MainWindow::enableMenuAndActions(bool b)
+void MainWindow::setSaveVisible(bool b)
 {
-    ui->action_Save->setEnabled(b);
-    ui->action_Save_As->setEnabled(b);
+    ui->action_Save->setVisible(b);
+    ui->action_Save_As->setVisible(b);
 }
 
 void MainWindow::centerWindowToScreen()
@@ -114,7 +114,7 @@ void MainWindow::centerWindowToScreen()
     move(position.topLeft());
 }
 
-void MainWindow::on_action_Open_triggered()
+void MainWindow::on_action_Analyze_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this, "Load a file...");
 
@@ -139,7 +139,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
             if(ui->tabWidget->count() == 1)
             {
                 this->_lblinfo->clear(); /* Clear Status Bar Information */
-                this->enableMenuAndActions(false);
+                this->setSaveVisible(false);
             }
 
             ui->tabWidget->widget(index)->deleteLater(); /* Shedule object for deletion */
@@ -214,13 +214,13 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 {
     if(index == -1)
     {
-        this->enableMenuAndActions(false);
+        this->setSaveVisible(false);
         return;
     }
 
     AbstractView* av = dynamic_cast<AbstractView*>(ui->tabWidget->widget(index));
     av->updateStatusBar();
-    this->enableMenuAndActions(av->canSave());
+    this->setSaveVisible(av->canSave());
 }
 
 void MainWindow::on_actionSignature_DB_triggered()
@@ -231,17 +231,35 @@ void MainWindow::on_actionSignature_DB_triggered()
 
 void MainWindow::on_actionHex_File_triggered()
 {
-    QString s = QFileDialog::getOpenFileName(this, "Import hex file...");
+    QString file = QFileDialog::getOpenFileName(this, "Import Hex file...");
 
-    if(!s.isEmpty())
+    if(!file.isEmpty())
     {
-        QFile f(s);
+        QFile f(file);
         f.open(QIODevice::ReadOnly);
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
-        QString viewname = QFileInfo(s).fileName();
+        QString viewname = QFileInfo(file).fileName();
         HexView* fv = new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, ui->tabWidget);
         ui->tabWidget->addTab(fv, viewname);
+    }
+}
+
+void MainWindow::on_actionDisassemble_triggered()
+{
+    QString file = QFileDialog::getOpenFileName(this, "Disassemble File...");
+
+    if(!file.isEmpty())
+    {
+        DisassemblerDialog dd(this);
+        int res = dd.exec();
+
+        if(res == DisassemblerDialog::Accepted)
+        {
+            QString viewname = QFileInfo(file).fileName();
+            DisassemblerView* dv = new DisassemblerView(QHexEditData::fromFile(file), viewname, this->_lblinfo, ui->tabWidget);
+            ui->tabWidget->addTab(dv, viewname);
+        }
     }
 }
