@@ -18,7 +18,7 @@ QWidget* VisualMapDelegate::createEditor(QWidget *parent, const QStyleOptionView
     QNumberSpinBox* nsb = new QNumberSpinBox(parent);
     nsb->setMinimum(0);
 
-    if(index.row() == (index.model()->columnCount() - 1))
+    if(index.row() == (index.model()->rowCount() - 1))
         nsb->setMaximum(4096);
     else
         nsb->setMaximum(this->_hexeditdata->length());
