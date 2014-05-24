@@ -25,6 +25,8 @@
         <file>res/binview.png</file>
         <file>res/cpu.png</file>
         <file>res/analyze.png</file>
+        <file>res/segments.png</file>
+        <file>res/entry.png</file>
     </qresource>
     <qresource prefix="/app_icons">
         <file>res/app.png</file>
@@ -33,7 +35,6 @@
         <file>res/base.png</file>
         <file>res/byteorder.png</file>
         <file>res/histogram.png</file>
-        <file>res/disassemble.png</file>
         <file>res/formatoptions.png</file>
         <file>res/stop.png</file>
         <file>res/start.png</file>

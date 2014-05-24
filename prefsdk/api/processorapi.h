@@ -45,6 +45,7 @@ namespace PrefSDK
         {
             /* Loader's API */
             void Loader_register(const char* name, const char* author, const char* version, LoaderList::LoaderId loaderid);
+            void Loader_addSegment(QHexEditData* hexeditdata, const char *name, int64_t startaddress, int64_t endaddress, int64_t baseaddress);
 
             /* LoaderModel's API */
             void LoaderModel_setValid(LoaderListModel* __this, LoaderList::LoaderId loaderid);

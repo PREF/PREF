@@ -34,11 +34,6 @@ void DisassemblerWidget::setData(QHexEditData *hexeditdata)
     this->_disasmwidget_p->setData(hexeditdata);
 }
 
-void DisassemblerWidget::setLoader(const ProcessorLoader &dl)
-{
-    this->_disasmwidget_p->setLoader(dl);
-}
-
 void DisassemblerWidget::gotoVA(quint64 va)
 {
     this->_disasmwidget_p->gotoVA(va);

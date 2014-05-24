@@ -11,7 +11,6 @@ class DisassemblerWidget : public QFrame
         explicit DisassemblerWidget(QWidget *parent = 0);
         void setInstructionCount(quint64 instructioncount);
         void setData(QHexEditData* hexeditdata);
-        void setLoader(const ProcessorLoader& dl);
         void gotoVA(quint64 va);
         void gotoEP();
 

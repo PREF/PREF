@@ -47,6 +47,8 @@ class DisassemblerView : public AbstractView
         QHexEditData* _hexeditdata;
         LoaderList::LoaderId _loaderid;
         QToolBar* _toolbar;
+        QAction* _actsegments;
+        QAction* _actentrypoints;
         QAction* _actgoto;
         QMenu* _functionsmenu;
 };

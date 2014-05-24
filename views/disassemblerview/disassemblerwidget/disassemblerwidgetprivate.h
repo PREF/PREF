@@ -6,7 +6,6 @@
 #include <QtWidgets>
 #include "prefsdk/sdkmanager.h"
 #include "prefsdk/format/formatlist.h"
-#include "prefsdk/disassembler/processorloader.h"
 #include "views/disassemblerview/disassemblerwidget/disassemblerdrawer.h"
 
 using namespace PrefSDK;
@@ -21,7 +20,6 @@ class DisassemblerWidgetPrivate : public QWidget
         void setData(QHexEditData* hexeditdata);
         void gotoVA(quint64 va);
         void gotoEP();
-        void setLoader(const ProcessorLoader& dl);
 
     private:
         void adjust();
@@ -39,7 +37,6 @@ class DisassemblerWidgetPrivate : public QWidget
         virtual void keyPressEvent(QKeyEvent* e);
 
     private:
-        ProcessorLoader _loader;
         FormatList::LoadedFormat _loadedformat;
         QHexEditData* _hexeditdata;
         QScrollArea* _scrollArea;

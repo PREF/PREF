@@ -8,11 +8,14 @@ DisassemblerView::DisassemblerView(QHexEditData *hexeditdata, LoaderList::Loader
 
     this->_toolbar = new QToolBar();
     this->_toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    this->_toolbar->setEnabled(false);
     ui->verticalLayout_2->insertWidget(0, this->_toolbar);
     this->createFunctionsMenu();
 
+    this->_actentrypoints = this->_toolbar->addAction(QIcon(":/action_icons/res/entry.png"), "Entry Points");
+    this->_actsegments = this->_toolbar->addAction(QIcon(":/action_icons/res/segments.png"), "Segments");
+    this->_toolbar->addSeparator();
     this->_actgoto = this->_toolbar->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
-    this->_actgoto->setEnabled(false);
 
     this->_functionrefs = new FunctionOffsetModel(ui->tvFunctions);
     this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
@@ -106,7 +109,7 @@ void DisassemblerView::onFunctionsMenuXRefsTriggered()
 
 void DisassemblerView::displayDisassembly(qint64 instructionscount)
 {
-    this->_actgoto->setEnabled(true);
+    this->_toolbar->setEnabled(true);
     ui->disassemblerWidget->setInstructionCount(instructionscount);
     ui->disassemblerWidget->setData(this->_hexeditdata);
 

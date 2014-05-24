@@ -101,7 +101,6 @@ SOURCES += main.cpp\
     prefsdk/api/exporterapi.cpp \
     prefsdk/exporter/exporterlist.cpp \
     viewmodels/exportmodel/exportermodel.cpp \
-    prefsdk/disassembler/processorloader.cpp \
     prefsdk/api/processorapi.cpp \
     prefsdk/disassembler/disassembler.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerdrawer.cpp \
@@ -227,7 +226,6 @@ HEADERS  += mainwindow.h \
     prefsdk/api/exporterapi.h \
     viewmodels/exportmodel/exportermodel.h \
     prefsdk/exporter/exporterlist.h \
-    prefsdk/disassembler/processorloader.h \
     prefsdk/api/processorapi.h \
     views/disassemblerview/disassemblerwidget/disassemblerdrawer.h \
     prefsdk/api/prefuiapi.h \

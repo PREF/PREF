@@ -1,7 +1,6 @@
 #ifndef DISASSEMBLER_H
 #define DISASSEMBLER_H
 
-#include "processorloader.h"
 #include "loader/loaderlist.h"
 
 namespace PrefSDK

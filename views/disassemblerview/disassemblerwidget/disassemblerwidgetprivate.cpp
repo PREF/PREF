@@ -72,11 +72,6 @@ void DisassemblerWidgetPrivate::gotoEP()
     */
 }
 
-void DisassemblerWidgetPrivate::setLoader(const ProcessorLoader &dl)
-{
-    this->_loader = dl;
-}
-
 void DisassemblerWidgetPrivate::adjust()
 {
     QFontMetrics fm = this->fontMetrics();

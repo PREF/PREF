@@ -9,6 +9,12 @@ namespace PrefSDK
             LoaderList::registerLoader(QString::fromUtf8(name), QString::fromUtf8(author), QString::fromUtf8(version), loaderid);
         }
 
+        void Loader_addSegment(QHexEditData *hexeditdata, const char* name, int64_t startaddress, int64_t endaddress, int64_t baseaddress)
+        {
+            LoaderList::LoadedLoader& ll = LoaderList::loadedLoader(hexeditdata);
+            ll.addSegment(QString::fromUtf8(name), startaddress, endaddress, baseaddress);
+        }
+
         void LoaderModel_setValid(LoaderListModel *__this, LoaderList::LoaderId loaderid)
         {
             __this->setValid(loaderid);
