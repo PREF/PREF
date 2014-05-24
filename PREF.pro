@@ -34,11 +34,11 @@ SOURCES += main.cpp\
     viewmodels/formatmodel/formatmodel.cpp \
     viewmodels/stringoffsetmodel/stringoffsetmodel.cpp \
     viewmodels/functionoffsetmodel/functionoffsetmodel.cpp \
-    views/hexview/disassemblerdialog/crossreferencedialog/crossreferencedialog.cpp \
+    views/disassemblerview/crossreferencedialog/crossreferencedialog.cpp \
     viewmodels/crossreferencemodel/crossreferencemodel.cpp \
-    views/hexview/disassemblerdialog/disassemblerview/disassemblerview.cpp \
-    views/hexview/disassemblerdialog/disassemblerview/disassemblerviewprivate.cpp \
-    views/hexview/disassemblerdialog/datamapview/datamapview.cpp \
+    views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
+    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
+    views/disassemblerview/datamapview/datamapview.cpp \
     viewmodels/datamapmodel/datamapmodel.cpp \
     prefsdk/format/formatlist.cpp \
     views/hexview/formatwidget/formatsdialog/formatsdialog.cpp \
@@ -104,7 +104,7 @@ SOURCES += main.cpp\
     prefsdk/disassembler/processorloader.cpp \
     prefsdk/api/processorapi.cpp \
     prefsdk/disassembler/disassembler.cpp \
-    views/hexview/disassemblerdialog/disassemblerview/disassemblerviewdrawer.cpp \
+    views/disassemblerview/disassemblerwidget/disassemblerdrawer.cpp \
     prefsdk/api/prefuiapi.cpp \
     views/hexview/optionmenu.cpp \
     prefsdk/ui/models/tablemodel.cpp \
@@ -120,7 +120,6 @@ SOURCES += main.cpp\
     views/hexview/signatureswidget/signatureswidget.cpp \
     viewmodels/signaturesmodel/signaturesmodel.cpp \
     views/hexview/signatureswidget/signaturesworker.cpp \
-    views/hexview/disassemblerdialog/disassemblerdialog.cpp \
     views/compareview/compareworker.cpp \
     viewmodels/comparemodel/comparemodel.cpp \
     views/hexview/workertab.cpp \
@@ -134,7 +133,11 @@ SOURCES += main.cpp\
     views/hexview/visualmapwidget/visualmapwidget.cpp \
     viewmodels/visualmapmodel/visualmapmodel.cpp \
     viewmodels/visualmapmodel/visualmapdelegate.cpp \
-    viewmodels/datatypesmodel/datatypesdelegate.cpp
+    viewmodels/datatypesmodel/datatypesdelegate.cpp \
+    views/disassemblerview/disassemblerview.cpp \
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.cpp \
+    prefsdk/disassembler/loader/loaderlist.cpp \
+    viewmodels/loaderlistmodel/loaderlistmodel.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -154,12 +157,12 @@ HEADERS  += mainwindow.h \
     viewmodels/formatmodel/formatmodel.h \
     viewmodels/stringoffsetmodel/stringoffsetmodel.h \
     viewmodels/functionoffsetmodel/functionoffsetmodel.h \
-    views/hexview/disassemblerdialog/crossreferencedialog/crossreferencedialog.h \
+    views/disassemblerview/crossreferencedialog/crossreferencedialog.h \
     viewmodels/crossreferencemodel/crossreferencemodel.h \
-    views/hexview/disassemblerdialog/disassemblerview/disassemblerview.h \
-    views/hexview/disassemblerdialog/disassemblerview/disassemblerviewprivate.h \
+    views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
+    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     prefsdk/disassembler/disassembler.h \
-    views/hexview/disassemblerdialog/datamapview/datamapview.h \
+    views/disassemblerview/datamapview/datamapview.h \
     viewmodels/datamapmodel/datamapmodel.h \
     prefsdk/format/formatlist.h \
     views/hexview/formatwidget/formatsdialog/formatsdialog.h \
@@ -226,7 +229,7 @@ HEADERS  += mainwindow.h \
     prefsdk/exporter/exporterlist.h \
     prefsdk/disassembler/processorloader.h \
     prefsdk/api/processorapi.h \
-    views/hexview/disassemblerdialog/disassemblerview/disassemblerviewdrawer.h \
+    views/disassemblerview/disassemblerwidget/disassemblerdrawer.h \
     prefsdk/api/prefuiapi.h \
     views/hexview/optionmenu.h \
     prefsdk/ui/models/tablemodel.h \
@@ -242,7 +245,6 @@ HEADERS  += mainwindow.h \
     views/hexview/signatureswidget/signatureswidget.h \
     viewmodels/signaturesmodel/signaturesmodel.h \
     views/hexview/signatureswidget/signaturesworker.h \
-    views/hexview/disassemblerdialog/disassemblerdialog.h \
     views/compareview/compareworker.h \
     viewmodels/comparemodel/comparemodel.h \
     views/hexview/workertab.h \
@@ -256,15 +258,19 @@ HEADERS  += mainwindow.h \
     views/hexview/visualmapwidget/visualmapwidget.h \
     viewmodels/visualmapmodel/visualmapmodel.h \
     viewmodels/visualmapmodel/visualmapdelegate.h \
-    viewmodels/datatypesmodel/datatypesdelegate.h
+    viewmodels/datatypesmodel/datatypesdelegate.h \
+    views/disassemblerview/disassemblerview.h \
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.h \
+    prefsdk/disassembler/loader/loaderlist.h \
+    viewmodels/loaderlistmodel/loaderlistmodel.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
     views/hexview/datatypeswidget/datatypeswidget.ui \
     aboutdialog.ui \
     exportdialog.ui \
-    views/hexview/disassemblerdialog/crossreferencedialog/crossreferencedialog.ui \
-    views/hexview/disassemblerdialog/datamapview/datamapview.ui \
+    views/disassemblerview/crossreferencedialog/crossreferencedialog.ui \
+    views/disassemblerview/datamapview/datamapview.ui \
     views/hexview/formatwidget/formatsdialog/formatsdialog.ui \
     debugdialog/debugdialog.ui \
     formatoptionsdialog.ui \
@@ -279,10 +285,11 @@ FORMS    += mainwindow.ui \
     views/hexview/hexview.ui \
     views/hexview/stringswidget/stringswidget.ui \
     views/hexview/signatureswidget/signatureswidget.ui \
-    views/hexview/disassemblerdialog/disassemblerdialog.ui \
     views/hexview/formatwidget/formatwidget.ui \
     views/hexview/bytecolorsdialog/bytecolorsdialog.ui \
-    views/hexview/visualmapwidget/visualmapwidget.ui
+    views/hexview/visualmapwidget/visualmapwidget.ui \
+    views/disassemblerview/disassemblerview.ui \
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui
 
 RESOURCES += resources.qrc
 

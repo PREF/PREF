@@ -103,6 +103,7 @@ namespace PrefSDK
 
         FormatList::load(SDKManager::_state);
         ExporterList::load(SDKManager::_state);
+        LoaderList::load(SDKManager::_state);
 
         SQLite::SQLiteDatabase::initialize();
         SignatureDatabase::load();

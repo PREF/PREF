@@ -1,6 +1,7 @@
 #ifndef PREFSDK_API_FORMATAPI_H
 #define PREFSDK_API_FORMATAPI_H
 
+#include "prefsdk/sdkmanager.h"
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/format/formattree.h"
@@ -24,6 +25,7 @@ namespace PrefSDK
             bool Format_checkInt64(QHexEditDataReader* hexeditdata, uint64_t offset, int64_t value, int byteorder);
             bool Format_checkAsciiString(QHexEditDataReader *reader, uint64_t offset, const char* value);
 
+            FormatTree* FormatTree_create(QHexEditData *hexeditdata, int64_t baseoffset);
             Structure* FormatTree_addStructure(FormatTree* __this, const char* name);
             Structure* FormatTree_insertStructure(FormatTree* __this, const char* name, int64_t offset);
             Structure* FormatTree_getStructure(FormatTree* __this, uint64_t i);

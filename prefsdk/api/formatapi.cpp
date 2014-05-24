@@ -201,5 +201,10 @@ namespace PrefSDK
         {
             __this->setDynamic(b);
         }
+
+        FormatTree *FormatTree_create(QHexEditData* hexeditdata, int64_t baseoffset)
+        {
+            return new FormatTree(SDKManager::state(), hexeditdata, baseoffset);
+        }
     }
 }

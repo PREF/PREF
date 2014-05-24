@@ -4,7 +4,8 @@
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/disassembler.h"
-#include "views/hexview/disassemblerdialog/disassemblerview/disassemblerviewdrawer.h"
+#include "viewmodels/loaderlistmodel/loaderlistmodel.h"
+#include "views/disassemblerview/disassemblerwidget/disassemblerdrawer.h"
 
 namespace PrefSDK
 {
@@ -42,14 +43,20 @@ namespace PrefSDK
 
         extern "C"
         {
+            /* Loader's API */
+            void Loader_register(const char* name, const char* author, const char* version, LoaderList::LoaderId loaderid);
+
+            /* LoaderModel's API */
+            void LoaderModel_setValid(LoaderListModel* __this, LoaderList::LoaderId loaderid);
+
             /* DisassemblerView's API */
-            void DisassemblerDrawer_drawVirtualAddress(DisassemblerViewDrawer* __this, const char* segmentname, const char* address);
-            void DisassemblerDrawer_drawHexDump(DisassemblerViewDrawer* __this, uint64_t offset, int dumplength, int maxwidth);
-            void DisassemblerDrawer_drawMnemonic(DisassemblerViewDrawer* __this, int width, const char* mnemonic, int instructionfeatures);
-            void DisassemblerDrawer_drawImmediate(DisassemblerViewDrawer* __this, const char* s);
-            void DisassemblerDrawer_drawAddress(DisassemblerViewDrawer* __this, const char* s);
-            void DisassemblerDrawer_drawRegister(DisassemblerViewDrawer* __this, const char* s);
-            void DisassemblerDrawer_drawString(DisassemblerViewDrawer* __this, const char* s);
+            void DisassemblerDrawer_drawVirtualAddress(DisassemblerDrawer* __this, const char* segmentname, const char* address);
+            void DisassemblerDrawer_drawHexDump(DisassemblerDrawer* __this, uint64_t offset, int dumplength, int maxwidth);
+            void DisassemblerDrawer_drawMnemonic(DisassemblerDrawer* __this, int width, const char* mnemonic, int instructionfeatures);
+            void DisassemblerDrawer_drawImmediate(DisassemblerDrawer* __this, const char* s);
+            void DisassemblerDrawer_drawAddress(DisassemblerDrawer* __this, const char* s);
+            void DisassemblerDrawer_drawRegister(DisassemblerDrawer* __this, const char* s);
+            void DisassemblerDrawer_drawString(DisassemblerDrawer* __this, const char* s);
         }
     }
 }

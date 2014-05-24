@@ -1,7 +1,7 @@
-#include "disassemblerdialog.h"
-#include "ui_disassemblerdialog.h"
+#include "disassemblerview.h"
+#include "ui_disassemblerview.h"
 
-DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, FormatTree *formattree, QWidget *parent): QDialog(parent), ui(new Ui::DisassemblerDialog), _formattree(formattree), _hexeditdata(hexeditdata)
+DisassemblerView::DisassemblerView(QHexEditData *hexeditdata, LoaderList::LoaderId loaderid, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _hexeditdata(hexeditdata), _loaderid(loaderid)
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(0, 1);
@@ -23,18 +23,22 @@ DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, FormatTree *fo
     this->disassemble();
 }
 
-DisassemblerDialog::~DisassemblerDialog()
+DisassemblerView::~DisassemblerView()
 {
     delete ui;
 }
 
-void DisassemblerDialog::closeEvent(QCloseEvent *event)
+bool DisassemblerView::canSave() const
 {
-    this->hide();
-    event->ignore();
+    return false;
 }
 
-void DisassemblerDialog::createFunctionsMenu()
+void DisassemblerView::updateStatusBar()
+{
+    this->updateInfoText(QString());
+}
+
+void DisassemblerView::createFunctionsMenu()
 {
     this->_functionsmenu = new QMenu();
     QAction* actgoto = this->_functionsmenu->addAction("Goto Address");
@@ -44,7 +48,7 @@ void DisassemblerDialog::createFunctionsMenu()
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
 
-void DisassemblerDialog::disassemble()
+void DisassemblerView::disassemble()
 {
     if(!this->_hexeditdata)
         return;
@@ -55,9 +59,10 @@ void DisassemblerDialog::disassemble()
     lua_State* thread = lua_newthread(l);
 
     lua_getglobal(thread, "Sdk");
-    lua_getfield(thread, -1, "disassembleFormat");
+    lua_getfield(thread, -1, "disassembleData");
     lua_pushlightuserdata(thread, this->_hexeditdata);
-    int res = lua_resume(thread, 1);
+    lua_pushstring(thread, this->_loaderid);
+    int res = lua_resume(thread, 2);
 
     if(res)
         DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(thread, -1)));
@@ -70,7 +75,19 @@ void DisassemblerDialog::disassemble()
     this->displayDisassembly(instructionscount);
 }
 
-void DisassemblerDialog::onFunctionsMenuXRefsTriggered()
+void DisassemblerView::on_tvFunctions_customContextMenuRequested(const QPoint &pos)
+{
+    if(ui->tvFunctions->selectionModel())
+        this->_functionsmenu->exec(ui->tvFunctions->mapToGlobal(pos));
+}
+
+void DisassemblerView::on_tvFunctions_doubleClicked(const QModelIndex &index)
+{
+    if(index.isValid())
+        this->selectVA();
+}
+
+void DisassemblerView::onFunctionsMenuXRefsTriggered()
 {
     QItemSelectionModel* model = ui->tvFunctions->selectionModel();
     QModelIndex index = model->currentIndex();
@@ -83,11 +100,35 @@ void DisassemblerDialog::onFunctionsMenuXRefsTriggered()
         //int res = crd.exec();
 
         //if(res == CrossReferenceDialog::Accepted)
-            //ui->disassemblyView->gotoVA(crd.instruction().VirtualAddress);
+            //ui->disassemblerWidget->gotoVA(crd.instruction().VirtualAddress);
     }
 }
 
-void DisassemblerDialog::selectVA()
+void DisassemblerView::displayDisassembly(qint64 instructionscount)
+{
+    this->_actgoto->setEnabled(true);
+    ui->disassemblerWidget->setInstructionCount(instructionscount);
+    ui->disassemblerWidget->setData(this->_hexeditdata);
+
+    for(int i = 0; i < ui->tvFunctions->model()->columnCount(); i++)
+        ui->tvFunctions->resizeColumnToContents(i);
+
+    /* Disassembly Page */
+    //ui->disassemblerWidget->setListing(this->_disasmhelper->listing());
+    //ui->disassemblerWidget->gotoEP();
+
+    /* Function Reference Part */
+    //this->_functionrefs->setListing(this->_disasmlisting_old);
+
+    /* String Reference Part */
+    //this->_stringrefs->setListing(this->_disasmlisting_old);
+
+    /* DataMap Page */
+    //ui->dataMapView->setListing(this->_disasmlisting_old);
+    //ui->dataMapView->setHexEditData(this->_hexeditdata)
+}
+
+void DisassemblerView::selectVA()
 {
     QItemSelectionModel* model = ui->tvFunctions->selectionModel();
 
@@ -100,41 +141,5 @@ void DisassemblerDialog::selectVA()
         return;
 
     //DisassembledInstruction func = this->_disasmlisting->function(index.row());
-    //ui->disassemblyView->gotoVA(func.VirtualAddress);
-}
-
-void DisassemblerDialog::on_tvFunctions_customContextMenuRequested(const QPoint &pos)
-{
-    if(ui->tvFunctions->selectionModel())
-        this->_functionsmenu->exec(ui->tvFunctions->mapToGlobal(pos));
-}
-
-void DisassemblerDialog::displayDisassembly(qint64 instructionscount)
-{
-    this->_actgoto->setEnabled(true);
-    ui->disassemblyView->setInstructionCount(instructionscount);
-    ui->disassemblyView->setData(this->_hexeditdata);
-
-    for(int i = 0; i < ui->tvFunctions->model()->columnCount(); i++)
-        ui->tvFunctions->resizeColumnToContents(i);
-
-    /* Disassembly Page */
-    //ui->disassemblyView->setListing(this->_disasmhelper->listing());
-    //ui->disassemblyView->gotoEP();
-
-    /* Function Reference Part */
-    //this->_functionrefs->setListing(this->_disasmlisting_old);
-
-    /* String Reference Part */
-    //this->_stringrefs->setListing(this->_disasmlisting_old);
-
-    /* DataMap Page */
-    //ui->dataMapView->setListing(this->_disasmlisting_old);
-    //ui->dataMapView->setHexEditData(this->_hexeditdata);
-}
-
-void DisassemblerDialog::on_tvFunctions_doubleClicked(const QModelIndex &index)
-{
-    if(index.isValid())
-        this->selectVA();
+    //ui->disassemblerWidget->gotoVA(func.VirtualAddress);
 }

@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DisassemblerDialog</class>
- <widget class="QDialog" name="DisassemblerDialog">
+ <class>DisassemblerView</class>
+ <widget class="QWidget" name="DisassemblerView">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>847</width>
-    <height>560</height>
+    <width>1006</width>
+    <height>621</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
-    <number>4</number>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
    </property>
    <item>
     <widget class="QTabWidget" name="tabMain">
@@ -33,7 +42,16 @@
        <string>Disassembly</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -41,7 +59,7 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <widget class="DisassemblerView" name="disassemblyView"/>
+         <widget class="DisassemblerWidget" name="disassemblerWidget"/>
          <widget class="QTabWidget" name="tabWidget">
           <property name="minimumSize">
            <size>
@@ -57,14 +75,23 @@
           </property>
           <widget class="QWidget" name="tabFunctions">
            <attribute name="icon">
-            <iconset resource="../../../resources.qrc">
+            <iconset resource="../../resources.qrc">
              <normaloff>:/format_icons/res/method.png</normaloff>:/format_icons/res/method.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Functions</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -99,14 +126,23 @@
           </widget>
           <widget class="QWidget" name="tabStrings">
            <attribute name="icon">
-            <iconset resource="../../../resources.qrc">
+            <iconset resource="../../resources.qrc">
              <normaloff>:/misc_icons/res/disassemble.png</normaloff>:/misc_icons/res/disassemble.png</iconset>
            </attribute>
            <attribute name="title">
             <string>Strings</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -137,7 +173,16 @@
        <string>Data Map</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
@@ -151,19 +196,19 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>DisassemblerView</class>
+   <class>DisassemblerWidget</class>
    <extends>QPlainTextEdit</extends>
-   <header>views/hexview/disassemblerdialog/disassemblerview/disassemblerview.h</header>
+   <header>views/disassemblerview/disassemblerwidget/disassemblerwidget.h</header>
   </customwidget>
   <customwidget>
    <class>DataMapView</class>
    <extends>QWidget</extends>
-   <header>views/hexview/disassemblerdialog/datamapview/datamapview.h</header>
+   <header>views/disassemblerview/datamapview/datamapview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../../resources.qrc"/>
+  <include location="../../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

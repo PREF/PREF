@@ -1,38 +1,37 @@
-#ifndef DISASSEMBLERDIALOG_H
-#define DISASSEMBLERDIALOG_H
+#ifndef DISASSEMBLERVIEW_H
+#define DISASSEMBLERVIEW_H
 
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include <lua.hpp>
-#include "prefsdk/sdkmanager.h"
-#include "prefsdk/format/formattree.h"
-#include "prefsdk/format/formatlist.h"
-#include "prefsdk/disassembler/disassembler.h"
+#include "views/abstractview.h"
+#include "qhexedit/qhexeditdata.h"
 #include "crossreferencedialog/crossreferencedialog.h"
 #include "viewmodels/functionoffsetmodel/functionoffsetmodel.h"
 #include "viewmodels/stringoffsetmodel/stringoffsetmodel.h"
+#include "prefsdk/disassembler/disassembler.h"
 
 using namespace PrefSDK;
 
 namespace Ui {
-class DisassemblerDialog;
+class DisassemblerView;
 }
 
-class DisassemblerDialog : public QDialog
+class DisassemblerView : public AbstractView
 {
     Q_OBJECT
 
     public:
-        explicit DisassemblerDialog(QHexEditData *hexeditdata, FormatTree* formattree, QWidget *parent = 0);
-        ~DisassemblerDialog();
+        explicit DisassemblerView(QHexEditData* hexeditdata, LoaderList::LoaderId loaderid, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
+        ~DisassemblerView();
+
+    public: /* Overriden Methods */
+        virtual bool canSave() const;
+        virtual void updateStatusBar();
 
     private:
         void createFunctionsMenu();
         void disassemble();
-
-    protected:
-        virtual void closeEvent(QCloseEvent* event);
 
     private slots:
         void on_tvFunctions_customContextMenuRequested(const QPoint &pos);
@@ -42,14 +41,14 @@ class DisassemblerDialog : public QDialog
         void selectVA();
 
     private:
-        Ui::DisassemblerDialog *ui;
-        FormatTree* _formattree;
+        Ui::DisassemblerView *ui;
         StringOffsetModel* _stringrefs;
         FunctionOffsetModel* _functionrefs;
         QHexEditData* _hexeditdata;
+        LoaderList::LoaderId _loaderid;
         QToolBar* _toolbar;
         QAction* _actgoto;
         QMenu* _functionsmenu;
 };
 
-#endif // DISASSEMBLERDIALOG_H
+#endif // DISASSEMBLERVIEW_H

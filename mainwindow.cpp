@@ -252,13 +252,14 @@ void MainWindow::on_actionDisassemble_triggered()
 
     if(!file.isEmpty())
     {
-        DisassemblerDialog dd(this);
+        QHexEditData* hexeditdata = QHexEditData::fromFile(file);
+        DisassemblerDialog dd(hexeditdata, this);
         int res = dd.exec();
 
-        if(res == DisassemblerDialog::Accepted)
+        if(res == DisassemblerDialog::Accepted && dd.selectedLoader())
         {
             QString viewname = QFileInfo(file).fileName();
-            DisassemblerView* dv = new DisassemblerView(QHexEditData::fromFile(file), viewname, this->_lblinfo, ui->tabWidget);
+            DisassemblerView* dv = new DisassemblerView(hexeditdata, dd.selectedLoader(), viewname, this->_lblinfo, ui->tabWidget);
             ui->tabWidget->addTab(dv, viewname);
         }
     }
