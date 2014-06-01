@@ -61,6 +61,8 @@ void ActionToolBar::createActions(ActionWidget* actionwidget, ActionToolBar::Act
             connect(this->_actpaste, SIGNAL(triggered()), this->_hexedit, SLOT(paste()));
             connect(this->_actselect, SIGNAL(triggered()), this, SLOT(showRangeSelector()));
             connect(this->_actselectall, SIGNAL(triggered()), this->_hexedit, SLOT(selectAll()));
+
+            connect(actionwidget->rangeSelectorAction(), SIGNAL(rangeSelected(qint64,qint64)), this->_hexedit, SLOT(setSelection(qint64,qint64)));
         }
         else
         {
