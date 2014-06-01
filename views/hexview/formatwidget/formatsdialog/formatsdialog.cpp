@@ -1,14 +1,14 @@
 #include "formatsdialog.h"
 #include "ui_formatsdialog.h"
 
-FormatsDialog::FormatsDialog(qint64 maxlen, QWidget *parent): QDialog(parent), ui(new Ui::FormatsDialog)
+FormatsDialog::FormatsDialog(qint64 maxlen, qint64 pos, QWidget *parent): QDialog(parent), ui(new Ui::FormatsDialog)
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(1, 1);
 
     ui->sbbsOffset->setMinimum(0);
     ui->sbbsOffset->setMaximum(maxlen);
-    ui->sbbsOffset->setValue(0);
+    ui->sbbsOffset->setValue(pos);
 
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(ui->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));

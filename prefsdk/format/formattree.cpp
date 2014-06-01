@@ -14,7 +14,7 @@ namespace PrefSDK
 
     Structure *FormatTree::addStructure(const QString &name)
     {
-        uint64_t offset = this->_baseoffset;
+        uint64_t offset = 0;
 
         if(!this->_structuremap.isEmpty())
         {

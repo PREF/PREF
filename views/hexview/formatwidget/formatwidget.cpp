@@ -90,7 +90,7 @@ void FormatWidget::resetData()
 
 void FormatWidget::loadFormat()
 {
-    FormatsDialog fd(this->_hexedit->data()->length(), this->topLevelWidget());
+    FormatsDialog fd(this->_hexedit->data()->length(), (this->_hexedit->selectionLength() ? this->_hexedit->cursorPos() : 0), this->topLevelWidget());
     int res = fd.exec();
 
     if(res == FormatsDialog::Accepted)
