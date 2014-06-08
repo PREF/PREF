@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/disassembler/disassembler.h"
+#include "prefsdk/disassembler/loader/loaderlist.h"
 #include "viewmodels/loaderlistmodel/loaderlistmodel.h"
 
 using namespace PrefSDK;
@@ -20,11 +20,17 @@ class DisassemblerDialog : public QDialog
 
     public:
         explicit DisassemblerDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
+        bool hasLoaders() const;
         LoaderList::LoaderId selectedLoader() const;
         ~DisassemblerDialog();
 
+    private slots:
+        void on_loaderTable_doubleClicked(const QModelIndex &);
+        void on_loaderTable_clicked(const QModelIndex &index);
+
     private:
         Ui::DisassemblerDialog *ui;
+        LoaderList::LoaderId _selectedloader;
         LoaderListModel* _loaderlistmodel;
 };
 

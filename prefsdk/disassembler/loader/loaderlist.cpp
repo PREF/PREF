@@ -4,7 +4,6 @@ namespace PrefSDK
 {
     QList<LoaderList::Loader> LoaderList::_loaders;
     QHash<LoaderList::LoaderId, int> LoaderList::_loadermap;
-    QHash<QHexEditData*, LoaderList::LoadedLoader> LoaderList::_loadedloaders;
 
     const QString LoaderList::LOADERS_DIR = "loaders";
     const QString LoaderList::LOADER_MAIN_FILE = "register.lua";
@@ -54,18 +53,8 @@ namespace PrefSDK
         LoaderList::_loadermap[loaderid] = idx;
     }
 
-    void LoaderList::addLoadedLoader(LoaderList::LoaderId loaderid, QHexEditData* hexeditdata)
-    {
-        LoaderList::_loadedloaders[hexeditdata] = LoadedLoader(loaderid);
-    }
-
     LoaderList::Loader &LoaderList::loader(LoaderList::LoaderId loaderid)
     {
         return LoaderList::_loaders[LoaderList::_loadermap[loaderid]];
-    }
-
-    LoaderList::LoadedLoader &LoaderList::loadedLoader(QHexEditData *hexeditdata)
-    {
-        return LoaderList::_loadedloaders[hexeditdata];
     }
 }

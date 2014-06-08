@@ -33,11 +33,8 @@ SOURCES += main.cpp\
     viewmodels/datatypesmodel/datatypesmodel.cpp \
     viewmodels/formatmodel/formatmodel.cpp \
     viewmodels/stringoffsetmodel/stringoffsetmodel.cpp \
-    viewmodels/functionoffsetmodel/functionoffsetmodel.cpp \
     views/disassemblerview/crossreferencedialog/crossreferencedialog.cpp \
     viewmodels/crossreferencemodel/crossreferencemodel.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
     views/disassemblerview/datamapview/datamapview.cpp \
     viewmodels/datamapmodel/datamapmodel.cpp \
     prefsdk/format/formatlist.cpp \
@@ -47,9 +44,6 @@ SOURCES += main.cpp\
     viewmodels/categorymodel/categorymodel.cpp \
     views/hexview/formatwidget/formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
-    prefsdk/disassembler/disassemblerrange.cpp \
-    prefsdk/disassembler/disassemblerfunction.cpp \
-    prefsdk/disassembler/disassemblersegment.cpp \
     debugdialog/debugdialog.cpp \
     viewmodels/luatypeviewmodel/luastackviewmodel.cpp \
     prefsdk/bytecolors.cpp \
@@ -101,9 +95,6 @@ SOURCES += main.cpp\
     prefsdk/api/exporterapi.cpp \
     prefsdk/exporter/exporterlist.cpp \
     viewmodels/exportmodel/exportermodel.cpp \
-    prefsdk/api/processorapi.cpp \
-    prefsdk/disassembler/disassembler.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerdrawer.cpp \
     prefsdk/api/prefuiapi.cpp \
     views/hexview/optionmenu.cpp \
     prefsdk/ui/models/tablemodel.cpp \
@@ -136,7 +127,23 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerview.cpp \
     views/disassemblerview/disassemblerdialog/disassemblerdialog.cpp \
     prefsdk/disassembler/loader/loaderlist.cpp \
-    viewmodels/loaderlistmodel/loaderlistmodel.cpp
+    viewmodels/loaderlistmodel/loaderlistmodel.cpp \
+    prefsdk/disassembler/blocks/block.cpp \
+    prefsdk/disassembler/blocks/segment.cpp \
+    views/disassemblerview/segmentsdialog/segmentsdialog.cpp \
+    views/disassemblerview/entrypointsdialog/entrypointsdialog.cpp \
+    viewmodels/segmentsmodel/segmentsmodel.cpp \
+    viewmodels/entrypointsmodel/entrypointsmodel.cpp \
+    prefsdk/disassembler/instruction.cpp \
+    prefsdk/disassembler/operand.cpp \
+    prefsdk/disassembler/blocks/function.cpp \
+    prefsdk/disassembler/crossreferences/referencetable.cpp \
+    prefsdk/api/disassemblerapi.cpp \
+    views/disassemblerview/disassemblerlisting.cpp \
+    prefsdk/disassembler/listingobject.cpp \
+    views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
+    views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
+    viewmodels/functionmodel/functionmodel.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -155,12 +162,8 @@ HEADERS  += mainwindow.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
     viewmodels/formatmodel/formatmodel.h \
     viewmodels/stringoffsetmodel/stringoffsetmodel.h \
-    viewmodels/functionoffsetmodel/functionoffsetmodel.h \
     views/disassemblerview/crossreferencedialog/crossreferencedialog.h \
     viewmodels/crossreferencemodel/crossreferencemodel.h \
-    views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
-    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
-    prefsdk/disassembler/disassembler.h \
     views/disassemblerview/datamapview/datamapview.h \
     viewmodels/datamapmodel/datamapmodel.h \
     prefsdk/format/formatlist.h \
@@ -170,9 +173,6 @@ HEADERS  += mainwindow.h \
     viewmodels/categorymodel/categorymodel.h \
     views/hexview/formatwidget/formattreeview/structuremenu.h \
     numericbasemenu.h \
-    prefsdk/disassembler/disassemblerrange.h \
-    prefsdk/disassembler/disassemblerfunction.h \
-    prefsdk/disassembler/disassemblersegment.h \
     debugdialog/debugdialog.h \
     viewmodels/luatypeviewmodel/luastackviewmodel.h \
     prefsdk/bytecolors.h \
@@ -226,8 +226,6 @@ HEADERS  += mainwindow.h \
     prefsdk/api/exporterapi.h \
     viewmodels/exportmodel/exportermodel.h \
     prefsdk/exporter/exporterlist.h \
-    prefsdk/api/processorapi.h \
-    views/disassemblerview/disassemblerwidget/disassemblerdrawer.h \
     prefsdk/api/prefuiapi.h \
     views/hexview/optionmenu.h \
     prefsdk/ui/models/tablemodel.h \
@@ -260,7 +258,23 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/disassemblerview.h \
     views/disassemblerview/disassemblerdialog/disassemblerdialog.h \
     prefsdk/disassembler/loader/loaderlist.h \
-    viewmodels/loaderlistmodel/loaderlistmodel.h
+    viewmodels/loaderlistmodel/loaderlistmodel.h \
+    prefsdk/disassembler/blocks/block.h \
+    prefsdk/disassembler/blocks/segment.h \
+    views/disassemblerview/segmentsdialog/segmentsdialog.h \
+    views/disassemblerview/entrypointsdialog/entrypointsdialog.h \
+    viewmodels/segmentsmodel/segmentsmodel.h \
+    viewmodels/entrypointsmodel/entrypointsmodel.h \
+    prefsdk/disassembler/instruction.h \
+    prefsdk/disassembler/operand.h \
+    prefsdk/disassembler/blocks/function.h \
+    prefsdk/disassembler/crossreferences/referencetable.h \
+    prefsdk/api/disassemblerapi.h \
+    views/disassemblerview/disassemblerlisting.h \
+    prefsdk/disassembler/listingobject.h \
+    views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
+    views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
+    viewmodels/functionmodel/functionmodel.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -287,7 +301,9 @@ FORMS    += mainwindow.ui \
     views/hexview/bytecolorsdialog/bytecolorsdialog.ui \
     views/hexview/visualmapwidget/visualmapwidget.ui \
     views/disassemblerview/disassemblerview.ui \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui \
+    views/disassemblerview/segmentsdialog/segmentsdialog.ui \
+    views/disassemblerview/entrypointsdialog/entrypointsdialog.ui
 
 RESOURCES += resources.qrc
 

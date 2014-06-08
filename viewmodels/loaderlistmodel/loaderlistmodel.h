@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include "prefsdk/sdkmanager.h"
-#include "prefsdk/disassembler/disassembler.h"
+#include "prefsdk/disassembler/loader/loaderlist.h"
 
 using namespace PrefSDK;
 

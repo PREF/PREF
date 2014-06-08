@@ -7,9 +7,13 @@
 #include "views/abstractview.h"
 #include "qhexedit/qhexeditdata.h"
 #include "crossreferencedialog/crossreferencedialog.h"
-#include "viewmodels/functionoffsetmodel/functionoffsetmodel.h"
+#include "viewmodels/functionmodel/functionmodel.h"
 #include "viewmodels/stringoffsetmodel/stringoffsetmodel.h"
-#include "prefsdk/disassembler/disassembler.h"
+#include "prefsdk/disassembler/loader/loaderlist.h"
+#include "prefsdk/sdkmanager.h"
+#include "entrypointsdialog/entrypointsdialog.h"
+#include "segmentsdialog/segmentsdialog.h"
+#include "disassemblerlisting.h"
 
 using namespace PrefSDK;
 
@@ -34,16 +38,19 @@ class DisassemblerView : public AbstractView
         void disassemble();
 
     private slots:
-        void on_tvFunctions_customContextMenuRequested(const QPoint &pos);
-        void on_tvFunctions_doubleClicked(const QModelIndex &index);
+        //void on_tvFunctions_customContextMenuRequested(const QPoint &pos);
+        //void on_tvFunctions_doubleClicked(const QModelIndex &index);
         void onFunctionsMenuXRefsTriggered();
-        void displayDisassembly(qint64 instructionscount);
+        void displayDisassembly();
+        void showEntryPoints();
+        void showSegments();
         void selectVA();
 
     private:
         Ui::DisassemblerView *ui;
+        DisassemblerListing* _listing;
         StringOffsetModel* _stringrefs;
-        FunctionOffsetModel* _functionrefs;
+        FunctionModel* _functionmodel;
         QHexEditData* _hexeditdata;
         LoaderList::LoaderId _loaderid;
         QToolBar* _toolbar;

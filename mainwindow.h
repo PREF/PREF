@@ -33,6 +33,7 @@ class MainWindow : public QMainWindow
         virtual void closeEvent(QCloseEvent* e);
 
     private:
+        void loadFile(QString file, QHexEditData *hexeditdata);
         void checkCommandLine();
         bool closeApplication();
         void setSaveVisible(bool b);

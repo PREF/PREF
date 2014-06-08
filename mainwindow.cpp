@@ -60,7 +60,7 @@ void MainWindow::checkCommandLine()
         if(!fi.isFile())
             break;
 
-        this->loadFile(args[i]);
+        this->loadFile(args[i], QHexEditData::fromFile(args[i]));
     }
 }
 
@@ -93,10 +93,10 @@ bool MainWindow::closeApplication()
     return true;
 }
 
-void MainWindow::loadFile(QString file)
+void MainWindow::loadFile(QString file, QHexEditData *hexeditdata)
 {
     QString viewname = QFileInfo(file).fileName();
-    HexView* fv = new HexView(QHexEditData::fromFile(file), viewname, this->_lblinfo, ui->tabWidget);
+    HexView* fv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
     ui->tabWidget->addTab(fv, viewname);
 }
 
@@ -114,12 +114,17 @@ void MainWindow::centerWindowToScreen()
     move(position.topLeft());
 }
 
+void MainWindow::loadFile(QString file)
+{
+    this->loadFile(file, QHexEditData::fromFile(file));
+}
+
 void MainWindow::on_action_Analyze_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, "Load a file...");
+    QString file = QFileDialog::getOpenFileName(this, "Load a file...");
 
-    if(!fileName.isEmpty())
-        this->loadFile(fileName);
+    if(!file.isEmpty())
+        this->loadFile(file, QHexEditData::fromFile(file));
 }
 
 void MainWindow::on_tabWidget_tabCloseRequested(int index)
@@ -254,6 +259,30 @@ void MainWindow::on_actionDisassemble_triggered()
     {
         QHexEditData* hexeditdata = QHexEditData::fromFile(file);
         DisassemblerDialog dd(hexeditdata, this);
+
+        if(!dd.hasLoaders())
+        {
+            QMessageBox m;
+            m.setWindowTitle("No Loaders found...");
+            m.setText("Cannot find a valid loader, do you want do load the file in binary mode?");
+            m.setIcon(QMessageBox::Warning);
+            m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+            m.setDefaultButton(QMessageBox::Yes);
+            int ret = m.exec();
+
+            switch(ret)
+            {
+                case QMessageBox::Yes:
+                    this->loadFile(file, hexeditdata);
+                    break;
+
+                default:
+                    break;
+            }
+
+            return;
+        }
+
         int res = dd.exec();
 
         if(res == DisassemblerDialog::Accepted && dd.selectedLoader())

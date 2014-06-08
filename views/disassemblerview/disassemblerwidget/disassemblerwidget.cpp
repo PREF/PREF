@@ -1,45 +1,77 @@
 #include "disassemblerwidget.h"
 
-DisassemblerWidget::DisassemblerWidget(QWidget *parent): QFrame(parent)
-{
-    this->_vscrollbar = new QScrollBar(Qt::Vertical);
-    this->_scrollarea = new QScrollArea();
-    this->_disasmwidget_p = new DisassemblerWidgetPrivate(this->_scrollarea, this->_vscrollbar);
+DisassemblerWidget::DisassemblerWidget(QWidget *parent): QPlainTextEdit(parent), _listing(nullptr)
+{    
+    this->_highlighter = new DisassemblerHighlighter(this->document());
 
-    this->_scrollarea->setFocusPolicy(Qt::NoFocus);
-    this->_scrollarea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /* Do not show vertical QScrollBar!!! */
-    this->_scrollarea->setFrameStyle(QFrame::NoFrame);
-    this->_scrollarea->setWidgetResizable(true);
-    this->_scrollarea->setWidget(this->_disasmwidget_p);
+    QFont f("Monospace", qApp->font().pointSize());
+    f.setStyleHint(QFont::TypeWriter);
 
-    this->setFocusPolicy(Qt::NoFocus);
+    this->setFont(f);
+    this->setReadOnly(true);
+    this->setUndoRedoEnabled(false);
+    this->highlightCurrentLine();
 
-    this->_hlayout = new QHBoxLayout();
-    this->_hlayout->setSpacing(0);
-    this->_hlayout->setMargin(0);
-    this->_hlayout->addWidget(this->_scrollarea);
-    this->_hlayout->addWidget(this->_vscrollbar);
-
-    this->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
-    this->setLayout(this->_hlayout);
+    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
 }
 
-void DisassemblerWidget::setInstructionCount(quint64 instructioncount)
+void DisassemblerWidget::setListing(DisassemblerListing *listing)
 {
-    this->_disasmwidget_p->setInstructionCount(instructioncount);
+    this->_listing = listing;
+
+    this->displayListing();
 }
 
-void DisassemblerWidget::setData(QHexEditData *hexeditdata)
+void DisassemblerWidget::displayListing()
 {
-    this->_disasmwidget_p->setData(hexeditdata);
+    QTextCursor cursor = this->textCursor();
+
+    cursor.beginEditBlock();
+
+    for(int i = 0; i < this->_listing->segmentsCount(); i++)
+    {
+        Segment* segment = this->_listing->segment(i);
+        SegmentBlock sb(this->_listing, segment, cursor);
+        sb.print();
+
+        for(int j = 0; j < segment->functionsCount(); j++)
+        {
+            Function* func = segment->function(j);
+            FunctionBlock fb(this->_listing, func, cursor);
+            fb.print();
+
+            for(int k = 0; k < func->instructionsCount(); k++)
+            {
+                Instruction* instr = func->instruction(k);
+                InstructionBlock ib(this->_listing, instr, cursor);
+                ib.print();
+            }
+        }
+    }
+
+    cursor.endEditBlock();
+}
+
+void DisassemblerWidget::highlightCurrentLine()
+{
+    QList<QTextEdit::ExtraSelection> extraselections;
+    QTextEdit::ExtraSelection selection;
+
+    selection.format.setBackground(QColor(Qt::yellow).lighter(160));
+    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
+    selection.cursor = this->textCursor();
+    selection.cursor.clearSelection();
+    extraselections.append(selection);
+
+    this->setExtraSelections(extraselections);
 }
 
 void DisassemblerWidget::gotoVA(quint64 va)
 {
-    this->_disasmwidget_p->gotoVA(va);
+
 }
 
 void DisassemblerWidget::gotoEP()
 {
-    this->_disasmwidget_p->gotoEP();
+
 }
