@@ -7,7 +7,6 @@
 #include "prefsdk/disassembler/operand.h"
 #include "prefsdk/disassembler/instruction.h"
 #include "prefsdk/disassembler/blocks/function.h"
-#include "prefsdk/disassembler/crossreferences/referencetable.h"
 #include "viewmodels/loaderlistmodel/loaderlistmodel.h"
 #include "views/disassemblerview/disassemblerlisting.h"
 
@@ -116,7 +115,7 @@ namespace PrefSDK
 
             /* Function's API */
             Function* Function_create(int functiontype, const char* name, uint64_t startaddress, uint64_t endaddress);
-            void Function_addReference(Function* __this, uint64_t address);
+            void Function_addReference(Function* __this, uint64_t address, int referencetype);
             void Function_addInstruction(Function* __this, Instruction* instruction);
 
             /* Segment's API */
@@ -125,9 +124,6 @@ namespace PrefSDK
 
             /* DisassemblerListing's API */
             void DisassemblerListing_addSegment(DisassemblerListing* __this, Segment* segment);
-
-            /* ReferenceTable's API */
-            void ReferenceTable_addReference(ReferenceTable* __this, uint64_t address, uint64_t referencedby);
         }
     }
 }

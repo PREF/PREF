@@ -137,7 +137,6 @@ SOURCES += main.cpp\
     prefsdk/disassembler/instruction.cpp \
     prefsdk/disassembler/operand.cpp \
     prefsdk/disassembler/blocks/function.cpp \
-    prefsdk/disassembler/crossreferences/referencetable.cpp \
     prefsdk/api/disassemblerapi.cpp \
     views/disassemblerview/disassemblerlisting.cpp \
     prefsdk/disassembler/listingobject.cpp \
@@ -268,7 +267,6 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/instruction.h \
     prefsdk/disassembler/operand.h \
     prefsdk/disassembler/blocks/function.h \
-    prefsdk/disassembler/crossreferences/referencetable.h \
     prefsdk/api/disassemblerapi.h \
     views/disassemblerview/disassemblerlisting.h \
     prefsdk/disassembler/listingobject.h \

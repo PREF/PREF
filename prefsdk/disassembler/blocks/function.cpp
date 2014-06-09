@@ -7,9 +7,12 @@ namespace PrefSDK
 
     }
 
-    void Function::addReference(uint64_t address)
+    void Function::addReference(uint64_t address, ReferenceTypes::Type referencetype)
     {
-        this->_references[address] = ReferenceTypes::Call;
+        this->_referencelist.append(address);
+        this->_references[address] = referencetype;
+
+        std::sort(this->_referencelist.begin(), this->_referencelist.end());
     }
 
     void Function::addInstruction(Instruction *instruction)
@@ -46,6 +49,21 @@ namespace PrefSDK
     const QString &Function::name() const
     {
         return this->_name;
+    }
+
+    QString Function::references() const
+    {
+        QString refs = "# XREF ";
+
+        for(int i = 0; i < this->_referencelist.count(); i++)
+        {
+            if (i > 0)
+                refs.append(" | ");
+
+            refs.append(QString("%1").arg(this->_referencelist[i], 8, 16, QLatin1Char('0')).toUpper()).append("h");
+        }
+
+        return refs;
     }
 
     ListingTypes::Type Function::objectType() const

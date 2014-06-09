@@ -64,7 +64,7 @@ class DisassemblerWidget : public QPlainTextEdit
                 virtual void print()
                 {
                     this->printAddress();
-                    this->_cursor.insertText(QString("  %1 %2()\n").arg(this->functionType(), this->_function->name()));
+                    this->_cursor.insertText(QString("  %1 %2()\t %3\n").arg(this->functionType(), this->_function->name(), this->_function->references()));
                 }
 
             private:
@@ -174,12 +174,11 @@ class DisassemblerWidget : public QPlainTextEdit
                 virtual void print()
                 {
                     QTextCharFormat charformat;
-                    QString refs = this->_listing->referenceTable()->displayReferences(this->_instruction->address()).prepend("\t");
 
                     this->printAddress();
                     this->highlight(charformat);
                     this->_cursor.insertText(QString("    %1 ").arg(this->_instruction->mnemonic()), charformat);
-                    this->_cursor.insertText(QString("%1 %2\n").arg(this->_instruction->displayOperands(), refs), QTextCharFormat());
+                    this->_cursor.insertText(QString("%1\n").arg(this->_instruction->displayOperands()), QTextCharFormat());
                 }
 
             private:

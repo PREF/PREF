@@ -2,7 +2,7 @@
 
 DisassemblerListing::DisassemblerListing(QObject *parent): QObject(parent)
 {
-    this->_referencetable = new ReferenceTable(this);
+
 }
 
 void DisassemblerListing::addSegment(Segment *segment)
@@ -19,9 +19,4 @@ Segment *DisassemblerListing::segment(int idx)
 int DisassemblerListing::segmentsCount() const
 {
     return this->_addresslist.count();
-}
-
-ReferenceTable *DisassemblerListing::referenceTable()
-{
-    return this->_referencetable;
 }

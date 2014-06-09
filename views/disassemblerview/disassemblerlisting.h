@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <QtCore>
 #include "prefsdk/disassembler/blocks/segment.h"
-#include "prefsdk/disassembler/crossreferences/referencetable.h"
 
 using namespace PrefSDK;
 
@@ -21,12 +20,10 @@ class DisassemblerListing : public QObject
         void addSegment(Segment* segment);
         Segment* segment(int idx);
         int segmentsCount() const;
-        ReferenceTable* referenceTable();
 
     private:
         AddressList _addresslist;
         SegmentList _segments;
-        ReferenceTable* _referencetable;
 };
 
 #endif // DISASSEMBLERLISTING_H

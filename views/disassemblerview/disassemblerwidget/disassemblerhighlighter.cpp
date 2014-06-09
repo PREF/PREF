@@ -51,7 +51,7 @@ void DisassemblerHighlighter::highlightSegment(const QString &text)
 
 void DisassemblerHighlighter::highlightFunction(const QString &text)
 {
-    QRegExp regex("[a-z]* function [^.]+\\(\\)$");
+    QRegExp regex("[a-z]* function [^.]+\\(\\)[^.]+$");
     int idx = text.indexOf(regex);
 
     while(idx >= 0)

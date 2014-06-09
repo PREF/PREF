@@ -54,9 +54,9 @@ namespace PrefSDK
             return new Function(static_cast<FunctionTypes::Type>(functiontype), QString::fromUtf8(name), startaddress, endaddress);
         }
 
-        void Function_addReference(Function *__this, uint64_t address)
+        void Function_addReference(Function *__this, uint64_t address, int referencetype)
         {
-            __this->addReference(address);
+            __this->addReference(address, static_cast<ReferenceTypes::Type>(referencetype));
         }
 
         void Function_addInstruction(Function *__this, Instruction *instruction)
@@ -82,11 +82,6 @@ namespace PrefSDK
         void DisassemblerListing_addSegment(DisassemblerListing *__this, Segment *segment)
         {
             __this->addSegment(segment);
-        }
-
-        void ReferenceTable_addReference(ReferenceTable *__this, uint64_t address, uint64_t referencedby)
-        {
-            __this->addReference(address, referencedby);
         }
 
         void Instruction_formatInstruction(Instruction *__this, const char *s)
