@@ -17,6 +17,11 @@ namespace PrefSDK
         this->_size = sz;
     }
 
+    void Instruction::formatInstruction(const QString &s)
+    {
+        this->_displayoperand = s;
+    }
+
     InstructionCategories::Category Instruction::category() const
     {
         return this->_category;
@@ -66,18 +71,7 @@ namespace PrefSDK
 
     QString Instruction::displayOperands() const
     {
-        QString res;
-
-        for(int i = 0; i < this->_operands.length(); i++)
-        {
-            if(i > 0)
-                res.append(", ");
-
-            Operand* operand = this->operand(i);
-            res.append(operand->value());
-        }
-
-        return res;
+        return this->_displayoperand;
     }
 
     int Instruction::operandsCount() const

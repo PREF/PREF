@@ -88,5 +88,11 @@ namespace PrefSDK
         {
             __this->addReference(address, referencedby);
         }
+
+        void Instruction_formatInstruction(Instruction *__this, const char *s)
+        {
+            __this->formatInstruction(QString::fromUtf8(s));
+        }
+
     }
 }

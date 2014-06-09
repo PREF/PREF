@@ -82,6 +82,7 @@ namespace PrefSDK
             explicit Instruction(uint64_t address, uint64_t offset, QObject *parent = 0);
             void addOperand(Operand* operand);
             void setSize(uint64_t sz);
+            void formatInstruction(const QString& s);
             InstructionCategories::Category category() const;
             InstructionTypes::Type type() const;
             uint64_t address() const;
@@ -104,6 +105,7 @@ namespace PrefSDK
             OperandList _operands;
             InstructionCategories::Category _category;
             InstructionTypes::Type _type;
+            QString _displayoperand;
             QString _mnemonic;
             uint64_t _address;
             uint64_t _offset;

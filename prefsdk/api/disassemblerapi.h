@@ -112,6 +112,7 @@ namespace PrefSDK
             void Instruction_setMnemonic(Instruction *__this, const char* mnemonic);
             void Instruction_setCategory(Instruction* __this, int category);
             void Instruction_setType(Instruction* __this, int type);
+            void Instruction_formatInstruction(Instruction *__this, const char* s);
 
             /* Function's API */
             Function* Function_create(int functiontype, const char* name, uint64_t startaddress, uint64_t endaddress);
