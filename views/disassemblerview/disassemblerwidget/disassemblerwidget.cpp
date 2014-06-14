@@ -22,8 +22,16 @@ void DisassemblerWidget::setListing(DisassemblerListing *listing)
     this->displayListing();
 }
 
+void DisassemblerWidget::gotoFunction(Function *func)
+{
+    QTextDocument* document = this->document();
+    QTextCursor cursor(document->findBlockByLineNumber(this->_functionlines[func]));
+    this->setTextCursor(cursor);
+}
+
 void DisassemblerWidget::displayListing()
 {
+    int linecount = 0;
     QTextCursor cursor = this->textCursor();
 
     cursor.beginEditBlock();
@@ -32,19 +40,25 @@ void DisassemblerWidget::displayListing()
     {
         Segment* segment = this->_listing->segment(i);
         SegmentBlock sb(this->_listing, segment, cursor);
-        sb.print();
+
+        this->_segmentlines[segment] = linecount;
+        linecount += sb.print();
 
         for(int j = 0; j < segment->functionsCount(); j++)
         {
             Function* func = segment->function(j);
             FunctionBlock fb(this->_listing, func, cursor);
-            fb.print();
+
+            this->_functionlines[func] = linecount;
+            linecount += fb.print();
 
             for(int k = 0; k < func->instructionsCount(); k++)
             {
                 Instruction* instr = func->instruction(k);
                 InstructionBlock ib(this->_listing, instr, cursor);
-                ib.print();
+
+                this->_instructionlines[instr] = linecount;
+                linecount += ib.print();
             }
         }
     }
@@ -64,14 +78,4 @@ void DisassemblerWidget::highlightCurrentLine()
     extraselections.append(selection);
 
     this->setExtraSelections(extraselections);
-}
-
-void DisassemblerWidget::gotoVA(quint64 va)
-{
-
-}
-
-void DisassemblerWidget::gotoEP()
-{
-
 }

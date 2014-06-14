@@ -19,12 +19,30 @@ class DisassemblerWidget : public QPlainTextEdit
         {
             public:
                 DisassemblerBlock(DisassemblerListing* listing, ListingObject* listingobj, QTextCursor& cursor): _cursor(cursor), _listingobj(listingobj), _listing(listing) { }
-                virtual void print() = 0;
+                virtual int print() = 0;
 
             protected:
                 void printAddress()
                 {
                     this->_cursor.insertText(QString("%1:%2 ").arg(this->_listingobj->segmentName(), this->_listingobj->displayAddress()));
+                }
+
+                virtual QString displayReferences(const QString& prefix, const DisassemblerListing::ReferenceSet& references) const
+                {
+                    if(references.isEmpty())
+                        return QString();
+
+                    QString s = QString("# %1: ").arg(prefix);
+
+                    for(DisassemblerListing::ReferenceSet::ConstIterator it = references.begin(); it != references.end(); it++)
+                    {
+                        if(it != references.begin())
+                            s.append(", ");
+
+                        s.append(QString("%1").arg((*it)->address(), 8, 16, QLatin1Char('0')).toUpper());
+                    }
+
+                    return s;
                 }
 
             protected:
@@ -38,13 +56,14 @@ class DisassemblerWidget : public QPlainTextEdit
             public:
                 SegmentBlock(DisassemblerListing* listing, Segment* segment, QTextCursor& cursor): DisassemblerBlock(listing, segment, cursor), _segment(segment) { }
 
-                virtual void print()
+                virtual int print()
                 {
                     QString startaddress = QString("%1").arg(this->_segment->startAddress(), 8, 16, QLatin1Char('0')).toUpper();
                     QString endaddress = QString("%1").arg(this->_segment->endAddress(), 8, 16, QLatin1Char('0')).toUpper();
 
                     this->printAddress();
                     this->_cursor.insertText(QString("segment '%1' (Start Address: %2h, End Address: %3h)\n\n").arg(this->_segment->name(), startaddress, endaddress));
+                    return 2;
                 }
 
             private:
@@ -61,14 +80,17 @@ class DisassemblerWidget : public QPlainTextEdit
                     this->_cursor.insertText("\n");
                 }
 
-                virtual void print()
+                virtual int print()
                 {
+                    DisassemblerListing::ReferenceSet references = this->_listing->references(this->_function->startAddress());
+
                     this->printAddress();
-                    this->_cursor.insertText(QString("  %1 %2()\t %3\n").arg(this->functionType(), this->_function->name(), this->_function->references()));
+                    this->_cursor.insertText(QString("  %1 %2()\t %3\n").arg(this->functionType(), this->_function->name(), this->displayReferences("Called by", references)));
+                    return 2;
                 }
 
             private:
-                QString functionType()
+                QString functionType() const
                 {
                     switch(this->_function->type())
                     {
@@ -96,6 +118,40 @@ class DisassemblerWidget : public QPlainTextEdit
         {
             public:
                 InstructionBlock(DisassemblerListing* listing, Instruction* instr, QTextCursor& cursor): DisassemblerBlock(listing, instr, cursor), _instruction(instr) { }
+
+                virtual int print()
+                {
+                    int l = this->printLabel();
+
+                    QTextCharFormat charformat;
+
+                    this->printAddress();
+                    this->highlight(charformat);
+                    this->_cursor.insertText(QString("        %1 ").arg(this->_instruction->mnemonic()), charformat);
+                    this->_cursor.insertText(QString("%1\n").arg(this->_instruction->displayOperands()), QTextCharFormat());
+
+                    return l + 1;
+                }
+
+            private:
+                int printLabel()
+                {
+                    DisassemblerListing::ReferenceSet references = this->_listing->references(this->_instruction->address());
+
+                    if(references.count() == 1 && ((*references.begin())->type() == ReferenceTypes::Jump || (*references.begin())->type() == ReferenceTypes::ConditionalJump))
+                    {
+                        QTextCharFormat charformat;
+                        charformat.setForeground(QColor(Qt::darkGray));
+
+                        QString address = QString("%1").arg(this->_instruction->address(), 8, 16, QLatin1Char('0')).toUpper();
+                        this->_cursor.insertBlock();
+                        this->printAddress();
+                        this->_cursor.insertText(QString("    j_%1:\t%2\n").arg(address, this->displayReferences("Referenced by", references)), charformat);
+                        return 2;
+                    }
+
+                    return 0;
+                }
 
                 void highlight(QTextCharFormat& charformat)
                 {
@@ -171,16 +227,6 @@ class DisassemblerWidget : public QPlainTextEdit
                     }
                 }
 
-                virtual void print()
-                {
-                    QTextCharFormat charformat;
-
-                    this->printAddress();
-                    this->highlight(charformat);
-                    this->_cursor.insertText(QString("    %1 ").arg(this->_instruction->mnemonic()), charformat);
-                    this->_cursor.insertText(QString("%1\n").arg(this->_instruction->displayOperands()), QTextCharFormat());
-                }
-
             private:
                 Instruction* _instruction;
                 QColor _interrupttrap;
@@ -193,8 +239,7 @@ class DisassemblerWidget : public QPlainTextEdit
     public:
         explicit DisassemblerWidget(QWidget *parent = 0);
         void setListing(DisassemblerListing* listing);
-        void gotoVA(quint64 va);
-        void gotoEP();
+        void gotoFunction(Function* func);
 
     private:
         void displayListing();
@@ -205,6 +250,9 @@ class DisassemblerWidget : public QPlainTextEdit
     private:
         DisassemblerListing* _listing;
         DisassemblerHighlighter* _highlighter;
+        QHash<Segment*, int> _segmentlines;
+        QHash<Function*, int> _functionlines;
+        QHash<Instruction*, int> _instructionlines;
 };
 
 #endif // DISASSEMBLERWIDGET_H
