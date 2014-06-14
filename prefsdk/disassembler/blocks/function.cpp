@@ -7,14 +7,6 @@ namespace PrefSDK
 
     }
 
-    void Function::addReference(uint64_t address, ReferenceTypes::Type referencetype)
-    {
-        this->_referencelist.append(address);
-        this->_references[address] = referencetype;
-
-        std::sort(this->_referencelist.begin(), this->_referencelist.end());
-    }
-
     void Function::addInstruction(Instruction *instruction)
     {
         instruction->setSegmentName(this->segmentName());
@@ -46,6 +38,21 @@ namespace PrefSDK
         return this->_type;
     }
 
+    bool Function::isEntryPoint() const
+    {
+        return this->_type & FunctionTypes::EntryPoint;
+    }
+
+    bool Function::isImport() const
+    {
+        return this->_type & FunctionTypes::Import;
+    }
+
+    bool Function::isExport() const
+    {
+        return this->_type & FunctionTypes::Export;
+    }
+
     const QString &Function::name() const
     {
         return this->_name;
@@ -53,17 +60,20 @@ namespace PrefSDK
 
     QString Function::references() const
     {
-        QString refs = "# XREF ";
+        if(this->_references.isEmpty())
+            return QString();
 
-        for(int i = 0; i < this->_referencelist.count(); i++)
+        QString s = "# XREFS: ";
+
+        for(ReferenceSet::ConstIterator it = this->_references.begin(); it != this->_references.end(); it++)
         {
-            if (i > 0)
-                refs.append(" | ");
+            if(it != this->_references.begin())
+                s.append(" | ");
 
-            refs.append(QString("%1").arg(this->_referencelist[i], 8, 16, QLatin1Char('0')).toUpper()).append("h");
+            s.append(QString("%1").arg((*it)->address(), 8, 16, QLatin1Char('0')).toUpper());
         }
 
-        return refs;
+        return s;
     }
 
     ListingTypes::Type Function::objectType() const

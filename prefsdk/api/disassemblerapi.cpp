@@ -54,11 +54,6 @@ namespace PrefSDK
             return new Function(static_cast<FunctionTypes::Type>(functiontype), QString::fromUtf8(name), startaddress, endaddress);
         }
 
-        void Function_addReference(Function *__this, uint64_t address, int referencetype)
-        {
-            __this->addReference(address, static_cast<ReferenceTypes::Type>(referencetype));
-        }
-
         void Function_addInstruction(Function *__this, Instruction *instruction)
         {
             __this->addInstruction(instruction);
@@ -89,5 +84,9 @@ namespace PrefSDK
             __this->formatInstruction(QString::fromUtf8(s));
         }
 
+        void DisassemblerListing_addReference(DisassemblerListing *__this, uint64_t srcaddress, uint64_t destaddress, int referencetype)
+        {
+            __this->addReference(srcaddress, destaddress, static_cast<ReferenceTypes::Type>(referencetype));
+        }
     }
 }

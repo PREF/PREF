@@ -115,7 +115,6 @@ namespace PrefSDK
 
             /* Function's API */
             Function* Function_create(int functiontype, const char* name, uint64_t startaddress, uint64_t endaddress);
-            void Function_addReference(Function* __this, uint64_t address, int referencetype);
             void Function_addInstruction(Function* __this, Instruction* instruction);
 
             /* Segment's API */
@@ -124,6 +123,7 @@ namespace PrefSDK
 
             /* DisassemblerListing's API */
             void DisassemblerListing_addSegment(DisassemblerListing* __this, Segment* segment);
+            void DisassemblerListing_addReference(DisassemblerListing* __this, uint64_t srcaddress, uint64_t destaddress, int referencetype);
         }
     }
 }
