@@ -115,8 +115,25 @@ void DisassemblerView::displayDisassembly()
     for(int i = 0; i < this->_functionmodel->columnCount() - 1; i++)
         ui->functionList->resizeColumnToContents(i);
 
-    /* Disassembly Page */
-    //ui->disassemblerWidget->gotoEP();
+    /* Go to the first entry point */
+    for(int i = 0; i < this->_listing->segmentsCount(); i++)
+    {
+        Segment* segment = this->_listing->segment(i);
+
+        if(segment->type() != SegmentTypes::Code)
+            continue;
+
+        for(int j = 0; j < segment->functionsCount(); j++)
+        {
+            Function* func = segment->function(j);
+
+            if(func->type() == FunctionTypes::EntryPoint)
+            {
+                ui->disassemblerWidget->gotoFunction(func);
+                break;
+            }
+        }
+    }
 
     /* String Reference Part */
     //this->_stringrefs->setListing(this->_disasmlisting_old);
