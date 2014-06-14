@@ -4,7 +4,8 @@
 DisassemblerView::DisassemblerView(QHexEditData *hexeditdata, LoaderList::LoaderId loaderid, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _hexeditdata(hexeditdata), _loaderid(loaderid)
 {
     ui->setupUi(this);
-    ui->splitterDisasm->setStretchFactor(0, 1);
+    ui->hSplitter->setStretchFactor(0, 1);
+    ui->vSplitter->setStretchFactor(0, 1);
 
     this->_toolbar = new QToolBar();
     this->_toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -47,7 +48,7 @@ void DisassemblerView::createFunctionsMenu()
     QAction* actgoto = this->_functionsmenu->addAction("Goto Address");
     QAction* actxrefs = this->_functionsmenu->addAction("Cross References");
 
-    connect(actgoto, SIGNAL(triggered()), this, SLOT(selectVA()));
+    //NOTE: connect(actgoto, SIGNAL(triggered()), this, SLOT(selectVA()));
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
 
@@ -80,19 +81,10 @@ void DisassemblerView::disassemble()
     this->displayDisassembly();
 }
 
-/*
-void DisassemblerView::on_tvFunctions_customContextMenuRequested(const QPoint &pos)
+void DisassemblerView::on_functionList_customContextMenuRequested(const QPoint &pos)
 {
-    //if(ui->tvFunctions->selectionModel())
-        //this->_functionsmenu->exec(ui->tvFunctions->mapToGlobal(pos));
+    this->_functionsmenu->exec(ui->functionList->mapToGlobal(pos));
 }
-
-void DisassemblerView::on_tvFunctions_doubleClicked(const QModelIndex &index)
-{
-    if(index.isValid())
-        this->selectVA();
-}
-*/
 
 void DisassemblerView::onFunctionsMenuXRefsTriggered()
 {
@@ -120,11 +112,11 @@ void DisassemblerView::displayDisassembly()
     ui->functionList->setModel(this->_functionmodel);
     ui->functionList->resizeRowsToContents();
 
+    for(int i = 0; i < this->_functionmodel->columnCount() - 1; i++)
+        ui->functionList->resizeColumnToContents(i);
+
     /* Disassembly Page */
     //ui->disassemblerWidget->gotoEP();
-
-    /* Function Reference Part */
-    //this->_functionrefs->setListing(this->_disasmlisting_old);
 
     /* String Reference Part */
     //this->_stringrefs->setListing(this->_disasmlisting_old);
@@ -146,21 +138,10 @@ void DisassemblerView::showSegments()
     sd.exec();
 }
 
-void DisassemblerView::selectVA()
+void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)
 {
-    //QItemSelectionModel* model = ui->tvFunctions->selectionModel();
-
-    /*
-    if(!model)
-        return;
-
-    QModelIndex index = model->selectedIndexes()[0];
-
     if(!index.isValid())
         return;
 
-    */
-
-    //DisassembledInstruction func = this->_disasmlisting->function(index.row());
-    //ui->disassemblerWidget->gotoVA(func.VirtualAddress);
+    ui->disassemblerWidget->gotoFunction(reinterpret_cast<Function*>(index.internalPointer()));
 }

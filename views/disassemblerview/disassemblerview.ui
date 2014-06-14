@@ -36,9 +36,6 @@
        <string>Disassembler</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="spacing">
-        <number>6</number>
-       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -52,18 +49,58 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QSplitter" name="splitterDisasm">
+        <widget class="QSplitter" name="vSplitter">
          <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+          <enum>Qt::Vertical</enum>
          </property>
-         <widget class="DisassemblerWidget" name="disassemblerWidget"/>
-         <widget class="QTableView" name="functionList">
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
+         <widget class="QSplitter" name="hSplitter">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <attribute name="horizontalHeaderStretchLastSection">
-           <bool>true</bool>
-          </attribute>
+          <widget class="DisassemblerWidget" name="disassemblerWidget"/>
+          <widget class="QTableView" name="functionList">
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="horizontalHeaderStretchLastSection">
+            <bool>true</bool>
+           </attribute>
+          </widget>
+         </widget>
+         <widget class="QTabWidget" name="tabOverview">
+          <property name="tabPosition">
+           <enum>QTabWidget::South</enum>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tabStrings">
+           <attribute name="title">
+            <string>Strings</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QTableView" name="tableView"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tabOutput">
+           <attribute name="title">
+            <string>Output</string>
+           </attribute>
+          </widget>
          </widget>
         </widget>
        </item>

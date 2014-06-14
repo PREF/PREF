@@ -29,7 +29,7 @@ class FunctionModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        QImage _functionico;
+        QFont _monospacefont;
         DisassemblerListing* _listing;
         QList<Function*> _functions;
 };

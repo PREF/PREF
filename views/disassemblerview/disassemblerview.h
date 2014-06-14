@@ -38,13 +38,12 @@ class DisassemblerView : public AbstractView
         void disassemble();
 
     private slots:
-        //void on_tvFunctions_customContextMenuRequested(const QPoint &pos);
-        //void on_tvFunctions_doubleClicked(const QModelIndex &index);
+        void on_functionList_customContextMenuRequested(const QPoint &pos);
+        void on_functionList_doubleClicked(const QModelIndex &index);
         void onFunctionsMenuXRefsTriggered();
         void displayDisassembly();
         void showEntryPoints();
         void showSegments();
-        void selectVA();
 
     private:
         Ui::DisassemblerView *ui;

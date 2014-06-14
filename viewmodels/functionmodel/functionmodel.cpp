@@ -2,8 +2,9 @@
 
 FunctionModel::FunctionModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
-    /* Thread Safety: Don't use QPixmap */
-    this->_functionico.load(":/format_icons/res/method.png");
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
     for(int i = 0; i < this->_listing->segmentsCount(); i++)
     {
@@ -26,13 +27,13 @@ QString FunctionModel::functionType(Function *f) const
     switch(f->type())
     {
         case FunctionTypes::EntryPoint:
-            return "EP";
+            return "Entry Point";
 
         case FunctionTypes::Import:
-            return "I";
+            return "Import";
 
         case FunctionTypes::Export:
-            return "E";
+            return "Export";
 
         default:
             break;
@@ -56,10 +57,10 @@ QVariant FunctionModel::headerData(int section, Qt::Orientation orientation, int
                 return "Name";
 
             case 1:
-                return "Address";
+                return "Segment";
 
             case 2:
-                return "Segment";
+                return "Address";
 
             case 3:
                 return "Type";
@@ -77,12 +78,12 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
-    Function* f = this->_functions[index.row()];
+    Function* f = reinterpret_cast<Function*>(index.internalPointer());
 
     if(role == Qt::DisplayRole)
     {   
         switch(index.column())
-        {
+        {                
             case 0:
                 return f->name();
 
@@ -90,7 +91,7 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
                 return QString("%1").arg(f->startAddress(), 8, 16, QLatin1Char('0')).toUpper();
 
             case 2:
-                return f->segmentName();
+                return QString("'%1'").arg(f->segmentName());
 
             case 3:
                 return this->functionType(f);
@@ -99,8 +100,6 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
                 break;
         }
     }
-    else if(role == Qt::DecorationRole && index.column() == 0)
-        return this->_functionico;
     else if(role == Qt::BackgroundRole)
     {
         switch(f->type())
@@ -118,6 +117,16 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
                 break;
         }
     }
+    else if(role == Qt::ForegroundRole)
+    {
+        if(index.column() == 1)
+                return QColor(Qt::darkBlue);
+
+        if(index.column() == 2)
+            return QColor(Qt::darkGreen);
+    }
+    else if(role == Qt::FontRole)
+        return this->_monospacefont;
 
     return QVariant();
 }
@@ -127,7 +136,7 @@ QModelIndex FunctionModel::index(int row, int column, const QModelIndex &parent)
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column);
+    return this->createIndex(row, column, this->_functions[row]);
 }
 
 QModelIndex FunctionModel::parent(const QModelIndex &) const
