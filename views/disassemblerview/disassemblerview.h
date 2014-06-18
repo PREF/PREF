@@ -44,6 +44,7 @@ class DisassemblerView : public AbstractView
         void displayDisassembly();
         void showEntryPoints();
         void showSegments();
+        void gotoFunction();
 
     private:
         Ui::DisassemblerView *ui;

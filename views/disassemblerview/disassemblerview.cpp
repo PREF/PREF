@@ -48,7 +48,7 @@ void DisassemblerView::createFunctionsMenu()
     QAction* actgoto = this->_functionsmenu->addAction("Goto Address");
     QAction* actxrefs = this->_functionsmenu->addAction("Cross References");
 
-    //NOTE: connect(actgoto, SIGNAL(triggered()), this, SLOT(selectVA()));
+    connect(actgoto, SIGNAL(triggered()), this, SLOT(gotoFunction()));
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
 
@@ -153,6 +153,15 @@ void DisassemblerView::showSegments()
 {
     SegmentsDialog sd(this->_listing, this);
     sd.exec();
+}
+
+void DisassemblerView::gotoFunction()
+{
+    QItemSelectionModel* selectionmodel = ui->functionList->selectionModel();
+
+    if(selectionmodel->hasSelection())
+        ui->disassemblerWidget->gotoFunction(reinterpret_cast<Function*>(selectionmodel->selectedIndexes()[0].internalPointer()));
+
 }
 
 void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)

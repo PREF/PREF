@@ -59,6 +59,9 @@
           </property>
           <widget class="DisassemblerWidget" name="disassemblerWidget"/>
           <widget class="QTableView" name="functionList">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
            <property name="selectionBehavior">
             <enum>QAbstractItemView::SelectRows</enum>
            </property>
