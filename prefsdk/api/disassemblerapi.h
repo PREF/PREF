@@ -114,8 +114,9 @@ namespace PrefSDK
             void Instruction_formatInstruction(Instruction *__this, const char* s);
 
             /* Function's API */
-            Function* Function_create(int functiontype, const char* name, uint64_t startaddress, uint64_t endaddress);
+            Function* Function_create(int functiontype, uint64_t startaddress, uint64_t endaddress);
             void Function_addInstruction(Function* __this, Instruction* instruction);
+            void Function_setName(Function* __this, const char* name);
 
             /* Segment's API */
             Segment *Segment_create(const char *name, int segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset);

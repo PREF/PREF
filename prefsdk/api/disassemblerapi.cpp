@@ -49,14 +49,19 @@ namespace PrefSDK
             __this->setMnemonic(QString::fromUtf8(mnemonic));
         }
 
-        Function *Function_create(int functiontype, const char *name, uint64_t startaddress, uint64_t endaddress)
+        Function *Function_create(int functiontype, uint64_t startaddress, uint64_t endaddress)
         {
-            return new Function(static_cast<FunctionTypes::Type>(functiontype), QString::fromUtf8(name), startaddress, endaddress);
+            return new Function(static_cast<FunctionTypes::Type>(functiontype), startaddress, endaddress);
         }
 
         void Function_addInstruction(Function *__this, Instruction *instruction)
         {
             __this->addInstruction(instruction);
+        }
+
+        void Function_setName(Function *__this, const char *name)
+        {
+            __this->setName(name);
         }
 
         void Instruction_setSize(Instruction *__this, uint64_t size)
