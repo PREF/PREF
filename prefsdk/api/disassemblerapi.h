@@ -116,7 +116,6 @@ namespace PrefSDK
             /* Function's API */
             Function* Function_create(int functiontype, uint64_t startaddress, uint64_t endaddress);
             void Function_addInstruction(Function* __this, Instruction* instruction);
-            void Function_setName(Function* __this, const char* name);
 
             /* Segment's API */
             Segment *Segment_create(const char *name, int segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset);
@@ -125,6 +124,9 @@ namespace PrefSDK
             /* DisassemblerListing's API */
             void DisassemblerListing_addSegment(DisassemblerListing* __this, Segment* segment);
             void DisassemblerListing_addReference(DisassemblerListing* __this, uint64_t srcaddress, uint64_t destaddress, int referencetype);
+            void DisassemblerListing_setSymbol(DisassemblerListing* __this, uint64_t address, int datatype, const char* name);
+            bool DisassemblerListing_hasSymbol(DisassemblerListing* __this, uint64_t address);
+            const char* DisassemblerListing_getSymbolName(DisassemblerListing* __this, uint64_t address);
         }
     }
 }

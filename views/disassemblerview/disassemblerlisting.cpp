@@ -11,6 +11,11 @@ void DisassemblerListing::addSegment(Segment *segment)
     this->_segments[segment->startAddress()] = segment;
 }
 
+void DisassemblerListing::setSymbol(uint64_t address, DataType::Type type, const QString &name)
+{
+    this->_symboltable[address] = new Symbol(type, name, this);
+}
+
 void DisassemblerListing::addReference(uint64_t srcaddress, uint64_t destaddress, ReferenceTypes::Type referencetype)
 {
     if(!this->_references.contains(destaddress))
@@ -36,4 +41,9 @@ DisassemblerListing::ReferenceSet DisassemblerListing::references(uint64_t addre
         return this->_references[address];
 
     return DisassemblerListing::ReferenceSet();
+}
+
+const DisassemblerListing::SymbolTable &DisassemblerListing::symbolTable() const
+{
+    return this->_symboltable;
 }

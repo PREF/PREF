@@ -18,11 +18,6 @@ namespace PrefSDK
         this->_endaddress += instruction->size();
     }
 
-    void Function::setName(const QString &s)
-    {
-        this->_name = s;
-    }
-
     int Function::indexOf(Instruction *instruction) const
     {
         return this->_addresslist.indexOf(instruction->address());
@@ -56,11 +51,6 @@ namespace PrefSDK
     bool Function::isExport() const
     {
         return this->_type & FunctionTypes::Export;
-    }
-
-    const QString &Function::name() const
-    {
-        return this->_name;
     }
 
     ListingTypes::Type Function::objectType() const

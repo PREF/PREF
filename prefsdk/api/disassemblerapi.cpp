@@ -59,11 +59,6 @@ namespace PrefSDK
             __this->addInstruction(instruction);
         }
 
-        void Function_setName(Function *__this, const char *name)
-        {
-            __this->setName(name);
-        }
-
         void Instruction_setSize(Instruction *__this, uint64_t size)
         {
             __this->setSize(size);
@@ -92,6 +87,21 @@ namespace PrefSDK
         void DisassemblerListing_addReference(DisassemblerListing *__this, uint64_t srcaddress, uint64_t destaddress, int referencetype)
         {
             __this->addReference(srcaddress, destaddress, static_cast<ReferenceTypes::Type>(referencetype));
+        }
+
+        void DisassemblerListing_setSymbol(DisassemblerListing *__this, uint64_t address, int datatype, const char *name)
+        {
+            __this->setSymbol(address, static_cast<DataType::Type>(datatype), QString::fromUtf8(name));
+        }
+
+        bool DisassemblerListing_hasSymbol(DisassemblerListing *__this, uint64_t address)
+        {
+            return __this->symbolTable().contains(address);
+        }
+
+        const char* DisassemblerListing_getSymbolName(DisassemblerListing *__this, uint64_t address)
+        {
+            return __this->symbolTable()[address]->name().toUtf8().constData();
         }
     }
 }

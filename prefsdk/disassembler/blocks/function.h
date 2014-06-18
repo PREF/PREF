@@ -31,7 +31,6 @@ namespace PrefSDK
         public:
             explicit Function(FunctionTypes::Type type, uint64_t startaddress, uint64_t endaddress, QObject* parent = 0);
             void addInstruction(Instruction* instruction);
-            void setName(const QString& s);
             int indexOf(Instruction* instruction) const;
             Instruction* instruction(int idx);
             int instructionsCount() const;
@@ -39,7 +38,6 @@ namespace PrefSDK
             bool isEntryPoint() const;
             bool isImport() const;
             bool isExport() const;
-            const QString& name() const;
             QString references() const;
 
         public: /* Overriden Methods */
@@ -50,7 +48,6 @@ namespace PrefSDK
             AddressList _addresslist;
             InstructionMap _instructions;
             FunctionTypes::Type _type;
-            QString _name;
     };
 }
 

@@ -6,13 +6,16 @@ DisassemblerView::DisassemblerView(QHexEditData *hexeditdata, LoaderList::Loader
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
+    ui->dvSplitter->setStretchFactor(1, 1);
+
+    ui->hexEdit->setReadOnly(true);
+    ui->hexEdit->setData(hexeditdata);
 
     this->_toolbar = new QToolBar();
     this->_toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     this->_toolbar->setEnabled(false);
 
     ui->verticalLayout_2->insertWidget(0, this->_toolbar);
-    this->createFunctionsMenu();
 
     this->_actentrypoints = this->_toolbar->addAction(QIcon(":/action_icons/res/entry.png"), "Entry Points");
     this->_actsegments = this->_toolbar->addAction(QIcon(":/action_icons/res/segments.png"), "Segments");
@@ -24,6 +27,7 @@ DisassemblerView::DisassemblerView(QHexEditData *hexeditdata, LoaderList::Loader
     connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
     connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
 
+    this->createFunctionsMenu();
     this->disassemble();
 }
 

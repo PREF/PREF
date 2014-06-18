@@ -83,9 +83,10 @@ class DisassemblerWidget : public QPlainTextEdit
                 virtual int print()
                 {
                     DisassemblerListing::ReferenceSet references = this->_listing->references(this->_function->startAddress());
+                    DisassemblerListing::SymbolTable symboltable = this->_listing->symbolTable();
 
                     this->printAddress();
-                    this->_cursor.insertText(QString("  %1 %2()\t %3\n").arg(this->functionType(), this->_function->name(), this->displayReferences("Called by", references)));
+                    this->_cursor.insertText(QString("  %1 %2()\t %3\n").arg(this->functionType(), symboltable[this->_function->startAddress()]->name(), this->displayReferences("Called by", references)));
                     return 2;
                 }
 

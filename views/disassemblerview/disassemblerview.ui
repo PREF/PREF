@@ -57,7 +57,14 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="DisassemblerWidget" name="disassemblerWidget"/>
+          <widget class="DisassemblerWidget" name="disassemblerWidget">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
+           </property>
+           <property name="acceptDrops">
+            <bool>false</bool>
+           </property>
+          </widget>
           <widget class="QTableView" name="functionList">
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
@@ -113,6 +120,29 @@
       <attribute name="title">
        <string>Data View</string>
       </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_4">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QSplitter" name="dvSplitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QTableView" name="dataView"/>
+         <widget class="QHexEdit" name="hexEdit" native="true"/>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
@@ -123,6 +153,12 @@
    <class>DisassemblerWidget</class>
    <extends>QPlainTextEdit</extends>
    <header>views/disassemblerview/disassemblerwidget/disassemblerwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QHexEdit</class>
+   <extends>QWidget</extends>
+   <header>qhexedit/qhexedit.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -85,7 +85,7 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {                
             case 0:
-                return f->name();
+                return this->_listing->symbolTable()[f->startAddress()]->name();
 
             case 1:
                 return QString("%1").arg(f->startAddress(), 8, 16, QLatin1Char('0')).toUpper();

@@ -143,7 +143,9 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
     viewmodels/functionmodel/functionmodel.cpp \
-    prefsdk/disassembler/references/reference.cpp
+    prefsdk/disassembler/references/reference.cpp \
+    prefsdk/disassembler/symbols/symbol.cpp \
+    prefsdk/disassembler/symbols/symboltable.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -274,7 +276,9 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
     viewmodels/functionmodel/functionmodel.h \
-    prefsdk/disassembler/references/reference.h
+    prefsdk/disassembler/references/reference.h \
+    prefsdk/disassembler/symbols/symbol.h \
+    prefsdk/disassembler/symbols/symboltable.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
