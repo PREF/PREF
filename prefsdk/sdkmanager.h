@@ -32,7 +32,6 @@ namespace PrefSDK
 
         private:
             static int luaAtPanic(lua_State* l);
-            static void prefAtPanic(QtMsgType msgtype, const QMessageLogContext &context, const QString &msg);
 
         public:
             static lua_State* initializeLua();
