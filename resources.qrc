@@ -52,6 +52,7 @@
         <file>res/gear.png</file>
         <file>res/hex.png</file>
         <file>res/busy.png</file>
+        <file>res/crossreference.png</file>
     </qresource>
     <qresource prefix="/misc_images">
         <file>res/bug.png</file>
