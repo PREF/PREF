@@ -2,24 +2,50 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(uint64_t address, uint64_t offset, QObject *parent): ListingObject(parent), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _address(address), _offset(offset), _size(0)
+    Instruction::Instruction(uint64_t address, uint64_t offset, QObject *parent): ListingObject(parent), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _mnemonic("???"), _opcode(0xFFFFFFFF), _address(address), _offset(offset), _size(0)
     {
 
     }
 
-    void Instruction::addOperand(Operand *operand)
+    bool Instruction::contains(uint64_t address)
     {
+        return (address >= this->_address) && (address < (this->_address + this->_size));
+    }
+
+    void Instruction::clearOperands()
+    {
+        this->_operands.clear();
+    }
+
+    void Instruction::cloneOperand(Operand *operand)
+    {
+        this->_operands.append(new Operand(operand));
+    }
+
+    Operand* Instruction::addOperand(OperandTypes::Type operandtype, DataType::Type datatype)
+    {
+        Operand* operand = new Operand(operandtype, datatype);
+
         this->_operands.append(operand);
+        return operand;
     }
 
-    void Instruction::setSize(uint64_t sz)
+    void Instruction::removeOperand(int idx)
     {
-        this->_size = sz;
+        if(idx >= this->_operands.count())
+            return;
+
+        this->_operands.removeAt(idx);
     }
 
-    void Instruction::formatInstruction(const QString &s)
+    void Instruction::updateSize(uint64_t sz)
     {
-        this->_displayoperand = s;
+        this->_size += sz;
+    }
+
+    void Instruction::setFormat(const QString &s)
+    {
+        this->_opformat = s;
     }
 
     InstructionCategories::Category Instruction::category() const
@@ -47,6 +73,11 @@ namespace PrefSDK
         return this->_size;
     }
 
+    uint64_t Instruction::opCode() const
+    {
+        return this->_opcode;
+    }
+
     QString Instruction::mnemonic() const
     {
         return this->_mnemonic;
@@ -71,7 +102,10 @@ namespace PrefSDK
 
     QString Instruction::displayOperands() const
     {
-        return this->_displayoperand;
+        if(this->_opformat.isEmpty())
+            return this->standardOperandFormat();
+
+        return this->customOperandformat();
     }
 
     int Instruction::operandsCount() const
@@ -82,6 +116,11 @@ namespace PrefSDK
     Operand *Instruction::operand(int idx) const
     {
         return this->_operands[idx];
+    }
+
+    void Instruction::setOpCode(uint64_t opcode)
+    {
+        this->_opcode = opcode;
     }
 
     void Instruction::setMnemonic(const QString &mnemonic)
@@ -107,5 +146,76 @@ namespace PrefSDK
     QString Instruction::displayAddress() const
     {
         return QString("%1").arg(this->_address, 8, 16, QLatin1Char('0')).toUpper();
+    }
+
+    QString Instruction::standardOperandFormat() const
+    {
+        QString s;
+
+        for(int i = 0; i < this->_operands.count(); i++)
+        {
+            Operand* operand = this->_operands[i];
+
+            if(i > 0)
+                s.append(", ");
+
+            s.append(operand->displayValue());
+        }
+
+        return s;
+    }
+
+    QString Instruction::customOperandformat() const
+    {
+        int i = 0;
+        QChar ch;
+        QString s;
+
+        while(i < this->_opformat.length())
+        {
+            ch = this->_opformat[i];
+
+            switch(ch.toLatin1())
+            {
+                case '%':
+                {
+                    ch = this->_opformat[++i];
+
+                    if(ch.isNull())
+                        break;
+
+                    if(ch == '%')
+                    {
+                        s.append("%");
+                        break;
+                    }
+
+                    bool ok = false;
+                    int opidx = QString(ch).toInt(&ok);
+
+                    if(!ok) //TODO: Handle Errors
+                        qDebug() << "ERROR: Invalid Operand Format: Expected Integer not '" << ch << "'";
+                    else if(opidx < 0 || opidx > this->_operands.count())
+                        qDebug() << "ERROR: Operand Index out of range";
+                    else
+                        s.append(this->_operands[opidx - 1]->displayValue());
+
+                    break;
+                }
+
+                case '\0':
+                    return s; /* Something wrong: reached EOS */
+
+                default:
+                {
+                    s.append(ch);
+                    break;
+                }
+            }
+
+            i++;
+        }
+
+        return s;
     }
 }

@@ -1,81 +1,73 @@
 #include "disassemblerwidget.h"
 
-DisassemblerWidget::DisassemblerWidget(QWidget *parent): QPlainTextEdit(parent), _listing(nullptr)
+DisassemblerWidget::DisassemblerWidget(QWidget *parent): QScrollArea(parent), _listing(nullptr)
 {    
-    this->_highlighter = new DisassemblerHighlighter(this->document());
+    this->_vscrollbar = new QScrollBar(Qt::Vertical);
+    this->_scrollarea = new QScrollArea();
+    this->_disasmwidget_p = new DisassemblerWidgetPrivate(this->_scrollarea, this->_vscrollbar);
 
-    QFont f("Monospace", qApp->font().pointSize());
-    f.setStyleHint(QFont::TypeWriter);
+    /* Forward Signals */
+    connect(this->_disasmwidget_p, SIGNAL(customContextMenuRequested(QPoint)), this, SIGNAL(customContextMenuRequested(QPoint)));
 
-    this->setFont(f);
-    this->setReadOnly(true);
-    this->setUndoRedoEnabled(false);
-    this->highlightCurrentLine();
+    this->_scrollarea->setFocusPolicy(Qt::NoFocus);
+    this->_scrollarea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /* Do not show vertical QScrollBar!!! */
+    this->_scrollarea->setFrameStyle(QFrame::NoFrame);
+    this->_scrollarea->setWidgetResizable(true);
+    this->_scrollarea->setWidget(this->_disasmwidget_p);
 
-    connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(highlightCurrentLine()));
+    this->setFocusPolicy(Qt::NoFocus);
+
+    this->_hlayout = new QHBoxLayout();
+    this->_hlayout->setSpacing(0);
+    this->_hlayout->setMargin(0);
+    this->_hlayout->addWidget(this->_scrollarea);
+    this->_hlayout->addWidget(this->_vscrollbar);
+
+    this->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
+    this->setLayout(this->_hlayout);
+}
+
+const DisassemblerWidget::ListingItem &DisassemblerWidget::selectedItem()
+{
+    return this->_disasmwidget_p->selectedItem();
+}
+
+void DisassemblerWidget::setCurrentIndex(int idx)
+{
+    this->_disasmwidget_p->setCurrentIndex(idx);
 }
 
 void DisassemblerWidget::setListing(DisassemblerListing *listing)
 {
-    this->_listing = listing;
-
-    this->displayListing();
+    this->_disasmwidget_p->setListing(listing);
 }
 
-void DisassemblerWidget::gotoFunction(Function *func)
+void DisassemblerWidget::setAddressForeColor(const QColor &c)
 {
-    QTextDocument* document = this->document();
-    QTextCursor cursor(document->findBlockByLineNumber(this->_functionlines[func]));
-    this->setTextCursor(cursor);
+    this->_disasmwidget_p->setAddressForeColor(c);
 }
 
-void DisassemblerWidget::displayListing()
+void DisassemblerWidget::setSelectedLineColor(const QColor &c)
 {
-    int linecount = 0;
-    QTextCursor cursor = this->textCursor();
-
-    cursor.beginEditBlock();
-
-    for(int i = 0; i < this->_listing->segmentsCount(); i++)
-    {
-        Segment* segment = this->_listing->segment(i);
-        SegmentBlock sb(this->_listing, segment, cursor);
-
-        this->_segmentlines[segment] = linecount;
-        linecount += sb.print();
-
-        for(int j = 0; j < segment->functionsCount(); j++)
-        {
-            Function* func = segment->function(j);
-            FunctionBlock fb(this->_listing, func, cursor);
-
-            this->_functionlines[func] = linecount;
-            linecount += fb.print();
-
-            for(int k = 0; k < func->instructionsCount(); k++)
-            {
-                Instruction* instr = func->instruction(k);
-                InstructionBlock ib(this->_listing, instr, cursor);
-
-                this->_instructionlines[instr] = linecount;
-                linecount += ib.print();
-            }
-        }
-    }
-
-    cursor.endEditBlock();
+    this->_disasmwidget_p->setSelectedLineColor(c);
 }
 
-void DisassemblerWidget::highlightCurrentLine()
+void DisassemblerWidget::setWheelScrollLines(int c)
 {
-    QList<QTextEdit::ExtraSelection> extraselections;
-    QTextEdit::ExtraSelection selection;
+    this->_disasmwidget_p->setWheelScrollLines(c);
+}
 
-    selection.format.setBackground(QColor(Qt::yellow).lighter(160));
-    selection.format.setProperty(QTextFormat::FullWidthSelection, true);
-    selection.cursor = this->textCursor();
-    selection.cursor.clearSelection();
-    extraselections.append(selection);
+void DisassemblerWidget::selectItem(ListingObject* listingobj)
+{
+    this->_disasmwidget_p->selectItem(listingobj);
+}
 
-    this->setExtraSelections(extraselections);
+void DisassemblerWidget::gotoAddress(uint64_t address)
+{
+    this->_disasmwidget_p->gotoAddress(address);
+}
+
+int DisassemblerWidget::currentIndex() const
+{
+    return this->_disasmwidget_p->currentIndex();
 }

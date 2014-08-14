@@ -31,6 +31,8 @@ namespace PrefSDK
         public:
             explicit Function(FunctionTypes::Type type, uint64_t startaddress, uint64_t endaddress, QObject* parent = 0);
             void addInstruction(Instruction* instruction);
+            void removeInstruction(Instruction* instruction);
+            void replaceInstruction(Instruction* oldinstruction, Instruction* newinstruction);
             int indexOf(Instruction* instruction) const;
             Instruction* instruction(int idx);
             int instructionsCount() const;

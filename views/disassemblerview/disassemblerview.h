@@ -34,13 +34,17 @@ class DisassemblerView : public AbstractView
         virtual void updateStatusBar();
 
     private:
+        void createListingMenu();
         void createFunctionsMenu();
         void disassemble();
 
     private slots:
+        void on_disassemblerWidget_customContextMenuRequested(const QPoint &pos);
         void on_functionList_customContextMenuRequested(const QPoint &pos);
         void on_functionList_doubleClicked(const QModelIndex &index);
         void onFunctionsMenuXRefsTriggered();
+        void onListingMenuJumpToAddressTriggered();
+        void onListingMenuHexDumpTriggered();
         void displayDisassembly();
         void showEntryPoints();
         void showSegments();
@@ -54,10 +58,16 @@ class DisassemblerView : public AbstractView
         QHexEditData* _hexeditdata;
         LoaderList::LoaderId _loaderid;
         QToolBar* _toolbar;
+        QMenu* _functionsmenu;
+        QMenu* _listingmenu;
         QAction* _actsegments;
         QAction* _actentrypoints;
         QAction* _actgoto;
-        QMenu* _functionsmenu;
+        QAction* _actcrossreferences;
+        QAction* _actjumptoaddress;
+        QAction* _acthexdump;
+        QAction* _actcopyaddress;
+        QAction* _actcopylisting;
 };
 
 #endif // DISASSEMBLERVIEW_H

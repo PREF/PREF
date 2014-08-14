@@ -1,5 +1,7 @@
 #include "disassemblerwidgetprivate.h"
 
+DisassemblerWidgetPrivate::ListingItem DisassemblerWidgetPrivate::ListingItem::_invalidobj;
+
 DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent): QWidget(parent), _listing(nullptr), _currentindex(-1)
 {
     this->_scrollarea = scrollarea;
@@ -13,9 +15,18 @@ DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea* scrollarea, QS
     this->setWheelScrollLines(5);  /* By default: scroll 5 lines */
     this->setBackgroundRole(QPalette::Base);
     this->setAddressForeColor(Qt::darkBlue);
+    this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setSelectedLineColor(QColor(0xFF, 0xFF, 0xA0));
 
     connect(this->_vscrollbar, SIGNAL(valueChanged(int)), this, SLOT(onVScrollBarValueChanged(int)));
+}
+
+const DisassemblerWidgetPrivate::ListingItem &DisassemblerWidgetPrivate::selectedItem()
+{
+    if(this->_currentindex < this->_listingitems.count())
+        return this->_listingitems[this->_currentindex];
+
+    return ListingItem::invalid();
 }
 
 void DisassemblerWidgetPrivate::setCurrentIndex(int idx)
@@ -52,68 +63,51 @@ void DisassemblerWidgetPrivate::setWheelScrollLines(int c)
     this->_wheelscrolllines = c;
 }
 
-void DisassemblerWidgetPrivate::gotoFunction(Function *func)
+void DisassemblerWidgetPrivate::selectItem(ListingObject* listingobj)
 {
-    int listingidx = -1;
+    if(!this->_listingindexes.contains(listingobj))
+        return;
 
+    this->setCurrentIndex(this->_listingindexes[listingobj]);
+}
+
+void DisassemblerWidgetPrivate::gotoAddress(uint64_t address)
+{
     for(int i = 0; i < this->_listing->segmentsCount(); i++)
     {
-        Segment* s = this->_listing->segment(i);
-        listingidx++;
+        Segment* segment = this->_listing->segment(i);
 
-        for(int j = 0; j < s->functionsCount(); j++)
+        if(segment->contains(address))
         {
-            Function* f = s->function(j);
-            listingidx++;
+            for(int j = 0; j < segment->functionsCount(); j++)
+            {
+                Function* func = segment->function(j);
 
-            if(f == func)
-                break;
+                if(func->contains(address))
+                {
+                    for(int k = 0; k < func->instructionsCount(); k++)
+                    {
+                        Instruction* instruction = func->instruction(k);
 
-            listingidx += f->instructionsCount();
+                        if(instruction->contains(address))
+                        {
+                            this->selectItem(instruction);
+                            return;
+                        }
+                    }
+                }
+                else if(func->endAddress() > address)
+                    return;
+            }
         }
+        else if(segment->endAddress() > address)
+            return;
     }
-
-    this->setCurrentIndex(listingidx);
 }
 
 int DisassemblerWidgetPrivate::currentIndex() const
 {
     return this->_currentindex;
-}
-
-ListingObject *DisassemblerWidgetPrivate::findListingObject(int idx)
-{
-    int curridx = 0;
-
-    for(int i = 0; i < this->_listing->segmentsCount(); i++)
-    {
-        Segment* segment = this->_listing->segment(i);
-
-        if(curridx == idx)
-            return segment;
-
-        curridx++;
-
-        for(int j = 0; j < segment->functionsCount(); j++)
-        {
-            Function* func = segment->function(j);
-
-            if(curridx == idx)
-                return func;
-
-            curridx++;
-            int instridx = idx - curridx;
-
-            if(instridx < func->instructionsCount())
-                return func->instruction(instridx);
-
-            curridx += func->instructionsCount();
-        }
-
-        curridx++;
-    }
-
-    return nullptr;
 }
 
 void DisassemblerWidgetPrivate::gotoFirstEntryPoint()
@@ -124,7 +118,7 @@ void DisassemblerWidgetPrivate::gotoFirstEntryPoint()
 
         if(segment->entryPointsCount() > 0)
         {
-            this->gotoFunction(segment->entryPoint(0));
+            this->selectItem(segment->entryPoint(0));
             break;
         }
     }
@@ -155,6 +149,7 @@ QString DisassemblerWidgetPrivate::displayReferences(const QString &prefix, cons
     if(references.isEmpty())
         return QString();
 
+    Segment* segment = nullptr;
     QString s = QString("# %1: ").arg(prefix);
 
     for(DisassemblerListing::ReferenceSet::ConstIterator it = references.begin(); it != references.end(); it++)
@@ -162,7 +157,15 @@ QString DisassemblerWidgetPrivate::displayReferences(const QString &prefix, cons
         if(it != references.begin())
             s.append(", ");
 
-        s.append(QString("%1").arg((*it)->address(), 8, 16, QLatin1Char('0')).toUpper());
+        uint64_t srcaddress = (*it)->srcAddress();
+
+        if(!segment || !segment->contains(srcaddress))
+            segment = this->_listing->segmentFromAddress(srcaddress);
+
+        if(segment)
+            s.append(QString("%1:%2").arg(segment->name(), QString("%1").arg((*it)->srcAddress(), 8, 16, QLatin1Char('0')).toUpper()));
+        else
+            s.append(QString("%1").arg((*it)->srcAddress(), 8, 16, QLatin1Char('0')).toUpper());
     }
 
     return s;
@@ -181,52 +184,51 @@ void DisassemblerWidgetPrivate::drawLineBackground(QPainter &painter, qint64 idx
 
 void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qint64 idx, int y)
 {
-    int x = 0;
-    QString s;
+    QTextDocument document;
     painter.setBackgroundMode(Qt::TransparentMode);
     this->drawLineBackground(painter, idx, y);
 
-    ListingItem* listingitem = this->_listingitems.at(idx);
+    ListingItem& listingitem = this->_listingitems[idx];
 
-    if(listingitem->itemType() == ListingItem::Reference)
+    if(listingitem.itemType() == ListingItem::Reference)
     {
-        const DisassemblerListing::ReferenceSet& references = listingitem->references();
+        int x = 0;
+        const DisassemblerListing::ReferenceSet& references = listingitem.references();
+        document.setPlainText(this->emitReferences(fm, references, x));
 
-        if(references.count() && ((*references.begin())->type() == ReferenceTypes::Jump || (*references.begin())->type() == ReferenceTypes::ConditionalJump))
-        {
-            Reference* r = *(references.begin());
-            QString address = QString("%1").append(r->address(), 8, 16, QLatin1Char('0'));
-            s = QString("j_%1:\t%2").arg(address, this->displayReferences("Referenced by", references));
-        }
-    }
-    else
-    {
-        ListingObject* listingobj = listingitem->listingObject();
-        x = this->drawAddress(painter, fm, listingobj, y);
+        DisassemblerHighlighter highlighter(&document, references);
+        highlighter.rehighlight();  /* Apply Syntax Highlighting */
 
-        switch(listingobj->objectType())
-        {
-            case ListingTypes::Segment:
-                s = this->emitSegment(qobject_cast<Segment*>(listingobj));
-                break;
+        painter.save();
+            painter.translate(x + (this->_charwidth * 4), y - (this->_charheight - fm.ascent()));
+            document.drawContents(&painter);
+        painter.restore();
 
-            case ListingTypes::Function:
-                s = this->emitFunction(qobject_cast<Function*>(listingobj));
-                x += this->_charwidth * 2;
-                break;
-
-            case ListingTypes::Instruction:
-                s = this->emitInstruction(qobject_cast<Instruction*>(listingobj));
-                x += this->_charwidth * 5;
-                break;
-
-            default:
-                return;
-        }
+        return;
     }
 
-    QTextDocument document;
-    document.setPlainText(s);
+    ListingObject* listingobj = listingitem.listingObject();
+    int x = this->drawAddress(painter, fm, listingobj, y);
+
+    switch(listingobj->objectType())
+    {
+        case ListingTypes::Segment:
+            document.setPlainText(this->emitSegment(qobject_cast<Segment*>(listingobj)));
+            break;
+
+        case ListingTypes::Function:
+            document.setPlainText(this->emitFunction(qobject_cast<Function*>(listingobj)));
+            x += this->_charwidth * 2;
+            break;
+
+        case ListingTypes::Instruction:
+            document.setPlainText(this->emitInstruction(qobject_cast<Instruction*>(listingobj)));
+            x += this->_charwidth * 5;
+            break;
+
+        default:
+            return;
+    }
 
     DisassemblerHighlighter highlighter(&document, listingobj);
     highlighter.rehighlight();  /* Apply Syntax Highlighting */
@@ -258,29 +260,50 @@ QString DisassemblerWidgetPrivate::emitInstruction(Instruction *instruction)
     return QString("%1 %2").arg(instruction->mnemonic(), instruction->displayOperands());
 }
 
+QString DisassemblerWidgetPrivate::emitReferences(QFontMetrics& fm, const DisassemblerListing::ReferenceSet &references, int& x)
+{
+    Reference* r = *(references.begin());
+    x = this->calcAddressWidth(fm, r);
+
+    QString address = QString("%1").arg(static_cast<quint64>(r->destAddress()), 8, 16, QLatin1Char('0')).toUpper();
+    return QString("j_%1:\t\t%2").arg(address, this->displayReferences("Referenced by", references));
+}
+
 void DisassemblerWidgetPrivate::elaborateListing()
 {
+    int line = 0;
     this->_listingitems.clear();
+    this->_listingindexes.clear();
 
     for(int i = 0; i < this->_listing->segmentsCount(); i++)
     {
         Segment* segment = this->_listing->segment(i);
+
         this->_listingitems.append(ListingItem(segment));
+        this->_listingindexes[segment] = line;
+        line++;
 
         for(int j = 0; j < segment->functionsCount(); j++)
         {
             Function* func = segment->function(j);
             this->_listingitems.append(ListingItem(func));
+            this->_listingindexes[func] = line;
+            line++;
 
             for(int k = 0; k < func->instructionsCount(); k++)
             {
                 Instruction* instr = func->instruction(k);
                 DisassemblerListing::ReferenceSet references = this->_listing->references(instr->address());
 
-                if(references.count() > 0)
+                if(references.count() && ((*references.begin())->type() == ReferenceTypes::Jump || (*references.begin())->type() == ReferenceTypes::ConditionalJump))
+                {
                     this->_listingitems.append(ListingItem(references));
+                    line++;
+                }
 
                 this->_listingitems.append(ListingItem(instr));
+                this->_listingindexes[instr] = line;
+                line++;
             }
         }
     }
@@ -295,6 +318,16 @@ int DisassemblerWidgetPrivate::drawAddress(QPainter &painter, QFontMetrics &fm, 
     painter.drawText(0, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, address);
 
     return w + this->_charwidth;
+}
+
+int DisassemblerWidgetPrivate::calcAddressWidth(QFontMetrics &fm, Reference *reference)
+{
+    Segment* segment = this->_listing->segmentFromAddress(reference->srcAddress());
+
+    if(!segment)
+        return 0;
+
+    return fm.width(QString("%1:%2").arg(segment->name(), reference->displayAddress()));
 }
 
 void DisassemblerWidgetPrivate::adjust()
@@ -369,8 +402,8 @@ void DisassemblerWidgetPrivate::wheelEvent(QWheelEvent *e)
             e->accept();
         }
     }
-    else
-        e->ignore();
+
+    QWidget::wheelEvent(e);
 }
 
 void DisassemblerWidgetPrivate::paintEvent(QPaintEvent *pe)
@@ -382,7 +415,7 @@ void DisassemblerWidgetPrivate::paintEvent(QPaintEvent *pe)
         QRect r = pe->rect();
         QFontMetrics fm = this->fontMetrics();
         qint64 slidepos = this->_vscrollbar->isVisible() ?this->_vscrollbar->sliderPosition() : 0;
-        qint64 start = slidepos + (r.top() / this->_charheight), end = qMin(this->_listingitems.length() - 1, (slidepos + (r.bottom() / this->_charheight)) + 1); /* end + 1 Removes the scroll bug */
+        qint64 start = slidepos + (r.top() / this->_charheight), end = qMin(static_cast<qint64>(this->_listingitems.length() - 1), (slidepos + (r.bottom() / this->_charheight)) + 1); /* end + 1 Removes the scroll bug */
 
         for(qint64 i = start; i <= end; i++)
         {
@@ -399,16 +432,15 @@ void DisassemblerWidgetPrivate::resizeEvent(QResizeEvent *)
 
 void DisassemblerWidgetPrivate::mousePressEvent(QMouseEvent *e)
 {
-    if(this->_listing && (e->buttons() & Qt::LeftButton))
+    if(this->_listing)
     {
         QPoint pos = e->pos();
 
         if(pos.x() && pos.y())
-        {
             this->setCurrentIndex(this->_vscrollbar->sliderPosition() + (pos.y() / this->_charheight));
-            return;
-        }
     }
+    else
+        this->setCurrentIndex(-1);
 
-    this->setCurrentIndex(-1);
+    QWidget::mousePressEvent(e);
 }

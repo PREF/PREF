@@ -101,32 +101,72 @@ namespace PrefSDK
             void LoaderModel_setValid(LoaderListModel* __this, LoaderList::LoaderId loaderid);
 
             /* Operand's API */
-            Operand* Operand_create(int type);
+            int Operand_getType(Operand* __this);
+            int Operand_getDataType(Operand* __this);
+            int8_t Operand_getValueInt8(Operand* __this);
+            int16_t Operand_getValueInt16(Operand* __this);
+            int32_t Operand_getValueInt32(Operand* __this);
+            int64_t Operand_getValueInt64(Operand* __this);
+            uint8_t Operand_getValueUInt8(Operand* __this);
+            uint16_t Operand_getValueUInt16(Operand* __this);
+            uint32_t Operand_getValueUInt32(Operand* __this);
+            uint64_t Operand_getValueUInt64(Operand* __this);
+            const char* Operand_getRegisterName(Operand* __this);
+            const char* Operand_getDisplayValue(Operand* __this);
+            void Operand_setValueInt8(Operand* __this, int8_t value);
+            void Operand_setValueInt16(Operand* __this, int16_t value);
+            void Operand_setValueInt32(Operand* __this, int32_t value);
+            void Operand_setValueInt64(Operand* __this, int64_t value);
+            void Operand_setValueUInt8(Operand* __this, uint8_t value);
+            void Operand_setValueUInt16(Operand* __this, uint16_t value);
+            void Operand_setValueUInt32(Operand* __this, uint32_t value);
+            void Operand_setValueUInt64(Operand* __this, uint64_t value);
+            void Operand_setRegisterName(Operand* __this, const char* regname);
             void Operand_setDisplayValue(Operand* __this, const char* value);
 
             /* Instruction's API */
-            Instruction* Instruction_create(uint64_t va, uint64_t offset);
-            void Instruction_addOperand(Instruction* __this, Operand* operand);
-            void Instruction_setSize(Instruction* __this, uint64_t size);
+            void Instruction_setOpCode(Instruction* __this, uint64_t opcode);
+            uint64_t Instruction_getOpCode(Instruction* __this);
+            void Instruction_setMnemonic(Instruction* __this, const char* mnemonic);
+            const char* Instruction_getMnemonic(Instruction* __this);
+            void Instruction_setCategory(Instruction* __this, int category);
+            int Instruction_getCategory(Instruction* __this);
+            void Instruction_setType(Instruction* __this, int type);
+            int Instruction_getType(Instruction* __this);
+            uint64_t Instruction_getSize(Instruction* __this);
+            uint64_t Instruction_getAddress(Instruction* __this);
+            uint64_t Instruction_getOffset(Instruction* __this);
+            void Instruction_updateSize(Instruction* __this, uint64_t size);
             void Instruction_setMnemonic(Instruction *__this, const char* mnemonic);
             void Instruction_setCategory(Instruction* __this, int category);
             void Instruction_setType(Instruction* __this, int type);
-            void Instruction_formatInstruction(Instruction *__this, const char* s);
+            void Instruction_setFormat(Instruction *__this, const char* s);
+            Operand* Instruction_addOperand(Instruction* __this, int operandtype, int datatype);
+            void Instruction_removeOperand(Instruction* __this, int idx);
+            Operand* Instruction_getOperand(Instruction* __this, int idx);
+            int Instruction_operandsCount(Instruction* __this);
+            void Instruction_clearOperands(Instruction* __this);
+            void Instruction_cloneOperand(Instruction* __this, Operand* operand);
 
             /* Function's API */
-            Function* Function_create(int functiontype, uint64_t startaddress, uint64_t endaddress);
-            void Function_addInstruction(Function* __this, Instruction* instruction);
-
-            /* Segment's API */
-            Segment *Segment_create(const char *name, int segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset);
-            void Segment_addFunction(Segment* __this, Function* f);
+            int Function_getInstructionCount(Function* __this);
+            Instruction* Function_getInstruction(Function* __this, int idx);
 
             /* DisassemblerListing's API */
-            void DisassemblerListing_addSegment(DisassemblerListing* __this, Segment* segment);
+            void DisassemblerListing_addSegment(DisassemblerListing* __this, const char *name, int segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset);
+            void DisassemblerListing_addEntryPoint(DisassemblerListing* __this, const char* name, uint64_t address);
+            Function *DisassemblerListing_getFunction(DisassemblerListing* __this, int idx);
+            Instruction* DisassemblerListing_addInstruction(DisassemblerListing* __this, uint64_t address);
             void DisassemblerListing_addReference(DisassemblerListing* __this, uint64_t srcaddress, uint64_t destaddress, int referencetype);
             void DisassemblerListing_setSymbol(DisassemblerListing* __this, uint64_t address, int datatype, const char* name);
             bool DisassemblerListing_hasSymbol(DisassemblerListing* __this, uint64_t address);
+            bool DisassemblerListing_hasMoreInstructions(DisassemblerListing* __this);
+            int DisassemblerListing_getSegmentCount(DisassemblerListing* __this);
+            int DisassemblerListing_getFunctionCount(DisassemblerListing* __this);
+            uint64_t DisassemblerListing_pop(DisassemblerListing* __this);
+            void DisassemblerListing_push(DisassemblerListing* __this, uint64_t address, int referencetype);
             const char* DisassemblerListing_getSymbolName(DisassemblerListing* __this, uint64_t address);
+            Instruction* DisassemblerListing_mergeInstructions(DisassemblerListing* __this, Instruction* instruction1, Instruction* instruction2, const char* mnemonic, int instrcategory, int instrtype);
         }
     }
 }

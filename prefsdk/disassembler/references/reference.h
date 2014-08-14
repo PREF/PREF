@@ -33,12 +33,22 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            explicit Reference(uint64_t address, ReferenceTypes::Type referencetype, QObject *parent = 0);
-            uint64_t address() const;
+            explicit Reference(uint64_t srcaddress, uint64_t destaddress, ReferenceTypes::Type referencetype, QObject *parent = 0);
+            uint64_t srcAddress() const;
+            uint64_t destAddress() const;
             ReferenceTypes::Type type() const;
+            QString displayAddress() const;
+
+        public:
+            static bool isCodeReference(ReferenceTypes::Type referencetype);
+            static bool isDataReference(ReferenceTypes::Type referencetype);
+            static bool isCall(ReferenceTypes::Type referencetype);
+            static bool isJump(ReferenceTypes::Type referencetype);
+            static bool isConditional(ReferenceTypes::Type referencetype);
 
         private:
-            uint64_t _address;
+            uint64_t _srcaddress;
+            uint64_t _destaddress;
             ReferenceTypes::Type _referencetype;
     };
 

@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -35,7 +35,7 @@
       <attribute name="title">
        <string>Disassembler</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="verticalLayout">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -57,12 +57,9 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
-          <widget class="DisassemblerWidget" name="disassemblerWidget">
+          <widget class="DisassemblerWidget" name="disassemblerWidget" native="true">
            <property name="contextMenuPolicy">
             <enum>Qt::CustomContextMenu</enum>
-           </property>
-           <property name="acceptDrops">
-            <bool>false</bool>
            </property>
           </widget>
           <widget class="QTableView" name="functionList">
@@ -150,14 +147,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>DisassemblerWidget</class>
-   <extends>QPlainTextEdit</extends>
-   <header>views/disassemblerview/disassemblerwidget/disassemblerwidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QHexEdit</class>
    <extends>QWidget</extends>
    <header>qhexedit/qhexedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DisassemblerWidget</class>
+   <extends>QWidget</extends>
+   <header>views/disassemblerview/disassemblerwidget/disassemblerwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

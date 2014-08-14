@@ -14,18 +14,26 @@ class DisassemblerWidgetPrivate: public QWidget
 {
     Q_OBJECT
 
-    private:
+    public:
         class ListingItem
         {
             public:
-                enum Type { Listing, Reference };
+                enum Type { Undefined, Listing, Reference };
 
             public:
+                ListingItem(): _itemtype(ListingItem::Undefined), _listingobj(nullptr) { }
                 ListingItem(ListingObject* listingobj): _itemtype(ListingItem::Listing), _listingobj(listingobj) { }
-                ListingItem(const DisassemblerListing::ReferenceSet& references): _itemtype(ListingTypes::Reference), _listingobj(nullptr), _references(references) { }
+                ListingItem(const DisassemblerListing::ReferenceSet& references): _itemtype(ListingItem::Reference), _listingobj(nullptr), _references(references) { }
                 const DisassemblerListing::ReferenceSet& references() const { return this->_references; }
                 ListingObject* listingObject() const { return this->_listingobj; }
                 ListingItem::Type itemType() const { return this->_itemtype; }
+                bool isValid() const { return this->_itemtype != ListingItem::Undefined; }
+
+            public:
+                static const ListingItem& invalid() { return ListingItem::_invalidobj; }
+
+            private:
+                static ListingItem _invalidobj;
 
             private:
                 ListingItem::Type _itemtype;
@@ -35,22 +43,25 @@ class DisassemblerWidgetPrivate: public QWidget
 
     public:
         explicit DisassemblerWidgetPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent = 0);
+        const ListingItem& selectedItem();
         void setCurrentIndex(int idx);
         void setListing(DisassemblerListing* listing);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);
         void setWheelScrollLines(int c);
-        void gotoFunction(Function* func);
+        void selectItem(ListingObject* listingobj);
+        void gotoAddress(uint64_t address);
         int currentIndex() const;
 
     private:
-        ListingObject* findListingObject(int idx);
         QString functionType(Function *f) const;
         QString displayReferences(const QString& prefix, const DisassemblerListing::ReferenceSet& references) const;
         QString emitSegment(Segment* segment);
         QString emitFunction(Function *func);
-        QString emitInstruction(Instruction *instruction, int &ident);
+        QString emitInstruction(Instruction *instruction);
+        QString emitReferences(QFontMetrics &fm, const DisassemblerListing::ReferenceSet& references, int &x);
         int drawAddress(QPainter &painter, QFontMetrics &fm, ListingObject* listingobj, int y);
+        int calcAddressWidth(QFontMetrics &fm, Reference *reference);
         void elaborateListing();
         void gotoFirstEntryPoint();
         void drawLineBackground(QPainter& painter, qint64 idx, int y);
@@ -69,7 +80,8 @@ class DisassemblerWidgetPrivate: public QWidget
 
     private:
         DisassemblerListing* _listing;
-        QVector<ListingObject*> _listingitems;
+        QVector<ListingItem> _listingitems;
+        QHash<ListingObject*, int> _listingindexes;
         QScrollArea* _scrollarea;
         QScrollBar* _vscrollbar;
         QColor _addressforecolor;

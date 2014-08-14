@@ -6,6 +6,7 @@
 #include "listingobject.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
+#include "prefsdk/datatype.h"
 
 namespace PrefSDK
 {
@@ -80,33 +81,44 @@ namespace PrefSDK
 
         public:
             explicit Instruction(uint64_t address, uint64_t offset, QObject *parent = 0);
-            void addOperand(Operand* operand);
-            void setSize(uint64_t sz);
-            void formatInstruction(const QString& s);
+            bool contains(uint64_t address);
+            void clearOperands();
+            void cloneOperand(Operand* operand);
+            Operand* addOperand(OperandTypes::Type operandtype, DataType::Type datatype);
+            void removeOperand(int idx);
+            void updateSize(uint64_t sz);
             InstructionCategories::Category category() const;
             InstructionTypes::Type type() const;
             uint64_t address() const;
             uint64_t offset() const;
             uint64_t size() const;
+            uint64_t opCode() const;
             QString mnemonic() const;
             QString displayHexDump(QHexEditData* hexeditdata) const;
             QString displayOperands() const;
             int operandsCount() const;
             Operand* operand(int idx) const;
+            void setOpCode(uint64_t opcode);
             void setMnemonic(const QString& mnemonic);
             void setCategory(InstructionCategories::Category category);
             void setType(InstructionTypes::Type type);
+            void setFormat(const QString& s);
 
         public: /* Overriden Methods */
             virtual ListingTypes::Type objectType() const;
             virtual QString displayAddress() const;
 
         private:
+            QString standardOperandFormat() const;
+            QString customOperandformat() const;
+
+        private:
             OperandList _operands;
             InstructionCategories::Category _category;
             InstructionTypes::Type _type;
-            QString _displayoperand;
+            QString _opformat;
             QString _mnemonic;
+            uint64_t _opcode;
             uint64_t _address;
             uint64_t _offset;
             uint64_t _size;

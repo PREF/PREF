@@ -9,6 +9,9 @@ namespace PrefSDK
 
     void Function::addInstruction(Instruction *instruction)
     {
+        if(this->_instructions.contains(instruction->address()))
+            return;
+
         instruction->setSegmentName(this->segmentName());
         instruction->setParentObject(this);
 
@@ -16,6 +19,33 @@ namespace PrefSDK
         this->_instructions[instruction->address()] = instruction;
 
         this->_endaddress += instruction->size();
+    }
+
+    void Function::removeInstruction(Instruction *instruction)
+    {
+        int idx = this->_addresslist.indexOf(instruction->address());
+
+        if(idx == -1)
+            return;
+
+        this->_addresslist.removeAt(idx);
+        this->_instructions.remove(instruction->address());
+
+        this->_endaddress -= instruction->size();
+    }
+
+    void Function::replaceInstruction(Instruction *oldinstruction, Instruction *newinstruction)
+    {
+        if(oldinstruction->address() != newinstruction->address())
+            return;
+
+        this->_instructions[oldinstruction->address()] = newinstruction;
+
+        if(oldinstruction->size() != newinstruction->size())
+        {
+            this->_endaddress -= oldinstruction->size();
+            this->_endaddress += newinstruction->size();
+        }
     }
 
     int Function::indexOf(Instruction *instruction) const

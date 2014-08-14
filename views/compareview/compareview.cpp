@@ -79,6 +79,12 @@ void CompareView::highlightDifferences()
     QHexEdit* hexedit = ((this->_lefthexeditdata->length() >= this->_righthexeditdata->length()) ? ui->hexEditLeft : ui->hexEditRight);
     qint64 offset = hexedit->visibleStartOffset(), endoffset = hexedit->visibleEndOffset();
 
+    if(offset < this->_lefthexeditdata->length())
+        ui->hexEditLeft->clearHighlight();
+
+    if(offset < this->_righthexeditdata->length())
+        ui->hexEditRight->clearHighlight();
+
     while(offset <= endoffset)
     {
         if(!this->_differencemap.contains(offset))
@@ -88,8 +94,13 @@ void CompareView::highlightDifferences()
         }
 
         qint64 diffend = this->_differencemap[offset];
-        ui->hexEditLeft->highlightBackground(offset, diffend, this->_diffcolor);
-        ui->hexEditRight->highlightBackground(offset, diffend, this->_diffcolor);
+
+        if(offset < this->_lefthexeditdata->length())
+            ui->hexEditLeft->highlightBackground(offset, diffend, this->_diffcolor);
+
+        if(offset < this->_righthexeditdata->length())
+            ui->hexEditRight->highlightBackground(offset, diffend, this->_diffcolor);
+
         offset = diffend + 1;
     }
 }

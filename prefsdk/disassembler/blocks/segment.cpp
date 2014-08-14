@@ -21,6 +21,13 @@ namespace PrefSDK
 
         if(f->type() == FunctionTypes::EntryPoint)
             this->_entrypoints.append(f);
+
+        std::sort(this->_addresslist.begin(), this->_addresslist.end()); /* Sort Functions by Address */
+    }
+
+    bool Segment::containsFunction(uint64_t address)
+    {
+        return this->_functions.contains(address);
     }
 
     int Segment::indexOf(Function *f) const
