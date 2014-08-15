@@ -7,6 +7,7 @@
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/datatype.h"
+#include "prefsdk/disassembler/symbols/symbol.h"
 
 namespace PrefSDK
 {
@@ -80,7 +81,7 @@ namespace PrefSDK
             typedef QList<Operand*> OperandList;
 
         public:
-            explicit Instruction(uint64_t address, uint64_t offset, QObject *parent = 0);
+            explicit Instruction(uint64_t address, uint64_t offset, const SymbolTable& symboltable, QObject *parent = 0);
             bool contains(uint64_t address);
             void clearOperands();
             void cloneOperand(Operand* operand);
@@ -113,6 +114,7 @@ namespace PrefSDK
             QString customOperandformat() const;
 
         private:
+            const SymbolTable& _symboltable;
             OperandList _operands;
             InstructionCategories::Category _category;
             InstructionTypes::Type _type;

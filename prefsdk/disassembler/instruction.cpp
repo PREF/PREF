@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(uint64_t address, uint64_t offset, QObject *parent): ListingObject(parent), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _mnemonic("???"), _opcode(0xFFFFFFFF), _address(address), _offset(offset), _size(0)
+    Instruction::Instruction(uint64_t address, uint64_t offset, const SymbolTable &symboltable, QObject *parent): ListingObject(parent), _symboltable(symboltable), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _mnemonic("???"), _opcode(0xFFFFFFFF), _address(address), _offset(offset), _size(0)
     {
 
     }
@@ -159,7 +159,10 @@ namespace PrefSDK
             if(i > 0)
                 s.append(", ");
 
-            s.append(operand->displayValue());
+            if((operand->type() == OperandTypes::Address) && this->_symboltable.contains(operand->valueUInt64()))
+                s.append(this->_symboltable[operand->valueUInt64()]->name());
+            else
+                s.append(operand->displayValue());
         }
 
         return s;
@@ -193,12 +196,22 @@ namespace PrefSDK
                     bool ok = false;
                     int opidx = QString(ch).toInt(&ok);
 
-                    if(!ok) //TODO: Handle Errors
-                        qDebug() << "ERROR: Invalid Operand Format: Expected Integer not '" << ch << "'";
-                    else if(opidx < 0 || opidx > this->_operands.count())
-                        qDebug() << "ERROR: Operand Index out of range";
+                    if(!ok || (opidx < 0 || opidx > this->_operands.count())) //TODO: Handle Errors
+                    {
+                        if(!ok)
+                            qDebug() << "ERROR: Invalid Operand Format: Expected Integer not '" << ch << "'";
+                        else
+                            qDebug() << "ERROR: Operand Index out of range";
+
+                        continue;
+                    }
+
+                    Operand* operand = this->_operands[opidx - 1];
+
+                    if((operand->type() == OperandTypes::Address) && this->_symboltable.contains(operand->valueUInt64()))
+                        s.append(this->_symboltable[operand->valueUInt64()]->name());
                     else
-                        s.append(this->_operands[opidx - 1]->displayValue());
+                        s.append(operand->displayValue());
 
                     break;
                 }

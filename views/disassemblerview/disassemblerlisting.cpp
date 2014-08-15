@@ -50,7 +50,7 @@ Instruction *DisassemblerListing::addInstruction(uint64_t address)
         return nullptr;
     }
 
-    Instruction* instruction = new Instruction(address, (address - segment->startAddress()) + segment->baseOffset());
+    Instruction* instruction = new Instruction(address, (address - segment->startAddress()) + segment->baseOffset(), this->_symboltable);
 
     this->_currentinstruction = instruction;
     this->_instructions[address] = instruction;
@@ -130,7 +130,7 @@ DisassemblerListing::ReferenceSet DisassemblerListing::references(uint64_t addre
     return DisassemblerListing::ReferenceSet();
 }
 
-const DisassemblerListing::SymbolTable &DisassemblerListing::symbolTable() const
+const SymbolTable &DisassemblerListing::symbolTable() const
 {
     return this->_symboltable;
 }
@@ -138,7 +138,7 @@ const DisassemblerListing::SymbolTable &DisassemblerListing::symbolTable() const
 Instruction *DisassemblerListing::mergeInstructions(Instruction *instruction1, Instruction *instruction2, const QString &mnemonic, InstructionCategories::Category category, InstructionTypes::Type type)
 {
     Function* func = qobject_cast<Function*>(instruction1->parentObject());
-    Instruction* instruction = new Instruction(instruction1->address(), instruction1->offset());
+    Instruction* instruction = new Instruction(instruction1->address(), instruction1->offset(), this->_symboltable);
 
     instruction->setSegmentName(instruction1->segmentName());
     instruction->updateSize(instruction1->size() + instruction2->size());
@@ -178,7 +178,12 @@ uint64_t DisassemblerListing::pop()
 void DisassemblerListing::push(uint64_t address, ReferenceTypes::Type referencetype)
 {
     if(Reference::isCall(referencetype) || Reference::isJump(referencetype))
+    {
         this->addReference(this->_currentaddress, address, referencetype);
+
+        if(Reference::isJump(referencetype))
+            this->setSymbol(address, DataType::Invalid, QString("j_%1").arg(QString::number(address, 16).toUpper()));
+    }
 
     if(!this->_instructions.contains(address)) /* Ignore disassembled addresses */
     {

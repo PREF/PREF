@@ -250,7 +250,7 @@ QString DisassemblerWidgetPrivate::emitSegment(Segment *segment)
 QString DisassemblerWidgetPrivate::emitFunction(Function* func)
 {
     DisassemblerListing::ReferenceSet references = this->_listing->references(func->startAddress());
-    DisassemblerListing::SymbolTable symboltable = this->_listing->symbolTable();
+    SymbolTable symboltable = this->_listing->symbolTable();
 
     return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable[func->startAddress()]->name(), this->displayReferences("Called by", references));
 }

@@ -20,7 +20,6 @@ class DisassemblerListing : public QObject
         typedef QMap<uint64_t, Instruction*> InstructionMap;
         typedef QSet<Reference*> ReferenceSet;
         typedef QHash<uint64_t, ReferenceSet> ReferenceMap;
-        typedef QHash<uint64_t, Symbol*> SymbolTable;
 
     public:
         explicit DisassemblerListing(QObject *parent = 0);
@@ -36,7 +35,7 @@ class DisassemblerListing : public QObject
         int functionsCount() const;
         Function* function(int idx);
         ReferenceSet references(uint64_t address) const;
-        const DisassemblerListing::SymbolTable& symbolTable() const;
+        const SymbolTable& symbolTable() const;
         Instruction* mergeInstructions(Instruction* instruction1, Instruction* instruction2, const QString& mnemonic, InstructionCategories::Category category, InstructionTypes::Type type);
 
     public: /* Disassembler Metods */

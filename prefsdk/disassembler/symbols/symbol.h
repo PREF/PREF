@@ -20,6 +20,8 @@ namespace PrefSDK
             DataType::Type _datatype;
             QString _name;
     };
+
+    typedef QHash<uint64_t, Symbol*> SymbolTable;
 }
 
 #endif // PREFSDK_SYMBOL_H
