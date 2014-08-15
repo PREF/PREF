@@ -39,12 +39,12 @@ namespace PrefSDK
 
     bool Reference::isCall(ReferenceTypes::Type referencetype)
     {
-        return Reference::isCodeReference(referencetype) && ((referencetype & ReferenceTypes::Call) || (referencetype & ReferenceTypes::ConditionalCall));
+        return Reference::isCodeReference(referencetype) && ((referencetype == ReferenceTypes::Call) || (referencetype == ReferenceTypes::ConditionalCall));
     }
 
     bool Reference::isJump(ReferenceTypes::Type referencetype)
     {
-        return Reference::isCodeReference(referencetype) && ((referencetype & ReferenceTypes::Jump) || (referencetype & ReferenceTypes::ConditionalJump));
+        return Reference::isCodeReference(referencetype) && ((referencetype == ReferenceTypes::Jump) || (referencetype == ReferenceTypes::ConditionalJump));
     }
 
     bool Reference::isConditional(ReferenceTypes::Type referencetype)
