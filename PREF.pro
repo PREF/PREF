@@ -145,7 +145,6 @@ SOURCES += main.cpp\
     viewmodels/functionmodel/functionmodel.cpp \
     prefsdk/disassembler/references/reference.cpp \
     prefsdk/disassembler/symbols/symbol.cpp \
-    prefsdk/disassembler/symbols/symboltable.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp
 
 HEADERS  += mainwindow.h \
@@ -279,7 +278,6 @@ HEADERS  += mainwindow.h \
     viewmodels/functionmodel/functionmodel.h \
     prefsdk/disassembler/references/reference.h \
     prefsdk/disassembler/symbols/symbol.h \
-    prefsdk/disassembler/symbols/symboltable.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     qhexedit/sparserangemap.h
 
