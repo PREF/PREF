@@ -198,12 +198,16 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
     int idx = text.indexOf(regex);
 
     this->setFormat(idx, regex.matchedLength(), charformat);
+    this->highlightJumpLabel(text);
 }
 
 void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
 {
-    QRegExp regex("j_[a-zA-Z0-9]+\\:");
+    QRegExp regex("j_[a-zA-Z0-9]+[\\:]*");
     int idx = text.indexOf(regex);
+
+    if(idx == -1)
+        return;
 
     this->setFormat(idx, regex.matchedLength(), this->_jumplabelformat);
 }
