@@ -37,7 +37,7 @@ void DisassemblerListing::addFunction(FunctionTypes::Type type, uint64_t address
 
     QString funcname = name.isEmpty() ? QString("sub_%1").arg(QString::number(address, 16).toUpper()) : name;
     this->setSymbol(address, DataType::Invalid, funcname);
-    segment->addFunction(new Function(type, address, address, segment));
+    segment->addFunction(new Function(type, address, segment));
 }
 
 Instruction *DisassemblerListing::addInstruction(uint64_t address)

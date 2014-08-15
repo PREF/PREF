@@ -153,7 +153,7 @@ namespace PrefSDK
             Instruction* Function_getInstruction(Function* __this, int idx);
 
             /* DisassemblerListing's API */
-            void DisassemblerListing_addSegment(DisassemblerListing* __this, const char *name, int segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset);
+            void DisassemblerListing_addSegment(DisassemblerListing* __this, const char *name, int segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset);
             void DisassemblerListing_addEntryPoint(DisassemblerListing* __this, const char* name, uint64_t address);
             Function *DisassemblerListing_getFunction(DisassemblerListing* __this, int idx);
             Instruction* DisassemblerListing_addInstruction(DisassemblerListing* __this, uint64_t address);

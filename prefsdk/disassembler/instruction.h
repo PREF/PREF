@@ -3,11 +3,11 @@
 
 #include <QtCore>
 #include "operand.h"
-#include "listingobject.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/datatype.h"
 #include "prefsdk/disassembler/symbols/symbol.h"
+#include "prefsdk/disassembler/blocks/block.h"
 
 namespace PrefSDK
 {
@@ -73,7 +73,7 @@ namespace PrefSDK
         };
     }
 
-    class Instruction : public ListingObject
+    class Instruction : public Block
     {
         Q_OBJECT
 
@@ -123,7 +123,6 @@ namespace PrefSDK
             uint64_t _opcode;
             uint64_t _address;
             uint64_t _offset;
-            uint64_t _size;
     };
 }
 #endif // INSTRUCTION_H

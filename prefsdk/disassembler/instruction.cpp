@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(uint64_t address, uint64_t offset, const SymbolTable &symboltable, QObject *parent): ListingObject(parent), _symboltable(symboltable), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _mnemonic("???"), _opcode(0xFFFFFFFF), _address(address), _offset(offset), _size(0)
+    Instruction::Instruction(uint64_t address, uint64_t offset, const SymbolTable &symboltable, QObject *parent): Block(address, 0, parent), _symboltable(symboltable), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _mnemonic("???"), _opcode(0xFFFFFFFF), _address(address), _offset(offset)
     {
 
     }

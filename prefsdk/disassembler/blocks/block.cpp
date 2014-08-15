@@ -2,10 +2,9 @@
 
 namespace PrefSDK
 {
-    Block::Block(uint64_t startaddress, uint64_t endaddress, QObject *parent): ListingObject(parent)
+    Block::Block(uint64_t startaddress, uint64_t size, QObject *parent): ListingObject(parent), _startaddress(startaddress), _size(size)
     {
         this->_startaddress = startaddress;
-        this->_endaddress = endaddress;
     }
 
     uint64_t Block::startAddress() const
@@ -15,22 +14,22 @@ namespace PrefSDK
 
     uint64_t Block::endAddress() const
     {
-        return this->_endaddress;
+        return this->_startaddress + this->_size;
     }
 
     uint64_t Block::size() const
     {
-        return this->_endaddress - this->_startaddress;
+        return this->_size;
     }
 
     bool Block::contains(uint64_t addr) const
     {
-        return (addr >= this->_startaddress && addr <= this->_endaddress);
+        return (addr >= this->_startaddress && addr <= this->endAddress());
     }
 
     bool Block::isEmpty() const
     {
-        return this->_startaddress >= this->_endaddress;
+        return this->_startaddress >= this->endAddress();
     }
 
     QString Block::displayAddress() const

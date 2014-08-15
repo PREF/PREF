@@ -10,7 +10,7 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            explicit Block(uint64_t startaddress, uint64_t endaddress, QObject* parent = 0);
+            explicit Block(uint64_t startaddress, uint64_t size, QObject* parent = 0);
             uint64_t startAddress() const;
             uint64_t endAddress() const;
             uint64_t size() const;
@@ -22,7 +22,7 @@ namespace PrefSDK
 
         protected:
             uint64_t _startaddress;
-            uint64_t _endaddress;
+            uint64_t _size;
     };
 }
 #endif // PREFSDK_BLOCK_H

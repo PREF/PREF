@@ -169,9 +169,9 @@ namespace PrefSDK
             return __this->addOperand(static_cast<OperandTypes::Type>(operandtype), static_cast<DataType::Type>(datatype));
         }
 
-        void DisassemblerListing_addSegment(DisassemblerListing *__this, const char *name, int segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset)
+        void DisassemblerListing_addSegment(DisassemblerListing *__this, const char *name, int segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset)
         {
-            __this->addSegment(QString::fromUtf8(name), static_cast<SegmentTypes::Type>(segmenttype), startaddress, endaddress, baseoffset);
+            __this->addSegment(QString::fromUtf8(name), static_cast<SegmentTypes::Type>(segmenttype), startaddress, size, baseoffset);
         }
 
         void Instruction_setFormat(Instruction *__this, const char *s)

@@ -29,7 +29,7 @@ namespace PrefSDK
             typedef QSet<Reference*> ReferenceSet;
 
         public:
-            explicit Function(FunctionTypes::Type type, uint64_t startaddress, uint64_t endaddress, QObject* parent = 0);
+            explicit Function(FunctionTypes::Type type, uint64_t startaddress, QObject* parent = 0);
             void addInstruction(Instruction* instruction);
             void removeInstruction(Instruction* instruction);
             void replaceInstruction(Instruction* oldinstruction, Instruction* newinstruction);

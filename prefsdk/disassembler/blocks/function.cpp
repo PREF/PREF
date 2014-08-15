@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {    
-    Function::Function(FunctionTypes::Type type, uint64_t startaddress, uint64_t endaddress, QObject *parent): Block(startaddress, endaddress, parent), _type(type)
+    Function::Function(FunctionTypes::Type type, uint64_t startaddress, QObject *parent): Block(startaddress, 0, parent), _type(type)
     {
 
     }
@@ -18,7 +18,7 @@ namespace PrefSDK
         this->_addresslist.append(instruction->address());
         this->_instructions[instruction->address()] = instruction;
 
-        this->_endaddress += instruction->size();
+        this->_size += instruction->size();
     }
 
     void Function::removeInstruction(Instruction *instruction)
@@ -31,7 +31,7 @@ namespace PrefSDK
         this->_addresslist.removeAt(idx);
         this->_instructions.remove(instruction->address());
 
-        this->_endaddress -= instruction->size();
+        this->_size -= instruction->size();
     }
 
     void Function::replaceInstruction(Instruction *oldinstruction, Instruction *newinstruction)
@@ -43,8 +43,8 @@ namespace PrefSDK
 
         if(oldinstruction->size() != newinstruction->size())
         {
-            this->_endaddress -= oldinstruction->size();
-            this->_endaddress += newinstruction->size();
+            this->_size -= oldinstruction->size();
+            this->_size += newinstruction->size();
         }
     }
 

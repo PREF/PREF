@@ -26,7 +26,7 @@ namespace PrefSDK
             typedef QList<Function*> EntryPointList;
 
         public:
-            explicit Segment(const QString& name, SegmentTypes::Type type, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset, QObject* parent = 0);
+            explicit Segment(const QString& name, SegmentTypes::Type type, uint64_t startaddress, uint64_t size, uint64_t baseoffset, QObject* parent = 0);
             void addFunction(Function* f);
             bool containsFunction(uint64_t address);
             int indexOf(Function* f) const;
