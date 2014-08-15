@@ -173,7 +173,7 @@ void DisassemblerView::displayDisassembly()
     ui->functionList->setModel(this->_functionmodel);
     ui->functionList->resizeRowsToContents();
 
-    for(int i = 0; i < this->_functionmodel->columnCount() - 1; i++)
+    for(int i = 0; i < this->_functionmodel->columnCount(); i++)
         ui->functionList->resizeColumnToContents(i);
 
     /* Go to the first entry point */
