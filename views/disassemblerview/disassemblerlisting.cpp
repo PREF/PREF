@@ -49,6 +49,12 @@ Instruction *DisassemblerListing::createInstruction(uint64_t address)
         return nullptr;
     }
 
+    if(this->_instructions.contains(address))
+    {
+        qDebug() << "Instruction Already Exists";
+        return nullptr;
+    }
+
     Instruction* instruction = new Instruction(address, (address - segment->startAddress()) + segment->baseOffset(), this->_symboltable);
 
     this->_currentinstruction = instruction;
@@ -145,18 +151,27 @@ const SymbolTable &DisassemblerListing::symbolTable() const
 
 Instruction *DisassemblerListing::mergeInstructions(Instruction *instruction1, Instruction *instruction2, const QString &mnemonic, InstructionCategories::Category category, InstructionTypes::Type type)
 {
-    Instruction* instruction = new Instruction(instruction1->address(), instruction1->offset(), this->_symboltable);
+    if(!this->_instructions.contains(instruction1->address()) || !this->_instructions.contains(instruction2->address()))
+        return nullptr;
 
-    instruction->setSegmentName(instruction1->segmentName());
-    instruction->updateSize(instruction1->size() + instruction2->size());
-    instruction->setMnemonic(mnemonic);
-    instruction->setCategory(category);
-    instruction->setType(type);
+    Instruction* newinstruction = new Instruction(instruction1->address(), instruction1->offset(), this->_symboltable);
+    newinstruction->setSegmentName(instruction1->segmentName());
+    newinstruction->setMnemonic(mnemonic);
+    newinstruction->setCategory(category);
+    newinstruction->setType(type);
 
-    this->_instructions.remove(instruction1->address());
-    this->_instructions.remove(instruction2->address());
-    this->_instructions[instruction->address()] = instruction;
-    return instruction;
+    uint64_t address = instruction1->address();
+
+    while(address <= instruction2->address())
+    {
+        Instruction* currentinstruction = this->_instructions[address];
+        newinstruction->updateSize(currentinstruction->size());
+
+        address += currentinstruction->size();
+    }
+
+    this->_instructions[newinstruction->address()] = newinstruction;
+    return newinstruction;
 }
 
 bool DisassemblerListing::hasNextInstruction(Instruction *instruction)
