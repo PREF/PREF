@@ -181,19 +181,11 @@ void DisassemblerView::displayDisassembly()
     {
         Segment* segment = this->_listing->segment(i);
 
-        if(segment->type() != SegmentTypes::Code)
+        if((segment->type() != SegmentTypes::Code) || (!segment->entryPointsCount()))
             continue;
 
-        for(int j = 0; j < segment->functionsCount(); j++)
-        {
-            Function* func = segment->function(j);
-
-            if(func->type() == FunctionTypes::EntryPoint)
-            {
-                ui->disassemblerWidget->selectItem(func);
-                break;
-            }
-        }
+        Function* func = segment->entryPoint(0);
+        ui->disassemblerWidget->selectItem(func);
     }
 
     /* String Reference Part */

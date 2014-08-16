@@ -24,8 +24,7 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            typedef QList<uint64_t> AddressList;
-            typedef QHash<uint64_t, Instruction*> InstructionMap;
+            typedef QList<Instruction*> InstructionList;
             typedef QSet<Reference*> ReferenceSet;
 
         public:
@@ -46,9 +45,11 @@ namespace PrefSDK
             virtual ListingTypes::Type objectType() const;
 
         private:
+            static bool sortInstructions(Instruction* instruction1, Instruction* instruction2);
+
+        private:
             ReferenceSet _references;
-            AddressList _addresslist;
-            InstructionMap _instructions;
+            InstructionList _instructions;
             FunctionTypes::Type _type;
     };
 }

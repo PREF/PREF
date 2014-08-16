@@ -5,21 +5,6 @@ FunctionModel::FunctionModel(DisassemblerListing* listing, QObject *parent): QAb
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
-
-    for(int i = 0; i < this->_listing->segmentsCount(); i++)
-    {
-        Segment* segment = this->_listing->segment(i);
-
-        for(int j = 0; j < segment->functionsCount(); j++)
-            this->_functions.append(segment->function(j));
-    }
-
-    std::sort(this->_functions.begin(), this->_functions.end(), &FunctionModel::sortByAddress);
-}
-
-bool FunctionModel::sortByAddress(Function *f1, Function *f2)
-{
-    return f1->startAddress() < f2->startAddress();
 }
 
 QString FunctionModel::functionType(Function *f) const
@@ -136,7 +121,7 @@ QModelIndex FunctionModel::index(int row, int column, const QModelIndex &parent)
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column, this->_functions[row]);
+    return this->createIndex(row, column, this->_listing->function(row));
 }
 
 QModelIndex FunctionModel::parent(const QModelIndex &) const
@@ -146,7 +131,7 @@ QModelIndex FunctionModel::parent(const QModelIndex &) const
 
 int FunctionModel::rowCount(const QModelIndex &) const
 {
-    return this->_functions.count();
+    return this->_listing->functionsCount();
 }
 
 Qt::ItemFlags FunctionModel::flags(const QModelIndex &index) const

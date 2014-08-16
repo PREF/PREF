@@ -21,8 +21,7 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
-            typedef QList<uint64_t> AddressList;
-            typedef QHash<uint64_t, Function*> FunctionMap;
+            typedef QList<Function*> FunctionList;
             typedef QList<Function*> EntryPointList;
 
         public:
@@ -42,8 +41,10 @@ namespace PrefSDK
             virtual ListingTypes::Type objectType() const;
 
         private:
-            AddressList _addresslist;
-            FunctionMap _functions;
+            static bool sortFunctions(Function* function1, Function* function2);
+
+        private:
+            FunctionList _functions;
             EntryPointList _entrypoints;
             QString _name;
             uint64_t _baseoffset;

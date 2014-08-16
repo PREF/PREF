@@ -149,14 +149,19 @@ namespace PrefSDK
             void Instruction_cloneOperand(Instruction* __this, Operand* operand);
 
             /* Function's API */
+            void Function_addInstruction(Function* __this, Instruction* instruction);
             int Function_getInstructionCount(Function* __this);
+            uint64_t Function_getStartAddress(Function* __this);
             Instruction* Function_getInstruction(Function* __this, int idx);
 
             /* DisassemblerListing's API */
             void DisassemblerListing_addSegment(DisassemblerListing* __this, const char *name, int segmenttype, uint64_t startaddress, uint64_t size, uint64_t baseoffset);
             void DisassemblerListing_addEntryPoint(DisassemblerListing* __this, const char* name, uint64_t address);
             Function *DisassemblerListing_getFunction(DisassemblerListing* __this, int idx);
-            Instruction* DisassemblerListing_addInstruction(DisassemblerListing* __this, uint64_t address);
+            Instruction* DisassemblerListing_createInstruction(DisassemblerListing* __this, uint64_t address);
+            Instruction* DisassemblerListing_getInstructionFromAddress(DisassemblerListing* __this, uint64_t address);
+            Instruction* DisassemblerListing_getNextInstruction(DisassemblerListing* __this, Instruction* instruction);
+            bool DisassemblerListing_hasNextInstruction(DisassemblerListing* __this, Instruction* instruction);
             void DisassemblerListing_addReference(DisassemblerListing* __this, uint64_t srcaddress, uint64_t destaddress, int referencetype);
             void DisassemblerListing_setSymbol(DisassemblerListing* __this, uint64_t address, int datatype, const char* name);
             bool DisassemblerListing_hasSymbol(DisassemblerListing* __this, uint64_t address);

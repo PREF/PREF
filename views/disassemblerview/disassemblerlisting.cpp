@@ -7,40 +7,39 @@ DisassemblerListing::DisassemblerListing(QObject *parent): QObject(parent), _cur
 
 void DisassemblerListing::addSegment(const QString &name, SegmentTypes::Type segmenttype, uint64_t startaddress, uint64_t endaddress, uint64_t baseoffset)
 {
-    if(this->_segments.contains(startaddress))
-        return;
-
-    this->_addresslist.append(startaddress);
-    this->_segments[startaddress] = new Segment(name, segmenttype, startaddress, endaddress, baseoffset);
-
-    std::sort(this->_addresslist.begin(), this->_addresslist.end()); /* Sort Segments by Address */
+    this->_segments.append(new Segment(name, segmenttype, startaddress, endaddress, baseoffset));
+    std::sort(this->_segments.begin(), this->_segments.end(), &DisassemblerListing::sortBlocks); /* Sort Segments by Address */
 }
 
 void DisassemblerListing::addEntryPoint(const QString &name, uint64_t address)
 {
-    this->addFunction(FunctionTypes::EntryPoint, address, name);
-    this->_stack.push(address);
+    if(this->addFunction(FunctionTypes::EntryPoint, address, name))
+        this->_stack.push(address);
 }
 
-void DisassemblerListing::addFunction(FunctionTypes::Type type, uint64_t address, const QString &name)
+bool DisassemblerListing::addFunction(FunctionTypes::Type type, uint64_t address, const QString &name)
 {       
     Segment* segment = this->segmentFromAddress(address);
 
     if(!segment)
     {
         qDebug() << "ERROR: Segment Not Found"; //TODO: Handle Error Here!
-        return;
+        return false;
     }
 
     if(segment->containsFunction(address))
-        return;
+        return false;
 
-    QString funcname = name.isEmpty() ? QString("sub_%1").arg(QString::number(address, 16).toUpper()) : name;
-    this->setSymbol(address, DataType::Invalid, funcname);
-    segment->addFunction(new Function(type, address, segment));
+    Function* func = new Function(type, address, segment);
+    segment->addFunction(func);
+    this->_functions.append(func);
+
+    this->setSymbol(address, DataType::Invalid, (name.isEmpty() ? QString("sub_%1").arg(QString::number(address, 16).toUpper()) : name));
+    std::sort(this->_functions.begin(), this->_functions.end(), &DisassemblerListing::sortBlocks);
+    return true;
 }
 
-Instruction *DisassemblerListing::addInstruction(uint64_t address)
+Instruction *DisassemblerListing::createInstruction(uint64_t address)
 {
     Segment* segment = this->segmentFromAddress(address);
 
@@ -55,6 +54,24 @@ Instruction *DisassemblerListing::addInstruction(uint64_t address)
     this->_currentinstruction = instruction;
     this->_instructions[address] = instruction;
     return instruction;
+}
+
+Instruction *DisassemblerListing::instructionFromAddress(uint64_t address)
+{
+    if(!this->_instructions.contains(address))
+        return nullptr;
+
+    return this->_instructions[address];
+}
+
+Instruction *DisassemblerListing::nextInstruction(Instruction *instruction)
+{
+    uint64_t nextaddress = instruction->address() + instruction->size();
+
+    if(!this->_instructions.contains(nextaddress))
+        return nullptr;
+
+    return this->_instructions[nextaddress];
 }
 
 void DisassemblerListing::setSymbol(uint64_t address, DataType::Type type, const QString &name)
@@ -73,15 +90,16 @@ void DisassemblerListing::addReference(uint64_t srcaddress, uint64_t destaddress
 
 Segment *DisassemblerListing::segment(int idx)
 {
-    return this->_segments[this->_addresslist[idx]];
+    if((idx < 0) || (idx >= this->_segments.count()))
+        return nullptr;
+
+    return this->_segments[idx];
 }
 
 Segment *DisassemblerListing::segmentFromAddress(uint64_t address)
 {
-    for(int i = 0; i < this->_addresslist.count(); i++)
+    foreach(Segment* segment, this->_segments)
     {
-        Segment* segment = this->_segments[this->_addresslist[i]];
-
         if(address >= segment->startAddress() && address <= segment->endAddress())
             return segment;
     }
@@ -91,7 +109,7 @@ Segment *DisassemblerListing::segmentFromAddress(uint64_t address)
 
 int DisassemblerListing::segmentsCount() const
 {
-    return this->_addresslist.count();
+    return this->_segments.count();
 }
 
 int DisassemblerListing::functionsCount() const
@@ -106,20 +124,10 @@ int DisassemblerListing::functionsCount() const
 
 Function *DisassemblerListing::function(int idx)
 {
-    int curridx = 0;
+    if((idx < 0) || (idx >= this->_functions.count()))
+        return nullptr;
 
-    foreach(Segment* segment, this->_segments)
-    {
-        if((curridx + segment->functionsCount()) < idx)
-        {
-            curridx += segment->functionsCount();
-            continue;
-        }
-
-        return segment->function(idx - curridx);
-    }
-
-    return nullptr;
+    return this->_functions[idx];
 }
 
 DisassemblerListing::ReferenceSet DisassemblerListing::references(uint64_t address) const
@@ -137,7 +145,6 @@ const SymbolTable &DisassemblerListing::symbolTable() const
 
 Instruction *DisassemblerListing::mergeInstructions(Instruction *instruction1, Instruction *instruction2, const QString &mnemonic, InstructionCategories::Category category, InstructionTypes::Type type)
 {
-    Function* func = qobject_cast<Function*>(instruction1->parentObject());
     Instruction* instruction = new Instruction(instruction1->address(), instruction1->offset(), this->_symboltable);
 
     instruction->setSegmentName(instruction1->segmentName());
@@ -146,21 +153,19 @@ Instruction *DisassemblerListing::mergeInstructions(Instruction *instruction1, I
     instruction->setCategory(category);
     instruction->setType(type);
 
-    func->removeInstruction(instruction2);
-    func->replaceInstruction(instruction1, instruction);
-
     this->_instructions.remove(instruction1->address());
     this->_instructions.remove(instruction2->address());
     this->_instructions[instruction->address()] = instruction;
-
     return instruction;
+}
+
+bool DisassemblerListing::hasNextInstruction(Instruction *instruction)
+{
+    return this->_instructions.contains(instruction->address() + instruction->size());
 }
 
 bool DisassemblerListing::hasMoreInstructions()
 {
-    if(this->_stack.isEmpty())
-        this->populateFunctions();
-
     return !this->_stack.isEmpty();
 }
 
@@ -194,23 +199,7 @@ void DisassemblerListing::push(uint64_t address, ReferenceTypes::Type referencet
     }
 }
 
-void DisassemblerListing::populateFunctions()
+bool DisassemblerListing::sortBlocks(Block *block1, Block *block2)
 {
-    foreach(Segment* segment, this->_segments)
-    {
-        for(int i = 0; i < segment->functionsCount(); i++)
-        {
-            Instruction* instruction = nullptr;
-            Function* f = segment->function(i);
-            uint64_t address = f->startAddress();
-
-            do
-            {
-                instruction = this->_instructions[address];
-                f->addInstruction(instruction);
-                address += instruction->size();
-            }
-            while(instruction && (instruction->type() != InstructionTypes::Stop));
-        }
-    }
+    return block1->startAddress() < block2->startAddress();
 }

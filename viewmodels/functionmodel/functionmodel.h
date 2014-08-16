@@ -16,7 +16,6 @@ class FunctionModel : public QAbstractItemModel
         explicit FunctionModel(DisassemblerListing* listing, QObject *parent = 0);
 
     private:
-        static bool sortByAddress(Function* f1, Function* f2);
         QString functionType(Function* f) const;
 
     public: /* Overriden Methods */
@@ -31,7 +30,6 @@ class FunctionModel : public QAbstractItemModel
     private:
         QFont _monospacefont;
         DisassemblerListing* _listing;
-        QList<Function*> _functions;
 };
 
 #endif // FUNCTIONMODEL_H

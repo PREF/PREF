@@ -219,9 +219,9 @@ namespace PrefSDK
             __this->addEntryPoint(QString::fromUtf8(name), address);
         }
 
-        Instruction *DisassemblerListing_addInstruction(DisassemblerListing *__this, uint64_t address)
+        Instruction *DisassemblerListing_createInstruction(DisassemblerListing *__this, uint64_t address)
         {
-            return __this->addInstruction(address);
+            return __this->createInstruction(address);
         }
 
         int DisassemblerListing_getSegmentCount(DisassemblerListing *__this)
@@ -297,6 +297,31 @@ namespace PrefSDK
         Instruction *DisassemblerListing_mergeInstructions(DisassemblerListing* __this, Instruction *instruction1, Instruction *instruction2, const char *mnemonic, int instrcategory, int instrtype)
         {
             return __this->mergeInstructions(instruction1, instruction2, QString::fromUtf8(mnemonic), static_cast<InstructionCategories::Category>(instrcategory), static_cast<InstructionTypes::Type>(instrtype));
+        }
+
+        Instruction *DisassemblerListing_getInstructionFromAddress(DisassemblerListing *__this, uint64_t address)
+        {
+            return __this->instructionFromAddress(address);
+        }
+
+        Instruction *DisassemblerListing_getNextInstruction(DisassemblerListing *__this, Instruction *instruction)
+        {
+            return __this->nextInstruction(instruction);
+        }
+
+        bool DisassemblerListing_hasNextInstruction(DisassemblerListing *__this, Instruction *instruction)
+        {
+            return __this->hasNextInstruction(instruction);
+        }
+
+        uint64_t Function_getStartAddress(Function *__this)
+        {
+            return __this->startAddress();
+        }
+
+        void Function_addInstruction(Function *__this, Instruction *instruction)
+        {
+            __this->addInstruction(instruction);
         }
     }
 }

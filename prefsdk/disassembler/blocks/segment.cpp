@@ -16,28 +16,32 @@ namespace PrefSDK
         f->setSegmentName(this->_name);
         f->setParentObject(this);
 
-        this->_addresslist.append(f->startAddress());
-        this->_functions[f->startAddress()] = f;
-
         if(f->type() == FunctionTypes::EntryPoint)
             this->_entrypoints.append(f);
 
-        std::sort(this->_addresslist.begin(), this->_addresslist.end()); /* Sort Functions by Address */
+        this->_functions.append(f);
+        std::sort(this->_functions.begin(), this->_functions.end(), &Segment::sortFunctions); /* Sort Functions by Address */
     }
 
     bool Segment::containsFunction(uint64_t address)
     {
-        return this->_functions.contains(address);
+        foreach(Function* func, this->_functions)
+        {
+            if(func->contains(address))
+                return true;
+        }
+
+        return false;
     }
 
     int Segment::indexOf(Function *f) const
     {
-        return this->_addresslist.indexOf(f->startAddress());
+        return this->_functions.indexOf(f);
     }
 
     Function* Segment::function(int idx)
     {
-        return this->_functions[this->_addresslist[idx]];
+        return this->_functions[idx];
     }
 
     Function *Segment::entryPoint(int idx)
@@ -47,7 +51,7 @@ namespace PrefSDK
 
     int Segment::functionsCount() const
     {
-        return this->_addresslist.count();
+        return this->_functions.count();
     }
 
     int Segment::entryPointsCount() const
@@ -73,5 +77,10 @@ namespace PrefSDK
     ListingTypes::Type Segment::objectType() const
     {
         return ListingTypes::Segment;
+    }
+
+    bool Segment::sortFunctions(Function *function1, Function *function2)
+    {
+        return function1->startAddress() < function2->startAddress();
     }
 }
