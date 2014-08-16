@@ -131,7 +131,7 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
             break;
 
         case InstructionTypes::Nop:
-            charformat.setForeground(Qt::darkGray);
+            charformat.setForeground(Qt::lightGray);
             break;
 
         case InstructionTypes::Stop:
