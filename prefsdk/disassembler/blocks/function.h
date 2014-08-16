@@ -3,7 +3,7 @@
 
 #include <algorithm>
 #include "block.h"
-#include "prefsdk/disassembler/instruction.h"
+#include "prefsdk/disassembler/blocks/instruction.h"
 #include "prefsdk/disassembler/references/reference.h"
 
 namespace PrefSDK

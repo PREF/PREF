@@ -5,7 +5,7 @@
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/disassembler/loader/loaderlist.h"
 #include "prefsdk/disassembler/operand.h"
-#include "prefsdk/disassembler/instruction.h"
+#include "prefsdk/disassembler/blocks/instruction.h"
 #include "prefsdk/disassembler/blocks/function.h"
 #include "viewmodels/loaderlistmodel/loaderlistmodel.h"
 #include "views/disassemblerview/disassemblerlisting.h"

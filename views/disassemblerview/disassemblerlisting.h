@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <QtCore>
 #include "prefsdk/datatype.h"
+#include "prefsdk/disassembler/symbol.h"
 #include "prefsdk/disassembler/blocks/segment.h"
 #include "prefsdk/disassembler/references/reference.h"
-#include "prefsdk/disassembler/symbols/symbol.h"
 
 using namespace PrefSDK;
 

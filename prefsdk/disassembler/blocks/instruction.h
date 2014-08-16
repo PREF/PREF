@@ -2,11 +2,11 @@
 #define INSTRUCTION_H
 
 #include <QtCore>
-#include "operand.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "prefsdk/datatype.h"
-#include "prefsdk/disassembler/symbols/symbol.h"
+#include "prefsdk/disassembler/operand.h"
+#include "prefsdk/disassembler/symbol.h"
 #include "prefsdk/disassembler/blocks/block.h"
 
 namespace PrefSDK

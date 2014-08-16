@@ -134,7 +134,7 @@ SOURCES += main.cpp\
     views/disassemblerview/entrypointsdialog/entrypointsdialog.cpp \
     viewmodels/segmentsmodel/segmentsmodel.cpp \
     viewmodels/entrypointsmodel/entrypointsmodel.cpp \
-    prefsdk/disassembler/instruction.cpp \
+    prefsdk/disassembler/blocks/instruction.cpp \
     prefsdk/disassembler/operand.cpp \
     prefsdk/disassembler/blocks/function.cpp \
     prefsdk/api/disassemblerapi.cpp \
@@ -144,7 +144,7 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
     viewmodels/functionmodel/functionmodel.cpp \
     prefsdk/disassembler/references/reference.cpp \
-    prefsdk/disassembler/symbols/symbol.cpp \
+    prefsdk/disassembler/symbol.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp
 
 HEADERS  += mainwindow.h \
@@ -267,7 +267,7 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.h \
     viewmodels/segmentsmodel/segmentsmodel.h \
     viewmodels/entrypointsmodel/entrypointsmodel.h \
-    prefsdk/disassembler/instruction.h \
+    prefsdk/disassembler/blocks/instruction.h \
     prefsdk/disassembler/operand.h \
     prefsdk/disassembler/blocks/function.h \
     prefsdk/api/disassemblerapi.h \
@@ -277,7 +277,7 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
     viewmodels/functionmodel/functionmodel.h \
     prefsdk/disassembler/references/reference.h \
-    prefsdk/disassembler/symbols/symbol.h \
+    prefsdk/disassembler/symbol.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     qhexedit/sparserangemap.h
 

@@ -4,8 +4,8 @@
 #include <QtCore>
 #include <QtGui>
 #include "views/disassemblerview/disassemblerlisting.h"
+#include "prefsdk/disassembler/blocks/instruction.h"
 #include "prefsdk/disassembler/listingobject.h"
-#include "prefsdk/disassembler/instruction.h"
 
 using namespace PrefSDK;
 
