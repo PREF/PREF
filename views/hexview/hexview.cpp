@@ -183,6 +183,11 @@ void HexView::onWorkFinished()
     int idx = ui->tabWidget->indexOf(qobject_cast<QWidget*>(this->sender()));
 
     if(idx != -1)
+    {
         ui->tabWidget->setTabIcon(idx, QIcon());
+
+        if(this->sender() == ui->formatWidget)
+            ui->tabWidget->setCurrentIndex(idx);
+    }
 }
 
