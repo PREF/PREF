@@ -70,6 +70,16 @@ Instruction *DisassemblerListing::instructionFromAddress(uint64_t address)
     return this->_instructions[address];
 }
 
+Instruction *DisassemblerListing::previousInstruction(Instruction *instruction)
+{
+    uint64_t prevaddress = instruction->address() - instruction->size();
+
+    if(!this->_instructions.contains(prevaddress))
+        return nullptr;
+
+    return this->_instructions[prevaddress];
+}
+
 Instruction *DisassemblerListing::nextInstruction(Instruction *instruction)
 {
     uint64_t nextaddress = instruction->address() + instruction->size();
@@ -172,6 +182,11 @@ Instruction *DisassemblerListing::mergeInstructions(Instruction *instruction1, I
 
     this->_instructions[newinstruction->address()] = newinstruction;
     return newinstruction;
+}
+
+bool DisassemblerListing::hasPreviousInstruction(Instruction *instruction)
+{
+    return this->_instructions.contains(instruction->address() - instruction->size());
 }
 
 bool DisassemblerListing::hasNextInstruction(Instruction *instruction)

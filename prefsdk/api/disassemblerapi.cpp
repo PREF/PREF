@@ -314,6 +314,16 @@ namespace PrefSDK
             return __this->hasNextInstruction(instruction);
         }
 
+        bool DisassemblerListing_hasPreviousInstruction(DisassemblerListing *__this, Instruction *instruction)
+        {
+            return __this->hasPreviousInstruction(instruction);
+        }
+
+        Instruction *DisassemblerListing_getPreviousInstruction(DisassemblerListing *__this, Instruction *instruction)
+        {
+            return __this->previousInstruction(instruction);
+        }
+
         uint64_t Function_getStartAddress(Function *__this)
         {
             return __this->startAddress();

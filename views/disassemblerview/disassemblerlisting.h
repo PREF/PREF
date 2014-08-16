@@ -47,8 +47,10 @@ class DisassemblerListing : public QObject
     public: /* Instruction Methods */
         Instruction* createInstruction(uint64_t address);
         Instruction* instructionFromAddress(uint64_t address);
+        Instruction* previousInstruction(Instruction* instruction);
         Instruction* nextInstruction(Instruction* instruction);
         Instruction* mergeInstructions(Instruction* instruction1, Instruction* instruction2, const QString& mnemonic, InstructionCategories::Category category, InstructionTypes::Type type);
+        bool hasPreviousInstruction(Instruction* instruction);
         bool hasNextInstruction(Instruction* instruction);
 
     public: /* Disassembler Metods */

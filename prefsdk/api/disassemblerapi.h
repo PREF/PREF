@@ -160,7 +160,9 @@ namespace PrefSDK
             Function *DisassemblerListing_getFunction(DisassemblerListing* __this, int idx);
             Instruction* DisassemblerListing_createInstruction(DisassemblerListing* __this, uint64_t address);
             Instruction* DisassemblerListing_getInstructionFromAddress(DisassemblerListing* __this, uint64_t address);
+            Instruction* DisassemblerListing_getPreviousInstruction(DisassemblerListing* __this, Instruction* instruction);
             Instruction* DisassemblerListing_getNextInstruction(DisassemblerListing* __this, Instruction* instruction);
+            bool DisassemblerListing_hasPreviousInstruction(DisassemblerListing* __this, Instruction* instruction);
             bool DisassemblerListing_hasNextInstruction(DisassemblerListing* __this, Instruction* instruction);
             void DisassemblerListing_addReference(DisassemblerListing* __this, uint64_t srcaddress, uint64_t destaddress, int referencetype);
             void DisassemblerListing_setSymbol(DisassemblerListing* __this, uint64_t address, int datatype, const char* name);
