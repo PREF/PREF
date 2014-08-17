@@ -86,5 +86,13 @@ namespace PrefSDK
             __this->resizeColumnsToContents();
             __this->resizeRowsToContents();
         }
+
+        void MessageBox_show(const char *title, const char *message)
+        {
+            QMessageBox mb(qApp->activeWindow());
+            mb.setWindowTitle(QString::fromUtf8(title));
+            mb.setText(QString::fromUtf8(message));
+            mb.exec();
+        }
     }
 }
