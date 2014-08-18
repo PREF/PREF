@@ -36,6 +36,7 @@ class CompareView : public AbstractView
         void createToolbar(QHexEdit *hexedit, QWidget* tbcontainer, ActionWidget *actionwidget);
 
     public: /* Overriden Methods */
+        virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
         virtual void log(const QString&);

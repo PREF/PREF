@@ -28,6 +28,7 @@ class HexView : public AbstractView
         ~HexView();
 
     public: /* Overriden Methods */
+        virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
         virtual void log(const QString& text);

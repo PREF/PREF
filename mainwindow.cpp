@@ -35,14 +35,9 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         this->checkCommandLine();
 }
 
-void MainWindow::log(const QString &text)
+AbstractView *MainWindow::loadedView(QHexEditData *hexeditdata)
 {
-    qobject_cast<AbstractView*>(ui->tabWidget->currentWidget())->log(text);
-}
-
-void MainWindow::logLine(const QString &text, LogWidget::LogLevel loglevel)
-{
-    qobject_cast<AbstractView*>(ui->tabWidget->currentWidget())->logLine(text, loglevel);
+    return this->_loadedviews[hexeditdata];
 }
 
 bool MainWindow::sdkLoaded()
@@ -115,8 +110,10 @@ bool MainWindow::closeApplication()
 void MainWindow::loadFile(QString file, QHexEditData *hexeditdata)
 {
     QString viewname = QFileInfo(file).fileName();
-    HexView* fv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
-    ui->tabWidget->addTab(fv, viewname);
+    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+    ui->tabWidget->addTab(hv, viewname);
+
+    this->_loadedviews[hexeditdata] = hv;
 }
 
 void MainWindow::setSaveVisible(bool b)
@@ -156,7 +153,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
     m.setDefaultButton(QMessageBox::No);
     int ret = m.exec();
 
-    switch (ret)
+    switch(ret)
     {
         case QMessageBox::Yes:
         {
@@ -166,8 +163,14 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
                 this->setSaveVisible(false);
             }
 
+            AbstractView* abstractview = qobject_cast<AbstractView*>(ui->tabWidget->currentWidget());
+
+            if(this->_loadedviews.contains(abstractview->data()))
+                this->_loadedviews.remove(abstractview->data());
+
             ui->tabWidget->widget(index)->deleteLater(); /* Shedule object for deletion */
             ui->tabWidget->removeTab(index);
+
             break;
         }
 
@@ -308,7 +311,9 @@ void MainWindow::on_actionDisassemble_triggered()
         {
             QString viewname = QFileInfo(file).fileName();
             DisassemblerView* dv = new DisassemblerView(hexeditdata, dd.selectedLoader(), viewname, this->_lblinfo, ui->tabWidget);
+
             ui->tabWidget->addTab(dv, viewname);
+            this->_loadedviews[hexeditdata] = dv;
         }
     }
 }

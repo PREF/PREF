@@ -38,6 +38,11 @@ HexView::~HexView()
     delete ui;
 }
 
+QHexEditData *HexView::data()
+{
+    return this->_hexeditdata;
+}
+
 bool HexView::canSave() const
 {
     return true;

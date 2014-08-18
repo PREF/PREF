@@ -4,20 +4,36 @@ namespace PrefSDK
 {
     namespace API
     {
-        void Debug_print(const char *s)
+        void Debug_log(QHexEditData *hexeditdata, const char *s)
         {
-            DebugDialog::instance()->luaOut(QString::fromUtf8(s));
+            AbstractView* view = MainWindow::instance()->loadedView(hexeditdata);
+            view->log(QString::fromUtf8(s));
         }
 
-        void Debug_showDialog()
+        void Debug_logNotice(QHexEditData *hexeditdata, const char *s)
         {
+            AbstractView* view = MainWindow::instance()->loadedView(hexeditdata);
+            view->logLine(QString::fromUtf8(s), LogWidget::Notice);
+        }
+
+        void Debug_logWarning(QHexEditData *hexeditdata, const char *s)
+        {
+            AbstractView* view = MainWindow::instance()->loadedView(hexeditdata);
+            view->logLine(QString::fromUtf8(s), LogWidget::Warning);
+        }
+
+        void Debug_logError(QHexEditData *hexeditdata, const char *s)
+        {
+            AbstractView* view = MainWindow::instance()->loadedView(hexeditdata);
+            view->logLine(QString::fromUtf8(s), LogWidget::Error);
+        }
+
+        void Debug_showDialog(const char *s)
+        {
+            DebugDialog::instance()->out(QString::fromUtf8(s));
+
             if(!DebugDialog::instance()->isVisible())
                 DebugDialog::instance()->exec();
-        }
-
-        void Debug_println(const char *s)
-        {
-            DebugDialog::instance()->luaOut(QString::fromUtf8(s).append("\n"));
         }
     }
 }

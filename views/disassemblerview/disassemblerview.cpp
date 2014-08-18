@@ -37,6 +37,11 @@ DisassemblerView::~DisassemblerView()
     delete ui;
 }
 
+QHexEditData *DisassemblerView::data()
+{
+    return this->_hexeditdata;
+}
+
 bool DisassemblerView::canSave() const
 {
     return false;

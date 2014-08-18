@@ -117,6 +117,11 @@ void CompareView::createToolbar(QHexEdit* hexedit, QWidget *tbcontainer, ActionW
     tbcontainer->setLayout(vl);
 }
 
+QHexEditData *CompareView::data()
+{
+    return nullptr; /* It's meaningless here! */
+}
+
 bool CompareView::canSave() const
 {
     return false;

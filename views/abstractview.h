@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "qhexedit/qhexeditdata.h"
 #include "logwidget/logwidget.h"
 
 class AbstractView : public QWidget
@@ -19,6 +20,7 @@ class AbstractView : public QWidget
         void updateInfoText(const QString& s);
 
     public: /* Abstract Methods */
+        virtual QHexEditData* data() = 0;
         virtual bool canSave() const = 0;
         virtual void updateStatusBar() = 0;
         virtual void log(const QString& text) = 0;

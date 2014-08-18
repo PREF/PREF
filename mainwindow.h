@@ -23,11 +23,13 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
+    private:
+        typedef QHash<QHexEditData*, AbstractView*> LoadedViews;
     
     public:
         explicit MainWindow(QWidget *parent = 0);
-        virtual void log(const QString& text);
-        virtual void logLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
+        AbstractView* loadedView(QHexEditData* hexeditdata);
         bool sdkLoaded();
         ~MainWindow();
 
@@ -48,20 +50,22 @@ class MainWindow : public QMainWindow
     private slots:
         void loadFile(QString file);
         void on_action_Analyze_triggered();
+        void on_actionDisassemble_triggered();
+        void on_actionCompare_triggered();
         void on_action_Save_As_triggered();
         void on_action_Save_triggered();
         void on_actionExit_triggered();
-        void on_actionCompare_triggered();
         void on_actionAbout_PREF_triggered();
         void on_tabWidget_tabCloseRequested(int index);
         void on_tabWidget_currentChanged(int index);
         void on_actionSignature_DB_triggered();
         void on_actionHex_File_triggered();
-        void on_actionDisassemble_triggered();
+
 
     private:
         static MainWindow* _instance;
         Ui::MainWindow *ui;
+        LoadedViews _loadedviews;
         QLabel* _lblinfo;
         bool _sdkloaded;
 };
