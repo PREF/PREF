@@ -2,12 +2,22 @@
 
 LogWidget::LogWidget(QWidget *parent): QPlainTextEdit(parent)
 {
-    this->_highlighter = new LogWidgetHightlighter(this->document());
+    qRegisterMetaType<LogWidget::LogLevel>("LogWidget::LogLevel");
 
+    this->_highlighter = new LogWidgetHightlighter(this->document());
     this->setReadOnly(true);
+
+    /* Safe call across threads */
+    connect(this, SIGNAL(writeRequested(QString)), this, SLOT(doWrite(QString)), Qt::QueuedConnection);
+    connect(this, SIGNAL(writeLineRequested(QString,LogWidget::LogLevel)), this, SLOT(doWriteLine(QString,LogWidget::LogLevel)), Qt::QueuedConnection);
 }
 
-void LogWidget::writeLine(const QString &text, LogWidget::LogLevel loglevel)
+void LogWidget::doWrite(const QString &text)
+{
+    this->appendPlainText(text);
+}
+
+void LogWidget::doWriteLine(const QString &text, LogWidget::LogLevel loglevel)
 {
     QString line = text;
 
@@ -29,10 +39,15 @@ void LogWidget::writeLine(const QString &text, LogWidget::LogLevel loglevel)
             break;
     }
 
-    this->write(line.append("\n"));
+    this->doWrite(line.append("\n"));
+}
+
+void LogWidget::writeLine(const QString &text, LogWidget::LogLevel loglevel)
+{
+    emit writeLineRequested(text, loglevel);
 }
 
 void LogWidget::write(const QString &text)
 {
-    this->appendPlainText(text);
+    emit writeRequested(text);
 }

@@ -10,6 +10,12 @@ namespace PrefSDK
             view->log(QString::fromUtf8(s));
         }
 
+        void Debug_logLine(QHexEditData *hexeditdata, const char *s)
+        {
+            AbstractView* view = MainWindow::instance()->loadedView(hexeditdata);
+            view->logLine(QString::fromUtf8(s));
+        }
+
         void Debug_logNotice(QHexEditData *hexeditdata, const char *s)
         {
             AbstractView* view = MainWindow::instance()->loadedView(hexeditdata);
