@@ -31,6 +31,9 @@ class MainWindow : public QMainWindow
         bool sdkLoaded();
         ~MainWindow();
 
+    public:
+        static MainWindow* instance();
+
     protected:
         virtual void closeEvent(QCloseEvent* e);
 
@@ -57,6 +60,7 @@ class MainWindow : public QMainWindow
         void on_actionDisassemble_triggered();
 
     private:
+        static MainWindow* _instance;
         Ui::MainWindow *ui;
         QLabel* _lblinfo;
         bool _sdkloaded;

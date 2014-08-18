@@ -1,8 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+MainWindow* MainWindow::_instance = nullptr;
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
+    MainWindow::_instance = this; /* Make this instance available outside */
+
     ui->setupUi(this);
     this->centerWindowToScreen();
 
@@ -49,6 +53,11 @@ bool MainWindow::sdkLoaded()
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+MainWindow *MainWindow::instance()
+{
+    return MainWindow::_instance;
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
