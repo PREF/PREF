@@ -47,6 +47,16 @@ void DisassemblerView::updateStatusBar()
     this->updateInfoText(QString());
 }
 
+void DisassemblerView::log(const QString &text)
+{
+    //TODO: Log Disassembler
+}
+
+void DisassemblerView::logLine(const QString &text, LogWidget::LogLevel loglevel)
+{
+    //TODO: Log Disassembler
+}
+
 void DisassemblerView::createListingMenu()
 {
     this->_listingmenu = new QMenu();

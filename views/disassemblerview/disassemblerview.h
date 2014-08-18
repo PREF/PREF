@@ -32,6 +32,8 @@ class DisassemblerView : public AbstractView
     public: /* Overriden Methods */
         virtual bool canSave() const;
         virtual void updateStatusBar();
+        virtual void log(const QString& text);
+        virtual void logLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
 
     private:
         void createListingMenu();

@@ -145,7 +145,10 @@ SOURCES += main.cpp\
     viewmodels/functionmodel/functionmodel.cpp \
     prefsdk/disassembler/references/reference.cpp \
     prefsdk/disassembler/symbol.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp
+    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
+    logwidget/logwidget.cpp \
+    views/hexview/outputwidget/outputwidget.cpp \
+    logwidget/logwidgethightlighter.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -279,7 +282,10 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/references/reference.h \
     prefsdk/disassembler/symbol.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
-    qhexedit/sparserangemap.h
+    qhexedit/sparserangemap.h \
+    logwidget/logwidget.h \
+    views/hexview/outputwidget/outputwidget.h \
+    logwidget/logwidgethightlighter.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -308,7 +314,8 @@ FORMS    += mainwindow.ui \
     views/disassemblerview/disassemblerview.ui \
     views/disassemblerview/disassemblerdialog/disassemblerdialog.ui \
     views/disassemblerview/segmentsdialog/segmentsdialog.ui \
-    views/disassemblerview/entrypointsdialog/entrypointsdialog.ui
+    views/disassemblerview/entrypointsdialog/entrypointsdialog.ui \
+    views/hexview/outputwidget/outputwidget.ui
 
 RESOURCES += resources.qrc
 

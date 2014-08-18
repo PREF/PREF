@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "logwidget/logwidget.h"
 
 class AbstractView : public QWidget
 {
@@ -20,6 +21,8 @@ class AbstractView : public QWidget
     public: /* Abstract Methods */
         virtual bool canSave() const = 0;
         virtual void updateStatusBar() = 0;
+        virtual void log(const QString& text) = 0;
+        virtual void logLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing) = 0;
 
     private:
         QLabel* _lblinfo;

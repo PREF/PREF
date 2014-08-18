@@ -31,6 +31,16 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         this->checkCommandLine();
 }
 
+void MainWindow::log(const QString &text)
+{
+    qobject_cast<AbstractView*>(ui->tabWidget->currentWidget())->log(text);
+}
+
+void MainWindow::logLine(const QString &text, LogWidget::LogLevel loglevel)
+{
+    qobject_cast<AbstractView*>(ui->tabWidget->currentWidget())->logLine(text, loglevel);
+}
+
 bool MainWindow::sdkLoaded()
 {
     return this->_sdkloaded;

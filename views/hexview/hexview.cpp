@@ -50,6 +50,16 @@ void HexView::updateStatusBar()
     this->updateInfoText(QString("<b>Offset:</b> %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Size:</b> %2h").arg(offset, size));
 }
 
+void HexView::logLine(const QString &text, LogWidget::LogLevel loglevel)
+{
+    ui->tabOutput->logWidget()->writeLine(text, loglevel);
+}
+
+void HexView::log(const QString &text)
+{
+    ui->tabOutput->logWidget()->write(text);
+}
+
 void HexView::createToolBar()
 {
     this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);

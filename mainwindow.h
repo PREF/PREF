@@ -26,6 +26,8 @@ class MainWindow : public QMainWindow
     
     public:
         explicit MainWindow(QWidget *parent = 0);
+        virtual void log(const QString& text);
+        virtual void logLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
         bool sdkLoaded();
         ~MainWindow();
 

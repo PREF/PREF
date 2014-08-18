@@ -38,6 +38,8 @@ class CompareView : public AbstractView
     public: /* Overriden Methods */
         virtual bool canSave() const;
         virtual void updateStatusBar();
+        virtual void log(const QString&);
+        virtual void logLine(const QString&, LogWidget::LogLevel = LogWidget::Nothing);
 
     private:
         Ui::CompareView *ui;

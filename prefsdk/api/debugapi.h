@@ -2,6 +2,7 @@
 #define PREFSDK_API_DEBUGAPI_H
 
 #include "debugdialog/debugdialog.h"
+#include "mainwindow.h"
 
 namespace PrefSDK
 {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1033</width>
-    <height>701</height>
+    <width>1025</width>
+    <height>693</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -124,6 +124,11 @@
         <string>Strings</string>
        </attribute>
       </widget>
+      <widget class="OutputWidget" name="tabOutput">
+       <attribute name="title">
+        <string>Output</string>
+       </attribute>
+      </widget>
      </widget>
     </widget>
    </item>
@@ -182,6 +187,12 @@
    <class>VisualMapWidget</class>
    <extends>QWidget</extends>
    <header>views/hexview/visualmapwidget/visualmapwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OutputWidget</class>
+   <extends>QWidget</extends>
+   <header>views/hexview/outputwidget/outputwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
