@@ -4,8 +4,13 @@ LogWidget::LogWidget(QWidget *parent): QPlainTextEdit(parent)
 {
     qRegisterMetaType<LogWidget::LogLevel>("LogWidget::LogLevel");
 
-    this->_highlighter = new LogWidgetHightlighter(this->document());
+    QFont f("Monospace", qApp->font().pointSize());
+    f.setStyleHint(QFont::TypeWriter); /* Use monospace fonts! */
+
+    this->setFont(f);
     this->setReadOnly(true);
+
+    this->_highlighter = new LogWidgetHightlighter(this->document());
 
     /* Safe call across threads */
     connect(this, SIGNAL(writeRequested(QString)), this, SLOT(doWrite(QString)), Qt::QueuedConnection);
