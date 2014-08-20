@@ -8,6 +8,7 @@
 #include "prefsdk/exporter/exporterlist.h"
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/hexview/workertab.h"
+#include "logwidget/logwidget.h"
 #include "formattreeview/formattreeview.h"
 #include "formatsdialog/formatsdialog.h"
 #include "formatworker.h"
@@ -24,6 +25,7 @@ class FormatWidget : public WorkerTab
 
     public:
         explicit FormatWidget(QWidget *parent = 0);
+        void setLogWidget(LogWidget* logwidget);
         void setData(QHexEdit *hexedit);
         void resetData();
         ~FormatWidget();
@@ -44,13 +46,14 @@ class FormatWidget : public WorkerTab
 
     signals:
         void parseStarted();
-        void parseFinished(FormatList::FormatId formatid, FormatTree* formattree);
+        void parseFinished(FormatTree* formattree);
 
     private:
         Ui::FormatWidget *ui;
         FormatWorker _worker;
         FormatModel* _formatmodel;
         QHexEdit* _hexedit;
+        LogWidget* _logwidget;
         FormatList::FormatId _formatid;
 };
 

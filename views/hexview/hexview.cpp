@@ -7,6 +7,7 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
     ui->hexEdit->setData(hexeditdata);
+    ui->formatWidget->setLogWidget(ui->tabOutput->logWidget());
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
 
@@ -114,8 +115,16 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     connect(ui->visualMapWidget, SIGNAL(gotoTriggered(qint64)), ui->hexEdit, SLOT(selectPos(qint64)));
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
-    connect(ui->formatWidget, SIGNAL(parseStarted()), this, SLOT(disableFormatButton()));
-    connect(ui->formatWidget, SIGNAL(parseFinished(FormatList::FormatId,FormatTree*)), this, SLOT(onFormatParseFinished(FormatList::FormatId,FormatTree*)));
+    connect(ui->formatWidget, SIGNAL(parseStarted()), this, SLOT(onFormatParseStarted()));
+    connect(ui->formatWidget, SIGNAL(parseFinished(FormatTree*)), this, SLOT(onFormatParseFinished(FormatTree*)));
+}
+
+void HexView::selectPage(QWidget *page)
+{
+    int idx = ui->tabWidget->indexOf(page);
+
+    if(idx != -1)
+        ui->tabWidget->setCurrentIndex(idx);
 }
 
 void HexView::updateOffset(qint64)
@@ -153,16 +162,23 @@ void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
     this->_toolbar->actionMenu()->popup(newpos);
 }
 
-void HexView::onFormatParseFinished(FormatList::FormatId formatid, FormatTree *formattree)
+void HexView::onFormatParseStarted()
+{
+    ui->tabOutput->logWidget()->clear();
+    this->disableFormatButton();
+}
+
+void HexView::onFormatParseFinished(FormatTree *formattree)
 {
     this->_tbformat->setEnabled(true);
 
-    if(!formatid || !formattree)
+    if(formattree->isEmpty())
     {
         this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
         this->_tbformat->setMenu(nullptr);
 
         ui->formatWidget->resetData();
+        this->selectPage(ui->tabOutput);
         return;
     }
 
@@ -178,6 +194,8 @@ void HexView::onFormatParseFinished(FormatList::FormatId formatid, FormatTree *f
         this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
         this->_tbformat->setMenu(nullptr);
     }
+
+    this->selectPage(ui->formatWidget);
 }
 
 void HexView::disableFormatButton()
@@ -198,11 +216,6 @@ void HexView::onWorkFinished()
     int idx = ui->tabWidget->indexOf(qobject_cast<QWidget*>(this->sender()));
 
     if(idx != -1)
-    {
         ui->tabWidget->setTabIcon(idx, QIcon());
-
-        if(this->sender() == ui->formatWidget)
-            ui->tabWidget->setCurrentIndex(idx);
-    }
 }
 

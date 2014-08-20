@@ -24,8 +24,6 @@ const StringsWorker::StringMap &StringsWorker::strings() const
 
 void StringsWorker::run()
 {
-    Worker::run();
-
     if(!this->_hexeditdata)
         return;
 

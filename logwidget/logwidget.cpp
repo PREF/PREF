@@ -52,6 +52,21 @@ void LogWidget::writeLine(const QString &text, LogWidget::LogLevel loglevel)
     emit writeLineRequested(text, loglevel);
 }
 
+void LogWidget::writeNotice(const QString &text)
+{
+    this->writeLine(text, LogWidget::Notice);
+}
+
+void LogWidget::writeWarning(const QString &text)
+{
+    this->writeLine(text, LogWidget::Warning);
+}
+
+void LogWidget::writeError(const QString &text)
+{
+    this->writeLine(text, LogWidget::Error);
+}
+
 void LogWidget::write(const QString &text)
 {
     emit writeRequested(text);

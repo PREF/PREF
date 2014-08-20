@@ -1,14 +1,19 @@
 #include "formatwidget.h"
 #include "ui_formatwidget.h"
 
-FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _formatid(nullptr)
+FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr), _formatid(nullptr)
 {
     ui->setupUi(this);
 
     connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
     connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
-    connect(&this->_worker, SIGNAL(error(QString)), DebugDialog::instance(), SLOT(out(QString)));
     connect(&this->_worker, SIGNAL(finished()), this, SLOT(onParsingFinished()));
+}
+
+void FormatWidget::setLogWidget(LogWidget *logwidget)
+{
+    this->_logwidget = logwidget;
+    connect(&this->_worker, SIGNAL(error(QString)), logwidget, SLOT(writeError(QString)));
 }
 
 FormatWidget::~FormatWidget()
@@ -38,7 +43,7 @@ FormatTree* FormatWidget::parseFormat(FormatList::FormatId formatid, qint64 base
     lua_pushlightuserdata(thread, formattree);
 
     if(lua_resume(thread, 4))
-        DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(thread, -1)));
+        this->_logwidget->writeError(QString::fromUtf8(lua_tostring(thread, -1)));
 
     lua_pop(thread, 1);
     lua_pop(l, 1);
@@ -49,12 +54,6 @@ FormatTree* FormatWidget::parseFormat(FormatList::FormatId formatid, qint64 base
 
 void FormatWidget::onParsingFinished()
 {
-    if(this->_worker.inError())
-    {
-        emit parseFinished(nullptr, nullptr);
-        return;
-    }
-
     FormatTree* formattree = this->_worker.tree();
 
     if(!formattree->isEmpty())
@@ -65,7 +64,7 @@ void FormatWidget::onParsingFinished()
             ui->tvFormat->resizeColumnToContents(i);
     }
 
-    emit parseFinished(this->_formatid, formattree);
+    emit parseFinished(formattree);
 }
 
 void FormatWidget::setData(QHexEdit *hexedit)

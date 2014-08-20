@@ -17,8 +17,6 @@ void ChartWorker::setData(QHexEditData *hexeditdata)
 
 void ChartWorker::run()
 {
-    Worker::run();
-
     if(!this->_hexeditdata)
         return;
 

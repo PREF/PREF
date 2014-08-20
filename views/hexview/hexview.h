@@ -37,6 +37,7 @@ class HexView : public AbstractView
     private:
         void createToolBar();
         void inspectData(QHexEditData* hexeditdata);
+        void selectPage(QWidget* page);
 
     private slots:
         void updateOffset(qint64);
@@ -45,7 +46,8 @@ class HexView : public AbstractView
         void onWorkFinished();
         void onMapViewTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
-        void onFormatParseFinished(FormatList::FormatId formatid, FormatTree* formattree);
+        void onFormatParseStarted();
+        void onFormatParseFinished(FormatTree* formattree);
         void disableFormatButton();
 
     private:

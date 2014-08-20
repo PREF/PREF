@@ -26,8 +26,6 @@ void FormatWorker::abort()
 
 void FormatWorker::run()
 {
-    Worker::run();
-
     if(!this->_hexeditdata || !this->_formatid)
         return;
 
@@ -45,7 +43,7 @@ void FormatWorker::run()
 
     if(lua_resume(this->_thread, 4))
     {
-        this->workerError(QString::fromUtf8(lua_tostring(this->_thread, -1)));
+        emit error(QString::fromUtf8(lua_tostring(this->_thread, -1)));
         lua_pop(this->_thread, 1);
     }
 
