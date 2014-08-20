@@ -148,7 +148,8 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
     logwidget/logwidget.cpp \
     views/hexview/outputwidget/outputwidget.cpp \
-    logwidget/logwidgethightlighter.cpp
+    logwidget/logwidgethightlighter.cpp \
+    prefsdk/api/mathapi.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -285,7 +286,8 @@ HEADERS  += mainwindow.h \
     qhexedit/sparserangemap.h \
     logwidget/logwidget.h \
     views/hexview/outputwidget/outputwidget.h \
-    logwidget/logwidgethightlighter.h
+    logwidget/logwidgethightlighter.h \
+    prefsdk/api/mathapi.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
