@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1004</width>
-    <height>619</height>
+    <width>1000</width>
+    <height>615</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -104,6 +104,23 @@
            <attribute name="title">
             <string>Output</string>
            </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="LogWidget" name="logWidget"/>
+            </item>
+           </layout>
           </widget>
          </widget>
         </widget>
@@ -154,6 +171,11 @@
    <extends>QWidget</extends>
    <header>views/disassemblerview/disassemblerwidget/disassemblerwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LogWidget</class>
+   <extends>QPlainTextEdit</extends>
+   <header>logwidget/logwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
