@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(QHexEditData *hexeditdata, LoaderList::LoaderId loaderid, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _hexeditdata(hexeditdata), _loaderid(loaderid)
+DisassemblerView::DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, loadedviews, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _loaderid(loaderid)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -54,12 +54,12 @@ void DisassemblerView::updateStatusBar()
 
 void DisassemblerView::log(const QString &text)
 {
-    //TODO: Log Disassembler
+    ui->logWidget->write(text);
 }
 
 void DisassemblerView::logLine(const QString &text, LogWidget::LogLevel loglevel)
 {
-    //TODO: Log Disassembler
+    ui->logWidget->writeLine(text, loglevel);
 }
 
 void DisassemblerView::createListingMenu()

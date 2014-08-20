@@ -22,10 +22,10 @@ class HexView : public AbstractView
     Q_OBJECT
     
     public:
-        explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent = 0);
+        explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent = 0);
+        virtual ~HexView();
         void save(QString filename);
         void save();
-        ~HexView();
 
     public: /* Overriden Methods */
         virtual QHexEditData* data();
@@ -50,7 +50,6 @@ class HexView : public AbstractView
 
     private:
         Ui::HexView *ui;
-        QHexEditData* _hexeditdata;
         ActionToolBar* _toolbar;
         QToolButton* _tbformat;
         QAction* _actbyteview;

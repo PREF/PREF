@@ -26,8 +26,8 @@ class DisassemblerView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit DisassemblerView(QHexEditData* hexeditdata, LoaderList::LoaderId loaderid, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
-        ~DisassemblerView();
+        explicit DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent = 0);
+        virtual ~DisassemblerView();
 
     public: /* Overriden Methods */
         virtual QHexEditData* data();
@@ -58,7 +58,6 @@ class DisassemblerView : public AbstractView
         DisassemblerListing* _listing;
         StringOffsetModel* _stringrefs;
         FunctionModel* _functionmodel;
-        QHexEditData* _hexeditdata;
         LoaderList::LoaderId _loaderid;
         QToolBar* _toolbar;
         QMenu* _functionsmenu;

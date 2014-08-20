@@ -12,7 +12,10 @@ class AbstractView : public QWidget
     Q_OBJECT
 
     public:
-        explicit AbstractView(const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
+        typedef QHash<QHexEditData*, AbstractView*> LoadedViews;
+
+    public:
+        explicit AbstractView(QHexEditData *hexeditdata, const QString& viewname, QLabel *labelinfo, LoadedViews &loadedviews, QWidget *parent = 0);
         const QString& viewName() const;
         virtual ~AbstractView();
 
@@ -29,6 +32,10 @@ class AbstractView : public QWidget
     private:
         QLabel* _lblinfo;
         QString _viewname;
+
+    protected:
+        QHexEditData* _hexeditdata;
+        AbstractView::LoadedViews& _loadedviews;
 };
 
 #endif // ABSTRACTVIEW_H
