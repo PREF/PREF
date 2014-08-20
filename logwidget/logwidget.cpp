@@ -19,7 +19,7 @@ LogWidget::LogWidget(QWidget *parent): QPlainTextEdit(parent)
 
 void LogWidget::doWrite(const QString &text)
 {
-    this->appendPlainText(text);
+    this->insertPlainText(text);
 }
 
 void LogWidget::doWriteLine(const QString &text, LogWidget::LogLevel loglevel)
