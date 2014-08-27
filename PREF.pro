@@ -149,7 +149,9 @@ SOURCES += main.cpp\
     logwidget/logwidget.cpp \
     views/hexview/outputwidget/outputwidget.cpp \
     logwidget/logwidgethightlighter.cpp \
-    prefsdk/api/mathapi.cpp
+    prefsdk/api/mathapi.cpp \
+    prefsdk/qt/qtlua.cpp \
+    prefsdk/qt/qluadialog.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -287,7 +289,9 @@ HEADERS  += mainwindow.h \
     logwidget/logwidget.h \
     views/hexview/outputwidget/outputwidget.h \
     logwidget/logwidgethightlighter.h \
-    prefsdk/api/mathapi.h
+    prefsdk/api/mathapi.h \
+    prefsdk/qt/qtlua.h \
+    prefsdk/qt/qluadialog.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

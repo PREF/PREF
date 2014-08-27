@@ -6,6 +6,7 @@
 #include <cstdint>
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/signatures/signaturedatabase.h"
+#include "prefsdk/qt/qtlua.h"
 #include "prefsdk/sqlitewrapper/sqlite.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/format/formattree.h"

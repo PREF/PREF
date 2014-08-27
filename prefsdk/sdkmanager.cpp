@@ -40,6 +40,7 @@ namespace PrefSDK
         if(SDKManager::_state)
         {
             luaL_openlibs(SDKManager::_state);
+            QtLua::open(SDKManager::_state);
 
             lua_getglobal(SDKManager::_state, "package");
             lua_getfield(SDKManager::_state, -1, "path");
