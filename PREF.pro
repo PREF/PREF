@@ -151,7 +151,9 @@ SOURCES += main.cpp\
     logwidget/logwidgethightlighter.cpp \
     prefsdk/api/mathapi.cpp \
     prefsdk/qt/qtlua.cpp \
-    prefsdk/qt/qluadialog.cpp
+    prefsdk/qt/qluadialog.cpp \
+    prefsdk/preflib/preflib.cpp \
+    prefsdk/luastate.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -291,7 +293,9 @@ HEADERS  += mainwindow.h \
     logwidget/logwidgethightlighter.h \
     prefsdk/api/mathapi.h \
     prefsdk/qt/qtlua.h \
-    prefsdk/qt/qluadialog.h
+    prefsdk/qt/qluadialog.h \
+    prefsdk/preflib/preflib.h \
+    prefsdk/luastate.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
