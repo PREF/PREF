@@ -6,7 +6,6 @@
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
 #include "actionwidget/actiontoolbar.h"
-#include "prefsdk/sdkmanager.h"
 #include "views/abstractview.h"
 #include "viewmodels/comparemodel/comparemodel.h"
 #include "compareworker.h"
@@ -22,7 +21,7 @@ class CompareView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit CompareView(QString leftfile, QString rightfile, const QString &viewname, QLabel* labelinfo, LoadedViews &loadedviews, QWidget *parent = 0);
+        explicit CompareView(QString leftfile, QString rightfile, const QString &viewname, QLabel* labelinfo, QWidget *parent = 0);
         virtual ~CompareView();
 
     private slots:

@@ -1,7 +1,7 @@
 #include "hexview.h"
 #include "ui_hexview.h"
 
-HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, loadedviews, parent), ui(new Ui::HexView), _toolbar(nullptr), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::HexView), _toolbar(nullptr), _entropyenabled(false)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -187,7 +187,7 @@ void HexView::onFormatParseFinished(FormatTree *formattree)
     if(loadedformat.optionsCount() > 0)
     {
         this->_tbformat->setPopupMode(QToolButton::MenuButtonPopup);
-        this->_tbformat->setMenu(new OptionMenu(SDKManager::state(), ui->hexEdit, loadedformat));
+        this->_tbformat->setMenu(new OptionMenu(LuaState::instance(), ui->hexEdit, loadedformat));
     }
     else
     {

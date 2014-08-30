@@ -5,6 +5,7 @@
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/format/formattree.h"
+#include "prefsdk/luastate.h"
 
 namespace PrefSDK
 {

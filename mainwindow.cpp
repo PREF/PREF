@@ -35,11 +35,6 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
         this->checkCommandLine();
 }
 
-AbstractView *MainWindow::loadedView(QHexEditData *hexeditdata)
-{
-    return this->_loadedviews[hexeditdata];
-}
-
 bool MainWindow::sdkLoaded()
 {
     return this->_sdkloaded;
@@ -110,7 +105,7 @@ bool MainWindow::closeApplication()
 void MainWindow::loadFile(QString file, QHexEditData *hexeditdata)
 {
     QString viewname = QFileInfo(file).fileName();
-    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo, this->_loadedviews, ui->tabWidget);
+    HexView* hv = PrefLib::instance()->addHexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
     ui->tabWidget->addTab(hv, viewname);
 }
 
@@ -220,7 +215,7 @@ void MainWindow::on_actionCompare_triggered()
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
         QString viewname = QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName());
-        ui->tabWidget->addTab(new CompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo, this->_loadedviews, ui->tabWidget), viewname);
+        ui->tabWidget->addTab(PrefLib::instance()->addCompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo,  ui->tabWidget), viewname);
     }
 }
 
@@ -261,7 +256,7 @@ void MainWindow::on_actionHex_File_triggered()
         f.close();
 
         QString viewname = QFileInfo(file).fileName();
-        HexView* fv = new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, this->_loadedviews, ui->tabWidget);
+        HexView* fv = PrefLib::instance()->addHexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, ui->tabWidget);
         ui->tabWidget->addTab(fv, viewname);
     }
 }
@@ -303,7 +298,7 @@ void MainWindow::on_actionDisassemble_triggered()
         if(res == DisassemblerDialog::Accepted && dd.selectedLoader())
         {
             QString viewname = QFileInfo(file).fileName();
-            DisassemblerView* dv = new DisassemblerView(dd.selectedLoader(), hexeditdata, viewname, this->_lblinfo, this->_loadedviews, ui->tabWidget);
+            DisassemblerView* dv = PrefLib::instance()->addDisassemblerView(dd.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
             ui->tabWidget->addTab(dv, viewname);
         }
     }

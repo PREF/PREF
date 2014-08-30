@@ -1,7 +1,7 @@
 #include "compareview.h"
 #include "ui_compareview.h"
 
-CompareView::CompareView(QString leftfile, QString rightfile, const QString& viewname, QLabel *labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent): AbstractView(nullptr, viewname, labelinfo, loadedviews, parent), ui(new Ui::CompareView)
+CompareView::CompareView(QString leftfile, QString rightfile, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(nullptr, viewname, labelinfo, parent), ui(new Ui::CompareView)
 {
     ui->setupUi(this);
 
@@ -15,9 +15,6 @@ CompareView::CompareView(QString leftfile, QString rightfile, const QString& vie
     this->_diffcolor = QColor(0xFF, 0xD5, 0xD5);
     this->_lefthexeditdata = QHexEditData::fromFile(leftfile);
     this->_righthexeditdata = QHexEditData::fromFile(rightfile);
-
-    this->_loadedviews[this->_lefthexeditdata] = this;
-    this->_loadedviews[this->_righthexeditdata] = this;
 
     ui->lblLeft->setText(QString("<b>%1</b>").arg(QDir(leftfile).dirName()));
     ui->lblRight->setText(QString("<b>%1</b>").arg(QDir(rightfile).dirName()));
@@ -53,9 +50,6 @@ CompareView::CompareView(QString leftfile, QString rightfile, const QString& vie
 CompareView::~CompareView()
 {
     delete ui;
-
-    this->_loadedviews.remove(this->_lefthexeditdata);
-    this->_loadedviews.remove(this->_righthexeditdata);
 }
 
 void CompareView::onCompareWorkerFinished()
@@ -125,7 +119,7 @@ void CompareView::createToolbar(QHexEdit* hexedit, QWidget *tbcontainer, ActionW
 
 QHexEditData *CompareView::data()
 {
-    return nullptr; /* It's meaningless here! */
+    return this->_lefthexeditdata;
 }
 
 bool CompareView::canSave() const

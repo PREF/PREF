@@ -4,12 +4,12 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "prefsdk/luastate.h"
 #include "actionwidget/actiontoolbar.h"
 #include "viewmodels/formatmodel/formatmodel.h"
+#include "datatypeswidget/datatypeswidget.h"
 #include "views/abstractview.h"
 #include "views/hexview/optionmenu.h"
-#include "datatypeswidget/datatypeswidget.h"
-#include "prefsdk/sdkmanager.h"
 
 using namespace PrefSDK;
 
@@ -22,7 +22,7 @@ class HexView : public AbstractView
     Q_OBJECT
     
     public:
-        explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent = 0);
+        explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent = 0);
         virtual ~HexView();
         void save(QString filename);
         void save();

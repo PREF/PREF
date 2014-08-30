@@ -14,7 +14,7 @@ LoaderList::LoaderId LoaderListModel::loader(int idx) const
 
 void LoaderListModel::validateLoaders(QHexEditData *hexeditdata)
 {
-    lua_State* l = SDKManager::state();
+    lua_State* l = LuaState::instance();
 
     lua_getglobal(l, "Sdk");
     lua_getfield(l, -1, "validateLoaders");

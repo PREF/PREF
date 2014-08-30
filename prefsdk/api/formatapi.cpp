@@ -204,7 +204,7 @@ namespace PrefSDK
 
         FormatTree *FormatTree_create(QHexEditData* hexeditdata, int64_t baseoffset)
         {
-            return new FormatTree(SDKManager::state(), hexeditdata, baseoffset);
+            return new FormatTree(LuaState::instance(), hexeditdata, baseoffset);
         }
     }
 }

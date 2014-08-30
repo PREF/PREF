@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, loadedviews, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _loaderid(loaderid)
+DisassemblerView::DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _loaderid(loaderid)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -97,7 +97,7 @@ void DisassemblerView::disassemble()
 
     this->_listing = new DisassemblerListing(this);
 
-    lua_State* l = SDKManager::state();
+    lua_State* l = LuaState::instance();
     lua_State* thread = lua_newthread(l);
 
     lua_getglobal(thread, "Sdk");

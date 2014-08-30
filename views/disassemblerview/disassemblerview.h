@@ -10,7 +10,7 @@
 #include "viewmodels/functionmodel/functionmodel.h"
 #include "viewmodels/stringoffsetmodel/stringoffsetmodel.h"
 #include "prefsdk/disassembler/loader/loaderlist.h"
-#include "prefsdk/sdkmanager.h"
+#include "prefsdk/luastate.h"
 #include "entrypointsdialog/entrypointsdialog.h"
 #include "segmentsdialog/segmentsdialog.h"
 #include "disassemblerlisting.h"
@@ -26,7 +26,7 @@ class DisassemblerView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, AbstractView::LoadedViews& loadedviews, QWidget *parent = 0);
+        explicit DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~DisassemblerView();
 
     public: /* Overriden Methods */

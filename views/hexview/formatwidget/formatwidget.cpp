@@ -31,7 +31,7 @@ FormatTree* FormatWidget::parseFormat(FormatList::FormatId formatid, qint64 base
 {
     emit workStarted();
 
-    lua_State* l = SDKManager::state();
+    lua_State* l = LuaState::instance();
     lua_State* thread = lua_newthread(l);
     FormatTree* formattree = new FormatTree(l, this->_hexedit->data(), baseoffset, this);
 

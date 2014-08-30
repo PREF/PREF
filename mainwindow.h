@@ -23,13 +23,9 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
-    private:
-        typedef QHash<QHexEditData*, AbstractView*> LoadedViews;
     
     public:
         explicit MainWindow(QWidget *parent = 0);
-        AbstractView* loadedView(QHexEditData* hexeditdata);
         bool sdkLoaded();
         ~MainWindow();
 
@@ -61,11 +57,9 @@ class MainWindow : public QMainWindow
         void on_actionSignature_DB_triggered();
         void on_actionHex_File_triggered();
 
-
     private:
         static MainWindow* _instance;
         Ui::MainWindow *ui;
-        LoadedViews _loadedviews;
         QLabel* _lblinfo;
         bool _sdkloaded;
 };

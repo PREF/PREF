@@ -29,7 +29,7 @@ void FormatWorker::run()
     if(!this->_hexeditdata || !this->_formatid)
         return;
 
-    this->_state = SDKManager::state();
+    this->_state = LuaState::instance();
     this->_thread = lua_newthread(this->_state);
 
     this->_formattree = new FormatTree(this->_state, this->_hexeditdata, this->_baseoffset);
