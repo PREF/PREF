@@ -6,7 +6,6 @@
 #include "prefsdk/prefexception.h"
 #include "prefsdk/libs/preflib/luahexeditdata.h"
 #include "prefsdk/disassembler/operand.h"
-#include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/blocks/block.h"
 #include "prefsdk/disassembler/instruction/instructioncategory.h"
 #include "prefsdk/disassembler/instruction/instructiontype.h"
@@ -37,7 +36,7 @@ namespace PrefSDK
             typedef QList<PrefSDK::Operand*> OperandList;
 
         public:
-            explicit Instruction(const DataValue& address, const DataValue& offset, DataType::Type opcodetype, QHexEditData* hexeditdata, const SymbolTable* symboltable, QObject *parent = 0);
+            explicit Instruction(const DataValue& address, const DataValue& offset, DataType::Type opcodetype, QHexEditData* hexeditdata, QObject *parent = 0);
             lua_Integer address() const;
             lua_Integer offset() const;
             lua_Integer size() const;
@@ -75,7 +74,6 @@ namespace PrefSDK
             virtual Block::Type blockType() const;
 
         private:
-            const SymbolTable* _symboltable;
             QHexEditData* _hexeditdata;
             OperandList _operands;
             QString _format;

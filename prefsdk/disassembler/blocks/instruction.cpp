@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, const SymbolTable *symboltable, QObject *parent): Block(address, parent), _symboltable(symboltable), _hexeditdata(hexeditdata), _mnemonic("???"), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
+    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, QObject *parent): Block(address, parent), _hexeditdata(hexeditdata), _mnemonic("???"), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
     {
 
     }

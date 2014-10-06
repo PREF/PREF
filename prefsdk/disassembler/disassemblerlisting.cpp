@@ -121,7 +121,7 @@ namespace PrefSDK
         if(!segment)
             throw PrefException(QString("No segment for: %1").arg(address.toString(16)));
 
-        Instruction* instruction = new Instruction(address, (address - segment->startAddress()) + segment->baseOffset(), opcodetype, this->_hexeditdata, this->_symboltable);
+        Instruction* instruction = new Instruction(address, (address - segment->startAddress()) + segment->baseOffset(), opcodetype, this->_hexeditdata);
         this->_instructions[address] = instruction;
         this->_blocks.append(instruction);
         return instruction;

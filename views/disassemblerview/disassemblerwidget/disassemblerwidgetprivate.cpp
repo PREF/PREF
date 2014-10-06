@@ -23,7 +23,7 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
     return this->_selectedblock;
 }
 
-void DisassemblerWidgetPrivate::setCurrentIndex(int idx)
+void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx)
 {
     if(idx == this->_selectedindex)
         return;
