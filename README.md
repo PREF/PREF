@@ -9,8 +9,8 @@ Software's Structure
 -----
 PREF provides at the moment:
 - Scriptable SDK (dedicated repository: https://github.com/Dax89/PrefSDK)
-- Scriptable Format Parser.
-- Scriptable Disassembler (currently broken, it will be fixed for 1.0).
+- Scriptable Format Parser with custom User Interface support (You can build your UI in QML for you format!)
+- Scriptable Disassembler Engine.
 - Signature Scanner.
 - Visual Rapprentation of the binary file (currently using Binary View, and Dot Plot).
 - String Scanner.
