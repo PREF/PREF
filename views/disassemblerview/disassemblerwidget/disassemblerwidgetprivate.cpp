@@ -24,6 +24,11 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
 
 void DisassemblerWidgetPrivate::setCurrentIndex(int idx)
 {
+    if(idx < 0)
+        idx = 0;
+    else if(idx >= this->_listing->length())
+        idx = this->_listing->length() - 1;
+
     const DisassemblerListing::BlockList& blocks = this->_listing->blocks();
     this->_selectedindex = idx;
     this->_selectedblock = blocks[idx];
