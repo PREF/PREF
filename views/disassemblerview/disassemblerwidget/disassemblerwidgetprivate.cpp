@@ -25,6 +25,9 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
 
 void DisassemblerWidgetPrivate::setCurrentIndex(int idx)
 {
+    if(idx == this->_selectedindex)
+        return;
+
     if(idx < 0)
         idx = 0;
     else if(idx >= this->_listing->length())
