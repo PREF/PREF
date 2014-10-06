@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "prefsdk/datatype.h"
+#include "prefsdk/type/datatype.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "qhexedit/qhexeditdatawriter.h"

@@ -6,14 +6,14 @@
 
 # Portable Reverse Engineering Framework
 
-QT += core gui opengl
+QT += core gui opengl quick qml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PREF
 TEMPLATE = app
 QMAKE_CXXFLAGS += -I$$PWD/include/luajit-2.0 -I$$PWD/include/sqlite -std=c++11
-LIBS += -lQt5Concurrent
+# LIBS +=
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -27,7 +27,7 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formattreeview/formattreeview.cpp \
     prefsdk/sdkmanager.cpp \
     viewmodels/fielddatamodel/fielddatamodel.cpp \
-    prefsdk/datatype.cpp \
+    prefsdk/type/datatype.cpp \
     aboutdialog.cpp \
     exportdialog.cpp \
     viewmodels/datatypesmodel/datatypesmodel.cpp \
@@ -77,27 +77,15 @@ SOURCES += main.cpp\
     prefsdk/sqlitewrapper/sqlitetransaction.cpp \
     qhexedit/qhexeditcomments.cpp \
     prefsdk/format/formattree.cpp \
-    prefsdk/api/qhexeditdataapi.cpp \
-    prefsdk/api/formatapi.cpp \
-    prefsdk/api/byteorderapi.cpp \
-    prefsdk/api/elementapi.cpp \
-    prefsdk/format/elements/elementtype.cpp \
     prefsdk/format/elements/formatelement.cpp \
     prefsdk/format/elements/fieldelement.cpp \
     prefsdk/format/elements/bitfield.cpp \
     prefsdk/format/elements/field.cpp \
     prefsdk/format/elements/fieldarray.cpp \
     prefsdk/format/elements/structure.cpp \
-    prefsdk/api/prefapi.cpp \
-    prefsdk/api/debugapi.cpp \
     prefsdk/numericlimits.cpp \
-    prefsdk/api/datatypeapi.cpp \
-    prefsdk/api/exporterapi.cpp \
     prefsdk/exporter/exporterlist.cpp \
     viewmodels/exportmodel/exportermodel.cpp \
-    prefsdk/api/prefuiapi.cpp \
-    views/hexview/optionmenu.cpp \
-    prefsdk/ui/models/tablemodel.cpp \
     qhexedit/qhexeditdatadevice.cpp \
     qhexedit/qhexeditdatareader.cpp \
     qhexedit/qhexeditdatawriter.cpp \
@@ -118,7 +106,6 @@ SOURCES += main.cpp\
     views/hexview/visualmapwidget/binarymap/viewmodes/dotplotviewmode.cpp \
     views/hexview/visualmapwidget/binarymap/viewmodes/pixelviewmode.cpp \
     views/hexview/formatwidget/formatwidget.cpp \
-    views/hexview/formatwidget/formatworker.cpp \
     views/hexview/bytecolorsdialog/bytecolorsdialog.cpp \
     views/hexview/visualmapwidget/visualmapwidget.cpp \
     viewmodels/visualmapmodel/visualmapmodel.cpp \
@@ -137,23 +124,41 @@ SOURCES += main.cpp\
     prefsdk/disassembler/blocks/instruction.cpp \
     prefsdk/disassembler/operand.cpp \
     prefsdk/disassembler/blocks/function.cpp \
-    prefsdk/api/disassemblerapi.cpp \
-    views/disassemblerview/disassemblerlisting.cpp \
-    prefsdk/disassembler/listingobject.cpp \
+    prefsdk/disassembler/disassemblerlisting.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
     viewmodels/functionmodel/functionmodel.cpp \
     prefsdk/disassembler/references/reference.cpp \
-    prefsdk/disassembler/symbol.cpp \
+    prefsdk/disassembler/symbol/symbol.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
     logwidget/logwidget.cpp \
     views/hexview/outputwidget/outputwidget.cpp \
     logwidget/logwidgethightlighter.cpp \
-    prefsdk/api/mathapi.cpp \
-    prefsdk/qt/qtlua.cpp \
-    prefsdk/qt/qluadialog.cpp \
-    prefsdk/preflib/preflib.cpp \
-    prefsdk/luastate.cpp
+    prefsdk/libs/qt/qtlua.cpp \
+    prefsdk/libs/preflib/preflib.cpp \
+    prefsdk/luastate.cpp \
+    prefsdk/debug/debugobject.cpp \
+    prefsdk/format/formatdefinition.cpp \
+    prefsdk/format/formatvalidator.cpp \
+    prefsdk/loadedviews.cpp \
+    prefsdk/prefexception.cpp \
+    prefsdk/libs/preflib/luahexeditdata.cpp \
+    prefsdk/libs/oop/oop.cpp \
+    prefsdk/exporter/exporterdefinition.cpp \
+    prefsdk/disassembler/processor/processorloader.cpp \
+    prefsdk/disassembler/processor/processordefinition.cpp \
+    prefsdk/disassembler/instruction/instructionset.cpp \
+    prefsdk/disassembler/instruction/instructioncategory.cpp \
+    prefsdk/disassembler/instruction/instructiontype.cpp \
+    prefsdk/disassembler/instruction/instructiondefinition.cpp \
+    prefsdk/disassembler/register/registerset.cpp \
+    prefsdk/disassembler/processor/processoremulator.cpp \
+    prefsdk/disassembler/symbol/symboltable.cpp \
+    prefsdk/disassembler/references/referencetable.cpp \
+    prefsdk/type/datavalue.cpp \
+    prefsdk/disassembler/references/referenceset.cpp \
+    prefsdk/format/abstracttree.cpp \
+    viewmodels/crossreferencemodel/crossreferencedelegate.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -166,7 +171,7 @@ HEADERS  += mainwindow.h \
     views/hexview/formatwidget/formattreeview/formattreeview.h \
     prefsdk/sdkmanager.h \
     viewmodels/fielddatamodel/fielddatamodel.h \
-    prefsdk/datatype.h \
+    prefsdk/type/datatype.h \
     aboutdialog.h \
     exportdialog.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
@@ -218,27 +223,15 @@ HEADERS  += mainwindow.h \
     prefsdk/sqlitewrapper/sqlitetransaction.h \
     qhexedit/qhexeditcomments.h \
     prefsdk/format/formattree.h \
-    prefsdk/api/qhexeditdataapi.h \
-    prefsdk/api/byteorderapi.h \
-    prefsdk/api/formatapi.h \
-    prefsdk/api/elementapi.h \
-    prefsdk/api/datatypeapi.h \
-    prefsdk/format/elements/elementtype.h \
     prefsdk/format/elements/formatelement.h \
     prefsdk/format/elements/fieldelement.h \
     prefsdk/format/elements/bitfield.h \
     prefsdk/format/elements/field.h \
     prefsdk/format/elements/fieldarray.h \
     prefsdk/format/elements/structure.h \
-    prefsdk/api/prefapi.h \
-    prefsdk/api/debugapi.h \
     prefsdk/numericlimits.h \
-    prefsdk/api/exporterapi.h \
     viewmodels/exportmodel/exportermodel.h \
     prefsdk/exporter/exporterlist.h \
-    prefsdk/api/prefuiapi.h \
-    views/hexview/optionmenu.h \
-    prefsdk/ui/models/tablemodel.h \
     qhexedit/qhexeditdatadevice.h \
     qhexedit/qhexeditdatareader.h \
     qhexedit/qhexeditdatawriter.h \
@@ -259,7 +252,6 @@ HEADERS  += mainwindow.h \
     views/hexview/visualmapwidget/binarymap/viewmodes/dotplotviewmode.h \
     views/hexview/visualmapwidget/binarymap/viewmodes/pixelviewmode.h \
     views/hexview/formatwidget/formatwidget.h \
-    views/hexview/formatwidget/formatworker.h \
     views/hexview/bytecolorsdialog/bytecolorsdialog.h \
     views/hexview/visualmapwidget/visualmapwidget.h \
     viewmodels/visualmapmodel/visualmapmodel.h \
@@ -278,24 +270,42 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/blocks/instruction.h \
     prefsdk/disassembler/operand.h \
     prefsdk/disassembler/blocks/function.h \
-    prefsdk/api/disassemblerapi.h \
-    views/disassemblerview/disassemblerlisting.h \
-    prefsdk/disassembler/listingobject.h \
+    prefsdk/disassembler/disassemblerlisting.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
     viewmodels/functionmodel/functionmodel.h \
     prefsdk/disassembler/references/reference.h \
-    prefsdk/disassembler/symbol.h \
+    prefsdk/disassembler/symbol/symbol.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     qhexedit/sparserangemap.h \
     logwidget/logwidget.h \
     views/hexview/outputwidget/outputwidget.h \
     logwidget/logwidgethightlighter.h \
-    prefsdk/api/mathapi.h \
-    prefsdk/qt/qtlua.h \
-    prefsdk/qt/qluadialog.h \
-    prefsdk/preflib/preflib.h \
-    prefsdk/luastate.h
+    prefsdk/libs/qt/qtlua.h \
+    prefsdk/libs/preflib/preflib.h \
+    prefsdk/luastate.h \
+    prefsdk/debug/debugobject.h \
+    prefsdk/format/formatdefinition.h \
+    prefsdk/format/formatvalidator.h \
+    prefsdk/loadedviews.h \
+    prefsdk/prefexception.h \
+    prefsdk/libs/preflib/luahexeditdata.h \
+    prefsdk/libs/oop/oop.h \
+    prefsdk/exporter/exporterdefinition.h \
+    prefsdk/disassembler/processor/processorloader.h \
+    prefsdk/disassembler/processor/processordefinition.h \
+    prefsdk/disassembler/instruction/instructionset.h \
+    prefsdk/disassembler/instruction/instructioncategory.h \
+    prefsdk/disassembler/instruction/instructiontype.h \
+    prefsdk/disassembler/instruction/instructiondefinition.h \
+    prefsdk/disassembler/register/registerset.h \
+    prefsdk/disassembler/processor/processoremulator.h \
+    prefsdk/disassembler/symbol/symboltable.h \
+    prefsdk/disassembler/references/referencetable.h \
+    prefsdk/type/datavalue.h \
+    prefsdk/disassembler/references/referenceset.h \
+    prefsdk/format/abstracttree.h \
+    viewmodels/crossreferencemodel/crossreferencedelegate.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

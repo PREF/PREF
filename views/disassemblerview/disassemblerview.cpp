@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _loaderid(loaderid)
+DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _loader(loader)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -22,14 +22,14 @@ DisassemblerView::DisassemblerView(LoaderList::LoaderId loaderid, QHexEditData *
     this->_toolbar->addSeparator();
     this->_actgoto = this->_toolbar->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
 
-    //this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
+    this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
+    ui->tvStrings->setModel(this->_stringrefs);
 
     connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
     connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
 
     this->createListingMenu();
     this->createFunctionsMenu();
-    this->disassemble();
 }
 
 DisassemblerView::~DisassemblerView()
@@ -67,8 +67,6 @@ void DisassemblerView::createListingMenu()
     this->_listingmenu = new QMenu();
 
     this->_actcrossreferences = this->_listingmenu->addAction(QIcon(":/misc_icons/res/crossreference.png"), "Cross Refernces");
-    this->_listingmenu->addSeparator();
-    this->_actjumptoaddress = this->_listingmenu->addAction(QIcon(":/action_icons/res/goto.png"),"Jump to Address");
     this->_acthexdump = this->_listingmenu->addAction(QIcon(":/misc_icons/res/hex.png"), "Hex Dump");
     this->_listingmenu->addSeparator();
 
@@ -76,7 +74,7 @@ void DisassemblerView::createListingMenu()
     this->_actcopyaddress = copymenu->addAction("Address");
     this->_actcopylisting = copymenu->addAction("Listing");
 
-    connect(this->_actjumptoaddress, SIGNAL(triggered()), this, SLOT(onListingMenuJumpToAddressTriggered()));
+    connect(this->_actcrossreferences, SIGNAL(triggered()), this, SLOT(onListingMenuCrossReferencesTriggered()));
     connect(this->_acthexdump, SIGNAL(triggered()), this, SLOT(onListingMenuHexDumpTriggered()));
 }
 
@@ -95,27 +93,9 @@ void DisassemblerView::disassemble()
     if(!this->_hexeditdata)
         return;
 
-    this->_listing = new DisassemblerListing(this);
-
-    lua_State* l = LuaState::instance();
-    lua_State* thread = lua_newthread(l);
-
-    lua_getglobal(thread, "Sdk");
-    lua_getfield(thread, -1, "disassembleData");
-    lua_pushlightuserdata(thread, this->_listing);
-    lua_pushlightuserdata(thread, this->_hexeditdata);
-    lua_pushstring(thread, this->_loaderid);
-    int res = lua_resume(thread, 3);
-
-    if(res)
-    {
-        DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(thread, -1)));
-        lua_pop(thread, 2);
-    }
-    else
-        lua_pop(thread, 1);
-
-    lua_pop(l, 1);
+    this->_listing = new DisassemblerListing(this->_hexeditdata, this);
+    this->_loader->callMap(this->_listing, this->_hexeditdata, ui->logWidget);
+    this->_loader->disassemble(this->_hexeditdata);
     this->displayDisassembly();
 }
 
@@ -131,51 +111,74 @@ void DisassemblerView::on_functionList_customContextMenuRequested(const QPoint &
 
 void DisassemblerView::onFunctionsMenuXRefsTriggered()
 {
-    //QItemSelectionModel* model = ui->tvFunctions->selectionModel();
-    //QModelIndex index = model->currentIndex();
+    QItemSelectionModel* model = ui->functionList->selectionModel();
+    QModelIndex index = model->currentIndex();
 
-    //if(index.isValid())
-    //{
-        //DisassembledInstruction::Ptr func = this->_disasmlisting->function(index.row());
-
-        //CrossReferenceDialog crd(func, this->_disasmlisting);
-        //int res = crd.exec();
-
-        //if(res == CrossReferenceDialog::Accepted)
-            //ui->disassemblerWidget->gotoVA(crd.instruction().VirtualAddress);
-    //}
-}
-
-void DisassemblerView::onListingMenuJumpToAddressTriggered()
-{
-    const DisassemblerWidget::ListingItem& listingitem = ui->disassemblerWidget->selectedItem();
-
-    if(listingitem.itemType() != DisassemblerWidget::ListingItem::Reference)
-        return;
-
-    const DisassemblerListing::ReferenceSet& references = listingitem.references();
-
-    if(references.count() == 1)
+    if(index.isValid())
     {
-        Reference* r = (*references.begin());
-        ui->disassemblerWidget->gotoAddress(r->srcAddress());
+        CrossReferenceDialog crd(reinterpret_cast<Function*>(index.internalPointer()), this->_listing);
+        int res = crd.exec();
+
+        if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
+            ui->disassemblerWidget->jumpTo(crd.selectedBlock());
     }
 }
 
-void DisassemblerView::onListingMenuHexDumpTriggered()
+void DisassemblerView::onListingMenuCrossReferencesTriggered()
 {
-    const DisassemblerWidget::ListingItem& listingitem = ui->disassemblerWidget->selectedItem();
+    ReferenceTable* referencetable = this->_listing->referenceTable();
+    Block* b = ui->disassemblerWidget->selectedBlock();
 
-    if(listingitem.itemType() != DisassemblerWidget::ListingItem::Listing)
+    if(!referencetable->isReferenced(b))
         return;
 
-    ListingObject* listingobj = listingitem.listingObject();
+    ReferenceSet* refset = nullptr;
 
-    if(listingobj->objectType() != ListingTypes::Instruction)
-        return;
+    if(b->blockType() == Block::ReferenceBlock)
+        refset = qobject_cast<ReferenceSet*>(b);
+    else
+        refset = referencetable->references(b);
 
-    Instruction* instruction = qobject_cast<Instruction*>(listingobj);
-    ui->hexEdit->setSelectionRange(instruction->offset(), instruction->size());
+    QList<Reference*> references = refset->referenceList();
+    CrossReferenceDialog crd(refset, references, this->_listing);
+    int res = crd.exec();
+
+    if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
+        ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+}
+
+void DisassemblerView::onListingMenuHexDumpTriggered()
+{    
+    Block* b = ui->disassemblerWidget->selectedBlock();
+
+    switch(b->blockType())
+    {
+        case Block::SegmentBlock:
+        {
+            Segment* s = qobject_cast<Segment*>(b);
+            ui->hexEdit->setSelectionRange(s->baseOffset().compatibleValue<qint64>(), s->sizeValue().compatibleValue<qint64>());
+            break;
+        }
+
+        case Block::FunctionBlock:
+        {
+            Segment* s = this->_listing->findSegment(b);
+            Function* f = qobject_cast<Function*>(b);
+            ui->hexEdit->setSelectionRange(((f->startAddress() - s->startAddress()) + s->baseOffset()).compatibleValue<qint64>(), f->sizeValue().compatibleValue<qint64>());
+            break;
+        }
+
+        case Block::InstructionBlock:
+        {
+            Instruction* i = qobject_cast<Instruction*>(b);
+            ui->hexEdit->setSelectionRange(i->offsetValue().compatibleValue<qint64>(), i->sizeValue().compatibleValue<qint64>());
+            break;
+        }
+
+        default:
+            return;
+    }
+
     ui->tabWidget->setCurrentIndex(1);
 }
 
@@ -191,24 +194,11 @@ void DisassemblerView::displayDisassembly()
     for(int i = 0; i < this->_functionmodel->columnCount(); i++)
         ui->functionList->resizeColumnToContents(i);
 
-    /* Go to the first entry point */
-    for(int i = 0; i < this->_listing->segmentsCount(); i++)
-    {
-        Segment* segment = this->_listing->segment(i);
-
-        if((segment->type() != SegmentTypes::Code) || (!segment->entryPointsCount()))
-            continue;
-
-        Function* func = segment->entryPoint(0);
-        ui->disassemblerWidget->selectItem(func);
-    }
-
     /* String Reference Part */
-    //this->_stringrefs->setListing(this->_disasmlisting_old);
+    //this->_stringrefs->setListing(this->_listing);
 
     /* DataMap Page */
-    //ui->dataMapView->setListing(this->_disasmlisting_old);
-    //ui->dataMapView->setHexEditData(this->_hexeditdata)
+    //ui->dataMapView->setListing(this->_listing);
 }
 
 void DisassemblerView::showEntryPoints()
@@ -228,7 +218,7 @@ void DisassemblerView::gotoFunction()
     QItemSelectionModel* selectionmodel = ui->functionList->selectionModel();
 
     if(selectionmodel->hasSelection())
-        ui->disassemblerWidget->selectItem(reinterpret_cast<Function*>(selectionmodel->selectedIndexes()[0].internalPointer()));
+        ui->disassemblerWidget->jumpTo(reinterpret_cast<Function*>(selectionmodel->selectedIndexes()[0].internalPointer()));
 }
 
 void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)
@@ -236,5 +226,5 @@ void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    ui->disassemblerWidget->selectItem(reinterpret_cast<Function*>(index.internalPointer()));
+    ui->disassemblerWidget->jumpTo(reinterpret_cast<Function*>(index.internalPointer()));
 }

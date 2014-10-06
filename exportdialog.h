@@ -21,7 +21,7 @@ class ExportDialog : public QDialog
         explicit ExportDialog(QHexEdit* hexedit, QWidget *parent = 0);
         ~ExportDialog();
         void setFixedRange(qint64 start, qint64 end);
-        const ExporterList::Exporter& selectedExporter() const;
+        ExporterDefinition* selectedExporter() const;
         const QString& fileName() const;
         quint64 startOffset() const;
         quint64 endOffset() const;
@@ -39,7 +39,7 @@ class ExportDialog : public QDialog
     private:
         Ui::ExportDialog *ui;
         ExporterModel* _exportmodel;
-        ExporterList::Exporter _selexporter;
+        ExporterDefinition* _selexporter;
         QHexEdit* _hexedit;
         quint64 _startoffset;
         quint64 _endoffset;

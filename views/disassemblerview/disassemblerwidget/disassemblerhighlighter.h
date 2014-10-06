@@ -3,9 +3,9 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "views/disassemblerview/disassemblerlisting.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
+#include "prefsdk/disassembler/blocks/block.h"
 #include "prefsdk/disassembler/blocks/instruction.h"
-#include "prefsdk/disassembler/listingobject.h"
 
 using namespace PrefSDK;
 
@@ -20,8 +20,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         };
 
     public:
-        explicit DisassemblerHighlighter(QTextDocument *parent, ListingObject* listingobj);
-        explicit DisassemblerHighlighter(QTextDocument *parent, const DisassemblerListing::ReferenceSet& references);
+        explicit DisassemblerHighlighter(QTextDocument *parent, Block* block);
 
     private:
         void generateHighlighters();
@@ -37,8 +36,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         virtual void highlightBlock(const QString &text);
 
     private:
-        ListingObject* _listingobj;
-        DisassemblerListing::ReferenceSet _references;
+        Block* _block;
         QTextCharFormat _segmentformat;
         QTextCharFormat _segmentkwformat;
         QTextCharFormat _functionformat;

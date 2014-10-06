@@ -45,6 +45,7 @@ class StringsModel : public QAbstractItemModel
         OffsetList _offsetlist;
         StringMap _strings;
         QHexEditDataReader* _reader;
+        QFont _monospacefont;
 };
 
 #endif // STRINGSMODEL_H

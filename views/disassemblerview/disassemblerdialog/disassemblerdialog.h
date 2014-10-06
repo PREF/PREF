@@ -21,7 +21,7 @@ class DisassemblerDialog : public QDialog
     public:
         explicit DisassemblerDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
         bool hasLoaders() const;
-        LoaderList::LoaderId selectedLoader() const;
+        ProcessorLoader *selectedLoader() const;
         ~DisassemblerDialog();
 
     private slots:
@@ -30,7 +30,6 @@ class DisassemblerDialog : public QDialog
 
     private:
         Ui::DisassemblerDialog *ui;
-        LoaderList::LoaderId _selectedloader;
         LoaderListModel* _loaderlistmodel;
 };
 

@@ -8,6 +8,7 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *lab
     ui->vSplitter->setStretchFactor(0, 1);
     ui->hexEdit->setData(hexeditdata);
     ui->formatWidget->setLogWidget(ui->tabOutput->logWidget());
+    ui->tabView->tabBar()->hide();
 
     this->_signaturecolor = QColor(0xFF, 0x8C, 0x8C);
 
@@ -35,7 +36,6 @@ void HexView::save(QString filename)
 
 HexView::~HexView()
 {
-    FormatList::removeLoadedFormat(this->_hexeditdata);
     delete ui;
 }
 
@@ -116,7 +116,7 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->formatWidget, SIGNAL(parseStarted()), this, SLOT(onFormatParseStarted()));
-    connect(ui->formatWidget, SIGNAL(parseFinished(FormatTree*)), this, SLOT(onFormatParseFinished(FormatTree*)));
+    connect(ui->formatWidget, SIGNAL(parseFinished(FormatTree*,QWidget*)), this, SLOT(onFormatParseFinished(FormatTree*,QWidget*)));
 }
 
 void HexView::selectPage(QWidget *page)
@@ -165,42 +165,34 @@ void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
 void HexView::onFormatParseStarted()
 {
     ui->tabOutput->logWidget()->clear();
-    this->disableFormatButton();
+    this->_tbformat->setEnabled(false);
 }
 
-void HexView::onFormatParseFinished(FormatTree *formattree)
+void HexView::onFormatParseFinished(FormatTree *formattree, QWidget *formatview)
 {
     this->_tbformat->setEnabled(true);
 
-    if(formattree->isEmpty())
-    {
-        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
-        this->_tbformat->setMenu(nullptr);
+    ui->tabView->tabBar()->hide();
+    ui->tabView->setCurrentIndex(0);
 
+    if(ui->tabView->count() > 1)
+        ui->tabView->removeTab(1);
+
+    if(!formattree || formattree->isEmpty())
+    {
         ui->formatWidget->resetData();
+
         this->selectPage(ui->tabOutput);
         return;
     }
 
-    FormatList::LoadedFormat& loadedformat = FormatList::loadedFormat(this->_hexeditdata);
-
-    if(loadedformat.optionsCount() > 0)
+    if(formattree && formatview)
     {
-        this->_tbformat->setPopupMode(QToolButton::MenuButtonPopup);
-        this->_tbformat->setMenu(new OptionMenu(LuaState::instance(), ui->hexEdit, loadedformat));
+        ui->tabView->addTab(formatview, "Format View");
+        ui->tabView->tabBar()->setVisible(true);
     }
     else
-    {
-        this->_tbformat->setPopupMode(QToolButton::DelayedPopup);
-        this->_tbformat->setMenu(nullptr);
-    }
-
-    this->selectPage(ui->formatWidget);
-}
-
-void HexView::disableFormatButton()
-{
-    this->_tbformat->setEnabled(false);
+        ui->tabView->tabBar()->setVisible(false);
 }
 
 void HexView::onWorkStarted()

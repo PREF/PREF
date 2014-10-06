@@ -1,19 +1,8 @@
 #include "entrypointsmodel.h"
 
-EntryPointsModel::EntryPointsModel(DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
+EntryPointsModel::EntryPointsModel(DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _entrypoints(listing->entryPoints()), _listing(listing)
 {
-    for(int i = 0; i < listing->segmentsCount(); i++)
-    {
-        Segment* segment = listing->segment(i);
 
-        for(int j = 0; j < segment->entryPointsCount(); j++)
-        {
-            Function* f = segment->entryPoint(j);
-            this->_entrypoints.append(f);
-        }
-    }
-
-    std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &EntryPointsModel::sortByAddress);
 }
 
 bool EntryPointsModel::sortByAddress(Function *f1, Function *f2)
@@ -63,13 +52,13 @@ QVariant EntryPointsModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {
             case 0:
-                return QString("%1").arg(f->startAddress(), 8, 16, QLatin1Char('0')).toUpper();
+                return f->startAddress().toString(16);
 
             case 1:
-                return this->_listing->symbolTable()[f->startAddress()]->name();
+                return this->_listing->symbolTable()->get(f->startAddress());
 
             case 2:
-                return f->segmentName();
+                return this->_listing->findSegment(f)->name();
 
             default:
                 break;

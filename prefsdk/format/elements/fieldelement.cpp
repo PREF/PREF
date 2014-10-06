@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    FieldElement::FieldElement(lua_State *l, DataType::Type datatype, uint64_t offset, const QString& name, const QUuid& parentid, ElementPool &elementpool, QHexEditData* hexeditdata, QObject *parent): FormatElement(l, offset, name, parentid, elementpool, hexeditdata, parent), _datatype(datatype)
+    FieldElement::FieldElement(DataType::Type datatype, quint64 offset, const QString& name, const QUuid& parentid, AbstractTree *formattree, QObject *parent): FormatElement(offset, name, parentid, formattree, parent), _datatype(datatype)
     {
 
     }
@@ -22,7 +22,7 @@ namespace PrefSDK
         return DataType::isInteger(this->_datatype);
     }
 
-    uint64_t FieldElement::size() const
+    quint64 FieldElement::size() const
     {
         return DataType::sizeOf(this->_datatype);
     }

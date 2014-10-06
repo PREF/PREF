@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1025</width>
-    <height>693</height>
+    <width>1015</width>
+    <height>683</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5" stretch="0">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -31,7 +31,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="QWidget" name="layoutWidget_2">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1,0">
        <item>
         <widget class="QWidget" name="tbContainer" native="true"/>
@@ -41,32 +41,55 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <widget class="QWidget" name="layoutWidget_3">
-          <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1">
-           <item>
-            <widget class="BinaryNavigator" name="binaryNavigator" native="true">
-             <property name="minimumSize">
-              <size>
-               <width>128</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>128</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QHexEdit" name="hexEdit" native="true">
-             <property name="contextMenuPolicy">
-              <enum>Qt::CustomContextMenu</enum>
-             </property>
-            </widget>
-           </item>
-          </layout>
+         <widget class="QTabWidget" name="tabView">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tabHexView">
+           <attribute name="title">
+            <string>Hex View</string>
+           </attribute>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="BinaryNavigator" name="binaryNavigator" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>128</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>128</width>
+                <height>16777215</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QHexEdit" name="hexEdit" native="true">
+              <property name="contextMenuPolicy">
+               <enum>Qt::CustomContextMenu</enum>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
          <widget class="DataTypesWidget" name="dataTypesWidget" native="true">
           <property name="minimumSize">

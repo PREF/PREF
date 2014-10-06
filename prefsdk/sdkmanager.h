@@ -6,8 +6,9 @@
 #include <cstdint>
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/signatures/signaturedatabase.h"
-#include "prefsdk/qt/qtlua.h"
-#include "prefsdk/preflib/preflib.h"
+#include "prefsdk/libs/oop/oop.h"
+#include "prefsdk/libs/qt/qtlua.h"
+#include "prefsdk/libs/preflib/preflib.h"
 #include "prefsdk/sqlitewrapper/sqlite.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/format/formattree.h"
@@ -28,14 +29,15 @@ namespace PrefSDK
 
         public:
             static lua_State* initializeLua();
-            static void registerMessageHandler();
             static bool loadSDK();
             static void unloadSDK();
+            static QString sdkVersion();
 
         private:
             static const char* SDK_TABLE;
             static const QString SDK_DIR;
             static const QString MAIN_SCRIPT;
+            static PrefLib::SdkVersion _sdkversion;
     };
 }
 

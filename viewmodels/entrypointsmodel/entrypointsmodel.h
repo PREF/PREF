@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
-#include "views/disassemblerview/disassemblerlisting.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
 
 using namespace PrefSDK;
 
@@ -29,8 +29,8 @@ class EntryPointsModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
+        const DisassemblerListing::EntryPointList& _entrypoints;
         DisassemblerListing* _listing;
-        Segment::EntryPointList _entrypoints;
 };
 
 #endif // ENTRYPOINTSMODEL_H

@@ -11,7 +11,6 @@
 #include "logwidget/logwidget.h"
 #include "formattreeview/formattreeview.h"
 #include "formatsdialog/formatsdialog.h"
-#include "formatworker.h"
 
 using namespace PrefSDK;
 
@@ -33,11 +32,7 @@ class FormatWidget : public WorkerTab
     public slots:
         void loadFormat();
 
-    private:
-        FormatTree* parseFormat(FormatList::FormatId formatid, qint64 baseoffset);
-
     private slots:
-        void onParsingFinished();
         void onSetBackColor(FormatElement *formatelement);
         void onRemoveBackColor(FormatElement *formatelement);
         void onFormatObjectSelected(FormatElement* formatelement);
@@ -46,15 +41,14 @@ class FormatWidget : public WorkerTab
 
     signals:
         void parseStarted();
-        void parseFinished(FormatTree* formattree);
+        void parseFinished(FormatTree* formattree, QWidget* formatview);
 
     private:
         Ui::FormatWidget *ui;
-        FormatWorker _worker;
         FormatModel* _formatmodel;
         QHexEdit* _hexedit;
         LogWidget* _logwidget;
-        FormatList::FormatId _formatid;
+        FormatDefinition* _formatdefinition;
 };
 
 #endif // FORMATWIDGET_H

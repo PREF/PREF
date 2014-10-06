@@ -2,7 +2,7 @@
 
 SegmentsModel::SegmentsModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
-
+    this->_segments = listing->segments().values();
 }
 
 int SegmentsModel::columnCount(const QModelIndex &) const
@@ -31,9 +31,6 @@ QVariant SegmentsModel::headerData(int section, Qt::Orientation orientation, int
             case 4:
                 return "Type";
 
-            case 5:
-                return "N. Functions";
-
             default:
                 break;
         }
@@ -49,7 +46,7 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        Segment* segment = this->_listing->segment(index.row());
+        Segment* segment = this->_segments[index.row()];
 
         switch(index.column())
         {
@@ -57,19 +54,16 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
                 return segment->name();
 
             case 1:
-                return QString("%1").arg(segment->startAddress(), 8, 16, QLatin1Char('0')).toUpper();
+                return segment->startAddress().toString(16);
 
             case 2:
-                return QString("%1").arg(segment->endAddress(), 8, 16, QLatin1Char('0')).toUpper();
+                return segment->endAddress().toString(16);
 
             case 3:
-                return QString("%1").arg(segment->baseOffset(), 8, 16, QLatin1Char('0')).toUpper();
+                return segment->baseOffset().toString(16);
 
             case 4:
-                return (segment->type() == SegmentTypes::Code ? "Code" : "Data");
-
-            case 5:
-                return QString::number(segment->functionsCount());
+                return (segment->type() == Segment::Code ? "Code" : "Data");
 
             default:
                 break;
@@ -96,7 +90,7 @@ QModelIndex SegmentsModel::parent(const QModelIndex &) const
 
 int SegmentsModel::rowCount(const QModelIndex &) const
 {
-    return this->_listing->segmentsCount();
+    return this->_segments.count();
 }
 
 Qt::ItemFlags SegmentsModel::flags(const QModelIndex &index) const

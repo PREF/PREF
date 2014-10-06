@@ -4,8 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/disassembler/listingobject.h"
-#include "views/disassemblerview/disassemblerlisting.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
 #include "disassemblerhighlighter.h"
 
 using namespace PrefSDK;
@@ -15,59 +14,32 @@ class DisassemblerWidgetPrivate: public QWidget
     Q_OBJECT
 
     public:
-        class ListingItem
-        {
-            public:
-                enum Type { Undefined, Listing, Reference };
-
-            public:
-                ListingItem(): _itemtype(ListingItem::Undefined), _listingobj(nullptr) { }
-                ListingItem(ListingObject* listingobj): _itemtype(ListingItem::Listing), _listingobj(listingobj) { }
-                ListingItem(const DisassemblerListing::ReferenceSet& references): _itemtype(ListingItem::Reference), _listingobj(nullptr), _references(references) { }
-                const DisassemblerListing::ReferenceSet& references() const { return this->_references; }
-                ListingObject* listingObject() const { return this->_listingobj; }
-                ListingItem::Type itemType() const { return this->_itemtype; }
-                bool isValid() const { return this->_itemtype != ListingItem::Undefined; }
-
-            public:
-                static const ListingItem& invalid() { return ListingItem::_invalidobj; }
-
-            private:
-                static ListingItem _invalidobj;
-
-            private:
-                ListingItem::Type _itemtype;
-                ListingObject* _listingobj;
-                DisassemblerListing::ReferenceSet _references;
-        };
-
-    public:
         explicit DisassemblerWidgetPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent = 0);
-        const ListingItem& selectedItem();
+        qint64 currentIndex() const;
         void setCurrentIndex(int idx);
+        Block* selectedBlock() const;
         void setListing(DisassemblerListing* listing);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);
         void setWheelScrollLines(int c);
-        void selectItem(ListingObject* listingobj);
-        void gotoAddress(uint64_t address);
-        int currentIndex() const;
+        void jumpTo(Block* block);
+        void jumpTo(const DataValue &address);
 
     private:
+        Block* findBlock(qint64 idx);
         QString functionType(Function *f) const;
-        QString displayReferences(const QString& prefix, const DisassemblerListing::ReferenceSet& references) const;
+        QString displayReferences(const QString& prefix, const ReferenceSet *referenceset) const;
         QString emitSegment(Segment* segment);
         QString emitFunction(Function *func);
         QString emitInstruction(Instruction *instruction);
-        QString emitReferences(QFontMetrics &fm, const DisassemblerListing::ReferenceSet& references, int &x);
-        int drawAddress(QPainter &painter, QFontMetrics &fm, ListingObject* listingobj, int y);
-        int calcAddressWidth(QFontMetrics &fm, Reference *reference);
-        void elaborateListing();
-        void gotoFirstEntryPoint();
+        QString emitReference(ReferenceSet* referenceset);
+        int visibleStart(QRect r = QRect()) const;
+        int visibleEnd(QRect r = QRect()) const;
+        int drawAddress(QPainter &painter, QFontMetrics &fm, Block* block, int y);
         void drawLineBackground(QPainter& painter, qint64 idx, int y);
         void drawLine(QPainter& painter, QFontMetrics& fm, qint64 idx, int y);
-        void adjust();
         void ensureVisible(int idx);
+        void adjust();
 
     private slots:
         void onVScrollBarValueChanged(int);
@@ -79,17 +51,20 @@ class DisassemblerWidgetPrivate: public QWidget
         void mousePressEvent(QMouseEvent* e);
 
     private:
-        DisassemblerListing* _listing;
-        QVector<ListingItem> _listingitems;
-        QHash<ListingObject*, int> _listingindexes;
         QScrollArea* _scrollarea;
         QScrollBar* _vscrollbar;
+        DisassemblerListing* _listing;
         QColor _addressforecolor;
         QColor _sellinecolor;
+        Block* _selectedblock;
         int _wheelscrolllines;
         int _charwidth;
         int _charheight;
-        int _currentindex;
+        qint64 _selectedindex;
+
+    private:
+        Segment* _currentsegment;
+        Function* _currentfunction;
 };
 
 #endif // DISASSEMBLERWIDGET_H

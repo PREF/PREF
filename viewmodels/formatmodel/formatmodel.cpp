@@ -29,7 +29,7 @@ void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::Ac
     qint64 startoffset = offset;
     qint64 endoffset = offset + length;
 
-    for(uint64_t i = 0; i < this->_formattree->structureCount(); i++)
+    for(quint64 i = 0; i < this->_formattree->structureCount(); i++)
     {
         Structure* s = this->_formattree->structure(i);
 
@@ -99,18 +99,18 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                 return formatelement->info();
         }
 
-        if(index.column() == 3 && ((formatelement->elementType() == ElementType::Field || formatelement->elementType() == ElementType::FieldArray) || (formatelement->elementType() == ElementType::BitField)))
+        if(index.column() == 3 && ((formatelement->elementType() == FormatElement::FieldType || formatelement->elementType() == FormatElement::FieldArrayType) || (formatelement->elementType() == FormatElement::BitFieldType)))
             return formatelement->displayValue();
     }
     else if(role == Qt::DecorationRole)
     {
         if(index.column() == 0)
         {
-            if(formatelement->elementType() == ElementType::Structure)
+            if(formatelement->elementType() == FormatElement::StructureType)
                 return this->_icostruct;
-            if((formatelement->elementType() == ElementType::Field) || (formatelement->elementType() == ElementType::FieldArray))
+            if((formatelement->elementType() == FormatElement::FieldType) || (formatelement->elementType() == FormatElement::FieldArrayType))
                 return this->_icofield;
-            else if(formatelement->elementType() == ElementType::BitField)
+            else if(formatelement->elementType() == FormatElement::BitFieldType)
                 return this->_icobitfield;
         }
     }
@@ -123,14 +123,14 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
     {
         if(index.column() == 0)
             return QColor(Qt::darkBlue);
-        else if(((index.column() == 3) && ((formatelement->elementType() == ElementType::Field) || (formatelement->elementType() == ElementType::FieldArray) || (formatelement->elementType() == ElementType::BitField))) || (index.column() == 4))
+        else if(((index.column() == 3) && ((formatelement->elementType() == FormatElement::FieldType) || (formatelement->elementType() == FormatElement::FieldArrayType) || (formatelement->elementType() == FormatElement::BitFieldType))) || (index.column() == 4))
         {
             if(index.column() == 4)
                 return QColor(Qt::darkGreen);
 
             if(index.column() == 3)
             {
-                if(formatelement->elementType() == ElementType::Field)
+                if(formatelement->elementType() == FormatElement::FieldType)
                 {
                     FieldElement* fieldelement = qobject_cast<FieldElement*>(formatelement);
 
@@ -146,7 +146,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                     if(fieldelement->dataType() == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
-                else if(formatelement->elementType() == ElementType::FieldArray)
+                else if(formatelement->elementType() == FormatElement::FieldArrayType)
                 {
                     FieldArray* fa = qobject_cast<FieldArray*>(formatelement);
 
@@ -155,7 +155,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                     else if(fa->itemType() == DataType::Blob)
                         return QColor(Qt::darkGray);
                 }
-                else if(formatelement->elementType() == ElementType::BitField)
+                else if(formatelement->elementType() == FormatElement::BitFieldType)
                     return QColor(Qt::darkRed);
             }
         }
@@ -170,7 +170,7 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
     {
         FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-        if((formatelement->elementType() == ElementType::Field) && (index.column() == 3))
+        if((formatelement->elementType() == FormatElement::FieldType) && (index.column() == 3))
         {
             FieldElement* fieldelement = qobject_cast<FieldElement*>(formatelement);
             QString currvalue = fieldelement->displayValue();
@@ -203,21 +203,21 @@ void FormatModel::fetchMore(const QModelIndex &parent)
 {
     if(parent.isValid())
     {
-        uint64_t count = 0;
+        quint64 count = 0;
         FormatElement* formatelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
         formatelement->parseChildren();
 
         switch(formatelement->elementType())
         {
-            case ElementType::Structure:
+            case FormatElement::StructureType:
                 count = qobject_cast<Structure*>(formatelement)->fieldCount();
                 break;
 
-            case ElementType::FieldArray:
+            case FormatElement::FieldArrayType:
                 count = qobject_cast<FieldArray*>(formatelement)->itemCount();
                 break;
 
-            case ElementType::Field:
+            case FormatElement::FieldType:
                 count = qobject_cast<Field*>(formatelement)->bitFieldCount();
                 break;
 
@@ -306,11 +306,11 @@ int FormatModel::rowCount(const QModelIndex &parent) const
 
         if(!parentelement->isDynamic())
         {
-            if(parentelement->elementType() == ElementType::Structure)
+            if(parentelement->elementType() == FormatElement::StructureType)
                 return qobject_cast<Structure*>(parentelement)->fieldCount();
-            else if(parentelement->elementType() == ElementType::Field)
+            else if(parentelement->elementType() == FormatElement::FieldType)
                 return qobject_cast<Field*>(parentelement)->bitFieldCount();
-            else if(parentelement->elementType() == ElementType::FieldArray)
+            else if(parentelement->elementType() == FormatElement::FieldArrayType)
             {
                 FieldArray* fieldarray = qobject_cast<FieldArray*>(parentelement);
 
@@ -331,7 +331,7 @@ Qt::ItemFlags FormatModel::flags(const QModelIndex &index) const
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if((index.column() == 3) && (formatelement->elementType() == ElementType::Field))
+    if((index.column() == 3) && (formatelement->elementType() == FormatElement::FieldType))
         flags |= Qt::ItemIsEditable;
 
     return flags;

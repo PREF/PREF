@@ -2,17 +2,38 @@
 
 namespace PrefSDK
 {
-    QList<ExporterList::Exporter> ExporterList::_exporters;
-    lua_State* ExporterList::_state = nullptr;
-
-    const QString ExporterList::EXPORTER_MAIN_FILE = "main.lua";
+    ExporterList* ExporterList::_instance = nullptr;
+    const QString ExporterList::EXPORTER_MAIN_FILE = "definition.lua";
     const QString ExporterList::EXPORTERS_DIR = "exporters";
 
-    ExporterList::ExporterList()
+    ExporterList::ExporterList(QObject *parent): QObject(parent)
     {
+
     }
 
-    void ExporterList::loadExporters(lua_State *l, QString dir)
+    ExporterList *ExporterList::instance()
+    {
+        return ExporterList::_instance;
+    }
+
+    void ExporterList::load()
+    {
+        if(ExporterList::_instance)
+            return;
+
+        ExporterList::_instance = new ExporterList();
+
+        QDir d(qApp->applicationDirPath());
+        QString exporterspath = d.absoluteFilePath(ExporterList::EXPORTERS_DIR);
+
+        if(!QDir(exporterspath).exists())
+            return;
+
+        lua_State* l = LuaState::instance();
+        ExporterList::_instance->load(l, exporterspath);
+    }
+
+    void ExporterList::load(lua_State *l, QString dir)
     {
         QDir d(dir);
         QFileInfoList dirs = d.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
@@ -27,54 +48,31 @@ namespace PrefSDK
 
                 if(res != 0)
                 {
-                    DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
+                    throw PrefException(QString("ExporterList::load(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
                     lua_pop(l, 1);
                 }
+
+                if(!QtLua::isQObject(l, -1))
+                {
+                    throw PrefException(QString("ExporterList::load(): Got '%1'' instead of exporter type").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
+                    lua_pop(l, 1);
+                    continue;
+                }
+
+                ExporterDefinition* exporterdefinition = qobject_cast<ExporterDefinition*>(QtLua::toQObject(l, -1));
+                lua_pop(l, 1);
+
+                if(this->_exportermap.contains(exporterdefinition->id()))
+                {
+                    throw PrefException(QString("ExporterList::load(): Exporter '%1' already loaded").arg(exporterdefinition->name()));
+                    continue;
+                }
+
+                int idx = this->_exporters.length();
+                this->_exporters.append(exporterdefinition);
+                this->_exportermap[exporterdefinition->id()] = idx;
             }
         }
-    }
-
-    void ExporterList::load(lua_State *l)
-    {
-        ExporterList::_state = l;
-
-        QDir d(qApp->applicationDirPath());
-        QString exporterspath = d.absoluteFilePath(ExporterList::EXPORTERS_DIR);
-
-        if(!QDir(exporterspath).exists())
-            return;
-
-        ExporterList::loadExporters(l, exporterspath);
-    }
-
-    void ExporterList::registerExporter(const QString &name, const QString &description, const QString &author, const QString &version, ExporterList::ExporterId exporterid)
-    {
-        ExporterList::_exporters.append(Exporter(name, description, author, version, exporterid));
-    }
-
-    void ExporterList::exportData(ExporterList::ExporterId exporterid, const QString& filename,  QHexEditData *hexeditdatain, quint64 startoffset, quint64 endoffset)
-    {
-        QHexEditData* hexeditdataout = QHexEditData::fromMemory(QByteArray());
-
-        lua_getglobal(ExporterList::_state, "Sdk");
-        lua_getfield(ExporterList::_state, -1, "exportData");
-        lua_pushstring(ExporterList::_state, exporterid);
-        lua_pushlightuserdata(ExporterList::_state, hexeditdatain);
-        lua_pushlightuserdata(ExporterList::_state, hexeditdataout);
-        lua_pushinteger(ExporterList::_state, startoffset);
-        lua_pushinteger(ExporterList::_state, endoffset);
-
-        int res = lua_pcall(ExporterList::_state, 5, 0, 0);
-
-        if(res != 0)
-            DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(ExporterList::_state, -1)));
-
-        lua_pop(ExporterList::_state, (res ? 2 : 1));
-
-        QFile f(filename);
-        f.open(QIODevice::WriteOnly | QIODevice::Truncate);
-        hexeditdataout->saveTo(&f);
-        f.close();
     }
 
     int ExporterList::length()
@@ -82,8 +80,8 @@ namespace PrefSDK
         return ExporterList::_exporters.length();
     }
 
-    const ExporterList::Exporter& ExporterList::exporter(int i)
+    ExporterDefinition *ExporterList::exporter(int i)
     {
-        return ExporterList::_exporters.at(i);
+        return this->_exporters[i];
     }
 }

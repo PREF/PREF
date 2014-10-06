@@ -55,18 +55,18 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        FormatList::Format& f = FormatList::format(this->_category->globalFormatIndex(index.row()));
+        const FormatDefinition* f = FormatList::instance()->format(this->_category->globalFormatIndex(index.row()));
 
         switch(index.column())
         {
             case 0:
-                return f.name();
+                return f->name();
 
             case 1:
-                return f.author();
+                return f->author();
 
             case 2:
-                return f.version();
+                return f->version();
 
             default:
                 break;

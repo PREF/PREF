@@ -10,27 +10,36 @@ namespace PrefSDK
     {
         Q_OBJECT
 
+        Q_PROPERTY(PrefSDK::DataType::Type itemType READ itemType)
+        Q_PROPERTY(quint64 itemCount READ itemCount)
+
         public:
-            FieldArray(lua_State *l, DataType::Type itemtype, uint64_t itemcount, uint64_t offset, const QString& name, const QUuid& parentid, ElementPool& elementpool, QHexEditData* hexeditdata, QObject *parent = 0);
-            const Field* item(int i) const;
+            FieldArray(DataType::Type itemtype, quint64 itemcount, quint64 offset, const QString& name, const QUuid& parentid, AbstractTree* formattree, QObject *parent = 0);
             DataType::Type itemType() const;
-            uint64_t itemCount() const;
+            quint64 itemCount() const;
+
+        public slots:
+            PrefSDK::Field* item(int i);
+            virtual QString displayName() const;
+            virtual QString displayType() const;
+            virtual QString displayValue() const;
 
         public: /* Overriden Methods */
             virtual bool isDynamic() const;
             virtual bool hasChildren() const;
-            virtual ElementType::Type elementType() const;
-            virtual QString displayType() const;
-            virtual QString displayName() const;
-            virtual QString displayValue() const;
-            virtual uint64_t size() const;
+            virtual FormatElement::Type elementType() const;
+            virtual quint64 size() const;
             virtual bool isOverflowed() const;
             virtual int indexOf(FormatElement* fe) const;
             virtual void parseChildren();
 
+        protected:
+            virtual void pushValue(lua_State* l);
+            Q_INVOKABLE int metaIndex(lua_State* l, lua_Integer key);
+
         private:
             DataType::Type _itemtype;
-            uint64_t _itemcount;
+            quint64 _itemcount;
             QList<QUuid> _items;
     };
 }

@@ -5,7 +5,7 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
-#include "views/disassemblerview/disassemblerlisting.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
 
 using namespace PrefSDK;
 
@@ -27,6 +27,7 @@ class SegmentsModel : public QAbstractItemModel
 
     private:
         DisassemblerListing* _listing;
+        QList<Segment*> _segments;
 };
 
 #endif // SEGMENTSMODEL_H

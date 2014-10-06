@@ -2,40 +2,52 @@
 #define PREFSDK_FORMATTREE_H
 
 #include <QtCore>
+#include "prefsdk/libs/qt/qtlua.h"
+#include "prefsdk/libs/preflib/luahexeditdata.h"
 #include "qhexedit/qhexeditdata.h"
 #include "elements/structure.h"
 #include "elements/fieldarray.h"
 #include "elements/field.h"
 #include "elements/bitfield.h"
-#include "debugdialog/debugdialog.h"
+#include "abstracttree.h"
 
 namespace PrefSDK
 {
-    class FormatTree: public QObject
+    class FormatTree: public AbstractTree
     {
         Q_OBJECT
 
+        Q_PROPERTY(PrefSDK::LuaHexEditData* buffer READ buffer)
+
         private:
-            typedef QHash<uint64_t, Structure*> StructureMap;
-            typedef QList<uint64_t> StructureOffsetList;
+            typedef QHash<quint64, Structure*> StructureMap; /* Offset -> Structure* */
+            typedef QHash<QString, quint64> StructureNames;  /* Name -> Offset */
+            typedef QList<quint64> StructureOffsets;
 
         public:
-            explicit FormatTree(lua_State* l, QHexEditData* hexeditdata, int64_t baseoffset, QObject* parent = 0);
+            explicit FormatTree(QHexEditData* hexeditdata, LogWidget *logwidget, qint64 baseoffset, QObject* parent = 0);
+            FormatElement* elementFromPool(qint64 i, FormatElement *parent = nullptr);
+            quint64 structureCount();
             bool isEmpty() const;
-            Structure* addStructure(const QString& name);
-            Structure* insertStructure(const QString& name, uint64_t offset);
-            Structure* structure(uint64_t i);
-            uint64_t structureCount();
-            FormatElement* elementFromPool(int64_t i, const FormatElement* parent = nullptr);
-            FormatElement* elementFromPoolByUUID(const QUuid& uuid);
 
         private:
-            QHexEditData* _hexeditdata;
-            StructureOffsetList _structureoffsets;
-            StructureMap _structuremap;
-            ElementPool _elementpool;
-            lua_State* _state;
-            int64_t _baseoffset;
+            PrefSDK::LuaHexEditData* buffer();
+
+        protected:
+            Q_INVOKABLE int metaIndex(lua_State* l, const QString& key);
+
+        public slots:
+            PrefSDK::Structure* structure(const QString& name);
+            PrefSDK::Structure* structure(quint64 i);
+            PrefSDK::Structure* addStructure(const QString& name);
+            PrefSDK::Structure* addStructure(const QString& name, lua_Integer offset);
+
+        private:
+            LuaHexEditData* _luahexeditdata;
+            StructureOffsets _structureoffsets;
+            StructureNames _structurenames;
+            StructureMap _structures;
+            qint64 _baseoffset;
     };
 }
 

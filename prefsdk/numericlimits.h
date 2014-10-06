@@ -2,7 +2,7 @@
 #define PREFSDK_NUMERICLIMITS_H
 
 #include <limits>
-#include "prefsdk/datatype.h"
+#include "prefsdk/type/datatype.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 
@@ -14,7 +14,7 @@ namespace PrefSDK
             NumericLimits();
 
         private:
-            template<typename TYPE> static bool willOverflowT(QHexEditData* hexeditdata, uint64_t pos, DataType::Type datatype)
+            template<typename TYPE> static bool willOverflowT(QHexEditData* hexeditdata, quint64 pos, DataType::Type datatype)
             {
                 TYPE val;
                 QHexEditDataReader reader(hexeditdata);
@@ -40,7 +40,7 @@ namespace PrefSDK
             }
 
         public:
-            static bool willOverflow(QHexEditData* hexeditdata, uint64_t pos, DataType::Type datatype);
+            static bool willOverflow(QHexEditData* hexeditdata, quint64 pos, DataType::Type datatype);
     };
 }
 

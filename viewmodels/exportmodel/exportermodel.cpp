@@ -46,21 +46,21 @@ QVariant ExporterModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const ExporterList::Exporter& e = ExporterList::exporter(index.row());
+        const ExporterDefinition* e = ExporterList::instance()->exporter(index.row());
 
         switch(index.column())
         {
             case 0:
-                return e.name();
+                return e->name();
 
             case 1:
-                return e.author();
+                return e->author();
 
             case 2:
-                return e.version();
+                return e->version();
 
             case 3:
-                return e.description();
+                return e->description();
 
             default:
                 break;
@@ -87,7 +87,7 @@ QModelIndex ExporterModel::parent(const QModelIndex &) const
 
 int ExporterModel::rowCount(const QModelIndex &) const
 {
-    return ExporterList::length();
+    return ExporterList::instance()->length();
 }
 
 Qt::ItemFlags ExporterModel::flags(const QModelIndex &index) const

@@ -37,7 +37,6 @@ class FormatModel : public FieldDataModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        static FormatModel* _empty;
         QFont _monospacefont;
         QImage _icostruct;
         QImage _icofield;

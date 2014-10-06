@@ -2,14 +2,9 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(uint64_t address, uint64_t offset, const SymbolTable &symboltable, QObject *parent): Block(address, 0, parent), _symboltable(symboltable), _category(InstructionCategories::Undefined), _type(InstructionTypes::Undefined), _mnemonic("???"), _opcode(0xFFFFFFFF), _address(address), _offset(offset)
+    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, const SymbolTable *symboltable, QObject *parent): Block(address, parent), _symboltable(symboltable), _hexeditdata(hexeditdata), _mnemonic("???"), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
     {
 
-    }
-
-    bool Instruction::contains(uint64_t address)
-    {
-        return (address >= this->_address) && (address < (this->_address + this->_size));
     }
 
     void Instruction::clearOperands()
@@ -17,12 +12,12 @@ namespace PrefSDK
         this->_operands.clear();
     }
 
-    void Instruction::cloneOperand(Operand *operand)
+    void Instruction::cloneOperand(QObject *op)
     {
-        this->_operands.append(new Operand(operand));
+        this->_operands.append(new Operand(qobject_cast<Operand*>(op)));
     }
 
-    Operand* Instruction::addOperand(OperandTypes::Type operandtype, DataType::Type datatype)
+    PrefSDK::Operand* Instruction::addOperand(lua_Integer operandtype, lua_Integer datatype)
     {
         Operand* operand = new Operand(operandtype, datatype);
 
@@ -30,7 +25,7 @@ namespace PrefSDK
         return operand;
     }
 
-    void Instruction::removeOperand(int idx)
+    void Instruction::removeOperand(lua_Integer idx)
     {
         if(idx >= this->_operands.count())
             return;
@@ -38,56 +33,71 @@ namespace PrefSDK
         this->_operands.removeAt(idx);
     }
 
-    void Instruction::updateSize(uint64_t sz)
-    {
-        this->_size += sz;
-    }
-
     void Instruction::setFormat(const QString &s)
     {
-        this->_opformat = s;
+        this->_format = s;
     }
 
-    InstructionCategories::Category Instruction::category() const
+    Block::Type Instruction::blockType() const
+    {
+        return Block::InstructionBlock;
+    }
+
+    lua_Integer Instruction::category() const
     {
         return this->_category;
     }
 
-    InstructionTypes::Type Instruction::type() const
+    lua_Integer Instruction::type() const
     {
         return this->_type;
     }
 
-    uint64_t Instruction::address() const
+    lua_Integer Instruction::address() const
     {
-        return this->_address;
+        return this->_startaddress.compatibleValue<lua_Integer>();
     }
 
-    uint64_t Instruction::offset() const
+    lua_Integer Instruction::offset() const
     {
-        return this->_offset;
+        return this->_offset.compatibleValue<lua_Integer>();
     }
 
-    uint64_t Instruction::size() const
+    lua_Integer Instruction::size() const
     {
-        return this->_size;
+        return this->_size.compatibleValue<lua_Integer>();
     }
 
-    uint64_t Instruction::opCode() const
+    lua_Integer Instruction::opcode() const
     {
-        return this->_opcode;
+        return this->_opcode.compatibleValue<lua_Integer>();
     }
 
-    QString Instruction::mnemonic() const
+    const QString &Instruction::format() const
+    {
+        return this->_format;
+    }
+
+    const QString &Instruction::mnemonic() const
     {
         return this->_mnemonic;
     }
 
-    QString Instruction::displayHexDump(QHexEditData* hexeditdata) const
+    PrefSDK::Operand *Instruction::firstOperand() const
+    {
+        return this->_operands.first();
+    }
+
+    PrefSDK::Operand *Instruction::lastOperand() const
+    {
+        return this->_operands.last();
+    }
+
+    QString Instruction::hexDump() const
     {
         QString hexdump;
-        QHexEditDataReader reader(hexeditdata);
-        QByteArray ba = reader.read(this->_offset, this->_size);
+        QHexEditDataReader reader(this->_hexeditdata);
+        QByteArray ba = reader.read(this->_offset.compatibleValue<qint64>(), this->_size.compatibleValue<qint64>());
 
         for(int i = 0; i < ba.length(); i++)
         {
@@ -100,27 +110,29 @@ namespace PrefSDK
         return hexdump;
     }
 
-    QString Instruction::displayOperands() const
-    {
-        if(this->_opformat.isEmpty())
-            return this->standardOperandFormat();
-
-        return this->customOperandformat();
-    }
-
-    int Instruction::operandsCount() const
+    lua_Integer Instruction::operandsCount() const
     {
         return this->_operands.count();
     }
 
-    Operand *Instruction::operand(int idx) const
+    PrefSDK::Operand *Instruction::operand(lua_Integer idx) const
     {
         return this->_operands[idx];
     }
 
-    void Instruction::setOpCode(uint64_t opcode)
+    const DataValue &Instruction::opcodeValue() const
     {
-        this->_opcode = opcode;
+        return this->_opcode;
+    }
+
+    void Instruction::setOpcode(lua_Integer opc)
+    {
+        this->_opcode = DataValue::create(opc, this->_opcodetype);
+    }
+
+    void Instruction::setSize(const DataValue &size)
+    {
+        this->_size = size;
     }
 
     void Instruction::setMnemonic(const QString &mnemonic)
@@ -128,107 +140,27 @@ namespace PrefSDK
         this->_mnemonic = mnemonic;
     }
 
-    void Instruction::setCategory(InstructionCategories::Category category)
+    const DataValue &Instruction::offsetValue() const
+    {
+        return this->_offset;
+    }
+
+    void Instruction::setCategory(lua_Integer category)
     {
         this->_category = category;
     }
 
-    void Instruction::setType(InstructionTypes::Type type)
+    void Instruction::setType(lua_Integer type)
     {
         this->_type = type;
     }
 
-    ListingTypes::Type Instruction::objectType() const
+    lua_Integer Instruction::next(lua_Integer datatype)
     {
-        return ListingTypes::Instruction;
-    }
+        DataType::Type dt = static_cast<DataType::Type>(datatype);
+        this->_size += DataValue::create(DataType::sizeOf(dt), dt);
 
-    QString Instruction::displayAddress() const
-    {
-        return QString("%1").arg(this->_address, 8, 16, QLatin1Char('0')).toUpper();
-    }
-
-    QString Instruction::standardOperandFormat() const
-    {
-        QString s;
-
-        for(int i = 0; i < this->_operands.count(); i++)
-        {
-            Operand* operand = this->_operands[i];
-
-            if(i > 0)
-                s.append(", ");
-
-            if((operand->type() == OperandTypes::Address) && this->_symboltable.contains(operand->valueUInt64()))
-                s.append(this->_symboltable[operand->valueUInt64()]->name());
-            else
-                s.append(operand->displayValue());
-        }
-
-        return s;
-    }
-
-    QString Instruction::customOperandformat() const
-    {
-        int i = 0;
-        QChar ch;
-        QString s;
-
-        while(i < this->_opformat.length())
-        {
-            ch = this->_opformat[i];
-
-            switch(ch.toLatin1())
-            {
-                case '%':
-                {
-                    ch = this->_opformat[++i];
-
-                    if(ch.isNull())
-                        break;
-
-                    if(ch == '%')
-                    {
-                        s.append("%");
-                        break;
-                    }
-
-                    bool ok = false;
-                    int opidx = QString(ch).toInt(&ok);
-
-                    if(!ok || (opidx < 0 || opidx > this->_operands.count())) //TODO: Handle Errors
-                    {
-                        if(!ok)
-                            qDebug() << "ERROR: Invalid Operand Format: Expected Integer not '" << ch << "'";
-                        else
-                            qDebug() << "ERROR: Operand Index out of range";
-
-                        continue;
-                    }
-
-                    Operand* operand = this->_operands[opidx - 1];
-
-                    if((operand->type() == OperandTypes::Address) && this->_symboltable.contains(operand->valueUInt64()))
-                        s.append(this->_symboltable[operand->valueUInt64()]->name());
-                    else
-                        s.append(operand->displayValue());
-
-                    break;
-                }
-
-                case '\0':
-                    return s; /* Something wrong: reached EOS */
-
-                default:
-                {
-                    s.append(ch);
-                    break;
-                }
-            }
-
-            i++;
-        }
-
-        return s;
+        LuaHexEditData luahexeditdata(this->_hexeditdata);
+        return luahexeditdata.readType(this->offset(), datatype);
     }
 }

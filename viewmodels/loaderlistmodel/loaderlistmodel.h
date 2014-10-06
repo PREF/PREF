@@ -13,8 +13,7 @@ class LoaderListModel : public QAbstractItemModel
 
     public:
         explicit LoaderListModel(QHexEditData* hexeditdata, QObject *parent = 0);
-        LoaderList::LoaderId loader(int idx) const;
-        void setValid(LoaderList::LoaderId loaderid);
+        ProcessorLoader *loader(int idx) const;
 
     private:
         void validateLoaders(QHexEditData* hexeditdata);
@@ -29,7 +28,7 @@ class LoaderListModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        QList<LoaderList::LoaderId> _loaders;
+        QList<ProcessorLoader*> _loaders;
         QImage _icoloader;
 };
 

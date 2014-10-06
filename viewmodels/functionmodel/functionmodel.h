@@ -4,7 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "views/disassemblerview/disassemblerlisting.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
 
 using namespace PrefSDK;
 
@@ -30,6 +30,7 @@ class FunctionModel : public QAbstractItemModel
     private:
         QFont _monospacefont;
         DisassemblerListing* _listing;
+        QList<Function*> _functions;
 };
 
 #endif // FUNCTIONMODEL_H

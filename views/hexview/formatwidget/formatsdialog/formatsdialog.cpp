@@ -23,11 +23,12 @@ FormatsDialog::FormatsDialog(qint64 maxlen, qint64 pos, QWidget *parent): QDialo
         ui->tvFormats->resizeColumnToContents(i);
 }
 
-FormatList::FormatId FormatsDialog::selectedFormat()
+FormatDefinition* FormatsDialog::selectedFormat()
 {
     CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
     QItemSelectionModel* model = ui->tvFormats->selectionModel();
-    return FormatList::format(c->globalFormatIndex(model->currentIndex().row())).id();
+
+    return FormatList::instance()->format(c->globalFormatIndex(model->currentIndex().row()));
 }
 
 qint64 FormatsDialog::offset()

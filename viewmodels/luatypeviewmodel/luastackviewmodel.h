@@ -1,9 +1,7 @@
 #ifndef LUASTACKVIEWMODEL_H
 #define LUASTACKVIEWMODEL_H
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
+#include <QAbstractItemModel>
 #include <lua.hpp>
 
 class LuaStackViewModel : public QAbstractItemModel

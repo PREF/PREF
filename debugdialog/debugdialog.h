@@ -1,10 +1,8 @@
 #ifndef DEBUGDIALOG_H
 #define DEBUGDIALOG_H
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
-#include <QtConcurrent/QtConcurrent>
+#include <QDialog>
+#include <QCloseEvent>
 #include "viewmodels/luatypeviewmodel/luastackviewmodel.h"
 
 namespace Ui {

@@ -2,17 +2,16 @@
 
 namespace PrefSDK
 {
-    QList<LoaderList::Loader> LoaderList::_loaders;
-    QHash<LoaderList::LoaderId, int> LoaderList::_loadermap;
+    LoaderList* LoaderList::_instance = nullptr;
 
     const QString LoaderList::LOADERS_DIR = "loaders";
-    const QString LoaderList::LOADER_MAIN_FILE = "register.lua";
+    const QString LoaderList::LOADER_MAIN_FILE = "definition.lua";
 
-    LoaderList::LoaderList()
+    LoaderList::LoaderList(QObject *parent): QObject(parent)
     {
     }
 
-    void LoaderList::loadLoader(lua_State *l, const QString &dir)
+    void LoaderList::load(lua_State *l, const QString &dir)
     {
         QDir d(dir);
         QFileInfoList dirs = d.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
@@ -27,34 +26,61 @@ namespace PrefSDK
 
                 if(res != 0)
                 {
-                    DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
+                    throw PrefException("LoaderList::load(): QString::fromUtf8(lua_tostring(l, -1))");
                     lua_pop(l, 1);
                 }
+
+                if(!QtLua::isQObject(l, -1))
+                {
+                    throw PrefException(QString("LoaderList::load(): Got '%1'' instead of loader type").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
+                    lua_pop(l, 1);
+                    continue;
+                }
+
+                ProcessorLoader* processorloader = qobject_cast<ProcessorLoader*>(QtLua::toQObject(l, -1));
+                lua_pop(l, 1);
+
+                if(this->_loadermap.contains(processorloader->id()))
+                {
+                    throw PrefException(QString("LoaderList::load(): Loader '%1' already loaded").arg(processorloader->name()));
+                    continue;
+                }
+
+                int idx = this->_loaders.length();
+                this->_loaders.append(processorloader);
+                this->_loadermap[processorloader->id()] = idx;
             }
         }
     }
 
-    void LoaderList::load(lua_State *l)
+    LoaderList *LoaderList::instance()
     {
-        QDir d(qApp->applicationDirPath());
-        QString formatspath = d.absoluteFilePath(LoaderList::LOADERS_DIR);
+        return LoaderList::_instance;
+    }
 
-        if(!QDir(formatspath).exists())
+    void LoaderList::load()
+    {
+        if(LoaderList::_instance)
             return;
 
-        LoaderList::loadLoader(l, formatspath);
+        LoaderList::_instance = new LoaderList();
+        QDir d(qApp->applicationDirPath());
+        QString loaderspath = d.absoluteFilePath(LoaderList::LOADERS_DIR);
+
+        if(!QDir(loaderspath).exists())
+            return;
+
+        lua_State* l = LuaState::instance();
+        LoaderList::_instance->load(l, loaderspath);
     }
 
-    void LoaderList::registerLoader(const QString &name, const QString &author, const QString &version, LoaderList::LoaderId loaderid)
+    ProcessorLoader *LoaderList::loader(int i)
     {
-        int idx = LoaderList::_loaders.length();
-
-        LoaderList::_loaders.append(Loader(name, author, version, loaderid));
-        LoaderList::_loadermap[loaderid] = idx;
+        return this->_loaders[i];
     }
 
-    LoaderList::Loader &LoaderList::loader(LoaderList::LoaderId loaderid)
+    int LoaderList::length()
     {
-        return LoaderList::_loaders[LoaderList::_loadermap[loaderid]];
+        return this->_loaders.length();
     }
 }

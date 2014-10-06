@@ -1,63 +1,81 @@
 #ifndef PREFSDK_FORMATELEMENT_H
 #define PREFSDK_FORMATELEMENT_H
 
+#include "prefsdk/libs/qt/qtlua.h"
+#include "prefsdk/format/abstracttree.h"
+#include "qhexedit/qhexeditdatareader.h"
 #include <cstdint>
 #include <QtCore>
-#include <lua.hpp>
-#include "elementtype.h"
-#include "qhexedit/qhexeditdata.h"
-#include "qhexedit/qhexeditdatareader.h"
-#include "debugdialog/debugdialog.h"
+#include <QQmlEngine>
 
 namespace PrefSDK
 {
-    class FormatElement;
-    typedef QHash<QUuid, FormatElement*> ElementPool;
-
     class FormatElement : public QObject
     {
         Q_OBJECT
 
+        Q_ENUMS(Type)
+
+        Q_PROPERTY(PrefSDK::FormatElement::Type elementType READ elementType)
+        Q_PROPERTY(quint64 offset READ offset)
+        Q_PROPERTY(quint64 endoffset READ endOffset)
+        Q_PROPERTY(quint64 size READ size)
+        Q_PROPERTY(QString name READ name)
+        Q_PROPERTY(QString info READ info)
+
         public:
-            explicit FormatElement(lua_State* l, uint64_t offset, const QString& name, const QUuid &parentid, ElementPool& elementpool, QHexEditData* hexeditdata, QObject *parent = 0);
-            uint64_t offset() const;
-            uint64_t endOffset() const;
+            enum Type { InvalidType, StructureType, FieldType, FieldArrayType, BitFieldType };
+
+        public:
+            explicit FormatElement(QObject *parent = 0); /* Needed in QML */
+            explicit FormatElement(quint64 offset, const QString& name, const QUuid &parentid, AbstractTree* formattree, QObject *parent = 0);
+            virtual ~FormatElement();
+            virtual FormatElement::Type elementType() const;
+            virtual quint64 size() const;
+            virtual int indexOf(FormatElement*) const;
+            quint64 offset() const;
+            quint64 endOffset() const;
             int base() const;
             const QString& name() const;
-            QString info() const;
+            const QString& info() const;
+            QString info();
             FormatElement* parentElement() const;
             const QUuid& id() const;
             virtual bool isDynamic() const;
             virtual bool hasChildren() const;
             bool hasParent() const;
-            bool containsOffset(uint64_t offset) const;
+            bool containsOffset(quint64 offset) const;
             void setDynamic(bool b);
             virtual void setBase(int b);
-            virtual QString displayName() const;
-            const ElementPool& elementPool() const;
             virtual void parseChildren();
+
+        public slots:
+            PrefSDK::FormatElement* dynamicInfo(const PrefSDK::QtLua::LuaFunction& infoproc);
+            PrefSDK::FormatElement* dynamicParser(bool condition, const PrefSDK::QtLua::LuaFunction& parseproc);
+
+        protected:
+            virtual void pushValue(lua_State* l);
+            Q_INVOKABLE virtual int metaIndex(lua_State* l, const QString& key);
 
         signals:
             void baseChanged(int b);
 
-        public: /* Abstract Methods */
-            virtual ElementType::Type elementType() const = 0;
-            virtual uint64_t size() const = 0;
-            virtual int indexOf(FormatElement* fe) const = 0;
-            virtual QString displayType() const = 0;
-            virtual QString displayValue() const = 0;
+        public slots:
+            virtual QString displayName() const;
+            virtual QString displayType() const;
+            virtual QString displayValue() const;
 
         private:
-            uint64_t _offset;
+            quint64 _offset;
             int _base;
             QString _name;
             QUuid _id;
             QUuid _parentid;
 
         protected:
-            ElementPool& _elementpool;
-            QHexEditData* _hexeditdata;
-            lua_State* _state;
+            AbstractTree* _formattree;
+            PrefSDK::QtLua::LuaFunction _infoprocedure;
+            PrefSDK::QtLua::LuaFunction _parseprocedure;
             bool _dynamic;
     };
 

@@ -9,7 +9,6 @@
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "datatypeswidget/datatypeswidget.h"
 #include "views/abstractview.h"
-#include "views/hexview/optionmenu.h"
 
 using namespace PrefSDK;
 
@@ -47,8 +46,7 @@ class HexView : public AbstractView
         void onMapViewTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
         void onFormatParseStarted();
-        void onFormatParseFinished(FormatTree* formattree);
-        void disableFormatButton();
+        void onFormatParseFinished(FormatTree* formattree, QWidget* formatview);
 
     private:
         Ui::HexView *ui;

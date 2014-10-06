@@ -1,11 +1,6 @@
 #include "disassemblerhighlighter.h"
 
-DisassemblerHighlighter::DisassemblerHighlighter(QTextDocument *parent, ListingObject* listingobj): QSyntaxHighlighter(parent), _listingobj(listingobj)
-{
-    this->generateHighlighters();
-}
-
-DisassemblerHighlighter::DisassemblerHighlighter(QTextDocument *parent, const DisassemblerListing::ReferenceSet &references): QSyntaxHighlighter(parent), _listingobj(nullptr), _references(references)
+DisassemblerHighlighter::DisassemblerHighlighter(QTextDocument *parent, Block* block): QSyntaxHighlighter(parent), _block(block)
 {
     this->generateHighlighters();
 }
@@ -83,7 +78,7 @@ void DisassemblerHighlighter::highlightSegment(const QString &text)
 
 void DisassemblerHighlighter::highlightFunction(const QString &text)
 {
-    QRegExp regex("[a-z]* function [^.]+\\(\\)[^.]+$");
+    QRegExp regex("[a-z]*[ ]*function [^.]+\\([^.]*\\)[^.]*$");
     int idx = text.indexOf(regex);
 
     while(idx >= 0)
@@ -93,7 +88,7 @@ void DisassemblerHighlighter::highlightFunction(const QString &text)
         idx = text.indexOf(regex, idx + len);
     }
 
-    regex = QRegExp("[^. ]+\\(\\)");
+    regex = QRegExp("[^. ]+\\([^.]*\\)");
     idx = text.indexOf(regex);
 
     while(idx >= 0)
@@ -119,7 +114,7 @@ void DisassemblerHighlighter::highlightComment(const QString &text)
 
 void DisassemblerHighlighter::highlightInstruction(const QString &text)
 {
-    Instruction* instr = qobject_cast<Instruction*>(this->_listingobj);
+    Instruction* instr = qobject_cast<Instruction*>(this->_block);
 
     QTextCharFormat charformat;
     charformat.setFontFamily("Monospace");
@@ -127,67 +122,67 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
 
     switch(instr->type())
     {
-        case InstructionTypes::InterruptTrap:
+        case InstructionType::InterruptTrap:
             charformat.setForeground(Qt::darkYellow);
             break;
 
-        case InstructionTypes::Privileged:
+        case InstructionType::Privileged:
             charformat.setForeground(Qt::darkRed);
             break;
 
-        case InstructionTypes::Nop:
+        case InstructionType::Nop:
             charformat.setForeground(Qt::lightGray);
             break;
 
-        case InstructionTypes::Stop:
+        case InstructionType::Stop:
             charformat.setForeground(QColor::fromRgb(0x82, 0x22, 0x22));
             break;
 
-        case InstructionTypes::Call:
+        case InstructionType::Call:
             charformat.setForeground(QColor::fromRgb(0x80, 0x80, 0x00));
             break;
 
-        case InstructionTypes::Jump:
+        case InstructionType::Jump:
             charformat.setForeground(QColor::fromRgb(0xDC, 0x14, 0x3C));
             break;
 
-        case InstructionTypes::ConditionalCall:
+        case InstructionType::ConditionalCall:
             charformat.setForeground(QColor::fromRgb(0x32, 0xCD, 0x32));
             charformat.setFontWeight(QFont::Bold);
             break;
 
-        case InstructionTypes::ConditionalJump:
+        case InstructionType::ConditionalJump:
             charformat.setForeground(Qt::red);
             charformat.setFontWeight(QFont::Bold);
             break;
 
-        case InstructionTypes::Add:
-        case InstructionTypes::Sub:
-        case InstructionTypes::Mul:
-        case InstructionTypes::Div:
-        case InstructionTypes::Mod:
-        case InstructionTypes::AddCarry:
-        case InstructionTypes::SubCarry:
-        case InstructionTypes::Asl:
-        case InstructionTypes::Asr:
+        case InstructionType::Add:
+        case InstructionType::Sub:
+        case InstructionType::Mul:
+        case InstructionType::Div:
+        case InstructionType::Mod:
+        case InstructionType::AddCarry:
+        case InstructionType::SubCarry:
+        case InstructionType::Asl:
+        case InstructionType::Asr:
             charformat.setForeground(QColor::fromRgb(0xDA, 0x70, 0xD6));
             break;
 
-        case InstructionTypes::And:
-        case InstructionTypes::Or:
-        case InstructionTypes::Xor:
-        case InstructionTypes::Not:
-        case InstructionTypes::Lsl:
-        case InstructionTypes::Lsr:
-        case InstructionTypes::Ror:
-        case InstructionTypes::Rol:
-        case InstructionTypes::RorCarry:
-        case InstructionTypes::RolCarry:
+        case InstructionType::And:
+        case InstructionType::Or:
+        case InstructionType::Xor:
+        case InstructionType::Not:
+        case InstructionType::Lsl:
+        case InstructionType::Lsr:
+        case InstructionType::Ror:
+        case InstructionType::Rol:
+        case InstructionType::RorCarry:
+        case InstructionType::RolCarry:
             charformat.setForeground(QColor::fromRgb(0x7B, 0x68, 0xEE));
             break;
 
-        case InstructionTypes::In:
-        case InstructionTypes::Out:
+        case InstructionType::In:
+        case InstructionType::Out:
             charformat.setForeground(QColor::fromRgb(0xDA, 0xA5, 0x20));
             break;
 
@@ -196,7 +191,7 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
             break;
     }
 
-    if((instr->category() == InstructionCategories::LoadStore) && (instr->type() == InstructionTypes::Undefined))
+    if((instr->category() == InstructionCategory::LoadStore) && (instr->type() == InstructionType::Undefined))
         charformat.setForeground(QColor::fromRgb(0x00, 0x80, 0x80));
 
     QRegExp regex("[a-zA-Z0-9]+");
@@ -231,16 +226,13 @@ void DisassemblerHighlighter::highlightSubLabel(const QString &text)
 
 void DisassemblerHighlighter::highlightBlock(const QString &text)
 {
-    if(this->_listingobj)
-    {
-        if(this->_listingobj->objectType() == ListingTypes::Segment)
-            this->highlightSegment(text);
-        else if(this->_listingobj->objectType() == ListingTypes::Function)
-            this->highlightFunction(text);
-        else
-            this->highlightInstruction(text);
-    }
-    else if(!this->_references.isEmpty())
+    if(this->_block->blockType() == Block::SegmentBlock)
+        this->highlightSegment(text);
+    else if(this->_block->blockType() == Block::FunctionBlock)
+        this->highlightFunction(text);
+    else if(this->_block->blockType() == Block::InstructionBlock)
+        this->highlightInstruction(text);
+    else if(this->_block->blockType() == Block::ReferenceBlock)
         this->highlightJumpLabel(text);
 
     this->highlightComment(text);

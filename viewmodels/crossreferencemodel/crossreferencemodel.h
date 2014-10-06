@@ -1,18 +1,20 @@
 #ifndef CROSSREFERENCEMODEL_H
 #define CROSSREFERENCEMODEL_H
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
+#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <QGuiApplication>
+#include <QAbstractItemModel>
+
+using namespace PrefSDK;
 
 class CrossReferenceModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit CrossReferenceModel(QObject *parent = 0);
+        explicit CrossReferenceModel(ReferenceSet *referenceset, const QList<Reference*> references, DisassemblerListing* listing, QObject *parent = 0);
+        explicit CrossReferenceModel(Block* block, DisassemblerListing* listing, QObject *parent = 0);
         void addCrossReference(quint64 va);
-        quint64 xrefCount();
     
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -24,7 +26,10 @@ class CrossReferenceModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        QList<quint64> _xreflist;
+        QFont _monospacefont;
+        Block* _block;
+        DisassemblerListing* _listing;
+        QList<Reference*> _references;
 };
 
 #endif // CROSSREFERENCEMODEL_H

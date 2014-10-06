@@ -1,128 +1,90 @@
-#ifndef INSTRUCTION_H
-#define INSTRUCTION_H
+#ifndef PREFSDK_INSTRUCTION_H
+#define PREFSDK_INSTRUCTION_H
 
-#include <QtCore>
+#include "prefsdk/type/datatype.h"
+#include "prefsdk/type/datavalue.h"
+#include "prefsdk/prefexception.h"
+#include "prefsdk/libs/preflib/luahexeditdata.h"
+#include "prefsdk/disassembler/operand.h"
+#include "prefsdk/disassembler/symbol/symboltable.h"
+#include "prefsdk/disassembler/blocks/block.h"
+#include "prefsdk/disassembler/instruction/instructioncategory.h"
+#include "prefsdk/disassembler/instruction/instructiontype.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
-#include "prefsdk/datatype.h"
-#include "prefsdk/disassembler/operand.h"
-#include "prefsdk/disassembler/symbol.h"
-#include "prefsdk/disassembler/blocks/block.h"
+#include <QtCore>
 
 namespace PrefSDK
 {
-    namespace InstructionCategories
-    {
-        enum Category
-        {
-            Undefined,
-            ControlFlow,
-            StackManipulation,
-            LoadStore,
-            TestCompare,
-            Arithmetic,
-            Logical,
-            IO,
-            InterruptTrap,
-            Privileged,
-            NoOperation,
-        };
-    }
-
-    namespace InstructionTypes
-    {
-        enum Type
-        {
-            Undefined              = 0x00000000,
-            InterruptTrap          = 0x10000000,
-            Privileged             = 0x20000000,
-            Nop                    = 0x40000000,
-            Stop                   = 0x80000000,
-
-            Call                   = 0x00000001,
-            Jump                   = 0x00000002,
-            ConditionalCall        = 0x00000003,
-            ConditionalJump        = 0x00000004,
-
-            Push                   = 0x00000005,
-            Pop                    = 0x00000006,
-
-            Add                    = 0x00000007,
-            Sub                    = 0x00000008,
-            Mul                    = 0x00000009,
-            Div                    = 0x0000001A,
-            Mod                    = 0x0000001B,
-            AddCarry               = 0x0000001C,
-            SubCarry               = 0x0000001D,
-            Asl                    = 0x0000001E,
-            Asr                    = 0x0000001F,
-
-            And                    = 0x00000020,
-            Or                     = 0x00000021,
-            Xor                    = 0x00000022,
-            Not                    = 0x00080023,
-            Lsl                    = 0x00000024,
-            Lsr                    = 0x00000025,
-            Rol                    = 0x00000026,
-            Ror                    = 0x00000027,
-            RolCarry               = 0x00000028,
-            RorCarry               = 0x00000029,
-
-            In                     = 0x0000002A,
-            Out                    = 0x0000002B,
-        };
-    }
-
     class Instruction : public Block
     {
         Q_OBJECT
 
-        public:
-            typedef QList<Operand*> OperandList;
+        Q_PROPERTY(lua_Integer address READ address)
+        Q_PROPERTY(lua_Integer offset READ offset)
+        Q_PROPERTY(lua_Integer size READ size)
+        Q_PROPERTY(lua_Integer category READ category WRITE setCategory)
+        Q_PROPERTY(lua_Integer type READ type WRITE setType)
+        Q_PROPERTY(lua_Integer operandscount READ operandsCount)
+        Q_PROPERTY(lua_Integer opcode READ opcode WRITE setOpcode)
+        Q_PROPERTY(QString format READ format WRITE setFormat)
+        Q_PROPERTY(QString mnemonic READ mnemonic WRITE setMnemonic)
+        Q_PROPERTY(QString hexdump READ hexDump)
+        Q_PROPERTY(PrefSDK::Operand* firstoperand READ firstOperand)
+        Q_PROPERTY(PrefSDK::Operand* lastoperand READ lastOperand)
 
         public:
-            explicit Instruction(uint64_t address, uint64_t offset, const SymbolTable& symboltable, QObject *parent = 0);
-            bool contains(uint64_t address);
-            void clearOperands();
-            void cloneOperand(Operand* operand);
-            Operand* addOperand(OperandTypes::Type operandtype, DataType::Type datatype);
-            void removeOperand(int idx);
-            void updateSize(uint64_t sz);
-            InstructionCategories::Category category() const;
-            InstructionTypes::Type type() const;
-            uint64_t address() const;
-            uint64_t offset() const;
-            uint64_t size() const;
-            uint64_t opCode() const;
-            QString mnemonic() const;
-            QString displayHexDump(QHexEditData* hexeditdata) const;
-            QString displayOperands() const;
-            int operandsCount() const;
-            Operand* operand(int idx) const;
-            void setOpCode(uint64_t opcode);
-            void setMnemonic(const QString& mnemonic);
-            void setCategory(InstructionCategories::Category category);
-            void setType(InstructionTypes::Type type);
+            typedef QList<PrefSDK::Operand*> OperandList;
+
+        public:
+            explicit Instruction(const DataValue& address, const DataValue& offset, DataType::Type opcodetype, QHexEditData* hexeditdata, const SymbolTable* symboltable, QObject *parent = 0);
+            lua_Integer address() const;
+            lua_Integer offset() const;
+            lua_Integer size() const;
+            lua_Integer category() const;
+            lua_Integer type() const;
+            lua_Integer operandsCount() const;
+            lua_Integer opcode() const;
+            const QString& format() const;
+            const QString& mnemonic() const;
+            QString hexDump() const;
+            PrefSDK::Operand* firstOperand() const;
+            PrefSDK::Operand* lastOperand() const;
+            void setCategory(lua_Integer category);
+            void setType(lua_Integer type);
+            void setOpcode(lua_Integer opc);
             void setFormat(const QString& s);
+            void setMnemonic(const QString& mnemonic);
+
+        public:
+            void setSize(const DataValue& size);
+
+        public slots:
+            lua_Integer next(lua_Integer datatype);
+            PrefSDK::Operand* addOperand(lua_Integer operandtype, lua_Integer datatype);
+            PrefSDK::Operand* operand(lua_Integer idx) const;
+            void cloneOperand(QObject* op);
+            void removeOperand(lua_Integer idx);
+            void clearOperands();
+
+        public:
+            const DataValue& opcodeValue() const;
+            const DataValue& offsetValue() const;
 
         public: /* Overriden Methods */
-            virtual ListingTypes::Type objectType() const;
-            virtual QString displayAddress() const;
+            virtual Block::Type blockType() const;
 
         private:
-            QString standardOperandFormat() const;
-            QString customOperandformat() const;
-
-        private:
-            const SymbolTable& _symboltable;
+            const SymbolTable* _symboltable;
+            QHexEditData* _hexeditdata;
             OperandList _operands;
-            InstructionCategories::Category _category;
-            InstructionTypes::Type _type;
-            QString _opformat;
+            QString _format;
             QString _mnemonic;
-            uint64_t _opcode;
-            uint64_t _address;
-            uint64_t _offset;
+            DataType::Type _opcodetype;
+            DataValue _offset;
+            DataValue _opcode;
+            lua_Integer _category;
+            lua_Integer _type;
     };
 }
-#endif // INSTRUCTION_H
+#endif // PREFSDK_INSTRUCTION_H

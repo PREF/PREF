@@ -277,7 +277,7 @@ void ActionToolBar::showExportDialog()
     int res = ed.exec();
 
     if(res == ExportDialog::Accepted)
-        ExporterList::exportData(ed.selectedExporter().id(), ed.fileName(), this->_hexedit->data(), ed.startOffset(), ed.endOffset());
+        ed.selectedExporter()->callDump(this->_hexeditdata, ed.fileName(), ed.startOffset(), ed.endOffset());
 }
 
 void ActionToolBar::byteOpRequested(uchar value, ByteOpsAction::ByteOperations bo)

@@ -2,6 +2,7 @@
 
 namespace PrefSDK
 {
+    PrefLib::SdkVersion SDKManager::_sdkversion = { false, 0, 0, 0, QString() };
     const char* SDKManager::SDK_TABLE = "Sdk";
     const QString SDKManager::SDK_DIR = "sdk";
     const QString SDKManager::MAIN_SCRIPT = "main.lua";
@@ -17,17 +18,9 @@ namespace PrefSDK
 
         if(res != 0)
         {
-            DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
+            throw PrefException(QString::fromUtf8(lua_tostring(l, -1)));
             lua_pop(l, 1);
         }
-    }
-
-    int SDKManager::luaAtPanic(lua_State* l)
-    {
-        int top = lua_gettop(l);
-
-        DebugDialog::instance()->luaOut(QString::fromUtf8(lua_tostring(l, top)))->exec();
-        return 0;
     }
 
     lua_State *SDKManager::initializeLua()
@@ -37,8 +30,9 @@ namespace PrefSDK
         if(l)
         {
             luaL_openlibs(l);
+            LuaOOP::open(l);
             QtLua::open(l);
-            PrefLib::open(l);
+            PrefLib::open(l, &SDKManager::_sdkversion);
 
             lua_getglobal(l, "package");
             lua_getfield(l, -1, "path");
@@ -66,17 +60,30 @@ namespace PrefSDK
         lua_State* l = LuaState::instance();
         SDKManager::loadMain(l, d.absoluteFilePath(sdkpath), SDKManager::MAIN_SCRIPT);
 
-        FormatList::load(l);
-        ExporterList::load(l);
-        LoaderList::load(l);
+        FormatList::load();
+        ExporterList::load();
+        LoaderList::load();
 
         SQLite::SQLiteDatabase::initialize();
         SignatureDatabase::load();
         return true;
     }
 
-    void SDKManager::registerMessageHandler()
+    QString SDKManager::sdkVersion()
     {
-        lua_atpanic(LuaState::instance(), &SDKManager::luaAtPanic);
+        if(SDKManager::_sdkversion.IsLoaded)
+        {
+            QString s = QString("%1.%2").arg(QString::number(SDKManager::_sdkversion.Major), QString::number(SDKManager::_sdkversion.Minor));
+
+            if(SDKManager::_sdkversion.Revision > 0)
+                s.append(".").append(QString::number(SDKManager::_sdkversion.Revision));
+
+            if(!SDKManager::_sdkversion.Custom.isEmpty())
+                s.append(" ").append(SDKManager::_sdkversion.Custom);
+
+            return s;
+        }
+
+        return "Missing SDK or Invalid Version";
     }
 }

@@ -1,15 +1,18 @@
 #include "fieldarray.h"
 
 namespace PrefSDK
-{
-    FieldArray::FieldArray(lua_State *l, DataType::Type itemtype, uint64_t itemcount, uint64_t offset, const QString &name, const QUuid& parentid, ElementPool& elementpool, QHexEditData* hexeditdata, QObject *parent): FieldElement(l, DataType::Array, offset, name, parentid, elementpool, hexeditdata, parent), _itemtype(itemtype), _itemcount(itemcount)
+{    
+    FieldArray::FieldArray(DataType::Type itemtype, quint64 itemcount, quint64 offset, const QString &name, const QUuid &parentid, AbstractTree *formattree, QObject *parent): FieldElement(DataType::Array, offset, name, parentid, formattree, parent), _itemtype(itemtype), _itemcount(itemcount)
     {
         this->_dynamic = true; /* Set Always dynamic for FieldArray! */
     }
 
-    const Field *FieldArray::item(int i) const
+    PrefSDK::Field *FieldArray::item(int i)
     {
-        return qobject_cast<const Field*>(this->_elementpool[this->_items.at(i)]);
+        if(this->_items.isEmpty() && (this->_datatype != DataType::Blob))
+            this->parseChildren();
+
+        return qobject_cast<Field*>(this->_formattree->elementFromPoolByUUID(this->_items.at(i)));
     }
 
     DataType::Type FieldArray::itemType() const
@@ -17,7 +20,7 @@ namespace PrefSDK
         return this->_itemtype;
     }
 
-    uint64_t FieldArray::itemCount() const
+    quint64 FieldArray::itemCount() const
     {
         return this->_itemcount;
     }
@@ -38,9 +41,9 @@ namespace PrefSDK
         return true;
     }
 
-    ElementType::Type FieldArray::elementType() const
+    FormatElement::Type FieldArray::elementType() const
     {
-        return ElementType::FieldArray;
+        return FormatElement::FieldArrayType;
     }
 
     QString FieldArray::displayType() const
@@ -57,14 +60,14 @@ namespace PrefSDK
     {
         if(this->_itemtype == DataType::Character)
         {
-            QHexEditDataReader reader(this->_hexeditdata);
+            QHexEditDataReader reader(this->_formattree->data());
             return QString("'%1'").arg(QString(reader.read(this->offset(), this->size())).simplified());
         }
 
         return FieldElement::displayValue();
     }
 
-    uint64_t FieldArray::size() const
+    quint64 FieldArray::size() const
     {
         return DataType::sizeOf(this->_itemtype) * this->_itemcount;
     }
@@ -80,7 +83,7 @@ namespace PrefSDK
         {
             const QUuid& id = this->_items[i];
 
-            if(this->_elementpool[id] == fe)
+            if(this->_formattree->elementFromPoolByUUID(id) == fe)
                 return i;
         }
 
@@ -92,16 +95,38 @@ namespace PrefSDK
         if(this->_itemtype == DataType::Blob || !this->_items.empty())
             return;
 
-        uint64_t itemoffset = this->offset();
+        quint64 itemoffset = this->offset();
         int itemsize = DataType::sizeOf(this->_itemtype);
+        AbstractTree::ElementPool& pool = this->_formattree->pool();
 
-        for(uint64_t i = 0; i < this->_itemcount; i++, itemoffset += itemsize)
+        for(quint64 i = 0; i < this->_itemcount; i++, itemoffset += itemsize)
         {
             QString itemname = QString("%1[%2]").arg(this->name(), QString::number(i));
-            Field* f = new Field(this->_state, this->_itemtype, itemoffset, itemname, this->id(), this->_elementpool, this->_hexeditdata);
+            Field* f = new Field(this->_itemtype, itemoffset, itemname, this->id(), this->_formattree, this);
 
             this->_items.append(f->id());
-            this->_elementpool[f->id()] = f;
+            pool[f->id()] = f;
         }
+    }
+
+    void FieldArray::pushValue(lua_State *l)
+    {
+        if(this->_itemtype == DataType::Character)
+        {
+            QHexEditDataReader reader(this->_formattree->data());
+            lua_pushstring(l, QString(reader.read(this->offset(), this->size())).toUtf8().constData());
+            return;
+        }
+
+        FieldElement::pushValue(l);
+    }
+
+    int FieldArray::metaIndex(lua_State *l, lua_Integer key)
+    {
+        if((key < 0) || (key >= this->_items.length()))
+            return 0;
+
+        QtLua::pushObject(l, this->_formattree->elementFromPoolByUUID(this->_items[key]));
+        return 1;
     }
 }

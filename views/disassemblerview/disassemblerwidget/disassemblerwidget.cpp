@@ -1,13 +1,10 @@
 #include "disassemblerwidget.h"
 
-DisassemblerWidget::DisassemblerWidget(QWidget *parent): QScrollArea(parent), _listing(nullptr)
+DisassemblerWidget::DisassemblerWidget(QWidget *parent): QFrame(parent)
 {    
     this->_vscrollbar = new QScrollBar(Qt::Vertical);
     this->_scrollarea = new QScrollArea();
     this->_disasmwidget_p = new DisassemblerWidgetPrivate(this->_scrollarea, this->_vscrollbar);
-
-    /* Forward Signals */
-    connect(this->_disasmwidget_p, SIGNAL(customContextMenuRequested(QPoint)), this, SIGNAL(customContextMenuRequested(QPoint)));
 
     this->_scrollarea->setFocusPolicy(Qt::NoFocus);
     this->_scrollarea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff); /* Do not show vertical QScrollBar!!! */
@@ -25,11 +22,9 @@ DisassemblerWidget::DisassemblerWidget(QWidget *parent): QScrollArea(parent), _l
 
     this->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     this->setLayout(this->_hlayout);
-}
 
-const DisassemblerWidget::ListingItem &DisassemblerWidget::selectedItem()
-{
-    return this->_disasmwidget_p->selectedItem();
+    /* Forward Signals */
+    connect(this->_disasmwidget_p, SIGNAL(customContextMenuRequested(QPoint)), this, SIGNAL(customContextMenuRequested(QPoint)));
 }
 
 void DisassemblerWidget::setCurrentIndex(int idx)
@@ -57,17 +52,22 @@ void DisassemblerWidget::setWheelScrollLines(int c)
     this->_disasmwidget_p->setWheelScrollLines(c);
 }
 
-void DisassemblerWidget::selectItem(ListingObject* listingobj)
+void DisassemblerWidget::jumpTo(Block *block)
 {
-    this->_disasmwidget_p->selectItem(listingobj);
+    this->_disasmwidget_p->jumpTo(block);
 }
 
-void DisassemblerWidget::gotoAddress(uint64_t address)
+void DisassemblerWidget::jumpTo(const DataValue& address)
 {
-    this->_disasmwidget_p->gotoAddress(address);
+    this->_disasmwidget_p->jumpTo(address);
 }
 
-int DisassemblerWidget::currentIndex() const
+qint64 DisassemblerWidget::currentIndex() const
 {
     return this->_disasmwidget_p->currentIndex();
+}
+
+Block *DisassemblerWidget::selectedBlock() const
+{
+    return this->_disasmwidget_p->selectedBlock();
 }

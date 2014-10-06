@@ -19,9 +19,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     if(l)
     {
         DebugDialog::createInstance(l);        
-        SDKManager::registerMessageHandler();
         this->_sdkloaded = SDKManager::loadSDK();
-
     }
 
     if(!l || !this->_sdkloaded)
@@ -105,7 +103,8 @@ bool MainWindow::closeApplication()
 void MainWindow::loadFile(QString file, QHexEditData *hexeditdata)
 {
     QString viewname = QFileInfo(file).fileName();
-    HexView* hv = PrefLib::instance()->addHexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+    LoadedViews::instance()->addView(hv);
     ui->tabWidget->addTab(hv, viewname);
 }
 
@@ -156,9 +155,8 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
                 this->setSaveVisible(false);
             }
 
-            ui->tabWidget->widget(index)->deleteLater(); /* Shedule object for deletion */
+            LoadedViews::instance()->removeView(qobject_cast<AbstractView*>(ui->tabWidget->widget(index)));
             ui->tabWidget->removeTab(index);
-
             break;
         }
 
@@ -215,7 +213,10 @@ void MainWindow::on_actionCompare_triggered()
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
         QString viewname = QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName());
-        ui->tabWidget->addTab(PrefLib::instance()->addCompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo,  ui->tabWidget), viewname);
+
+        CompareView* cv = new CompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo,  ui->tabWidget);
+        ui->tabWidget->addTab(cv, viewname);
+        LoadedViews::instance()->addView(cv);
     }
 }
 
@@ -256,8 +257,9 @@ void MainWindow::on_actionHex_File_triggered()
         f.close();
 
         QString viewname = QFileInfo(file).fileName();
-        HexView* fv = PrefLib::instance()->addHexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, ui->tabWidget);
-        ui->tabWidget->addTab(fv, viewname);
+        HexView* hv = new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, ui->tabWidget);
+        LoadedViews::instance()->addView(hv);
+        ui->tabWidget->addTab(hv, viewname);
     }
 }
 
@@ -298,8 +300,10 @@ void MainWindow::on_actionDisassemble_triggered()
         if(res == DisassemblerDialog::Accepted && dd.selectedLoader())
         {
             QString viewname = QFileInfo(file).fileName();
-            DisassemblerView* dv = PrefLib::instance()->addDisassemblerView(dd.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+            DisassemblerView* dv = new DisassemblerView(dd.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+            LoadedViews::instance()->addView(dv);
             ui->tabWidget->addTab(dv, viewname);
+            dv->disassemble();
         }
     }
 }

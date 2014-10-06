@@ -7,35 +7,22 @@ LoaderListModel::LoaderListModel(QHexEditData *hexeditdata, QObject *parent): QA
     this->_icoloader = this->_icoloader.scaled(22, 22);
 }
 
-LoaderList::LoaderId LoaderListModel::loader(int idx) const
+ProcessorLoader* LoaderListModel::loader(int idx) const
 {
     return this->_loaders[idx];
 }
 
 void LoaderListModel::validateLoaders(QHexEditData *hexeditdata)
 {
-    lua_State* l = LuaState::instance();
+    LoaderList* loaderlist = LoaderList::instance();
 
-    lua_getglobal(l, "Sdk");
-    lua_getfield(l, -1, "validateLoaders");
-    lua_pushlightuserdata(l, this);
-    lua_pushlightuserdata(l, hexeditdata);
+    for(int i = 0; i < loaderlist->length(); i++)
+    {
+        ProcessorLoader* pl = loaderlist->loader(i);
 
-    int res = lua_pcall(l, 2, 0, 0);
-
-    if(res != 0)
-        DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
-
-    lua_pop(l, (res ? 2 : 1));
-}
-
-void LoaderListModel::setValid(LoaderList::LoaderId loaderid)
-{
-    int l = this->_loaders.length();
-
-    this->beginInsertRows(QModelIndex(), l, l);
-    this->_loaders.append(loaderid);
-    this->endInsertRows();
+        if(pl->validate(hexeditdata))
+            this->_loaders.append(pl);
+    }
 }
 
 int LoaderListModel::columnCount(const QModelIndex &) const
@@ -73,18 +60,18 @@ QVariant LoaderListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        LoaderList::Loader& l = LoaderList::loader(this->_loaders[index.row()]);
+        ProcessorLoader* pl = this->_loaders[index.row()];
 
         switch(index.column())
         {
             case 0:
-                return l.name();
+                return pl->name();
 
             case 1:
-                return l.author();
+                return pl->author();
 
             case 2:
-                return l.version();
+                return pl->version();
 
             default:
                 break;

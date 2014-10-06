@@ -2,9 +2,9 @@
 
 namespace PrefSDK
 {
-    FormatTree::FormatTree(lua_State *l, QHexEditData* hexeditdata, int64_t baseoffset, QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _state(l), _baseoffset(baseoffset)
+    FormatTree::FormatTree(QHexEditData* hexeditdata, LogWidget *logwidget, qint64 baseoffset, QObject *parent): AbstractTree(hexeditdata, logwidget, parent), _baseoffset(baseoffset)
     {
-
+        this->_luahexeditdata = new LuaHexEditData(hexeditdata, this);
     }
 
     bool FormatTree::isEmpty() const
@@ -12,43 +12,60 @@ namespace PrefSDK
         return this->_structureoffsets.isEmpty();
     }
 
-    Structure *FormatTree::addStructure(const QString &name)
+    LuaHexEditData *FormatTree::buffer()
     {
-        uint64_t offset = 0;
+        return this->_luahexeditdata;
+    }
 
-        if(!this->_structuremap.isEmpty())
+    PrefSDK::Structure *FormatTree::addStructure(const QString &name)
+    {
+        quint64 offset = 0;
+
+        if(!this->_structures.isEmpty())
         {
-            uint64_t lastoffset = this->_structureoffsets.last();
-            FormatElement* lastelement = this->_structuremap[lastoffset];
+            quint64 lastoffset = this->_structureoffsets.last();
+            FormatElement* lastelement = this->_structures[lastoffset];
             offset = lastoffset + lastelement->size();
         }
 
-        return this->insertStructure(name, offset);
+        return this->addStructure(name, offset);
     }
 
-    Structure *FormatTree::insertStructure(const QString &name, uint64_t offset)
+    PrefSDK::Structure *FormatTree::addStructure(const QString &name, lua_Integer offset)
     {
         offset += this->_baseoffset;
-        Structure* s = new Structure(this->_state, offset, name, QUuid(), this->_elementpool, this->_hexeditdata);
+        Structure* s = new Structure(offset, name, QUuid(), this, this);
 
         this->_structureoffsets.append(offset);
-        this->_structuremap[offset] = s;
+        this->_structures[offset] = s;
+        this->_structurenames[name] = offset;
 
         qSort(this->_structureoffsets.begin(), this->_structureoffsets.end());
         return s;
     }
 
-    uint64_t FormatTree::structureCount()
+    quint64 FormatTree::structureCount()
     {
         return this->_structureoffsets.length();
     }
 
-    Structure *FormatTree::structure(uint64_t i)
+    PrefSDK::Structure* FormatTree::structure(const QString &name)
     {
-        return this->_structuremap[this->_structureoffsets[i]];
+        if(this->_structurenames.contains(name))
+        {
+            qint64 offset = this->_structurenames[name];
+            return this->_structures[offset];
+        }
+
+        return nullptr;
     }
 
-    FormatElement *FormatTree::elementFromPool(int64_t i, const FormatElement *parent)
+    PrefSDK::Structure* FormatTree::structure(quint64 i)
+    {
+        return this->_structures[this->_structureoffsets[i]];
+    }
+
+    FormatElement *FormatTree::elementFromPool(qint64 i, FormatElement *parent)
     {
         QUuid uuid;
 
@@ -56,16 +73,16 @@ namespace PrefSDK
         {
             switch(parent->elementType())
             {
-                case ElementType::Structure:
-                    uuid = qobject_cast<const Structure*>(parent)->field(i)->id();
+                case FormatElement::Type::StructureType:
+                    uuid = qobject_cast<Structure*>(parent)->field(i)->id();
                     break;
 
-                case ElementType::FieldArray:
-                    uuid = qobject_cast<const FieldArray*>(parent)->item(i)->id();
+                case FormatElement::Type::FieldArrayType:
+                    uuid = qobject_cast<FieldArray*>(parent)->item(i)->id();
                     break;
 
-                case ElementType::Field:
-                    uuid = qobject_cast<const Field*>(parent)->bitField(i)->id();
+                case FormatElement::Type::FieldType:
+                    uuid = qobject_cast<Field*>(parent)->bitField(i)->id();
                     break;
 
                 default:
@@ -73,17 +90,24 @@ namespace PrefSDK
             }
         }
         else
-            uuid = this->_structuremap[this->_structureoffsets[i]]->id();
+            uuid = this->_structures[this->_structureoffsets[i]]->id();
 
         if(!uuid.isNull())
             return this->elementFromPoolByUUID(uuid);
 
-        DebugDialog::instance()->out(QString("ERROR: FormatTree::elementFromPool(), element not found"));
+        throw PrefException("FormatTree::elementFromPool(), element not found");
         return nullptr;
     }
 
-    FormatElement *FormatTree::elementFromPoolByUUID(const QUuid &uuid)
+    int FormatTree::metaIndex(lua_State *l, const QString &key)
     {
-        return this->_elementpool[uuid];
+        Structure* s = this->structure(key);
+
+        if(!s)
+            return 0;
+
+        QtLua::pushObject(l, s);
+        return 1;
     }
+
 }

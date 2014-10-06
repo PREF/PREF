@@ -5,6 +5,8 @@ FunctionModel::FunctionModel(DisassemblerListing* listing, QObject *parent): QAb
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
+
+    this->_functions = listing->functions().values();
 }
 
 QString FunctionModel::functionType(Function *f) const
@@ -70,13 +72,13 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {                
             case 0:
-                return this->_listing->symbolTable()[f->startAddress()]->name();
+                return this->_listing->symbolTable()->get(f->startAddress());
 
             case 1:
-                return QString("%1").arg(f->startAddress(), 8, 16, QLatin1Char('0')).toUpper();
+                return f->startAddress().toString(16);
 
             case 2:
-                return QString("'%1'").arg(f->segmentName());
+                return this->_listing->findSegment(f)->name();
 
             case 3:
                 return this->functionType(f);
@@ -121,7 +123,7 @@ QModelIndex FunctionModel::index(int row, int column, const QModelIndex &parent)
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column, this->_listing->function(row));
+    return this->createIndex(row, column, this->_functions[row]);
 }
 
 QModelIndex FunctionModel::parent(const QModelIndex &) const
@@ -131,7 +133,7 @@ QModelIndex FunctionModel::parent(const QModelIndex &) const
 
 int FunctionModel::rowCount(const QModelIndex &) const
 {
-    return this->_listing->functionsCount();
+    return this->_functions.count();
 }
 
 Qt::ItemFlags FunctionModel::flags(const QModelIndex &index) const

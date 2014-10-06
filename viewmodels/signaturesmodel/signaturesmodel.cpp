@@ -2,6 +2,9 @@
 
 SignaturesModel::SignaturesModel(QObject *parent): QAbstractItemModel(parent)
 {
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
 void SignaturesModel::setData(const SignaturesModel::OffsetList &offsetlist, const SignaturesModel::SignatureMap &signatures)
@@ -62,10 +65,19 @@ QVariant SignaturesModel::data(const QModelIndex &index, int role) const
         qint64 offset = this->_offsetlist[index.row()];
 
         if(index.column() == 0)
-            return QString("0x").append(QString("%1").arg(offset, 8, 16, QLatin1Char('0')).toUpper());
+            return QString("%1").arg(offset, 8, 16, QLatin1Char('0')).toUpper().append("h");
         else if(index.column() == 1)
             return this->_signatures[offset].second;
     }
+    else if(role == Qt::ForegroundRole)
+    {
+        if(index.column() == 0)
+            return QColor(Qt::darkBlue);
+        else if(index.column() == 1)
+            return QColor(Qt::darkGreen);
+    }
+    else if(role == Qt::FontRole)
+        return this->_monospacefont;
 
     return QVariant();
 }

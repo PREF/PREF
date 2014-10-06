@@ -28,28 +28,21 @@ namespace PrefSDK
             typedef QSet<Reference*> ReferenceSet;
 
         public:
-            explicit Function(FunctionTypes::Type type, uint64_t startaddress, QObject* parent = 0);
-            void addInstruction(Instruction* instruction);
-            void removeInstruction(Instruction* instruction);
-            void replaceInstruction(Instruction* oldinstruction, Instruction* newinstruction);
-            int indexOf(Instruction* instruction) const;
-            Instruction* instruction(int idx);
-            int instructionsCount() const;
+            explicit Function(const QString& name, FunctionTypes::Type type, const DataValue& startaddress, QObject* parent = 0);
+            explicit Function(FunctionTypes::Type type, const DataValue& startaddress, QObject* parent = 0);
+            const QString& name() const;
             FunctionTypes::Type type() const;
             bool isEntryPoint() const;
             bool isImport() const;
             bool isExport() const;
-            QString references() const;
 
         public: /* Overriden Methods */
-            virtual ListingTypes::Type objectType() const;
-
-        private:
-            static bool sortInstructions(Instruction* instruction1, Instruction* instruction2);
+            virtual Block::Type blockType() const;
 
         private:
             ReferenceSet _references;
             InstructionList _instructions;
+            QString _name;
             FunctionTypes::Type _type;
     };
 }

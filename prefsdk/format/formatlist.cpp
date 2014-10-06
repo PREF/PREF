@@ -2,19 +2,37 @@
 
 namespace PrefSDK
 {
-    QList<FormatList::Format> FormatList::_formats;
-    QHash<FormatList::FormatId, int> FormatList::_formatmap;
-    QHash<QHexEditData*, FormatList::LoadedFormat> FormatList::_loadedformats;
-
+    FormatList* FormatList::_instance = nullptr;
     const QString FormatList::FORMATS_DIR = "formats";
-    const QString FormatList::FORMAT_MAIN_FILE = "register.lua";
+    const QString FormatList::FORMAT_MAIN_FILE = "definition.lua";
 
-    FormatList::FormatList()
+    FormatList::FormatList(QObject *parent): QObject(parent)
     {
 
     }
 
-    void FormatList::loadFormats(lua_State *l, const QString& dir)
+    FormatList *FormatList::instance()
+    {
+        return FormatList::_instance;
+    }
+
+    void FormatList::load()
+    {
+        if(FormatList::_instance)
+            return;
+
+        FormatList::_instance = new FormatList();
+        QDir d(qApp->applicationDirPath());
+        QString formatspath = d.absoluteFilePath(FormatList::FORMATS_DIR);
+
+        if(!QDir(formatspath).exists())
+            return;
+
+        lua_State* l = LuaState::instance();
+        FormatList::_instance->load(l, formatspath);
+    }
+
+    void FormatList::load(lua_State *l, const QString& dir)
     {
         QDir d(dir);
         QFileInfoList dirs = d.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
@@ -29,67 +47,41 @@ namespace PrefSDK
 
                 if(res != 0)
                 {
-                    DebugDialog::instance()->out(QString::fromUtf8(lua_tostring(l, -1)));
+                    throw PrefException(QString("FormatList::load(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
                     lua_pop(l, 1);
                 }
+
+                if(!QtLua::isQObject(l, -1))
+                {
+                    throw PrefException(QString("FormatList::load(): Got '%1'' instead of format type").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
+                    lua_pop(l, 1);
+                    continue;
+                }
+
+                FormatDefinition* formatdefinition = qobject_cast<FormatDefinition*>(QtLua::toQObject(l, -1));
+                lua_pop(l, 1);
+
+                if(this->_formatmap.contains(formatdefinition->id()))
+                {
+                    throw PrefException(QString("FormatList::load(): Format '%1' already loaded").arg(formatdefinition->name()));
+                    continue;
+                }
+
+                int idx = this->_formats.length();
+                CategoryManager::add(formatdefinition->category(), idx);
+                this->_formats.append(formatdefinition);
+                this->_formatmap[formatdefinition->id()] = idx;
             }
         }
     }
 
-    void FormatList::load(lua_State *l)
-    {
-        QDir d(qApp->applicationDirPath());
-        QString formatspath = d.absoluteFilePath(FormatList::FORMATS_DIR);
-
-        if(!QDir(formatspath).exists())
-            return;
-
-        FormatList::loadFormats(l, formatspath);
-    }
-
-    void FormatList::registerFormat(const QString& name, const QString& category, const QString& author, const QString& version, FormatId formatid)
-    {
-        int idx = FormatList::_formats.length();
-
-        CategoryManager::add(category, idx);
-        FormatList::_formats.append(Format(name, category, author, version, formatid));
-        FormatList::_formatmap[formatid] = idx;
-    }
-
-    void FormatList::registerOption(QHexEditData* hexeditdata, int optionidx, const QString &name)
-    {
-        FormatList::LoadedFormat& loadedformat = FormatList::_loadedformats[hexeditdata];
-        loadedformat.addOption(optionidx, name);
-    }
-
-    void FormatList::addLoadedFormat(FormatList::FormatId formatid, FormatTree *formattree, QHexEditData* hexeditdata)
-    {
-        FormatList::_loadedformats[hexeditdata] = LoadedFormat(formatid, formattree);
-    }
-
-    void FormatList::removeLoadedFormat(QHexEditData *hexeditdata)
-    {
-        if(FormatList::_loadedformats.contains(hexeditdata))
-            FormatList::_loadedformats.remove(hexeditdata);
-    }
-
     int FormatList::length()
     {
-        return FormatList::_formats.length();
+        return this->_formats.length();
     }
 
-    FormatList::Format &FormatList::format(int i)
+    FormatDefinition *FormatList::format(int i)
     {
-        return FormatList::_formats[i];
-    }
-
-    FormatList::Format &FormatList::formatFromId(FormatList::FormatId id)
-    {
-        return FormatList::_formats[FormatList::_formatmap[id]];
-    }
-
-    FormatList::LoadedFormat &FormatList::loadedFormat(QHexEditData *hexeditdata)
-    {
-        return FormatList::_loadedformats[hexeditdata];
+        return this->_formats[i];
     }
 }

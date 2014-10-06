@@ -2,12 +2,12 @@
 
 namespace PrefSDK
 {
-    BitField::BitField(lua_State *l, int bitstart, int bitend, uint64_t offset, DataType::Type datatype, const QString &name, const QUuid& parentid, ElementPool& elementpool, QHexEditData* hexeditdata, QObject *parent): FieldElement(l, datatype, offset, name, parentid, elementpool, hexeditdata, parent), _bitstart(bitstart), _bitend(bitend)
+    BitField::BitField(int bitstart, int bitend, quint64 offset, DataType::Type datatype, const QString &name, const QUuid& parentid, AbstractTree *formattree, QObject *parent): FieldElement(datatype, offset, name, parentid, formattree, parent), _bitstart(bitstart), _bitend(bitend)
     {
         this->_mask = BitField::createMask(bitstart, bitend);
     }
 
-    uint64_t BitField::mask() const
+    quint64 BitField::mask() const
     {
         return this->_mask;
     }
@@ -22,12 +22,12 @@ namespace PrefSDK
         return this->_bitend;
     }
 
-    ElementType::Type BitField::elementType() const
+    FormatElement::Type BitField::elementType() const
     {
-        return ElementType::BitField;
+        return FormatElement::BitFieldType;
     }
 
-    uint64_t BitField::size() const
+    quint64 BitField::size() const
     {
         return 1; // No Size for BitFields.
     }
@@ -50,7 +50,7 @@ namespace PrefSDK
 
     QString BitField::displayValue() const
     {
-        QHexEditDataReader reader(this->_hexeditdata);
+        QHexEditDataReader reader(this->_formattree->data());
         quint64 val = reader.readUInt64(this->offset(), DataType::byteOrder(this->dataType()));
         return QString("%1").arg((val & this->_mask) >> this->_bitstart, 0, this->base()).toUpper();
     }
@@ -60,9 +60,63 @@ namespace PrefSDK
         return false;
     }
 
-    uint64_t BitField::createMask(int bitstart, int bitend)
+    void BitField::pushValue(lua_State *l)
     {
-        uint64_t mask = 0u;
+        QHexEditDataReader reader(this->_formattree->data());
+        FieldElement* parentelement = qobject_cast<FieldElement*>(this->parentElement());
+
+        switch(DataType::bitWidth(parentelement->dataType()))
+        {
+            case 8:
+            {
+                if(this->isSigned())
+                    lua_pushinteger(l, (static_cast<qint8>(reader.at(this->offset())) & this->_mask) >> this->_bitstart);
+                else
+                    lua_pushinteger(l, (static_cast<quint8>(reader.at(this->offset())) & this->_mask) >> this->_bitstart);
+
+                return;
+            }
+
+            case 16:
+            {
+                if(this->isSigned())
+                    lua_pushinteger(l,(reader.readInt16(this->offset()) & this->_mask) >> this->_bitstart);
+                else
+                    lua_pushinteger(l,(reader.readUInt16(this->offset()) & this->_mask) >> this->_bitstart);
+
+                return;
+            }
+
+            case 32:
+            {
+                if(this->isSigned())
+                    lua_pushinteger(l,(reader.readInt32(this->offset()) & this->_mask) >> this->_bitstart);
+                else
+                    lua_pushinteger(l,(reader.readUInt32(this->offset()) & this->_mask) >> this->_bitstart);
+
+                return;
+            }
+
+            case 64:
+            {
+                if(this->isSigned())
+                    lua_pushinteger(l,(reader.readInt64(this->offset()) & this->_mask) >> this->_bitstart);
+                else
+                    lua_pushinteger(l,(reader.readUInt64(this->offset()) & this->_mask) >> this->_bitstart);
+
+                return;
+            }
+
+            default:
+                break;
+        }
+
+        FieldElement::pushValue(l);
+    }
+
+    quint64 BitField::createMask(int bitstart, int bitend)
+    {
+        quint64 mask = 0u;
 
         for(int i = 0; i < 32; i++)
         {

@@ -1,7 +1,7 @@
 #ifndef PREFSDK_FIELDELEMENT_H
 #define PREFSDK_FIELDELEMENT_H
 
-#include "prefsdk/datatype.h"
+#include "prefsdk/type/datatype.h"
 #include "formatelement.h"
 
 namespace PrefSDK
@@ -10,15 +10,21 @@ namespace PrefSDK
     {
         Q_OBJECT
 
+        Q_PROPERTY(PrefSDK::DataType::Type dataType READ dataType)
+        Q_PROPERTY(bool isSigned READ isSigned)
+        Q_PROPERTY(bool isInteger READ isInteger)
+
         public:
-            explicit FieldElement(lua_State *l, DataType::Type datatype, uint64_t offset, const QString& name, const QUuid& parentid, ElementPool& elementpool, QHexEditData* hexeditdata, QObject *parent = 0);
+            explicit FieldElement(DataType::Type datatype, quint64 offset, const QString& name, const QUuid& parentid, AbstractTree* formattree, QObject *parent = 0);
             DataType::Type dataType() const;
             bool isSigned() const;
             bool isInteger() const;
 
         public: /* Overriden Methods */
             virtual int indexOf(FormatElement*) const;
-            virtual uint64_t size() const;
+            virtual quint64 size() const;
+
+        public slots:
             virtual QString displayType() const;
             virtual QString displayValue() const;
 

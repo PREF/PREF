@@ -1,70 +1,19 @@
 #include "formatwidget.h"
 #include "ui_formatwidget.h"
 
-FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr), _formatid(nullptr)
+FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr)
 {
     ui->setupUi(this);
-
-    connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
-    connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
-    connect(&this->_worker, SIGNAL(finished()), this, SLOT(onParsingFinished()));
 }
 
 void FormatWidget::setLogWidget(LogWidget *logwidget)
 {
     this->_logwidget = logwidget;
-    connect(&this->_worker, SIGNAL(error(QString)), logwidget, SLOT(writeError(QString)));
 }
 
 FormatWidget::~FormatWidget()
 {
-    if(this->_worker.isRunning())
-    {
-        this->_worker.abort();
-        this->_worker.wait();
-    }
-
     delete ui;
-}
-
-FormatTree* FormatWidget::parseFormat(FormatList::FormatId formatid, qint64 baseoffset)
-{
-    emit workStarted();
-
-    lua_State* l = LuaState::instance();
-    lua_State* thread = lua_newthread(l);
-    FormatTree* formattree = new FormatTree(l, this->_hexedit->data(), baseoffset, this);
-
-    lua_getglobal(thread, "Sdk");
-    lua_getfield(thread, -1, "parseFormat");
-    lua_pushstring(thread, formatid);
-    lua_pushinteger(thread, static_cast<lua_Integer>(baseoffset));
-    lua_pushlightuserdata(thread, this->_hexedit->data());
-    lua_pushlightuserdata(thread, formattree);
-
-    if(lua_resume(thread, 4))
-        this->_logwidget->writeError(QString::fromUtf8(lua_tostring(thread, -1)));
-
-    lua_pop(thread, 1);
-    lua_pop(l, 1);
-
-    emit workFinished();
-    return formattree;
-}
-
-void FormatWidget::onParsingFinished()
-{
-    FormatTree* formattree = this->_worker.tree();
-
-    if(!formattree->isEmpty())
-    {
-        this->_formatmodel->setFormatTree(formattree);
-
-        for(int i = 0; i < this->_formatmodel->columnCount(); i++)
-            ui->tvFormat->resizeColumnToContents(i);
-    }
-
-    emit parseFinished(formattree);
 }
 
 void FormatWidget::setData(QHexEdit *hexedit)
@@ -94,11 +43,28 @@ void FormatWidget::loadFormat()
 
     if(res == FormatsDialog::Accepted)
     {
-        emit parseStarted();
+        QWidget* formatview = nullptr;
+        this->_formatdefinition = fd.selectedFormat();
+        bool validated = this->_formatdefinition->callValidate(this->_hexedit->data(), fd.offset());
 
-        this->_formatid = fd.selectedFormat();
-        this->_worker.setData(this->_hexedit->data(), this->_formatid, fd.offset());
-        this->_worker.start(QThread::LowPriority);
+        if(!validated)
+            return;
+
+        emit parseStarted();
+        FormatTree* formattree = this->_formatdefinition->callParse(this->_hexedit->data(), this->_logwidget, fd.offset());
+
+        if(formattree && !formattree->isEmpty())
+        {
+            this->_formatmodel->setFormatTree(formattree);
+
+            for(int i = 0; i < this->_formatmodel->columnCount(); i++)
+                ui->tvFormat->resizeColumnToContents(i);
+
+            if(this->_formatdefinition->hasView())
+                formatview = this->_formatdefinition->callView(this->_hexedit->data(), formattree);
+        }
+
+        emit parseFinished(formattree, formatview);
     }
 }
 
@@ -108,20 +74,20 @@ void FormatWidget::onSetBackColor(FormatElement *formatelement)
 
     if(c.isValid())
     {
-        uint64_t offset = formatelement->offset();
+        quint64 offset = formatelement->offset();
         this->_hexedit->highlightBackground(offset, (offset + formatelement->size() - 1), c);
     }
 }
 
 void FormatWidget::onRemoveBackColor(FormatElement *formatelement)
 {
-    uint64_t offset = formatelement->offset();
+    quint64 offset = formatelement->offset();
     this->_hexedit->clearHighlight(offset, (offset + formatelement->size() - 1));
 }
 
 void FormatWidget::onFormatObjectSelected(FormatElement *formatelement)
 {
-    uint64_t offset = formatelement->offset();
+    quint64 offset = formatelement->offset();
     this->_hexedit->setSelection(offset, offset + formatelement->size());
 }
 
@@ -132,7 +98,7 @@ void FormatWidget::exportData(FormatElement *formatelement)
     int res = ed.exec();
 
     if(res == ExportDialog::Accepted)
-        ExporterList::exportData(ed.selectedExporter().id(), ed.fileName(), this->_hexedit->data(), ed.startOffset(), ed.endOffset());
+        ed.selectedExporter()->callDump(this->_hexedit->data(), ed.fileName(), ed.startOffset(), ed.endOffset());
 }
 
 void FormatWidget::importData(FormatElement *formatelement)
@@ -144,14 +110,13 @@ void FormatWidget::importData(FormatElement *formatelement)
         QFile f(s);
         f.open(QIODevice::ReadOnly);
 
-        uint64_t offset = formatelement->offset();
-        uint64_t size = qMin(static_cast<uint64_t>(f.size()), (formatelement->endOffset() - offset));
+        quint64 size = qMin(static_cast<quint64>(f.size()), formatelement->size());
 
-        if (size > 0)
+        if(size > 0)
         {
             QByteArray ba = f.read(size);
             QHexEditDataWriter writer(this->_hexedit->data());
-            writer.replace(offset, size, ba);
+            writer.replace(formatelement->offset(), size, ba);
         }
     }
 }

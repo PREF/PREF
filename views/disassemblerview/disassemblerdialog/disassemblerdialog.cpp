@@ -1,7 +1,7 @@
 #include "disassemblerdialog.h"
 #include "ui_disassemblerdialog.h"
 
-DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, QWidget *parent): QDialog(parent), ui(new Ui::DisassemblerDialog), _selectedloader(nullptr)
+DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, QWidget *parent): QDialog(parent), ui(new Ui::DisassemblerDialog)
 {
     ui->setupUi(this);
 
@@ -18,7 +18,7 @@ bool DisassemblerDialog::hasLoaders() const
     return this->_loaderlistmodel->rowCount() > 0;
 }
 
-LoaderList::LoaderId DisassemblerDialog::selectedLoader() const
+ProcessorLoader* DisassemblerDialog::selectedLoader() const
 {
     QItemSelectionModel* selectionmodel = ui->loaderTable->selectionModel();
     QModelIndexList selectedindexes = selectionmodel->selectedRows();

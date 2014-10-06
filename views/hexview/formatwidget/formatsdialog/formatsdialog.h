@@ -4,9 +4,9 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/format/formatlist.h"
 #include "viewmodels/categorymodel/categorymodel.h"
 #include "viewmodels/formatlistmodel/formatlistmodel.h"
+#include "prefsdk/format/formatlist.h"
 
 namespace Ui {
 class FormatsDialog;
@@ -18,7 +18,7 @@ class FormatsDialog : public QDialog
     
     public:
         explicit FormatsDialog(qint64 maxlen, qint64 pos, QWidget *parent = 0);
-        FormatList::FormatId selectedFormat();
+        FormatDefinition *selectedFormat();
         qint64 offset();
         ~FormatsDialog();
 

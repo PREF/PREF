@@ -32,6 +32,7 @@ class SignaturesModel : public QAbstractItemModel
     private:
         OffsetList _offsetlist;
         SignatureMap _signatures;
+        QFont _monospacefont;
 };
 
 #endif // SIGNATURESMODEL_H

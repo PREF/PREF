@@ -57,7 +57,7 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
 
         this->_structuremenu->setGotoVisible(this->_gotovisible);
 
-        if(formatelement->elementType() == ElementType::Structure)
+        if(formatelement->elementType() == FormatElement::StructureType)
         {
             this->_structuremenu->setTitle(QString("'%1'").arg(formatelement->displayName()));
             this->_structuremenu->menuAction()->setVisible(true);
@@ -65,7 +65,7 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
         else
             this->_structuremenu->menuAction()->setVisible(false);
 
-        if(formatelement->elementType() == ElementType::Field)
+        if(formatelement->elementType() == FormatElement::FieldType)
             this->_copymenu->setCopyValueVisible(true);
         else
             this->_copymenu->setCopyValueVisible(false);
@@ -79,7 +79,7 @@ void FormatTreeView::onTreeClicked(const QModelIndex &index)
 {
     FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if(formatelement->elementType() == ElementType::BitField)
+    if(formatelement->elementType() == FormatElement::BitFieldType)
         formatelement = formatelement->parentElement(); /* Set index = BitField's Parent */
 
     if(formatelement->size())
@@ -186,7 +186,7 @@ void FormatTreeView::updateColor(bool set)
 {
     FormatElement* formatelement = this->selectedElement();
 
-    if(formatelement->elementType() == ElementType::BitField)
+    if(formatelement->elementType() == FormatElement::BitFieldType)
         formatelement = formatelement->parentElement(); /* Change Object to BitField's parent */
 
     if(formatelement->size())

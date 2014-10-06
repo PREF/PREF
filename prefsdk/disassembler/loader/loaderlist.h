@@ -3,47 +3,31 @@
 
 #include <QtCore>
 #include <algorithm>
-#include <lua.hpp>
+#include "prefsdk/luastate.h"
 #include "qhexedit/qhexeditdata.h"
-#include "debugdialog/debugdialog.h"
 #include "prefsdk/disassembler/blocks/segment.h"
+#include "prefsdk/disassembler/processor/processorloader.h"
 
 namespace PrefSDK
 {
-    class LoaderList
+    class LoaderList: public QObject
     {
-        public:
-            typedef const char* LoaderId;
-
-            class Loader
-            {
-                public:
-                    Loader(): _id(nullptr) { }
-                    Loader(const QString& name, const QString& author, const QString& version, LoaderId id): _name(name), _author(author), _version(version), _id(id) { }
-                    const QString& name() const { return this->_name; }
-                    const QString& author() const { return this->_author; }
-                    const QString& version() const { return this->_version; }
-                    LoaderList::LoaderId id() const { return this->_id; }
-
-                private:
-                    QString _name;
-                    QString _author;
-                    QString _version;
-                    LoaderId _id;
-            };
+        Q_OBJECT
 
         private:
-            LoaderList();
-            static void loadLoader(lua_State *l, const QString& dir);
+            LoaderList(QObject* parent = 0);
+            void load(lua_State *l, const QString& dir);
 
         public:
-            static void load(lua_State* l);
-            static void registerLoader(const QString& name, const QString& author, const QString& version, LoaderList::LoaderId loaderid);
-            static LoaderList::Loader& loader(LoaderId loaderid);
+            static LoaderList* instance();
+            static void load();
+            ProcessorLoader* loader(int i);
+            int length();
 
         private:
-            static QList<Loader> _loaders;
-            static QHash<LoaderList::LoaderId, int> _loadermap;
+            static LoaderList* _instance;
+            QList<ProcessorLoader*> _loaders;
+            QHash<QString, int> _loadermap;
 
         private:
             static const QString LOADERS_DIR;

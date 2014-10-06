@@ -42,7 +42,7 @@ void ExportDialog::setFixedRange(qint64 start, qint64 end)
     ui->sbbsTo->setEnabled(false);
 }
 
-const ExporterList::Exporter &ExportDialog::selectedExporter() const
+ExporterDefinition *ExportDialog::selectedExporter() const
 {
     return this->_selexporter;
 }
@@ -69,7 +69,7 @@ ExportDialog::~ExportDialog()
 
 void ExportDialog::validateFields()
 {
-    if(!this->_selexporter.id() || !ui->leFile->text().length())
+    if(this->_selexporter->id().isEmpty() || ui->leFile->text().isEmpty())
         ui->pbExport->setEnabled(false);
     else
         ui->pbExport->setEnabled(true);
@@ -129,9 +129,9 @@ void ExportDialog::on_tbBrowse_clicked()
 void ExportDialog::on_tvExporters_clicked(const QModelIndex &index)
 {
     if(index.isValid())
-        this->_selexporter = ExporterList::exporter(index.row());
+        this->_selexporter = ExporterList::instance()->exporter(index.row());
     else
-        this->_selexporter = ExporterList::Exporter();
+        this->_selexporter = new ExporterDefinition();
 
     this->validateFields();
 }

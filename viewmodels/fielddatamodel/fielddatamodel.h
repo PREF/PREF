@@ -2,7 +2,7 @@
 #define FIELDDATAMODEL_H
 
 #include <QtCore>
-#include "prefsdk/datatype.h"
+#include "prefsdk/type/datatype.h"
 
 using namespace PrefSDK;
 

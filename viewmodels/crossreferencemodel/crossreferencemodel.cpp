@@ -1,23 +1,20 @@
 #include "crossreferencemodel.h"
 
-CrossReferenceModel::CrossReferenceModel(QObject *parent): QAbstractItemModel(parent)
+CrossReferenceModel::CrossReferenceModel(ReferenceSet* referenceset, const QList<Reference *> references, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _block(referenceset), _listing(listing), _references(references)
 {
-    //this->_func = func;
-    //this->_disasmlisting = disasmlisting;
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
-void CrossReferenceModel::addCrossReference(quint64 va)
+CrossReferenceModel::CrossReferenceModel(Block *block, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _block(block), _listing(listing)
 {
-    int len = this->_xreflist.length();
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
-    this->beginInsertRows(QModelIndex(), len, len);
-    this->_xreflist.append(va);
-    this->endInsertRows();
-}
-
-quint64 CrossReferenceModel::xrefCount()
-{
-    return this->_xreflist.length();
+    ReferenceTable* referenceset = listing->referenceTable();
+    this->_references = referenceset->references(block)->referenceList();
 }
 
 int CrossReferenceModel::columnCount(const QModelIndex &) const
@@ -53,27 +50,28 @@ QVariant CrossReferenceModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
-    /*
     if(role == Qt::DisplayRole)
     {
-        quint64 va = this->_xreflist.at(index.row());
-        DisassemblerListing::DisassemblerItem item = this->_disasmlisting->itemFromVA(va);
+        Reference* r = reinterpret_cast<Reference*>(index.internalPointer());
 
         if(index.column() == 0)
         {
-            if(va > this->_func.VirtualAddress)
+            if(r->referencedAddress() > this->_block->startAddress())
                 return "Down";
-            else if(va < this->_func.VirtualAddress)
+            else if(r->referencedAddress() < this->_block->startAddress())
                 return "Up";
             else
                 return "---";
         }
         else if(index.column() == 1)
-            return QString("%1").arg(va, 8, 16, QLatin1Char('0')).toUpper();
+            return r->referencedAddress().toString(16).append("h");
         //else if(index.column() == 2)
             //return DisassembledInstructionManager::generateInstruction(item.second);
     }
-    */
+    else if(role == Qt::FontRole && index.column() > 0)
+        return this->_monospacefont;
+    else if(role == Qt::ForegroundRole && index.column() == 1)
+        return QColor(Qt::darkBlue);
 
     return QVariant();
 }
@@ -83,7 +81,7 @@ QModelIndex CrossReferenceModel::index(int row, int column, const QModelIndex &p
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column);
+    return this->createIndex(row, column, this->_references[row]);
 }
 
 QModelIndex CrossReferenceModel::parent(const QModelIndex &) const
@@ -93,7 +91,7 @@ QModelIndex CrossReferenceModel::parent(const QModelIndex &) const
 
 int CrossReferenceModel::rowCount(const QModelIndex&) const
 {
-    return this->_xreflist.length();
+    return this->_references.length();
 }
 
 Qt::ItemFlags CrossReferenceModel::flags(const QModelIndex &index) const
@@ -101,10 +99,5 @@ Qt::ItemFlags CrossReferenceModel::flags(const QModelIndex &index) const
     if(!index.isValid())
         return Qt::NoItemFlags;
 
-    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
-
-    if(index.column() == 1)
-        flags |= Qt::ItemIsEditable;
-
-    return flags;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }

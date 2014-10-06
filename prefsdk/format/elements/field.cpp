@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    Field::Field(lua_State *l, DataType::Type datatype, uint64_t offset, const QString &name, const QUuid& parentid, ElementPool &elementpool, QHexEditData* hexeditdata, QObject *parent): FieldElement(l, datatype, offset, name, parentid, elementpool, hexeditdata, parent)
+    Field::Field(DataType::Type datatype, quint64 offset, const QString &name, const QUuid& parentid, AbstractTree *formattree, QObject *parent): FieldElement(datatype, offset, name, parentid, formattree, parent)
     {
 
     }
@@ -12,7 +12,7 @@ namespace PrefSDK
         return this->_bitfieldids.count();
     }
 
-    const BitField *Field::bitField(int64_t i) const
+    const BitField *Field::bitField(qint64 i) const
     {
         QList<QString> keys = this->_bitfieldids.keys();
         return this->bitField(keys[i]);
@@ -20,15 +20,91 @@ namespace PrefSDK
 
     const BitField *Field::bitField(const QString& name) const
     {
-        const QUuid& id = this->_bitfieldids[name];
-        return qobject_cast<BitField*>(this->_elementpool[id]);
+        return qobject_cast<BitField*>(this->_formattree->elementFromPoolByUUID(this->_bitfieldids[name]));
     }
 
-    BitField *Field::setBitField(const QString &name, int bitstart, int bitend)
+    PrefSDK::BitField *Field::setBitField(const QString &name, lua_Integer bitstart, lua_Integer bitend)
     {
-        BitField* bf = new BitField(this->_state, bitstart, bitend, this->offset(), this->_datatype, name, this->id(), this->_elementpool, this->_hexeditdata);
+        BitField* bf = new BitField(bitstart, bitend, this->offset(), this->_datatype, name, this->id(), this->_formattree, this);
         this->_bitfieldids[name] = bf->id();
         return bf;
+    }
+
+    BitField *Field::setBitField(const QString &name, lua_Integer bitstart)
+    {
+        return this->setBitField(name, bitstart, bitstart);
+    }
+
+    void Field::pushValue(lua_State *l)
+    {
+        QHexEditDataReader reader(this->_formattree->data());
+
+        if(this->isInteger())
+        {
+            switch(DataType::bitWidth(this->_datatype))
+            {
+                case 8:
+                {
+                    if(this->isSigned())
+                        lua_pushinteger(l, static_cast<qint8>(reader.at(this->offset())));
+                    else
+                        lua_pushinteger(l, static_cast<quint8>(reader.at(this->offset())));
+
+                    return;
+                }
+
+                case 16:
+                {
+                    if(this->isSigned())
+                        lua_pushinteger(l, reader.readInt16(this->offset(), DataType::byteOrder(this->_datatype)));
+                    else
+                        lua_pushinteger(l, reader.readUInt16(this->offset(), DataType::byteOrder(this->_datatype)));
+
+                    return;
+                }
+
+                case 32:
+                {
+                    if(this->isSigned())
+                        lua_pushinteger(l, reader.readInt32(this->offset(), DataType::byteOrder(this->_datatype)));
+                    else
+                        lua_pushinteger(l, reader.readUInt32(this->offset(), DataType::byteOrder(this->_datatype)));
+
+                    return;
+                }
+
+                case 64:
+                {
+                    if(this->isSigned())
+                        lua_pushinteger(l, reader.readInt64(this->offset(), DataType::byteOrder(this->_datatype)));
+                    else
+                        lua_pushinteger(l, reader.readUInt64(this->offset(), DataType::byteOrder(this->_datatype)));
+
+                    return;
+                }
+
+                default:
+                    break;
+            }
+        }
+        else if(this->_datatype == DataType::Character)
+        {
+            lua_pushstring(l, QString().append(QChar(reader.at(this->offset()))).toUtf8().constData());
+            return;
+        }
+
+        FieldElement::pushValue(l);
+    }
+
+    int Field::metaIndex(lua_State *l, const QString &key)
+    {
+        if(this->_bitfieldids.contains(key))
+        {
+            QtLua::pushObject(l, this->_formattree->elementFromPoolByUUID(this->_bitfieldids[key]));
+            return 1;
+        }
+
+        return FieldElement::metaIndex(l, key);
     }
 
     bool Field::isDynamic() const
@@ -41,9 +117,9 @@ namespace PrefSDK
         return !this->_bitfieldids.isEmpty();
     }
 
-    ElementType::Type Field::elementType() const
+    FormatElement::Type Field::elementType() const
     {
-        return ElementType::Field;
+        return FormatElement::FieldType;
     }
 
     int Field::indexOf(FormatElement *fe) const
@@ -64,7 +140,7 @@ namespace PrefSDK
 
     QString Field::displayValue() const
     {
-        QHexEditDataReader reader(this->_hexeditdata);
+        QHexEditDataReader reader(this->_formattree->data());
 
         if(DataType::isInteger(this->_datatype))
         {
@@ -122,6 +198,6 @@ namespace PrefSDK
 
     bool Field::isOverflowed() const
     {
-        return NumericLimits::willOverflow(this->_hexeditdata, this->offset(), this->dataType());
+        return NumericLimits::willOverflow(this->_formattree->data(), this->offset(), this->dataType());
     }
 }

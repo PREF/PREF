@@ -2,6 +2,10 @@
 
 StringsModel::StringsModel(QHexEditData *hexeditdata, QObject *parent): QAbstractItemModel(parent)
 {
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
+
     this->_reader = new QHexEditDataReader(hexeditdata, this);
 }
 
@@ -120,10 +124,19 @@ QVariant StringsModel::data(const QModelIndex &index, int role) const
     if(role == Qt::DisplayRole)
     {
         if(index.column() == 0)
-            return QString("0x").append(QString("%1").arg(this->_offsetlist[index.row()], 8, 16, QLatin1Char('0')).toUpper());
+            return QString("%1").arg(this->_offsetlist[index.row()], 8, 16, QLatin1Char('0')).toUpper().append("h");
         else if(index.column() == 1)
             return this->string(index.row());
     }
+    else if(role == Qt::ForegroundRole)
+    {
+        if(index.column() == 0)
+            return QColor(Qt::darkBlue);
+        else if(index.column() == 1)
+            return QColor(Qt::darkGreen);
+    }
+    else if(role == Qt::FontRole)
+        return this->_monospacefont;
 
     return QVariant();
 }
