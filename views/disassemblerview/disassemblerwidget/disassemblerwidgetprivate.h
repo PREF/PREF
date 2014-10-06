@@ -45,6 +45,7 @@ class DisassemblerWidgetPrivate: public QWidget
         void onVScrollBarValueChanged(int);
 
     protected:
+        void keyPressEvent(QKeyEvent* e);
         void wheelEvent(QWheelEvent* e);
         void paintEvent(QPaintEvent* pe);
         void resizeEvent(QResizeEvent*);

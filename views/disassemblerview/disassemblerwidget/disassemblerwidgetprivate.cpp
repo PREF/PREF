@@ -9,6 +9,7 @@ DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QS
 
     this->setFont(f);
     this->setWheelScrollLines(5);  /* By default: scroll 5 lines */
+    this->setFocusPolicy(Qt::StrongFocus);
     this->setBackgroundRole(QPalette::Base);
     this->setAddressForeColor(Qt::darkBlue);
     this->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -316,6 +317,30 @@ void DisassemblerWidgetPrivate::ensureVisible(int idx)
 void DisassemblerWidgetPrivate::onVScrollBarValueChanged(int)
 {
     this->update();
+}
+
+void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
+{
+    if(!this->_listing)
+    {
+        QWidget::keyPressEvent(e);
+        return;
+    }
+
+    if(e->matches(QKeySequence::MoveToNextLine))
+        this->setCurrentIndex(this->_selectedindex + 1);
+    else if(e->matches(QKeySequence::MoveToPreviousLine))
+        this->setCurrentIndex(this->_selectedindex - 1);
+    else if(e->matches(QKeySequence::MoveToNextPage))
+        this->setCurrentIndex(this->_selectedindex + ((this->height() / this->_charheight)) + 1);
+    else if(e->matches(QKeySequence::MoveToPreviousPage))
+        this->setCurrentIndex(this->_selectedindex - ((this->height() / this->_charheight)) + 1);
+    else if(e->matches(QKeySequence::MoveToStartOfDocument))
+        this->setCurrentIndex(0);
+    else if(e->matches(QKeySequence::MoveToEndOfDocument))
+        this->setCurrentIndex(this->_listing->length() - 1);
+
+    QWidget::keyPressEvent(e);
 }
 
 void DisassemblerWidgetPrivate::wheelEvent(QWheelEvent *e)
