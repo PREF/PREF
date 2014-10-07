@@ -62,11 +62,5 @@ QSize CrossReferenceDelegate::sizeHint(const QStyleOptionViewItem &option, const
     document.setPlainText(options.text);
     document.setTextWidth(options.rect.width());
 
-    Reference* r = reinterpret_cast<Reference*>(index.internalPointer());
-    Instruction* instruction = this->_listing->findInstruction(r->referencedAddress());
-
-    DisassemblerHighlighter highlighter(&document, instruction);
-    highlighter.rehighlight();  /* Apply Syntax Highlighting */
-
     return QSize(document.idealWidth(), document.size().height());
 }
