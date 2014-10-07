@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>545</width>
-    <height>284</height>
+    <width>535</width>
+    <height>274</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,22 +18,19 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="tvXRefs">
+    <widget class="QTableView" name="crossReferenceTable">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
      </property>
-     <property name="uniformRowHeights">
+     <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
-     </property>
-     <property name="itemsExpandable">
+     </attribute>
+     <attribute name="verticalHeaderVisible">
       <bool>false</bool>
-     </property>
-     <property name="expandsOnDoubleClick">
-      <bool>false</bool>
-     </property>
+     </attribute>
     </widget>
    </item>
    <item>

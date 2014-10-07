@@ -23,12 +23,12 @@ class CrossReferenceDialog : public QDialog
         Instruction* selectedBlock();
     
     private slots:
-        void on_tvXRefs_doubleClicked(const QModelIndex &index);
+        void on_crossReferenceTable_doubleClicked(const QModelIndex &index);
         void on_buttonBox_accepted();
 
     private:
         Ui::CrossReferenceDialog *ui;
-        CrossReferenceModel* _xrefmodel;
+        CrossReferenceModel* _crossreferencemodel;
         DisassemblerListing* _listing;
         Instruction* _selectedinstruction;
 };
