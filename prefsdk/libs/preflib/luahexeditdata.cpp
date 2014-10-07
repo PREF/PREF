@@ -188,12 +188,13 @@ namespace PrefSDK
 
     int LuaHexEditData::metaIndex(lua_State *l, lua_Integer key)
     {
-        if(key >= 0 && key < this->_hexeditdata->length())
+        if((key < 0) || (key >= this->_hexeditdata->length()))
         {
-            lua_pushinteger(l, this->_reader->at(key));
-            return 1;
+            throw PrefException(QString("LuaHexEditData::metaIndex(): Index out of range (%1)").arg(key));
+            return 0;
         }
 
-        return 0;
+        lua_pushinteger(l, this->_reader->at(key));
+        return 1;
     }
 }
