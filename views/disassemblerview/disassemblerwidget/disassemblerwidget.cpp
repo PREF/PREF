@@ -25,6 +25,8 @@ DisassemblerWidget::DisassemblerWidget(QWidget *parent): QFrame(parent)
 
     /* Forward Signals */
     connect(this->_disasmwidget_p, SIGNAL(customContextMenuRequested(QPoint)), this, SIGNAL(customContextMenuRequested(QPoint)));
+    connect(this->_disasmwidget_p, SIGNAL(jumpToRequested()), this, SIGNAL(jumpToRequested()));
+    connect(this->_disasmwidget_p, SIGNAL(crossReferenceRequested(Block*)), this, SIGNAL(crossReferenceRequested(Block*)));
 }
 
 void DisassemblerWidget::setCurrentIndex(int idx)

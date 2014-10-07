@@ -42,6 +42,9 @@ class DisassemblerView : public AbstractView
         void createFunctionsMenu();
 
     private slots:
+        void showCrossReference(Block* b);
+
+    private slots:
         void on_disassemblerWidget_customContextMenuRequested(const QPoint &pos);
         void on_functionList_customContextMenuRequested(const QPoint &pos);
         void on_functionList_doubleClicked(const QModelIndex &index);

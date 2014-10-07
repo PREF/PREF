@@ -342,6 +342,13 @@ void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
         this->setCurrentIndex(0);
     else if(e->matches(QKeySequence::MoveToEndOfDocument))
         this->setCurrentIndex(this->_listing->length() - 1);
+    else if(e->modifiers() == Qt::NoModifier)
+    {
+        if(e->key() == Qt::Key_G)
+            emit jumpToRequested();
+        else if(e->key() == Qt::Key_X)
+            emit crossReferenceRequested(this->_selectedblock);
+    }
 
     QWidget::keyPressEvent(e);
 }

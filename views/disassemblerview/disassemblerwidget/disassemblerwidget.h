@@ -25,6 +25,10 @@ class DisassemblerWidget : public QFrame
         qint64 currentIndex() const;
         Block* selectedBlock() const;
 
+    signals:
+        void jumpToRequested();
+        void crossReferenceRequested(Block* block);
+
     private:
         DisassemblerWidgetPrivate* _disasmwidget_p;
         QScrollArea* _scrollarea;

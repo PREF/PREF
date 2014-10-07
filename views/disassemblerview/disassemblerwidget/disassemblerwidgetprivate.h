@@ -51,6 +51,10 @@ class DisassemblerWidgetPrivate: public QWidget
         void resizeEvent(QResizeEvent*);
         void mousePressEvent(QMouseEvent* e);
 
+    signals:
+        void jumpToRequested();
+        void crossReferenceRequested(Block* block);
+
     private:
         QScrollArea* _scrollarea;
         QScrollBar* _vscrollbar;

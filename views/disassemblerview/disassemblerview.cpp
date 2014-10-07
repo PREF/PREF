@@ -30,6 +30,10 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
 
     this->createListingMenu();
     this->createFunctionsMenu();
+
+    connect(ui->disassemblerWidget, SIGNAL(crossReferenceRequested(Block*)), this, SLOT(showCrossReference(Block*)));
+
+    ui->disassemblerWidget->setFocus();
 }
 
 DisassemblerView::~DisassemblerView()
@@ -88,6 +92,28 @@ void DisassemblerView::createFunctionsMenu()
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
 
+void DisassemblerView::showCrossReference(Block *b)
+{
+    ReferenceTable* referencetable = this->_listing->referenceTable();
+
+    if(!referencetable->isReferenced(b))
+        return;
+
+    ReferenceSet* refset = nullptr;
+
+    if(b->blockType() == Block::ReferenceBlock)
+        refset = qobject_cast<ReferenceSet*>(b);
+    else
+        refset = referencetable->references(b);
+
+    QList<Reference*> references = refset->referenceList();
+    CrossReferenceDialog crd(refset, references, this->_listing);
+    int res = crd.exec();
+
+    if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
+        ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+}
+
 void DisassemblerView::disassemble()
 {
     if(!this->_hexeditdata)
@@ -126,25 +152,7 @@ void DisassemblerView::onFunctionsMenuXRefsTriggered()
 
 void DisassemblerView::onListingMenuCrossReferencesTriggered()
 {
-    ReferenceTable* referencetable = this->_listing->referenceTable();
-    Block* b = ui->disassemblerWidget->selectedBlock();
-
-    if(!referencetable->isReferenced(b))
-        return;
-
-    ReferenceSet* refset = nullptr;
-
-    if(b->blockType() == Block::ReferenceBlock)
-        refset = qobject_cast<ReferenceSet*>(b);
-    else
-        refset = referencetable->references(b);
-
-    QList<Reference*> references = refset->referenceList();
-    CrossReferenceDialog crd(refset, references, this->_listing);
-    int res = crd.exec();
-
-    if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
-        ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+    this->showCrossReference(ui->disassemblerWidget->selectedBlock());
 }
 
 void DisassemblerView::onListingMenuHexDumpTriggered()
