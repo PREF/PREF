@@ -16,9 +16,6 @@ class EntryPointsModel : public QAbstractItemModel
     public:
         explicit EntryPointsModel(DisassemblerListing* listing, QObject *parent = 0);
 
-    private:
-        static bool sortByAddress(Function* f1, Function* f2);
-
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -31,6 +28,7 @@ class EntryPointsModel : public QAbstractItemModel
     private:
         const DisassemblerListing::EntryPointList& _entrypoints;
         DisassemblerListing* _listing;
+        QFont _monospacefont;
 };
 
 #endif // ENTRYPOINTSMODEL_H

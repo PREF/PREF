@@ -3,6 +3,10 @@
 SegmentsModel::SegmentsModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
     this->_segments = listing->segments().values();
+
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
 int SegmentsModel::columnCount(const QModelIndex &) const
@@ -54,13 +58,13 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
                 return segment->name();
 
             case 1:
-                return segment->startAddress().toString(16);
+                return segment->startAddress().toString(16).append("h");
 
             case 2:
-                return segment->endAddress().toString(16);
+                return segment->endAddress().toString(16).append("h");
 
             case 3:
-                return segment->baseOffset().toString(16);
+                return segment->baseOffset().toString(16).append("h");
 
             case 4:
                 return (segment->type() == Segment::Code ? "Code" : "Data");
@@ -69,6 +73,15 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
                 break;
         }
     }
+    else if(role == Qt::ForegroundRole)
+    {
+        if((index.column() == 0) || (index.column() == 4))
+            return QColor(Qt::darkGreen);
+        else
+            return QColor(Qt::darkBlue);
+    }
+    else if(role == Qt::FontRole)
+        return this->_monospacefont;
     else if(role == Qt::TextAlignmentRole)
         return Qt::AlignCenter;
 

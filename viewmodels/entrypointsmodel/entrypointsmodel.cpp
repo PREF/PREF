@@ -2,12 +2,9 @@
 
 EntryPointsModel::EntryPointsModel(DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _entrypoints(listing->entryPoints()), _listing(listing)
 {
-
-}
-
-bool EntryPointsModel::sortByAddress(Function *f1, Function *f2)
-{
-    return f1->startAddress() < f2->startAddress();
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
 int EntryPointsModel::columnCount(const QModelIndex &) const
@@ -52,7 +49,7 @@ QVariant EntryPointsModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {
             case 0:
-                return f->startAddress().toString(16);
+                return f->startAddress().toString(16).append("h");
 
             case 1:
                 return this->_listing->symbolTable()->get(f->startAddress());
@@ -64,6 +61,17 @@ QVariant EntryPointsModel::data(const QModelIndex &index, int role) const
                 break;
         }
     }
+    else if(role == Qt::ForegroundRole)
+    {
+        if(index.column() == 0)
+            return QColor(Qt::darkBlue);
+        else
+            return QColor(Qt::darkGreen);
+    }
+    else if(role == Qt::FontRole)
+        return this->_monospacefont;
+    else if(role == Qt::TextAlignmentRole)
+        return Qt::AlignCenter;
 
     return QVariant();
 }

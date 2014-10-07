@@ -28,6 +28,7 @@ class SegmentsModel : public QAbstractItemModel
     private:
         DisassemblerListing* _listing;
         QList<Segment*> _segments;
+        QFont _monospacefont;
 };
 
 #endif // SEGMENTSMODEL_H
