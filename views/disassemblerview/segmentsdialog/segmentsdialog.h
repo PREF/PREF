@@ -17,10 +17,16 @@ class SegmentsDialog : public QDialog
 
     public:
         explicit SegmentsDialog(DisassemblerListing* listing, QWidget *parent = 0);
+        Segment* selectedSegment() const;
         ~SegmentsDialog();
+
+    private slots:
+        void on_segmentTable_doubleClicked(const QModelIndex &index);
+        void on_buttonBox_accepted();
 
     private:
         Ui::SegmentsDialog *ui;
+        Segment* _selectedsegment;
 };
 
 #endif // SEGMENTSDIALOG_H

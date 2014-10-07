@@ -44,7 +44,7 @@ QVariant EntryPointsModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        Function* f = this->_entrypoints[index.row()];
+        Function* f = reinterpret_cast<Function*>(index.internalPointer());
 
         switch(index.column())
         {
@@ -81,7 +81,7 @@ QModelIndex EntryPointsModel::index(int row, int column, const QModelIndex &pare
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column);
+    return this->createIndex(row, column, this->_entrypoints[row]);
 }
 
 QModelIndex EntryPointsModel::parent(const QModelIndex &) const

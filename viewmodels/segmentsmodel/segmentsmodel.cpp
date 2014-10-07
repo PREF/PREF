@@ -50,7 +50,7 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        Segment* segment = this->_segments[index.row()];
+        Segment* segment = reinterpret_cast<Segment*>(index.internalPointer());
 
         switch(index.column())
         {
@@ -93,7 +93,7 @@ QModelIndex SegmentsModel::index(int row, int column, const QModelIndex &parent)
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column);
+    return this->createIndex(row, column, this->_segments[row]);
 }
 
 QModelIndex SegmentsModel::parent(const QModelIndex &) const

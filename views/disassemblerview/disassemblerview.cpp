@@ -218,13 +218,19 @@ void DisassemblerView::displayDisassembly()
 void DisassemblerView::showEntryPoints()
 {
     EntryPointsDialog epd(this->_listing, this);
-    epd.exec();
+    int res = epd.exec();
+
+    if(res == EntryPointsDialog::Accepted && epd.selectedFunction())
+        ui->disassemblerWidget->jumpTo(epd.selectedFunction());
 }
 
 void DisassemblerView::showSegments()
 {
     SegmentsDialog sd(this->_listing, this);
-    sd.exec();
+    int res = sd.exec();
+
+    if(res == SegmentsDialog::Accepted && sd.selectedSegment())
+        ui->disassemblerWidget->jumpTo(sd.selectedSegment());
 }
 
 void DisassemblerView::gotoFunction()
