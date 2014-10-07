@@ -22,6 +22,9 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
     this->_toolbar->addSeparator();
     this->_actgoto = this->_toolbar->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
 
+    this->_actentrypoints->setShortcut(QKeySequence("CTRL+E"));
+    this->_actsegments->setShortcut(QKeySequence("CTRL+S"));
+
     this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
     ui->tvStrings->setModel(this->_stringrefs);
 
