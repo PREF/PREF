@@ -159,7 +159,8 @@ SOURCES += main.cpp\
     prefsdk/disassembler/references/referenceset.cpp \
     prefsdk/format/abstracttree.cpp \
     viewmodels/crossreferencemodel/crossreferencedelegate.cpp \
-    actionwidget/abstractaction.cpp
+    actionwidget/abstractaction.cpp \
+    views/disassemblerview/gotowidget/gotowidget.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -307,7 +308,8 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/references/referenceset.h \
     prefsdk/format/abstracttree.h \
     viewmodels/crossreferencemodel/crossreferencedelegate.h \
-    actionwidget/abstractaction.h
+    actionwidget/abstractaction.h \
+    views/disassemblerview/gotowidget/gotowidget.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -337,7 +339,8 @@ FORMS    += mainwindow.ui \
     views/disassemblerview/disassemblerdialog/disassemblerdialog.ui \
     views/disassemblerview/segmentsdialog/segmentsdialog.ui \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.ui \
-    views/hexview/outputwidget/outputwidget.ui
+    views/hexview/outputwidget/outputwidget.ui \
+    views/disassemblerview/gotowidget/gotowidget.ui
 
 RESOURCES += resources.qrc
 
