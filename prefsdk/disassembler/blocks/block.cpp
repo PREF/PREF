@@ -39,7 +39,7 @@ namespace PrefSDK
 
     bool Block::contains(const DataValue& address) const
     {
-        return (address >= this->_startaddress && address <= this->endAddress());
+        return (address >= this->_startaddress && address < this->endAddress());
     }
 
     bool Block::isEmpty() const
