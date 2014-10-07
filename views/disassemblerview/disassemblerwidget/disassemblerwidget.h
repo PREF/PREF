@@ -15,15 +15,17 @@ class DisassemblerWidget : public QFrame
 
     public:
         explicit DisassemblerWidget(QWidget *parent = 0);
-        void setCurrentIndex(int idx);
         void setListing(DisassemblerListing* listing);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);
         void setWheelScrollLines(int c);
-        void jumpTo(Block* block);
-        void jumpTo(const DataValue &address);
         qint64 currentIndex() const;
         Block* selectedBlock() const;
+
+    public slots:
+        void setCurrentIndex(int idx);
+        void jumpTo(Block* block);
+        void jumpTo(const PrefSDK::DataValue &address);
 
     signals:
         void jumpToRequested();

@@ -47,6 +47,7 @@ namespace PrefSDK
         }
 
         this->_listing = listing;
+        this->_listing->setAddressType(this->_processordefinition->addressType());
         this->_processoremulator = new ProcessorEmulator(listing, this->_processordefinition->addressType(), this);
 
         QtLua::pushObject(l, this->_formattree);

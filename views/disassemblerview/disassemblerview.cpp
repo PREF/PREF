@@ -25,15 +25,17 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
     this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
     ui->tvStrings->setModel(this->_stringrefs);
 
-    connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
-    connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
-
     this->createListingMenu();
     this->createFunctionsMenu();
 
-    connect(ui->disassemblerWidget, SIGNAL(crossReferenceRequested(Block*)), this, SLOT(showCrossReference(Block*)));
-
     ui->disassemblerWidget->setFocus();
+
+    connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
+    connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
+    connect(this->_actgoto, SIGNAL(triggered()), ui->gotoWidget, SLOT(show()));
+    connect(ui->gotoWidget, SIGNAL(addressRequested(PrefSDK::DataValue)), this, SLOT(gotoAddress(PrefSDK::DataValue)));
+    connect(ui->disassemblerWidget, SIGNAL(crossReferenceRequested(Block*)), this, SLOT(showCrossReference(Block*)));
+    connect(ui->disassemblerWidget, SIGNAL(jumpToRequested()), ui->gotoWidget, SLOT(show()));
 }
 
 DisassemblerView::~DisassemblerView()
@@ -122,6 +124,7 @@ void DisassemblerView::disassemble()
     this->_listing = new DisassemblerListing(this->_hexeditdata, this);
     this->_loader->callMap(this->_listing, this->_hexeditdata, ui->logWidget);
     this->_loader->disassemble(this->_hexeditdata);
+    ui->gotoWidget->setListing(this->_listing);
     this->displayDisassembly();
 }
 
@@ -227,6 +230,14 @@ void DisassemblerView::gotoFunction()
 
     if(selectionmodel->hasSelection())
         ui->disassemblerWidget->jumpTo(reinterpret_cast<Function*>(selectionmodel->selectedIndexes()[0].internalPointer()));
+}
+
+void DisassemblerView::gotoAddress(const DataValue &address)
+{
+    Block* b = this->_listing->findBlock(address);
+
+    if(b)
+        ui->disassemblerWidget->jumpTo(b);
 }
 
 void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)

@@ -55,6 +55,7 @@ class DisassemblerView : public AbstractView
         void showEntryPoints();
         void showSegments();
         void gotoFunction();
+        void gotoAddress(const PrefSDK::DataValue& address);
 
     private:
         Ui::DisassemblerView *ui;

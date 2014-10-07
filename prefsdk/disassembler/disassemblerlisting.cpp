@@ -2,10 +2,20 @@
 
 namespace PrefSDK
 {
-    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, QObject *parent): QObject(parent), _blocksorted(false), _hexeditdata(hexeditdata)
+    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, QObject *parent): QObject(parent), _blocksorted(false), _addresstype(DataType::Invalid), _hexeditdata(hexeditdata)
     {
         this->_referencetable = new ReferenceTable(this);
         this->_symboltable = new SymbolTable(this);
+    }
+
+    DataType::Type DisassemblerListing::addressType() const
+    {
+        return this->_addresstype;
+    }
+
+    void DisassemblerListing::setAddressType(DataType::Type addresstype)
+    {
+        this->_addresstype = addresstype;
     }
 
     void DisassemblerListing::calcFunctionBounds()
@@ -134,6 +144,9 @@ namespace PrefSDK
 
     Segment *DisassemblerListing::findSegment(const DataValue &address)
     {
+        if(this->_segments.contains(address))  /* We're lucky, return the block directly! */
+            return this->_segments[address];
+
         for(SegmentMap::iterator it = this->_segments.begin(); it != this->_segments.end(); it++)
         {
             Segment* s = it.value();
@@ -152,6 +165,9 @@ namespace PrefSDK
 
     Function *DisassemblerListing::findFunction(const DataValue &address)
     {
+        if(this->_functions.contains(address)) /* We're lucky, return the block directly! */
+            return this->_functions[address];
+
         for(FunctionMap::iterator it = this->_functions.begin(); it != this->_functions.end(); it++)
         {
             Function* f = it.value();
@@ -164,9 +180,17 @@ namespace PrefSDK
     }
 
     Instruction *DisassemblerListing::findInstruction(const DataValue &address)
-    {
-        if(this->_instructions.contains(address))
+    {        
+        if(this->_instructions.contains(address))  /* We're lucky, return the block directly! */
             return this->_instructions[address];
+
+        for(InstructionMap::iterator it = this->_instructions.begin(); it != this->_instructions.end(); it++)
+        {
+            Instruction* i = it.value();
+
+            if(i->contains(address))
+                return i;
+        }
 
         return nullptr;
     }
@@ -182,11 +206,6 @@ namespace PrefSDK
 
         if(function)
             return function;
-
-        Segment* segment = this->findSegment(address); /* Try With Segments */
-
-        if(segment)
-            return segment;
 
         return nullptr;
     }

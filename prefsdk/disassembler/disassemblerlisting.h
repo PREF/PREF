@@ -27,6 +27,8 @@ namespace PrefSDK
 
         public:
             explicit DisassemblerListing(QHexEditData* hexeditdata, QObject *parent = 0);
+            DataType::Type addressType() const;
+            void setAddressType(DataType::Type addresstype);
             bool isDecoded(const DataValue& address) const;
             void calcFunctionBounds();
             qint64 length() const;
@@ -72,6 +74,7 @@ namespace PrefSDK
 
         private:
             bool _blocksorted;
+            DataType::Type _addresstype;
             QHexEditData* _hexeditdata;
             ReferenceTable* _referencetable;
             SymbolTable* _symboltable;

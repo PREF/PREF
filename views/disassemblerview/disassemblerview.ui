@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>998</width>
-    <height>613</height>
+    <width>990</width>
+    <height>605</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
       <attribute name="title">
        <string>Disassembler</string>
       </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="verticalLayout_5">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -53,30 +53,39 @@
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
-         <widget class="QSplitter" name="hSplitter">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <widget class="DisassemblerWidget" name="disassemblerWidget" native="true">
-           <property name="contextMenuPolicy">
-            <enum>Qt::CustomContextMenu</enum>
-           </property>
-          </widget>
-          <widget class="QTableView" name="functionList">
-           <property name="contextMenuPolicy">
-            <enum>Qt::CustomContextMenu</enum>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectRows</enum>
-           </property>
-          </widget>
+         <widget class="QWidget" name="layoutWidget">
+          <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
+           <item>
+            <widget class="QSplitter" name="hSplitter">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <widget class="DisassemblerWidget" name="disassemblerWidget" native="true">
+              <property name="contextMenuPolicy">
+               <enum>Qt::CustomContextMenu</enum>
+              </property>
+             </widget>
+             <widget class="QTableView" name="functionList">
+              <property name="contextMenuPolicy">
+               <enum>Qt::CustomContextMenu</enum>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+             </widget>
+            </widget>
+           </item>
+           <item>
+            <widget class="GotoWidget" name="gotoWidget" native="true"/>
+           </item>
+          </layout>
          </widget>
          <widget class="QTabWidget" name="tabOverview">
           <property name="tabPosition">
            <enum>QTabWidget::South</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="tabStrings">
            <attribute name="title">
@@ -176,6 +185,12 @@
    <class>LogWidget</class>
    <extends>QPlainTextEdit</extends>
    <header>logwidget/logwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GotoWidget</class>
+   <extends>QWidget</extends>
+   <header>views/disassemblerview/gotowidget/gotowidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
