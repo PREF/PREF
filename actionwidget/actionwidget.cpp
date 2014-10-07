@@ -17,7 +17,13 @@ ActionWidget::ActionWidget(QWidget *parent): QWidget(parent)
     this->_hlayout->addWidget(this->_rangeselectoraction);
     this->_hlayout->addItem(this->_hspacer);
 
+    this->setVisible(false);
     this->setLayout(this->_hlayout);
+
+    connect(this->_findaction, SIGNAL(closeRequested()), this, SLOT(hideAllActions()));
+    connect(this->_gotoaction, SIGNAL(closeRequested()), this, SLOT(hideAllActions()));
+    connect(this->_byteopsaction, SIGNAL(closeRequested()), this, SLOT(hideAllActions()));
+    connect(this->_rangeselectoraction, SIGNAL(closeRequested()), this, SLOT(hideAllActions()));
 }
 
 void ActionWidget::hideAllActions()
@@ -61,6 +67,8 @@ void ActionWidget::hideAllBottomItems(QWidget *ignore)
 
     if(ignore)
         emit actionDisplayed();
+    else
+        this->setVisible(false);
 }
 
 void ActionWidget::showFind()
@@ -68,7 +76,10 @@ void ActionWidget::showFind()
     this->hideAllBottomItems(this->_findaction);
 
     if(!this->_findaction->isVisible())
+    {
+        this->setVisible(true);
         this->_findaction->show();
+    }
 }
 
 void ActionWidget::showGoto(qint64 max)
@@ -77,6 +88,7 @@ void ActionWidget::showGoto(qint64 max)
 
     if(!this->_gotoaction->isVisible())
     {
+        this->setVisible(true);
         this->_gotoaction->setMaximum(max);
         this->_gotoaction->show();
     }
@@ -87,7 +99,10 @@ void ActionWidget::showByteOps()
     this->hideAllBottomItems(this->_byteopsaction);
 
     if(!this->_byteopsaction->isVisible())
+    {
+        this->setVisible(true);
         this->_byteopsaction->show();
+    }
 }
 
 void ActionWidget::showRangeSelector(qint64 max)
@@ -96,6 +111,7 @@ void ActionWidget::showRangeSelector(qint64 max)
 
     if(!this->_rangeselectoraction->isVisible())
     {
+        this->setVisible(true);
         this->_rangeselectoraction->setMaximum(max);
         this->_rangeselectoraction->show();
     }

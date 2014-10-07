@@ -1,7 +1,7 @@
 #include "byteopsaction.h"
 #include "ui_byteopsaction.h"
 
-ByteOpsAction::ByteOpsAction(QWidget *parent): QWidget(parent), ui(new Ui::ByteOpsAction)
+ByteOpsAction::ByteOpsAction(QWidget *parent): AbstractAction(parent), ui(new Ui::ByteOpsAction)
 {
     ui->setupUi(this);
     ui->sbbsValue->setMaximum(255);
@@ -13,8 +13,7 @@ ByteOpsAction::ByteOpsAction(QWidget *parent): QWidget(parent), ui(new Ui::ByteO
     ui->cbByteOps->addItem("Mod", ByteOpsAction::Mod);         // 4
 
     this->setVisible(false);
-
-    connect(ui->pbClose, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(ui->pbClose, SIGNAL(clicked()), this, SIGNAL(closeRequested()));
 }
 
 ByteOpsAction::~ByteOpsAction()

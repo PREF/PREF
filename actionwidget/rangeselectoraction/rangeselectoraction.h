@@ -4,12 +4,13 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "actionwidget/abstractaction.h"
 
 namespace Ui {
 class RangeSelectorAction;
 }
 
-class RangeSelectorAction : public QWidget
+class RangeSelectorAction : public AbstractAction
 {
     Q_OBJECT
 

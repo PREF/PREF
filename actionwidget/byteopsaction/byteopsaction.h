@@ -4,12 +4,13 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "actionwidget/abstractaction.h"
 
 namespace Ui {
 class ByteOpsAction;
 }
 
-class ByteOpsAction : public QWidget
+class ByteOpsAction : public AbstractAction
 {
     Q_OBJECT
 

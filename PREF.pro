@@ -158,7 +158,8 @@ SOURCES += main.cpp\
     prefsdk/type/datavalue.cpp \
     prefsdk/disassembler/references/referenceset.cpp \
     prefsdk/format/abstracttree.cpp \
-    viewmodels/crossreferencemodel/crossreferencedelegate.cpp
+    viewmodels/crossreferencemodel/crossreferencedelegate.cpp \
+    actionwidget/abstractaction.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -305,7 +306,8 @@ HEADERS  += mainwindow.h \
     prefsdk/type/datavalue.h \
     prefsdk/disassembler/references/referenceset.h \
     prefsdk/format/abstracttree.h \
-    viewmodels/crossreferencemodel/crossreferencedelegate.h
+    viewmodels/crossreferencemodel/crossreferencedelegate.h \
+    actionwidget/abstractaction.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

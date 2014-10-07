@@ -1,15 +1,14 @@
 #include "rangeselectoraction.h"
 #include "ui_rangeselectoraction.h"
 
-RangeSelectorAction::RangeSelectorAction(QWidget *parent): QWidget(parent), ui(new Ui::RangeSelectorAction)
+RangeSelectorAction::RangeSelectorAction(QWidget *parent): AbstractAction(parent), ui(new Ui::RangeSelectorAction)
 {
     ui->setupUi(this);
     ui->sbbsFrom->setMinimum(0);
     ui->sbbsTo->setMinimum(0);
 
     this->setVisible(false);
-
-    connect(ui->pbClose, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(ui->pbClose, SIGNAL(clicked()), this, SIGNAL(closeRequested()));
     connect(ui->sbbsFrom, SIGNAL(valueChanged(qint64)), this, SLOT(onValueChanged(qint64)));
     connect(ui->sbbsTo, SIGNAL(valueChanged(qint64)), this, SLOT(onValueChanged(qint64)));
 }

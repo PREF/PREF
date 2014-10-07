@@ -1,7 +1,7 @@
 #include "findaction.h"
 #include "ui_findaction.h"
 
-FindAction::FindAction(QWidget *parent): QWidget(parent), ui(new Ui::FindAction)
+FindAction::FindAction(QWidget *parent): AbstractAction(parent), ui(new Ui::FindAction)
 {
     ui->setupUi(this);
 
@@ -10,8 +10,7 @@ FindAction::FindAction(QWidget *parent): QWidget(parent), ui(new Ui::FindAction)
     ui->cbBase->addItem("Hex", QNumberLineEdit::HexString);
 
     this->setVisible(false);
-
-    connect(ui->pbClose, SIGNAL(clicked()), this, SLOT(hide()));
+    connect(ui->pbClose, SIGNAL(clicked()), this, SIGNAL(closeRequested()));
 }
 
 FindAction::~FindAction()

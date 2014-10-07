@@ -5,12 +5,13 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qnumberlineedit.h"
+#include "actionwidget/abstractaction.h"
 
 namespace Ui {
 class FindAction;
 }
 
-class FindAction : public QWidget
+class FindAction : public AbstractAction
 {
     Q_OBJECT
 

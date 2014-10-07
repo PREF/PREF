@@ -4,12 +4,13 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "actionwidget/abstractaction.h"
 
 namespace Ui {
 class GotoAction;
 }
 
-class GotoAction : public QWidget
+class GotoAction : public AbstractAction
 {
     Q_OBJECT
 
