@@ -72,7 +72,7 @@ namespace PrefSDK
         this->_viewfunc = vf;
     }
 
-    bool FormatDefinition::callValidate(QHexEditData *hexeditdata, qint64 baseoffset)
+    bool FormatDefinition::callValidate(QHexEditData *hexeditdata, qint64 baseoffset, bool ignoreerror)
     {
         if(!this->_validatefunc.isValid())
             return true; /* If 'validate-procedure' is not set, the format doesn't require validation */
@@ -86,7 +86,9 @@ namespace PrefSDK
 
         if(err)
         {
-            this->error(QString::fromUtf8(lua_tostring(l, -1)));
+            if(!ignoreerror)
+                this->error(QString::fromUtf8(lua_tostring(l, -1)));
+
             lua_pop(l, 1);
             this->unbind();
             return false;

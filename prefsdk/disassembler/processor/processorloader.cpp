@@ -22,7 +22,7 @@ namespace PrefSDK
     bool ProcessorLoader::validate(QHexEditData *hexeditdata)
     {
         this->bind(hexeditdata);
-        bool v = this->_formatdefinition->callValidate(hexeditdata, 0);
+        bool v = this->_formatdefinition->callValidate(hexeditdata, 0, true);
         this->unbind();
         return v;
     }

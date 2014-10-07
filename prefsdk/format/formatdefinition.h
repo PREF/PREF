@@ -43,7 +43,7 @@ namespace PrefSDK
             void setView(const PrefSDK::QtLua::LuaFunction& vf);
 
         public:
-            bool callValidate(QHexEditData* hexeditdata, qint64 baseoffset);
+            bool callValidate(QHexEditData* hexeditdata, qint64 baseoffset, bool ignoreerror = false);
             FormatTree* callParse(QHexEditData* hexeditdata, LogWidget *logwidget, qint64 baseoffset);
             QWidget* callView(QHexEditData* hexeditdata, FormatTree* formattree);
 
