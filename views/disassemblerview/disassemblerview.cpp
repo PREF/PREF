@@ -1,15 +1,11 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _loader(loader)
+DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _stringsymbols(nullptr), _loader(loader)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
-    ui->dvSplitter->setStretchFactor(1, 1);
-
-    ui->hexEdit->setReadOnly(true);
-    ui->hexEdit->setData(hexeditdata);
 
     this->_toolbar = new QToolBar();
     this->_toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -24,9 +20,6 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
 
     this->_actentrypoints->setShortcut(QKeySequence("CTRL+E"));
     this->_actsegments->setShortcut(QKeySequence("CTRL+S"));
-
-    this->_stringrefs = new StringOffsetModel(this->_hexeditdata, ui->tvStrings);
-    ui->tvStrings->setModel(this->_stringrefs);
 
     this->createListingMenu();
     this->createFunctionsMenu();
@@ -170,7 +163,7 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
         case Block::SegmentBlock:
         {
             Segment* s = qobject_cast<Segment*>(b);
-            ui->hexEdit->setSelectionRange(s->baseOffset().compatibleValue<qint64>(), s->sizeValue().compatibleValue<qint64>());
+            ui->dataView->selectRange(s->baseOffset(), s->sizeValue());
             break;
         }
 
@@ -178,14 +171,14 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
         {
             Segment* s = this->_listing->findSegment(b);
             Function* f = qobject_cast<Function*>(b);
-            ui->hexEdit->setSelectionRange(((f->startAddress() - s->startAddress()) + s->baseOffset()).compatibleValue<qint64>(), f->sizeValue().compatibleValue<qint64>());
+            ui->dataView->selectRange((f->startAddress() - s->startAddress()) + s->baseOffset(), f->sizeValue());
             break;
         }
 
         case Block::InstructionBlock:
         {
             Instruction* i = qobject_cast<Instruction*>(b);
-            ui->hexEdit->setSelectionRange(i->offsetValue().compatibleValue<qint64>(), i->sizeValue().compatibleValue<qint64>());
+            ui->dataView->selectRange(i->offsetValue(), i->sizeValue());
             break;
         }
 
@@ -208,11 +201,12 @@ void DisassemblerView::displayDisassembly()
     for(int i = 0; i < this->_functionmodel->columnCount(); i++)
         ui->functionList->resizeColumnToContents(i);
 
-    /* String Reference Part */
-    //this->_stringrefs->setListing(this->_listing);
+    this->_stringsymbols = new StringSymbolModel(this->_listing, this->_hexeditdata, ui->tvStrings);
+    ui->tvStrings->setModel(this->_stringsymbols);
+    ui->tvStrings->resizeColumnToContents(0);
+    ui->tvStrings->resizeRowsToContents();
 
-    /* DataMap Page */
-    //ui->dataMapView->setListing(this->_listing);
+    ui->dataView->setListing(this->_listing);
 }
 
 void DisassemblerView::showEntryPoints()

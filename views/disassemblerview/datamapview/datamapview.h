@@ -6,6 +6,9 @@
 #include <QtWidgets>
 #include "qhexedit/qhexedit.h"
 #include "viewmodels/datamapmodel/datamapmodel.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
+
+using namespace PrefSDK;
 
 namespace Ui {
 class DataMapView;
@@ -17,15 +20,23 @@ class DataMapView : public QWidget
     
     public:
         explicit DataMapView(QWidget *parent = 0);
-        void setHexEditData(QHexEditData* hexeditdata);
+        void setListing(DisassemblerListing* listing);
+        void selectRange(const DataValue& offset, const DataValue& length);
         ~DataMapView();
 
-    private:
+private slots:
+        void on_dataView_doubleClicked(const QModelIndex &index);
+
+private:
         void highlightData();
 
     private:
         Ui::DataMapView *ui;
+        DisassemblerListing* _listing;
         DataMapModel* _datamapmodel;
+        QColor _addresscolor;
+        QColor _addressalternatecolor;
+        QColor _stringcolor;
 };
 
 #endif // DATAMAPVIEW_H

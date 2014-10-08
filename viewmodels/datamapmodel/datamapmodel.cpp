@@ -1,8 +1,10 @@
 #include "datamapmodel.h"
 
-DataMapModel::DataMapModel(QObject *parent): QAbstractItemModel(parent)
+DataMapModel::DataMapModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
-
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
 int DataMapModel::columnCount(const QModelIndex &) const
@@ -38,34 +40,61 @@ QVariant DataMapModel::headerData(int section, Qt::Orientation orientation, int 
 
 QVariant DataMapModel::data(const QModelIndex &index, int role) const
 {
-    /*
-    if(!this->_disasmlisting || !this->_disasmlisting->itemCount() || !index.isValid())
+    if(!index.isValid())
         return QVariant();
 
     if(role == Qt::DisplayRole)
     {
-        DataInfo di = this->_disasmlisting->data(index.row());
+        const DisassemblerListing::VariableList& variables = this->_listing->variables();
+        DataValue address = variables[index.row()];
 
         switch(index.column())
         {
             case 0:
-                return QString("%1").arg(di.Offset, 8, 16, QLatin1Char('0')).toUpper().append("h");
+            {
+                Segment* segment = this->_listing->findSegment(address);
+
+                if(!segment)
+                    return "???";
+
+                return ((address - segment->startAddress()) +  segment->baseOffset()).toString(16).append("h");
+            }
 
             case 1:
-
-                return QString("%1").arg(di.VirtualAddress, 8, 16, QLatin1Char('0')).toUpper().append("h");
+                return address.toString(16).append("h");
 
             case 2:
-                return QString::number(di.Size);
+            {
+                const SymbolTable* symbols = this->_listing->symbolTable();
+                Symbol* symbol = symbols->get(address);
+                return symbol->size().toString();
+            }
 
             case 3:
-                return di.Name;
+            {
+                const SymbolTable* symbols = this->_listing->symbolTable();
+                return symbols->name(address);
+            }
 
             default:
                 break;
         }
     }
-    */
+    else if(role == Qt::ForegroundRole)
+    {
+        if(index.column() == 0 || index.column() == 1 || index.column() == 2)
+            return QColor(Qt::darkBlue);
+
+        const DisassemblerListing::VariableList& variables = this->_listing->variables();
+        Symbol* symbol = this->_listing->symbolTable()->get(variables[index.row()]);
+
+        if(symbol->type() == Symbol::Address)
+            return QColor(Qt::darkCyan);
+        else
+            return QColor(Qt::darkGreen);
+    }
+    else if(role == Qt::FontRole)
+        return this->_monospacefont;
 
     return QVariant();
 }
@@ -85,10 +114,7 @@ QModelIndex DataMapModel::parent(const QModelIndex &) const
 
 int DataMapModel::rowCount(const QModelIndex &) const
 {
-    //if(this->_disasmlisting)
-        //return this->_disasmlisting->dataCount();
-
-    return 0;
+    return this->_listing->variables().length();
 }
 
 Qt::ItemFlags DataMapModel::flags(const QModelIndex &index) const

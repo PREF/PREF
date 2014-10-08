@@ -9,7 +9,7 @@
 #include "segmentsdialog/segmentsdialog.h"
 #include "qhexedit/qhexeditdata.h"
 #include "viewmodels/functionmodel/functionmodel.h"
-#include "viewmodels/stringoffsetmodel/stringoffsetmodel.h"
+#include "viewmodels/stringsymbolmodel/stringsymbolmodel.h"
 #include "views/abstractview.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/loader/loaderlist.h"
@@ -60,7 +60,7 @@ class DisassemblerView : public AbstractView
     private:
         Ui::DisassemblerView *ui;
         DisassemblerListing* _listing;
-        StringOffsetModel* _stringrefs;
+        StringSymbolModel* _stringsymbols;
         FunctionModel* _functionmodel;
         ProcessorLoader* _loader;
         QToolBar* _toolbar;

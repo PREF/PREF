@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>990</width>
-    <height>605</height>
+    <width>982</width>
+    <height>597</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -85,7 +85,7 @@
            <enum>QTabWidget::South</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tabStrings">
            <attribute name="title">
@@ -105,7 +105,14 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QTableView" name="tvStrings"/>
+             <widget class="QTableView" name="tvStrings">
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -154,13 +161,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QSplitter" name="dvSplitter">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <widget class="QTableView" name="dataView"/>
-         <widget class="QHexEdit" name="hexEdit" native="true"/>
-        </widget>
+        <widget class="DataMapView" name="dataView" native="true"/>
        </item>
       </layout>
      </widget>
@@ -169,12 +170,6 @@
   </layout>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>QHexEdit</class>
-   <extends>QWidget</extends>
-   <header>qhexedit/qhexedit.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>DisassemblerWidget</class>
    <extends>QWidget</extends>
@@ -190,6 +185,12 @@
    <class>GotoWidget</class>
    <extends>QWidget</extends>
    <header>views/disassemblerview/gotowidget/gotowidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DataMapView</class>
+   <extends>QWidget</extends>
+   <header>views/disassemblerview/datamapview/datamapview.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

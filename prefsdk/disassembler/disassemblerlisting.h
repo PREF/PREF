@@ -23,6 +23,8 @@ namespace PrefSDK
             typedef QMap<DataValue, Function*> FunctionMap;
             typedef QMap<DataValue, Instruction*> InstructionMap;
             typedef QList<Block*> BlockList;
+            typedef QList<DataValue> StringSymbolList;
+            typedef QList<DataValue> VariableList;
             typedef QList<Function*> EntryPointList;
 
         public:
@@ -43,6 +45,8 @@ namespace PrefSDK
             const DisassemblerListing::FunctionMap& functions() const;
             const DisassemblerListing::EntryPointList& entryPoints() const;
             const DisassemblerListing::InstructionMap& instructions() const;
+            const DisassemblerListing::StringSymbolList& strings() const;
+            const DisassemblerListing::VariableList& variables() const;
             void createReference(const DataValue& srcaddress, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx = -1);
             void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
             Function* createFunction(const QString& name, FunctionTypes::Type functiontype, const DataValue& address);
@@ -82,6 +86,8 @@ namespace PrefSDK
             ReferenceTable* _referencetable;
             SymbolTable* _symboltable;
             EntryPointList _entrypoints;
+            StringSymbolList _stringsymbols;
+            VariableList _variables;
             SegmentMap _segments;
             FunctionMap _functions;
             InstructionMap _instructions;

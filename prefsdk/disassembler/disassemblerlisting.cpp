@@ -68,6 +68,9 @@ namespace PrefSDK
                 }
             }
         }
+
+        std::sort(this->_variables.begin(), this->_variables.end());
+        std::sort(this->_stringsymbols.begin(), this->_stringsymbols.end());
     }
 
     bool DisassemblerListing::isDecoded(const DataValue& address) const
@@ -444,6 +447,16 @@ namespace PrefSDK
         return this->_instructions;
     }
 
+    const DisassemblerListing::StringSymbolList &DisassemblerListing::strings() const
+    {
+        return this->_stringsymbols;
+    }
+
+    const DisassemblerListing::VariableList &DisassemblerListing::variables() const
+    {
+        return this->_variables;
+    }
+
     const DisassemblerListing::FunctionMap &DisassemblerListing::functions() const
     {
         return this->_functions;
@@ -523,13 +536,24 @@ namespace PrefSDK
 
     void DisassemblerListing::analyzeAddress(const DataValue &address)
     {
-        if(this->_symboltable->contains(address) && !this->_symboltable->isType(address, Symbol::Address))
+        Segment* segment = this->findSegment(address); /* Don't analyze weird address */
+
+        if(!segment || (this->_symboltable->contains(address) && !this->_symboltable->isType(address, Symbol::Address)))
             return;
 
         if(this->pointsToString(address))
-            this->_symboltable->set(Symbol::String, address, DataType::AsciiString, QString("string_%1").arg(address.toString(16)));
+        {
+            QHexEditDataReader reader(this->_hexeditdata);
+            DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
+            QString s = reader.readString(offset.compatibleValue<qint64>());
+
+            this->_stringsymbols.append(address);
+            this->_symboltable->set(Symbol::String, address, DataValue::create(s.length(), this->_addresstype), DataType::AsciiString, QString("string_%1").arg(address.toString(16)));
+        }
         else if(!this->_symboltable->contains(address))
             this->_symboltable->set(Symbol::Address, address, QString("data_%1").arg(address.toString(16)));
+
+        this->_variables.append(address);
     }
 
     QString DisassemblerListing::formatOperand(Operand *operand)

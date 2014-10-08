@@ -17,19 +17,22 @@ namespace PrefSDK
             enum Type { Unknown, Function, Jump, Address, Immediate, String };
 
         public:
-            explicit Symbol(Symbol::Type symboltype, const DataValue& address, DataType::Type datatype, const QString& name, QObject *parent = 0);
-            const DataValue& address() const;
-            DataType::Type dataType() const;
-            Symbol::Type type() const;
+            explicit Symbol(Symbol::Type symboltype, const DataValue& address, const DataValue& size, DataType::Type datatype, const QString& name, QObject *parent = 0);
+            const PrefSDK::DataValue& address() const;
+            const PrefSDK::DataValue& size() const;
+            PrefSDK::DataType::Type dataType() const;
+            PrefSDK::Symbol::Type type() const;
             const QString& name() const;
-            void setDataType(DataType::Type datatype);
+            void setSize(const PrefSDK::DataValue& size);
+            void setDataType(PrefSDK::DataType::Type datatype);
             void setName(const QString& name);
-            void setType(const Symbol::Type symboltype);
+            void setType(const PrefSDK::Symbol::Type symboltype);
 
         private:
-            Symbol::Type _symboltype;
-            DataValue _address;
-            DataType::Type _datatype;
+            PrefSDK::Symbol::Type _symboltype;
+            PrefSDK::DataValue _address;
+            PrefSDK::DataValue _size;
+            PrefSDK::DataType::Type _datatype;
             QString _name;
     };
 }

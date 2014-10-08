@@ -1,19 +1,21 @@
-#ifndef STRINGOFFSETMODEL_H
-#define STRINGOFFSETMODEL_H
-
-#define STRING_MAX_LENGTH 50
+#ifndef STRINGSYMBOLMODEL_H
+#define STRINGSYMBOLMODEL_H
 
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
+#include "prefsdk/disassembler/disassemblerlisting.h"
 
-class StringOffsetModel : public QAbstractItemModel
+using namespace PrefSDK;
+
+class StringSymbolModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit StringOffsetModel(QHexEditData* hexeditdata, QObject *parent = 0);
+        explicit StringSymbolModel(DisassemblerListing* listing, QHexEditData* hexeditdata, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -25,7 +27,13 @@ class StringOffsetModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
     
     private:
+        QFont _monospacefont;
+        DisassemblerListing* _listing;
         QHexEditData* _hexeditdata;
+        QHexEditDataReader* _reader;
+
+    private:
+        static const qint64 STRING_MAX_LENGTH;
 };
 
-#endif // STRINGOFFSETMODEL_H
+#endif // STRINGSYMBOLMODEL_H

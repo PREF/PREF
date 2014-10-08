@@ -1,16 +1,18 @@
 #ifndef DATAMAPMODEL_H
 #define DATAMAPMODEL_H
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
+#include <QAbstractItemModel>
+#include <QGuiApplication>
+#include "prefsdk/disassembler/disassemblerlisting.h"
+
+using namespace PrefSDK;
 
 class DataMapModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit DataMapModel(QObject *parent = 0);
+        explicit DataMapModel(DisassemblerListing* listing, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -20,6 +22,10 @@ class DataMapModel : public QAbstractItemModel
         virtual QModelIndex parent(const QModelIndex&) const;
         virtual int rowCount(const QModelIndex& = QModelIndex()) const;
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+
+    private:
+        DisassemblerListing* _listing;
+        QFont _monospacefont;
 };
 
 #endif // DATAMAPMODEL_H

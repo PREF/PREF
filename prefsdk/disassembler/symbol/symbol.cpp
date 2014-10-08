@@ -2,22 +2,27 @@
 
 namespace PrefSDK
 {
-    Symbol::Symbol(Symbol::Type symboltype, const DataValue &address, DataType::Type datatype, const QString &name, QObject *parent): QObject(parent), _symboltype(symboltype), _address(address), _datatype(datatype), _name(name)
+    Symbol::Symbol(Symbol::Type symboltype, const DataValue &address, const DataValue &size, DataType::Type datatype, const QString &name, QObject *parent): QObject(parent), _symboltype(symboltype), _address(address), _size(size), _datatype(datatype), _name(name)
     {
 
     }
 
-    const DataValue &Symbol::address() const
+    const PrefSDK::DataValue &Symbol::address() const
     {
         return this->_address;
     }
 
-    DataType::Type Symbol::dataType() const
+    const PrefSDK::DataValue &Symbol::size() const
+    {
+        return this->_size;
+    }
+
+    PrefSDK::DataType::Type Symbol::dataType() const
     {
         return this->_datatype;
     }
 
-    Symbol::Type Symbol::type() const
+    PrefSDK::Symbol::Type Symbol::type() const
     {
         return this->_symboltype;
     }
@@ -27,7 +32,12 @@ namespace PrefSDK
         return this->_name;
     }
 
-    void Symbol::setDataType(DataType::Type datatype)
+    void Symbol::setSize(const PrefSDK::DataValue &size)
+    {
+        this->_size = size;
+    }
+
+    void Symbol::setDataType(PrefSDK::DataType::Type datatype)
     {
         this->_datatype = datatype;
     }
@@ -37,7 +47,7 @@ namespace PrefSDK
         this->_name = name;
     }
 
-    void Symbol::setType(const Symbol::Type symboltype)
+    void Symbol::setType(const PrefSDK::Symbol::Type symboltype)
     {
         this->_symboltype = symboltype;
     }
