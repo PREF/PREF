@@ -6,9 +6,9 @@ namespace PrefSDK
     {
     }
 
-    void ReferenceSet::add(const DataValue& referencedaddress, Reference::Type referencetype)
+    void ReferenceSet::add(const DataValue& referencedby, Reference::Type referencetype)
     {
-        this->_references.insert(new Reference(referencedaddress, referencetype, this));
+        this->_references.insert(new Reference(referencedby, referencetype, this));
     }
 
     const QSet<Reference *> &ReferenceSet::references() const

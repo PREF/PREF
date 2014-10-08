@@ -50,8 +50,22 @@ namespace PrefSDK
             {
                 Operand* op = instruction->operand(i);
 
-                if(op->type() == Operand::Address && !this->_symboltable->contains(op->operandValue()))
-                    this->_symboltable->set(op->operandValue(), QString("data_%1").arg(op->operandValue().toString(16)));
+                if(op->type() == Operand::Address)
+                {
+                    qint64 idx = -1;
+
+                    if(instruction->isJump() && !this->_symboltable->contains(op->operandValue()) && (idx = this->indexOf(op->operandValue(), Block::InstructionBlock)) != -1)
+                    {
+                        Reference::Type referencetype = ((instruction->type() == InstructionType::ConditionalJump) ? Reference::ConditionalJump : Reference::Jump);
+
+                        if(!this->_referencetable->isReferenced(op->operandValue()))
+                            this->createReference(op->operandValue(), instruction->startAddress(), referencetype, idx);
+
+                        this->_symboltable->set(Symbol::Jump, op->operandValue(), QString("j_%1").arg(op->operandValue().toString(16)));
+                    }
+                    else
+                        this->analyzeAddress(op->operandValue());
+                }
             }
         }
     }
@@ -82,13 +96,18 @@ namespace PrefSDK
         return this->_referencetable;
     }
 
-    void DisassemblerListing::createReference(const DataValue& address, const DataValue &referencedaddress, Reference::Type referencetype)
+    void DisassemblerListing::createReference(const DataValue& address, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx)
     {
         bool newreference = !this->_referencetable->isReferenced(address);
-        ReferenceSet* refset = this->_referencetable->addReference(address, referencedaddress, referencetype);
+        ReferenceSet* refset = this->_referencetable->addReference(address, referencedby, referencetype);
 
         if(newreference && Reference::isJump(referencetype)) /* Insert Jump Label in listing */
-            this->_blocks.append(refset);
+        {
+            if(insertidx == -1)
+                this->_blocks.append(refset);
+            else
+                this->_blocks.insert(insertidx, refset);
+        }
     }
 
     void DisassemblerListing::createSegment(const QString &name, Segment::Type segmenttype, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset)
@@ -128,7 +147,7 @@ namespace PrefSDK
         }
 
         if(!this->_symboltable->contains(startaddress)) /* Apply Symbol, if needed */
-            this->_symboltable->set(startaddress, f->name());
+            this->_symboltable->set(Symbol::Function, startaddress, f->name());
 
         this->_blocks.append(f);
         return f;
@@ -487,12 +506,38 @@ namespace PrefSDK
         }
     }
 
+    bool DisassemblerListing::pointsToString(const DataValue &address)
+    {
+        Segment* segment = this->findSegment(address);
+
+        if(!segment)
+            return false;
+
+        DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
+
+        QHexEditDataReader reader(this->_hexeditdata);
+        QString s = reader.readString(offset.compatibleValue<qint64>(), 4);
+
+        return s.length() == 4;
+    }
+
+    void DisassemblerListing::analyzeAddress(const DataValue &address)
+    {
+        if(this->_symboltable->contains(address) && !this->_symboltable->isType(address, Symbol::Address))
+            return;
+
+        if(this->pointsToString(address))
+            this->_symboltable->set(Symbol::String, address, DataType::AsciiString, QString("string_%1").arg(address.toString(16)));
+        else if(!this->_symboltable->contains(address))
+            this->_symboltable->set(Symbol::Address, address, QString("data_%1").arg(address.toString(16)));
+    }
+
     QString DisassemblerListing::formatOperand(Operand *operand)
     {
         Operand::Type optype = static_cast<Operand::Type>(operand->type());
 
         if((optype == Operand::Address) && this->_symboltable->contains(operand->operandValue()))
-            return this->_symboltable->get(operand->operandValue());
+            return this->_symboltable->name(operand->operandValue());
         else if(optype == Operand::Register)
             return "$" + operand->registerName();
 

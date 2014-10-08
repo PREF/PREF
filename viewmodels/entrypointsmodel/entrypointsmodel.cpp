@@ -52,7 +52,7 @@ QVariant EntryPointsModel::data(const QModelIndex &index, int role) const
                 return f->startAddress().toString(16).append("h");
 
             case 1:
-                return this->_listing->symbolTable()->get(f->startAddress());
+                return this->_listing->symbolTable()->name(f->startAddress());
 
             case 2:
                 return this->_listing->findSegment(f)->name();

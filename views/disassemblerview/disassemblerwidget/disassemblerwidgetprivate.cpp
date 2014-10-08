@@ -149,7 +149,7 @@ QString DisassemblerWidgetPrivate::displayReferences(const QString &prefix, cons
         if(it != references.begin())
             s.append(", ");
 
-        const DataValue& referencedaddress = (*it)->referencedAddress();
+        const DataValue& referencedaddress = (*it)->referencedBy();
 
         if(!segment || !segment->contains(referencedaddress))
             segment = this->_listing->findSegment(referencedaddress);
@@ -231,7 +231,7 @@ QString DisassemblerWidgetPrivate::emitFunction(Function* func)
     if(referencetable->isReferenced(func))
         refstring = this->displayReferences("Called by", referencetable->references(func));
 
-    return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->get(func->startAddress()), refstring);
+    return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), refstring);
 }
 
 QString DisassemblerWidgetPrivate::emitInstruction(Instruction *instruction)

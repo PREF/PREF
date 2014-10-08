@@ -35,8 +35,8 @@ namespace PrefSDK
             };
 
         public:
-            explicit Reference(const DataValue& referencedaddress, Reference::Type referencetype, QObject *parent = 0);
-            const DataValue& referencedAddress() const;
+            explicit Reference(const DataValue& referencedby, Reference::Type referencetype, QObject *parent = 0);
+            const DataValue& referencedBy() const;
             Reference::Type type() const;
 
         public:
@@ -47,7 +47,7 @@ namespace PrefSDK
             static bool isConditional(Reference::Type referencetype);            
 
         private:
-            DataValue _referencedaddress;
+            DataValue _referencedby;
             Reference::Type _referencetype;
     };
 

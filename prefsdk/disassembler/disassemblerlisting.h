@@ -43,7 +43,7 @@ namespace PrefSDK
             const DisassemblerListing::FunctionMap& functions() const;
             const DisassemblerListing::EntryPointList& entryPoints() const;
             const DisassemblerListing::InstructionMap& instructions() const;
-            void createReference(const DataValue& srcaddress, const DataValue &referencedaddress, Reference::Type referencetype);
+            void createReference(const DataValue& srcaddress, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx = -1);
             void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
             Function* createFunction(const QString& name, FunctionTypes::Type functiontype, const DataValue& address);
             Function* createFunction(FunctionTypes::Type functiontype, const DataValue& startaddress);
@@ -69,6 +69,8 @@ namespace PrefSDK
 
         private:
             void checkSort();
+            bool pointsToString(const DataValue& address);
+            void analyzeAddress(const DataValue& address);
             QString formatOperand(Operand *operand);
             void removeInstructions(Instruction* from, Instruction* to);
             static bool sortBlocks(Block* block1, Block* block2);

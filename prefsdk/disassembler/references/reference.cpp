@@ -2,14 +2,14 @@
 
 namespace PrefSDK
 {
-    Reference::Reference(const DataValue& referencedaddress, Reference::Type referencetype, QObject *parent): QObject(parent), _referencedaddress(referencedaddress), _referencetype(referencetype)
+    Reference::Reference(const DataValue& referencedby, Reference::Type referencetype, QObject *parent): QObject(parent), _referencedby(referencedby), _referencetype(referencetype)
     {
 
     }
 
-    const DataValue &Reference::referencedAddress() const
+    const DataValue &Reference::referencedBy() const
     {
-        return this->_referencedaddress;
+        return this->_referencedby;
     }
 
     Reference::Type Reference::type() const

@@ -14,7 +14,7 @@ namespace PrefSDK
 
         public:
             explicit ReferenceSet(const DataValue &address, QObject *parent = 0);
-            void add(const DataValue &referencedaddress, Reference::Type referencetype);
+            void add(const DataValue &referencedby, Reference::Type referencetype);
             const QSet<Reference*>& references() const;
             QList<Reference*> referenceList() const;
 

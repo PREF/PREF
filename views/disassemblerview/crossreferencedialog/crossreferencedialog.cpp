@@ -42,7 +42,7 @@ void CrossReferenceDialog::on_crossReferenceTable_doubleClicked(const QModelInde
     if(index.isValid())
     {
         Reference* reference = reinterpret_cast<Reference*>(index.internalPointer());
-        this->_selectedinstruction = this->_listing->findInstruction(reference->referencedAddress());
+        this->_selectedinstruction = this->_listing->findInstruction(reference->referencedBy());
         this->done(CrossReferenceDialog::Accepted);
     }
     else
@@ -57,6 +57,6 @@ void CrossReferenceDialog::on_buttonBox_accepted()
     if(index.isValid())
     {
         Reference* reference = reinterpret_cast<Reference*>(index.internalPointer());
-        this->_selectedinstruction = this->_listing->findInstruction(reference->referencedAddress());
+        this->_selectedinstruction = this->_listing->findInstruction(reference->referencedBy());
     }
 }

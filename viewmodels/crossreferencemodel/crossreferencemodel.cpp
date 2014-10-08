@@ -56,15 +56,15 @@ QVariant CrossReferenceModel::data(const QModelIndex &index, int role) const
 
         if(index.column() == 0)
         {
-            if(r->referencedAddress() > this->_block->startAddress())
+            if(r->referencedBy() > this->_block->startAddress())
                 return "Down";
-            else if(r->referencedAddress() < this->_block->startAddress())
+            else if(r->referencedBy() < this->_block->startAddress())
                 return "Up";
             else
                 return "---";
         }
         else if(index.column() == 1)
-            return r->referencedAddress().toString(16).append("h");
+            return r->referencedBy().toString(16).append("h");
         //else if(index.column() == 2)
             //return DisassembledInstructionManager::generateInstruction(item.second);
     }

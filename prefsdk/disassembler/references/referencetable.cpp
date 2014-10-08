@@ -11,13 +11,13 @@ namespace PrefSDK
         return this->_referencetable.count();
     }
 
-    ReferenceSet* ReferenceTable::addReference(const DataValue& address, const DataValue& referencedaddress, Reference::Type referencetype)
+    ReferenceSet* ReferenceTable::addReference(const DataValue& address, const DataValue& referencedby, Reference::Type referencetype)
     {
         if(!this->_referencetable.contains(address))
             this->_referencetable[address] = new ReferenceSet(address, this);
 
         ReferenceSet* refset = this->_referencetable[address];
-        refset->add(referencedaddress, referencetype);
+        refset->add(referencedby, referencetype);
         return refset;
     }
 

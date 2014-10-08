@@ -130,10 +130,10 @@ namespace PrefSDK
 
             if(Reference::isCall(procaddress.second))
                 this->_listing->createFunction(FunctionTypes::Function, procaddress.first);
-            else if(Reference::isJump(procaddress.second))
+            else if(Reference::isJump(procaddress.second) && !this->_listing->referenceTable()->isReferenced(procaddress.first))
             {
                 SymbolTable* symboltable = this->_listing->symbolTable();
-                symboltable->set(procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
+                symboltable->set(Symbol::Jump, procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
             }
 
             this->_processordefinition->callEmulate(this->_processoremulator, instruction, hexeditdata);

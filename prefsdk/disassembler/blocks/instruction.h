@@ -37,6 +37,8 @@ namespace PrefSDK
 
         public:
             explicit Instruction(const DataValue& address, const DataValue& offset, DataType::Type opcodetype, QHexEditData* hexeditdata, QObject *parent = 0);
+            bool isJump() const;
+            bool isCall() const;
             lua_Integer address() const;
             lua_Integer offset() const;
             lua_Integer size() const;

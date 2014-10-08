@@ -20,7 +20,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
 
     QTextDocument document;
     Reference* r = reinterpret_cast<Reference*>(index.internalPointer());
-    Block* b = this->_listing->findBlock(r->referencedAddress());
+    Block* b = this->_listing->findBlock(r->referencedBy());
 
     if(!b)
     {
@@ -40,7 +40,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
         else if(b->blockType() == Block::FunctionBlock)
         {
             SymbolTable* symboltable = this->_listing->symbolTable();
-            document.setPlainText(QString("function %1()").arg(symboltable->get(b->startAddress())));
+            document.setPlainText(QString("function %1()").arg(symboltable->name(b->startAddress())));
         }
     }
 

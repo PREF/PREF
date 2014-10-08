@@ -72,7 +72,7 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
         switch(index.column())
         {                
             case 0:
-                return this->_listing->symbolTable()->get(f->startAddress());
+                return this->_listing->symbolTable()->name(f->startAddress());
 
             case 1:
                 return f->startAddress().toString(16);

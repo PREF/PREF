@@ -7,6 +7,16 @@ namespace PrefSDK
 
     }
 
+    bool Instruction::isJump() const
+    {
+        return (this->_type == InstructionType::Jump) || (this->_type == InstructionType::ConditionalJump);
+    }
+
+    bool Instruction::isCall() const
+    {
+        return (this->_type == InstructionType::Call) || (this->_type == InstructionType::ConditionalCall);
+    }
+
     void Instruction::clearOperands()
     {
         this->_operands.clear();
