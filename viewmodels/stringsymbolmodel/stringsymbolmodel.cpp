@@ -4,11 +4,14 @@ const qint64 StringSymbolModel::STRING_MAX_LENGTH = 50;
 
 StringSymbolModel::StringSymbolModel(DisassemblerListing* listing, QHexEditData *hexeditdata, QObject *parent): QAbstractItemModel(parent), _listing(listing), _hexeditdata(hexeditdata)
 {
+    this->_strings = listing->strings().toList();
     this->_reader = new QHexEditDataReader(hexeditdata, this);
 
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
+
+    std::sort(this->_strings.begin(), this->_strings.end());
 }
 
 int StringSymbolModel::columnCount(const QModelIndex&) const
@@ -43,8 +46,7 @@ QVariant StringSymbolModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const DisassemblerListing::StringSymbolList& strings = this->_listing->strings();
-        DataValue address = strings[index.row()];
+        DataValue address = this->_strings[index.row()];
 
         switch(index.column())
         {
@@ -90,7 +92,7 @@ QModelIndex StringSymbolModel::parent(const QModelIndex &) const
 
 int StringSymbolModel::rowCount(const QModelIndex &) const
 {
-    return this->_listing->strings().length();
+    return this->_strings.length();
 }
 
 Qt::ItemFlags StringSymbolModel::flags(const QModelIndex &index) const

@@ -68,9 +68,6 @@ namespace PrefSDK
                 }
             }
         }
-
-        std::sort(this->_variables.begin(), this->_variables.end());
-        std::sort(this->_stringsymbols.begin(), this->_stringsymbols.end());
     }
 
     bool DisassemblerListing::isDecoded(const DataValue& address) const
@@ -405,7 +402,7 @@ namespace PrefSDK
             i = mid - 1;
             b = this->_blocks[i];
 
-            while(b->startAddress() == address) // Look backward
+            while((i >= 0) && (b->startAddress() == address)) // Look backward
             {
                 b = this->_blocks[i];
 
@@ -418,7 +415,7 @@ namespace PrefSDK
             i = mid + 1;
             b = this->_blocks[i];
 
-            while(b->startAddress() == address) // Look forward
+            while((i < this->_blocks.length()) && (b->startAddress() == address)) // Look forward
             {
                 b = this->_blocks[i];
 
@@ -447,12 +444,12 @@ namespace PrefSDK
         return this->_instructions;
     }
 
-    const DisassemblerListing::StringSymbolList &DisassemblerListing::strings() const
+    const DisassemblerListing::StringSymbolSet &DisassemblerListing::strings() const
     {
         return this->_stringsymbols;
     }
 
-    const DisassemblerListing::VariableList &DisassemblerListing::variables() const
+    const DisassemblerListing::VariableSet &DisassemblerListing::variables() const
     {
         return this->_variables;
     }
@@ -547,13 +544,13 @@ namespace PrefSDK
             DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
             QString s = reader.readString(offset.compatibleValue<qint64>());
 
-            this->_stringsymbols.append(address);
+            this->_stringsymbols.insert(address);
             this->_symboltable->set(Symbol::String, address, DataValue::create(s.length(), this->_addresstype), DataType::AsciiString, QString("string_%1").arg(address.toString(16)));
         }
         else if(!this->_symboltable->contains(address))
             this->_symboltable->set(Symbol::Address, address, QString("data_%1").arg(address.toString(16)));
 
-        this->_variables.append(address);
+        this->_variables.insert(address);
     }
 
     QString DisassemblerListing::formatOperand(Operand *operand)

@@ -112,31 +112,37 @@ namespace PrefSDK
 
         if(size <= 0)
         {
-            this->warning(QString("Unknown Instruction at %1h").arg(procaddress.first.toString(16)));
-            this->_processoremulator->pushValue(procaddress.first + instruction->sizeValue(), Reference::Flow);
+            lua_Integer skipsize = qMax(static_cast<lua_Integer>(1), qAbs(size));
+
+            this->warning(QString("Unknown Instruction at %1h, skipping %2 bytes").arg(procaddress.first.toString(16), QString::number(skipsize)));
+            this->_processoremulator->pushValue(procaddress.first + skipsize, Reference::Flow);
         }
         else
         {
-            this->_processordefinition->decode(instruction);
-            const RegisterSet* registerset = this->_processordefinition->registerSet();
-
-            for(int i = 0; i < instruction->operandsCount(); i++)
+            if(this->_processordefinition->decode(instruction))
             {
-                Operand* operand = instruction->operand(i);
+                const RegisterSet* registerset = this->_processordefinition->registerSet();
 
-                if(operand->type() == Operand::Register)
-                    operand->setRegisterName(registerset->name(operand->operandValue()));
+                for(int i = 0; i < instruction->operandsCount(); i++)
+                {
+                    Operand* operand = instruction->operand(i);
+
+                    if(operand->type() == Operand::Register)
+                        operand->setRegisterName(registerset->name(operand->operandValue()));
+                }
+
+                if(Reference::isCall(procaddress.second))
+                    this->_listing->createFunction(FunctionTypes::Function, procaddress.first);
+                else if(Reference::isJump(procaddress.second) && !this->_listing->referenceTable()->isReferenced(procaddress.first))
+                {
+                    SymbolTable* symboltable = this->_listing->symbolTable();
+                    symboltable->set(Symbol::Jump, procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
+                }
+
+                this->_processordefinition->callEmulate(this->_processoremulator, instruction, hexeditdata);
             }
-
-            if(Reference::isCall(procaddress.second))
-                this->_listing->createFunction(FunctionTypes::Function, procaddress.first);
-            else if(Reference::isJump(procaddress.second) && !this->_listing->referenceTable()->isReferenced(procaddress.first))
-            {
-                SymbolTable* symboltable = this->_listing->symbolTable();
-                symboltable->set(Symbol::Jump, procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
-            }
-
-            this->_processordefinition->callEmulate(this->_processoremulator, instruction, hexeditdata);
+            else
+                this->warning(QString("Unknown opcode %1h at %2h").arg(instruction->opcodeValue().toString(16), instruction->startAddress().toString(16)));
         }
     }
 

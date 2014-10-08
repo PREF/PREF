@@ -118,17 +118,15 @@ namespace PrefSDK
         return this->_registerset;
     }
 
-    void ProcessorDefinition::decode(Instruction *instruction)
+    bool ProcessorDefinition::decode(Instruction *instruction)
     {
         if(!this->_instructionset->isOpcode(instruction->opcodeValue()))
-        {
-            throw PrefException(QString("ProcessorDefinition::decode(): Unknown opcode at %1").arg(QString::number(instruction->address(), 16).toUpper()));
-            return;
-        }
+            return false;
 
         InstructionDefinition* instructiondefinition = this->_instructionset->instructionDefinition(instruction->opcodeValue());
         instruction->setMnemonic(instructiondefinition->mnemonic());
         instruction->setCategory(instructiondefinition->category());
         instruction->setType(instructiondefinition->type());
+        return true;
     }
 }

@@ -2,9 +2,18 @@
 
 DataMapModel::DataMapModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
+    this->_variables = listing->variables().toList();
+
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
+
+    std::sort(this->_variables.begin(), this->_variables.end());
+}
+
+const DataValue &DataMapModel::variable(qint64 idx) const
+{
+    return this->_variables[idx];
 }
 
 int DataMapModel::columnCount(const QModelIndex &) const
@@ -45,8 +54,7 @@ QVariant DataMapModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const DisassemblerListing::VariableList& variables = this->_listing->variables();
-        DataValue address = variables[index.row()];
+        DataValue address = this->_variables[index.row()];
 
         switch(index.column())
         {
@@ -85,8 +93,7 @@ QVariant DataMapModel::data(const QModelIndex &index, int role) const
         if(index.column() == 0 || index.column() == 1 || index.column() == 2)
             return QColor(Qt::darkBlue);
 
-        const DisassemblerListing::VariableList& variables = this->_listing->variables();
-        Symbol* symbol = this->_listing->symbolTable()->get(variables[index.row()]);
+        Symbol* symbol = this->_listing->symbolTable()->get(this->_variables[index.row()]);
 
         if(symbol->type() == Symbol::Address)
             return QColor(Qt::darkCyan);
@@ -114,7 +121,7 @@ QModelIndex DataMapModel::parent(const QModelIndex &) const
 
 int DataMapModel::rowCount(const QModelIndex &) const
 {
-    return this->_listing->variables().length();
+    return this->_variables.length();
 }
 
 Qt::ItemFlags DataMapModel::flags(const QModelIndex &index) const

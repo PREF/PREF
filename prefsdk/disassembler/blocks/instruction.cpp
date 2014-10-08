@@ -2,7 +2,9 @@
 
 namespace PrefSDK
 {
-    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, QObject *parent): Block(address, parent), _hexeditdata(hexeditdata), _mnemonic("???"), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
+    const QString Instruction::INVALID_MNEMONIC = "???";
+
+    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, QObject *parent): Block(address, parent), _hexeditdata(hexeditdata), _mnemonic(Instruction::INVALID_MNEMONIC), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
     {
 
     }
@@ -15,6 +17,11 @@ namespace PrefSDK
     bool Instruction::isCall() const
     {
         return (this->_type == InstructionType::Call) || (this->_type == InstructionType::ConditionalCall);
+    }
+
+    bool Instruction::isValid() const
+    {
+        return (QString::compare(this->_mnemonic, Instruction::INVALID_MNEMONIC) != 0);
     }
 
     void Instruction::clearOperands()

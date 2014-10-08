@@ -7,8 +7,8 @@ DataMapView::DataMapView(QWidget *parent): QWidget(parent), ui(new Ui::DataMapVi
     ui->splitter->setStretchFactor(1, 1);
     ui->hexView->setReadOnly(true);
 
-    this->_stringcolor = QColor(Qt::darkGreen);
-    this->_addresscolor = QColor(Qt::darkCyan);
+    this->_stringcolor = QColor("lightgreen");
+    this->_addresscolor = QColor("lightblue");
     this->_addressalternatecolor = QColor(Qt::yellow);
 }
 
@@ -40,23 +40,31 @@ DataMapView::~DataMapView()
 void DataMapView::highlightData()
 {
     QColor color;
-    const DisassemblerListing::VariableList& variables = this->_listing->variables();
+    const DisassemblerListing::VariableSet& variables = this->_listing->variables();
     SymbolTable* symbols = this->_listing->symbolTable();
+    Symbol* lastsymbol = nullptr;
 
-    foreach(DataValue variable, variables)
+    for(DisassemblerListing::VariableSet::ConstIterator it = variables.begin(); it != variables.end(); it++)
     {
+        DataValue variable = *it;
         Segment* segment = this->_listing->findSegment(variable);
         Symbol* symbol = symbols->get(variable);
         qint64 offset = ((variable - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
         qint64 endoffset = (offset + symbol->size().compatibleValue<qint64>()) - 1;
 
         if(symbol->type() == Symbol::Address)
-            color = ((color == this->_addresscolor) ? this->_addressalternatecolor : this->_addresscolor);
+        {
+            if(lastsymbol && ((lastsymbol->address() + lastsymbol->size())) == symbol->address())
+                color = ((color == this->_addresscolor) ? this->_addressalternatecolor : this->_addresscolor);
+            else
+                color = this->_addresscolor;
+        }
         else if(symbol->type() == Symbol::String)
             color = this->_stringcolor;
 
         ui->hexView->highlightBackground(offset, endoffset, color);
         ui->hexView->commentRange(offset, endoffset, symbol->name());
+        lastsymbol = symbol;
     }
 }
 
@@ -65,9 +73,8 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    const DisassemblerListing::VariableList& variables = this->_listing->variables();
     SymbolTable* symbols = this->_listing->symbolTable();
-    DataValue variable = variables[index.row()];
+    DataValue variable = this->_datamapmodel->variable(index.row());
     Symbol* symbol = symbols->get(variable);
     Segment* segment = this->_listing->findSegment(variable);
     qint64 offset = ((variable - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();

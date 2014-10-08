@@ -13,6 +13,7 @@ class DataMapModel : public QAbstractItemModel
 
     public:
         explicit DataMapModel(DisassemblerListing* listing, QObject *parent = 0);
+        const DataValue& variable(qint64 idx) const;
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -26,6 +27,7 @@ class DataMapModel : public QAbstractItemModel
     private:
         DisassemblerListing* _listing;
         QFont _monospacefont;
+        QList<DataValue> _variables;
 };
 
 #endif // DATAMAPMODEL_H

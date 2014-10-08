@@ -31,6 +31,7 @@ namespace PrefSDK
         Q_PROPERTY(QString hexdump READ hexDump)
         Q_PROPERTY(PrefSDK::Operand* firstoperand READ firstOperand)
         Q_PROPERTY(PrefSDK::Operand* lastoperand READ lastOperand)
+        Q_PROPERTY(bool valid READ isValid)
 
         public:
             typedef QList<PrefSDK::Operand*> OperandList;
@@ -39,6 +40,7 @@ namespace PrefSDK
             explicit Instruction(const DataValue& address, const DataValue& offset, DataType::Type opcodetype, QHexEditData* hexeditdata, QObject *parent = 0);
             bool isJump() const;
             bool isCall() const;
+            bool isValid() const;
             lua_Integer address() const;
             lua_Integer offset() const;
             lua_Integer size() const;
@@ -74,6 +76,9 @@ namespace PrefSDK
 
         public: /* Overriden Methods */
             virtual Block::Type blockType() const;
+
+        private:
+            static const QString INVALID_MNEMONIC;
 
         private:
             QHexEditData* _hexeditdata;

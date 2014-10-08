@@ -31,6 +31,7 @@ class StringSymbolModel : public QAbstractItemModel
         DisassemblerListing* _listing;
         QHexEditData* _hexeditdata;
         QHexEditDataReader* _reader;
+        QList<DataValue> _strings;
 
     private:
         static const qint64 STRING_MAX_LENGTH;
