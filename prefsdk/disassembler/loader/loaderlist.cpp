@@ -26,7 +26,7 @@ namespace PrefSDK
 
                 if(res != 0)
                 {
-                    throw PrefException("LoaderList::load(): QString::fromUtf8(lua_tostring(l, -1))");
+                    throw PrefException(QString("LoaderList::load(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
                     lua_pop(l, 1);
                 }
 
