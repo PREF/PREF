@@ -200,6 +200,7 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
     this->setFormat(idx, regex.matchedLength(), charformat);
     this->highlightJumpLabel(text);
     this->highlightSubLabel(text);
+    this->highlightDataLabel(text);
 }
 
 void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
@@ -216,6 +217,17 @@ void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
 void DisassemblerHighlighter::highlightSubLabel(const QString &text)
 {
     QRegExp regex("sub_[a-zA-Z0-9]+");
+    int idx = text.indexOf(regex);
+
+    if(idx == -1)
+        return;
+
+    this->setFormat(idx, regex.matchedLength(), this->_sublabelformat);
+}
+
+void DisassemblerHighlighter::highlightDataLabel(const QString &text)
+{
+    QRegExp regex("data_[a-zA-Z0-9]+");
     int idx = text.indexOf(regex);
 
     if(idx == -1)
