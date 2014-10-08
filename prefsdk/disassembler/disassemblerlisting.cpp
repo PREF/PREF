@@ -40,6 +40,22 @@ namespace PrefSDK
         }
     }
 
+    void DisassemblerListing::analyzeOperands()
+    {
+        for(InstructionMap::Iterator it = this->_instructions.begin(); it != this->_instructions.end(); it++)
+        {
+            Instruction* instruction = it.value();
+
+            for(lua_Integer i = 0; i < instruction->operandsCount(); i++)
+            {
+                Operand* op = instruction->operand(i);
+
+                if(op->type() == Operand::Address && !this->_symboltable->contains(op->operandValue()))
+                    this->_symboltable->set(op->operandValue(), QString("data_%1").arg(op->operandValue().toString(16)));
+            }
+        }
+    }
+
     bool DisassemblerListing::isDecoded(const DataValue& address) const
     {
         return this->_instructions.contains(address);

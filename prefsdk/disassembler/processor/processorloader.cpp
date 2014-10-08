@@ -16,6 +16,7 @@ namespace PrefSDK
 
         this->_listing->calcFunctionBounds();
         this->_processordefinition->callElaborate(this->_listing, hexeditdata);
+        this->_listing->analyzeOperands();
         this->unbind();
     }
 
@@ -105,6 +106,7 @@ namespace PrefSDK
     void ProcessorLoader::disassembleInstruction(QHexEditData* hexeditdata)
     {
         ProcessorEmulator::Address procaddress = this->_processoremulator->popValue();
+
         Instruction* instruction = this->_listing->createInstruction(procaddress.first, this->_processordefinition->instructionSet()->opcodeType());
         lua_Integer size = this->_processordefinition->callAnalyze(instruction, this->_baseaddress, hexeditdata);
 

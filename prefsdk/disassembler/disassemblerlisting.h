@@ -31,6 +31,7 @@ namespace PrefSDK
             void setAddressType(DataType::Type addresstype);
             bool isDecoded(const DataValue& address) const;
             void calcFunctionBounds();
+            void analyzeOperands();
             qint64 length() const;
             PrefSDK::Block* firstBlock();
             PrefSDK::Block* lastBlock();
