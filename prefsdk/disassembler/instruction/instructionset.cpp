@@ -41,13 +41,11 @@ namespace PrefSDK
         DataValue opcode = DataValue::create(key, this->_opcodetype);
 
         if(this->_opcodes.contains(opcode))
-        {
             QtLua::pushObject(l, this->_opcodes[opcode]);
-            return 1;
-        }
+        else
+            lua_pushnil(l);
 
-        throw PrefException(QString("InstructionSet::metaIndex(): Invalid opcode: %1h").arg(opcode.toString(16)));
-        return 0;
+        return 1;
     }
 
     int InstructionSet::metaIndex(lua_State *l, QString key)
