@@ -16,7 +16,7 @@ namespace PrefSDK
 
         public:
             explicit InstructionSet(DataType::Type opcodetype, QObject *parent = 0);
-            InstructionDefinition* instructionDefinition(const DataValue &opcode);
+            InstructionDefinition* instructionDefinition(const DataValue &opcode) const;
             DataType::Type opcodeType() const;
 
         public slots:

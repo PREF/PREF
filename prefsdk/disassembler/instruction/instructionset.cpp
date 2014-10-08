@@ -6,7 +6,7 @@ namespace PrefSDK
     {
     }
 
-    InstructionDefinition *InstructionSet::instructionDefinition(const DataValue& opcode)
+    InstructionDefinition *InstructionSet::instructionDefinition(const DataValue& opcode) const
     {
         return this->_opcodes[opcode];
     }
