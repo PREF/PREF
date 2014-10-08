@@ -2,6 +2,7 @@
 #define PREFSDK_PROCESSOREMULATOR_H
 
 #include <QtCore>
+#include "logwidget/logwidget.h"
 #include "prefsdk/luastate.h"
 #include "prefsdk/type/datatype.h"
 #include "prefsdk/type/datavalue.h"
@@ -18,7 +19,7 @@ namespace PrefSDK
             typedef QPair<DataValue, Reference::Type> Address;
 
         public:
-            explicit ProcessorEmulator(DisassemblerListing* listing, DataType::Type addresstype, QObject *parent = 0);
+            explicit ProcessorEmulator(DisassemblerListing* listing, DataType::Type addresstype, LogWidget* logwidget, QObject *parent = 0);
             const ProcessorEmulator::Address& currentAddress() const;
             bool hasMoreInstructions() const;
             void pushValue(const DataValue& address, Reference::Type referencetype);
@@ -31,6 +32,7 @@ namespace PrefSDK
         private:
             QStack<Address> _addrstack;
             DisassemblerListing* _listing;
+            LogWidget* _logwidget;
             DataType::Type _addresstype;
             Address _currentaddress;
     };
