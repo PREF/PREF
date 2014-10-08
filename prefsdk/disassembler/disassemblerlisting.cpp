@@ -215,7 +215,7 @@ namespace PrefSDK
         QString s = instruction->mnemonic() + " ";
 
         if(!instruction->format().isEmpty())
-            s = this->formatInstructionCustom(instruction);
+            s.append(this->formatInstructionCustom(instruction));
         else
         {
             for(int i = 0; i < instruction->operandsCount(); i++)
