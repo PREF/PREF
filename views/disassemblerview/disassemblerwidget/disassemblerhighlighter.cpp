@@ -43,10 +43,10 @@ void DisassemblerHighlighter::generateHighlighters()
     this->_jumplabelformat.setFontStyleHint(QFont::TypeWriter);
     this->_jumplabelformat.setForeground(Qt::darkGray);
 
-    this->_sublabelformat.setFontFamily("Monospace");
-    this->_sublabelformat.setFontStyleHint(QFont::TypeWriter);
-    this->_sublabelformat.setFontWeight(QFont::Bold);
-    this->_sublabelformat.setForeground(Qt::darkMagenta);
+    this->_symbollabelformat.setFontFamily("Monospace");
+    this->_symbollabelformat.setFontStyleHint(QFont::TypeWriter);
+    this->_symbollabelformat.setFontWeight(QFont::Bold);
+    this->_symbollabelformat.setForeground(Qt::darkMagenta);
 }
 
 void DisassemblerHighlighter::highlight(const QString &text, const QString& stringregex, const QTextCharFormat& charformat)
@@ -199,8 +199,7 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
 
     this->setFormat(idx, regex.matchedLength(), charformat);
     this->highlightJumpLabel(text);
-    this->highlightSubLabel(text);
-    this->highlightDataLabel(text);
+    this->highlightSymbolLabel(text);
 }
 
 void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
@@ -214,26 +213,15 @@ void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
     this->setFormat(idx, regex.matchedLength(), this->_jumplabelformat);
 }
 
-void DisassemblerHighlighter::highlightSubLabel(const QString &text)
+void DisassemblerHighlighter::highlightSymbolLabel(const QString &text)
 {
-    QRegExp regex("sub_[a-zA-Z0-9]+");
+    QRegExp regex("[a-z_]+_[a-zA-Z0-9]+");
     int idx = text.indexOf(regex);
 
     if(idx == -1)
         return;
 
-    this->setFormat(idx, regex.matchedLength(), this->_sublabelformat);
-}
-
-void DisassemblerHighlighter::highlightDataLabel(const QString &text)
-{
-    QRegExp regex("data_[a-zA-Z0-9]+");
-    int idx = text.indexOf(regex);
-
-    if(idx == -1)
-        return;
-
-    this->setFormat(idx, regex.matchedLength(), this->_sublabelformat);
+    this->setFormat(idx, regex.matchedLength(), this->_symbollabelformat);
 }
 
 void DisassemblerHighlighter::highlightBlock(const QString &text)

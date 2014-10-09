@@ -30,8 +30,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         void highlightComment(const QString& text);
         void highlightInstruction(const QString& text);
         void highlightJumpLabel(const QString& text);
-        void highlightSubLabel(const QString& text);
-        void highlightDataLabel(const QString& text);
+        void highlightSymbolLabel(const QString& text);
 
     protected:
         virtual void highlightBlock(const QString &text);
@@ -46,7 +45,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         QTextCharFormat _registersformat;
         QTextCharFormat _commentformat;
         QTextCharFormat _jumplabelformat;
-        QTextCharFormat _sublabelformat;
+        QTextCharFormat _symbollabelformat;
 };
 
 #endif // DISASSEMBLERHIGHLIGHTER_H
