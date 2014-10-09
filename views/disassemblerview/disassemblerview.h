@@ -61,7 +61,9 @@ class DisassemblerView : public AbstractView
         void gotoFunction();
         void gotoAddress(const PrefSDK::DataValue& address);
 
-    private:
+        void on_tabOverview_currentChanged(int index);
+
+private:
         Ui::DisassemblerView *ui;
         DisassemblerListing* _listing;
         StringSymbolModel* _stringsymbols;

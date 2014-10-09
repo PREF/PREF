@@ -110,7 +110,6 @@ SOURCES += main.cpp\
     viewmodels/visualmapmodel/visualmapdelegate.cpp \
     viewmodels/datatypesmodel/datatypesdelegate.cpp \
     views/disassemblerview/disassemblerview.cpp \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.cpp \
     prefsdk/disassembler/loader/loaderlist.cpp \
     viewmodels/loaderlistmodel/loaderlistmodel.cpp \
     prefsdk/disassembler/blocks/block.cpp \
@@ -160,7 +159,8 @@ SOURCES += main.cpp\
     actionwidget/abstractaction.cpp \
     views/disassemblerview/gotowidget/gotowidget.cpp \
     viewmodels/stringsymbolmodel/stringsymbolmodel.cpp \
-    viewmodels/variablesmodel/variablesmodel.cpp
+    viewmodels/variablesmodel/variablesmodel.cpp \
+    views/disassemblerview/loaderdialog/loaderdialog.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -258,7 +258,6 @@ HEADERS  += mainwindow.h \
     viewmodels/visualmapmodel/visualmapdelegate.h \
     viewmodels/datatypesmodel/datatypesdelegate.h \
     views/disassemblerview/disassemblerview.h \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.h \
     prefsdk/disassembler/loader/loaderlist.h \
     viewmodels/loaderlistmodel/loaderlistmodel.h \
     prefsdk/disassembler/blocks/block.h \
@@ -309,7 +308,8 @@ HEADERS  += mainwindow.h \
     actionwidget/abstractaction.h \
     views/disassemblerview/gotowidget/gotowidget.h \
     viewmodels/stringsymbolmodel/stringsymbolmodel.h \
-    viewmodels/variablesmodel/variablesmodel.h
+    viewmodels/variablesmodel/variablesmodel.h \
+    views/disassemblerview/loaderdialog/loaderdialog.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -336,11 +336,11 @@ FORMS    += mainwindow.ui \
     views/hexview/bytecolorsdialog/bytecolorsdialog.ui \
     views/hexview/visualmapwidget/visualmapwidget.ui \
     views/disassemblerview/disassemblerview.ui \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui \
     views/disassemblerview/segmentsdialog/segmentsdialog.ui \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.ui \
     views/hexview/outputwidget/outputwidget.ui \
-    views/disassemblerview/gotowidget/gotowidget.ui
+    views/disassemblerview/gotowidget/gotowidget.ui \
+    views/disassemblerview/loaderdialog/loaderdialog.ui
 
 RESOURCES += resources.qrc
 

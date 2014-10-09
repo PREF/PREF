@@ -4,8 +4,18 @@
 DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _stringsymbols(nullptr), _loader(loader)
 {
     ui->setupUi(this);
+
     ui->hSplitter->setStretchFactor(0, 1);
     ui->vSplitter->setStretchFactor(0, 1);
+
+    ui->functionList->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->functionList->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->tvVariables->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tvVariables->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    ui->tvStrings->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->tvStrings->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     this->_toolbar = new QToolBar();
     this->_toolbar->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
@@ -134,7 +144,7 @@ void DisassemblerView::disassemble()
     this->_listing = new DisassemblerListing(this->_hexeditdata, this);
     this->_loader->callMap(this->_listing, this->_hexeditdata, ui->logWidget);
     this->_loader->disassemble(this->_hexeditdata);
-    ui->gotoWidget->setListing(this->_listing);
+
     this->displayDisassembly();
 }
 
@@ -206,26 +216,16 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
 void DisassemblerView::displayDisassembly()
 {
     this->_toolbar->setEnabled(true);
-    this->_functionmodel = new FunctionModel(this->_listing, ui->functionList);
+    ui->gotoWidget->setListing(this->_listing);
     ui->disassemblerWidget->setListing(this->_listing);
 
-    ui->functionList->setModel(this->_functionmodel);
-    ui->functionList->resizeRowsToContents();
-
-    for(int i = 0; i < this->_functionmodel->columnCount(); i++)
-        ui->functionList->resizeColumnToContents(i);
-
+    this->_functionmodel = new FunctionModel(this->_listing, ui->functionList);
     this->_stringsymbols = new StringSymbolModel(this->_listing, this->_hexeditdata, ui->tvStrings);
     this->_variablesmodel = new VariablesModel(this->_listing, this);
 
-    ui->tvVariables->setModel(this->_variablesmodel);
-    ui->tvVariables->resizeColumnToContents(0);
-    ui->tvVariables->resizeRowsToContents();
-
+    ui->functionList->setModel(this->_functionmodel);
     ui->tvStrings->setModel(this->_stringsymbols);
-    ui->tvStrings->resizeColumnToContents(0);
-    ui->tvStrings->resizeRowsToContents();
-
+    ui->tvVariables->setModel(this->_variablesmodel);
     ui->dataView->setModel(this->_variablesmodel);
 }
 
@@ -285,4 +285,31 @@ void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
         return;
 
     this->showCrossReference(this->_variablesmodel->variable(index.row()));
+}
+
+void DisassemblerView::on_tabOverview_currentChanged(int index)
+{
+    switch(index)
+    {
+        case 0:
+        {
+            for(int i = 0; i < this->_variablesmodel->columnCount() - 1; i++)
+                ui->tvVariables->resizeColumnToContents(i);
+
+            ui->tvVariables->resizeRowsToContents();
+            break;
+        }
+
+        case 1:
+        {
+            for(int i = 0; i < this->_stringsymbols->columnCount() - 1; i++)
+                ui->tvStrings->resizeColumnToContents(i);
+
+            ui->tvStrings->resizeRowsToContents();
+            break;
+        }
+
+        default:
+            break;
+    }
 }

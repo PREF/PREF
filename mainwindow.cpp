@@ -270,9 +270,9 @@ void MainWindow::on_actionDisassemble_triggered()
     if(!file.isEmpty())
     {
         QHexEditData* hexeditdata = QHexEditData::fromFile(file);
-        DisassemblerDialog dd(hexeditdata, this);
+        LoaderDialog ld(hexeditdata, this);
 
-        if(!dd.hasLoaders())
+        if(!ld.hasLoaders())
         {
             QMessageBox m;
             m.setWindowTitle("No Loaders found...");
@@ -295,12 +295,12 @@ void MainWindow::on_actionDisassemble_triggered()
             return;
         }
 
-        int res = dd.exec();
+        int res = ld.exec();
 
-        if(res == DisassemblerDialog::Accepted && dd.selectedLoader())
+        if(res == LoaderDialog::Accepted && ld.selectedLoader())
         {
             QString viewname = QFileInfo(file).fileName();
-            DisassemblerView* dv = new DisassemblerView(dd.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+            DisassemblerView* dv = new DisassemblerView(ld.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
             LoadedViews::instance()->addView(dv);
             ui->tabWidget->addTab(dv, viewname);
             dv->disassemble();

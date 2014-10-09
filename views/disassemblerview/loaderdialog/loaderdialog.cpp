@@ -1,7 +1,7 @@
-#include "disassemblerdialog.h"
-#include "ui_disassemblerdialog.h"
+#include "loaderdialog.h"
+#include "ui_loaderdialog.h"
 
-DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, QWidget *parent): QDialog(parent), ui(new Ui::DisassemblerDialog)
+LoaderDialog::LoaderDialog(QHexEditData *hexeditdata, QWidget *parent): QDialog(parent), ui(new Ui::LoaderDialog)
 {
     ui->setupUi(this);
 
@@ -13,12 +13,12 @@ DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, QWidget *paren
     ui->loaderTable->resizeColumnToContents(0);
 }
 
-bool DisassemblerDialog::hasLoaders() const
+bool LoaderDialog::hasLoaders() const
 {
     return this->_loaderlistmodel->rowCount() > 0;
 }
 
-ProcessorLoader* DisassemblerDialog::selectedLoader() const
+ProcessorLoader* LoaderDialog::selectedLoader() const
 {
     QItemSelectionModel* selectionmodel = ui->loaderTable->selectionModel();
     QModelIndexList selectedindexes = selectionmodel->selectedRows();
@@ -29,17 +29,17 @@ ProcessorLoader* DisassemblerDialog::selectedLoader() const
     return nullptr;
 }
 
-DisassemblerDialog::~DisassemblerDialog()
+LoaderDialog::~LoaderDialog()
 {
     delete ui;
 }
 
-void DisassemblerDialog::on_loaderTable_doubleClicked(const QModelIndex&)
+void LoaderDialog::on_loaderTable_doubleClicked(const QModelIndex&)
 {
     this->accept();
 }
 
-void DisassemblerDialog::on_loaderTable_clicked(const QModelIndex &index)
+void LoaderDialog::on_loaderTable_clicked(const QModelIndex &index)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(index.isValid());
 }

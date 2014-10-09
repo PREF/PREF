@@ -1,5 +1,5 @@
-#ifndef DISASSEMBLERDIALOG_H
-#define DISASSEMBLERDIALOG_H
+#ifndef LOADERDIALOG_H
+#define LOADERDIALOG_H
 
 #include <QtCore>
 #include <QtGui>
@@ -11,26 +11,26 @@
 using namespace PrefSDK;
 
 namespace Ui {
-class DisassemblerDialog;
+class LoaderDialog;
 }
 
-class DisassemblerDialog : public QDialog
+class LoaderDialog : public QDialog
 {
     Q_OBJECT
 
     public:
-        explicit DisassemblerDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
+        explicit LoaderDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
         bool hasLoaders() const;
         ProcessorLoader *selectedLoader() const;
-        ~DisassemblerDialog();
+        ~LoaderDialog();
 
     private slots:
         void on_loaderTable_doubleClicked(const QModelIndex &);
         void on_loaderTable_clicked(const QModelIndex &index);
 
     private:
-        Ui::DisassemblerDialog *ui;
+        Ui::LoaderDialog *ui;
         LoaderListModel* _loaderlistmodel;
 };
 
-#endif // DISASSEMBLERDIALOG_H
+#endif // LOADERDIALOG_H

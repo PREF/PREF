@@ -44,10 +44,10 @@ QVariant FunctionModel::headerData(int section, Qt::Orientation orientation, int
                 return "Name";
 
             case 1:
-                return "Segment";
+                return "Address";
 
             case 2:
-                return "Address";
+                return "Segment";
 
             case 3:
                 return "Type";

@@ -62,7 +62,7 @@ QVariant StringSymbolModel::data(const QModelIndex &index, int role) const
             {
                 Segment* segment = this->_listing->findSegment(address);
                 DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
-                return QString("'%1'").arg(this->_reader->readString(offset.compatibleValue<qint64>()).replace(QRegExp("[\\n\\r]"), " "));
+                return this->_reader->readString(offset.compatibleValue<qint64>()).replace(QRegExp("[\\n\\r]"), " ");
             }
 
             default:
