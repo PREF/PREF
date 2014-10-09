@@ -48,6 +48,7 @@ class DisassemblerView : public AbstractView
         void on_disassemblerWidget_customContextMenuRequested(const QPoint &pos);
         void on_functionList_customContextMenuRequested(const QPoint &pos);
         void on_functionList_doubleClicked(const QModelIndex &index);
+        void on_tvStrings_doubleClicked(const QModelIndex &index);
         void onFunctionsMenuXRefsTriggered();
         void onListingMenuCrossReferencesTriggered();
         void onListingMenuHexDumpTriggered();

@@ -250,3 +250,21 @@ void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)
 
     ui->disassemblerWidget->jumpTo(reinterpret_cast<Function*>(index.internalPointer()));
 }
+
+void DisassemblerView::on_tvStrings_doubleClicked(const QModelIndex &index)
+{
+    if(!index.isValid())
+        return;
+
+    ReferenceTable* referencetable = this->_listing->referenceTable();
+    DataValue address = this->_stringsymbols->string(index.row());
+
+    if(!referencetable->isReferenced(address))
+        return;
+
+    CrossReferenceDialog crd(address, this->_listing);
+    int res = crd.exec();
+
+    if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
+        ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+}
