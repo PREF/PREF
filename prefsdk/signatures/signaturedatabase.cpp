@@ -11,10 +11,11 @@ namespace PrefSDK
 
     SignatureDatabase::SignatureDatabase(): _signaturecount(-1)
     {
-        QFile dbfile(QString("%1%2%3").arg(qApp->applicationDirPath(), QDir::separator(), SignatureDatabase::DATABASE_FILE_URI));
+        QString dbpath = QString("%1%2%3").arg(qApp->applicationDirPath(), QDir::separator(), SignatureDatabase::DATABASE_FILE_URI);
+        QFile dbfile(dbpath);
         bool dbinitialized = dbfile.exists() && (dbfile.size() > 0);
 
-        this->_signaturedb.open(SignatureDatabase::DATABASE_FILE_URI);
+        this->_signaturedb.open(dbpath.toUtf8().constData());
 
         if(!dbinitialized)
             this->populateDatabase();
