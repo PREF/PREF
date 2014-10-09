@@ -14,6 +14,11 @@ StringSymbolModel::StringSymbolModel(DisassemblerListing* listing, QHexEditData 
     std::sort(this->_strings.begin(), this->_strings.end());
 }
 
+const DataValue &StringSymbolModel::string(qint64 idx)
+{
+    return this->_strings[idx];
+}
+
 int StringSymbolModel::columnCount(const QModelIndex&) const
 {
     return 2;
@@ -26,7 +31,7 @@ QVariant StringSymbolModel::headerData(int section, Qt::Orientation orientation,
         switch(section)
         {
             case 0:
-                return "Offset";
+                return "Address";
 
             case 1:
                 return "String";

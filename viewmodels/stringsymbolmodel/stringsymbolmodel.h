@@ -16,6 +16,7 @@ class StringSymbolModel : public QAbstractItemModel
 
     public:
         explicit StringSymbolModel(DisassemblerListing* listing, QHexEditData* hexeditdata, QObject *parent = 0);
+        const DataValue& string(qint64 idx);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
