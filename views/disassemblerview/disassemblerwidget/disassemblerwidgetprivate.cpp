@@ -236,7 +236,33 @@ QString DisassemblerWidgetPrivate::emitFunction(Function* func)
 
 QString DisassemblerWidgetPrivate::emitInstruction(Instruction *instruction)
 {
-    return this->_listing->formatInstruction(instruction);
+    SymbolTable* symboltable = this->_listing->symbolTable();
+    QHexEditDataReader reader(this->_listing->data());
+    QString stringrefs, instructionout = this->_listing->formatInstruction(instruction);
+
+    for(lua_Integer i = 0; i < instruction->operandsCount(); i++)
+    {
+        Operand* op = instruction->operand(i);
+
+        if((op->type() == Operand::Address) && (symboltable->contains(op->operandValue())) && symboltable->isType(op->operandValue(), Symbol::String))
+        {
+            Segment* segment = this->_listing->findSegment(op->operandValue());
+            Symbol* symbol = symboltable->get(op->operandValue());
+            DataValue offset = (op->operandValue() - segment->startAddress()) + segment->baseOffset();
+
+            if(!stringrefs.isEmpty())
+                stringrefs.append(" | ");
+            else
+                stringrefs.append("# ");
+
+            stringrefs.append(QString("%1:%2: '%3'").arg(segment->name(), symbol->name(), reader.readString(offset.compatibleValue<qint64>())));
+        }
+    }
+
+    if(stringrefs.isEmpty())
+        return instructionout;
+
+    return QString("%1\t%2").arg(instructionout, stringrefs);
 }
 
 QString DisassemblerWidgetPrivate::emitReference(ReferenceSet *referenceset)
