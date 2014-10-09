@@ -236,6 +236,6 @@ void DisassemblerHighlighter::highlightBlock(const QString &text)
         this->highlightJumpLabel(text);
 
     this->highlightComment(text);
-    this->highlight(text, "[0-9a-fA-F]+h", this->_hexdigitsformat);
+    this->highlight(text, "\\b[0-9a-fA-F]+h\\b", this->_hexdigitsformat);
     this->highlight(text, "\\$[a-zA-Z0-9]+", this->_registersformat);
 }
