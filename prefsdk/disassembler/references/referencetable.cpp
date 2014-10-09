@@ -21,12 +21,12 @@ namespace PrefSDK
         return refset;
     }
 
-    bool ReferenceTable::isReferenced(Block *block)
+    bool ReferenceTable::isReferenced(Block *block) const
     {
         return this->isReferenced(block->startAddress());
     }
 
-    bool ReferenceTable::isReferenced(const DataValue &address)
+    bool ReferenceTable::isReferenced(const DataValue &address) const
     {
         return this->_referencetable.contains(address);
     }

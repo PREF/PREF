@@ -17,8 +17,8 @@ namespace PrefSDK
             explicit ReferenceTable(QObject *parent = 0);
             uint count() const;
             ReferenceSet *addReference(const DataValue& address, const DataValue &referencedby, Reference::Type referencetype);
-            bool isReferenced(Block* block);
-            bool isReferenced(const DataValue& address);
+            bool isReferenced(Block* block) const;
+            bool isReferenced(const DataValue& address) const;
             ReferenceSet* references(Block* block);
             ReferenceSet* references(const DataValue &address);
 
