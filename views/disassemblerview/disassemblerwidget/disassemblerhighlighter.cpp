@@ -101,7 +101,7 @@ void DisassemblerHighlighter::highlightFunction(const QString &text)
 
 void DisassemblerHighlighter::highlightComment(const QString &text)
 {
-    QRegExp regex("#[^.]+$");
+    QRegExp regex("#[^#]*$");
     int idx = text.indexOf(regex);
 
     while(idx >= 0)
