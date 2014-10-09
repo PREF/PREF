@@ -13,12 +13,6 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
 {
     Q_OBJECT
 
-    private:
-        enum Construct
-        {
-            HexDigits,
-        };
-
     public:
         explicit DisassemblerHighlighter(QTextDocument *parent, Block* block);
 
