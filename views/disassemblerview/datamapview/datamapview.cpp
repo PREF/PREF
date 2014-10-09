@@ -1,7 +1,7 @@
 #include "datamapview.h"
 #include "ui_datamapview.h"
 
-DataMapView::DataMapView(QWidget *parent): QWidget(parent), ui(new Ui::DataMapView), _listing(nullptr), _datamapmodel(nullptr)
+DataMapView::DataMapView(QWidget *parent): QWidget(parent), ui(new Ui::DataMapView), _listing(nullptr), _variablesmodel(nullptr)
 {
     ui->setupUi(this);
     ui->splitter->setStretchFactor(1, 1);
@@ -12,15 +12,15 @@ DataMapView::DataMapView(QWidget *parent): QWidget(parent), ui(new Ui::DataMapVi
     this->_addressalternatecolor = QColor(Qt::yellow);
 }
 
-void DataMapView::setListing(DisassemblerListing *listing)
+void DataMapView::setModel(VariablesModel* model)
 {
-    this->_listing = listing;
-    ui->hexView->setData(listing->data());
+    this->_variablesmodel = model;
+    this->_listing = model->listing();
 
-    this->_datamapmodel = new DataMapModel(listing, ui->dataView);
-    ui->dataView->setModel(this->_datamapmodel);
+    ui->hexView->setData(this->_listing->data());
+    ui->dataView->setModel(this->_variablesmodel);
 
-    for(int i = 0; i < this->_datamapmodel->columnCount() - 1; i++)
+    for(int i = 0; i < this->_variablesmodel->columnCount() - 1; i++)
         ui->dataView->resizeColumnToContents(i);
 
     ui->dataView->resizeRowsToContents();
@@ -74,7 +74,7 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
         return;
 
     SymbolTable* symbols = this->_listing->symbolTable();
-    DataValue variable = this->_datamapmodel->variable(index.row());
+    DataValue variable = this->_variablesmodel->variable(index.row());
     Symbol* symbol = symbols->get(variable);
     Segment* segment = this->_listing->findSegment(variable);
     qint64 offset = ((variable - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();

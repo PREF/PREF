@@ -550,12 +550,14 @@ namespace PrefSDK
             QString s = reader.readString(offset.compatibleValue<qint64>());
 
             this->_stringsymbols.insert(address);
+            this->_variables.insert(address);
             this->_symboltable->set(Symbol::String, address, DataValue::create(s.length(), this->_addresstype), DataType::AsciiString, QString("string_%1").arg(address.toString(16)));
         }
         else if(!this->_symboltable->contains(address))
+        {
+            this->_variables.insert(address);
             this->_symboltable->set(Symbol::Address, address, QString("data_%1").arg(address.toString(16)));
-
-        this->_variables.insert(address);        
+        }
     }
 
     QString DisassemblerListing::formatOperand(Operand *operand)

@@ -1,6 +1,6 @@
-#include "datamapmodel.h"
+#include "variablesmodel.h"
 
-DataMapModel::DataMapModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
+VariablesModel::VariablesModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
     this->_variables = listing->variables().toList();
 
@@ -11,17 +11,22 @@ DataMapModel::DataMapModel(DisassemblerListing* listing, QObject *parent): QAbst
     std::sort(this->_variables.begin(), this->_variables.end());
 }
 
-const DataValue &DataMapModel::variable(qint64 idx) const
+const DataValue &VariablesModel::variable(qint64 idx) const
 {
     return this->_variables[idx];
 }
 
-int DataMapModel::columnCount(const QModelIndex &) const
+DisassemblerListing *VariablesModel::listing() const
+{
+    return this->_listing;
+}
+
+int VariablesModel::columnCount(const QModelIndex &) const
 {
     return 4;
 }
 
-QVariant DataMapModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant VariablesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
@@ -47,7 +52,7 @@ QVariant DataMapModel::headerData(int section, Qt::Orientation orientation, int 
     return QVariant();
 }
 
-QVariant DataMapModel::data(const QModelIndex &index, int role) const
+QVariant VariablesModel::data(const QModelIndex &index, int role) const
 {
     if(!index.isValid())
         return QVariant();
@@ -106,7 +111,7 @@ QVariant DataMapModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-QModelIndex DataMapModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex VariablesModel::index(int row, int column, const QModelIndex &parent) const
 {
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
@@ -114,17 +119,17 @@ QModelIndex DataMapModel::index(int row, int column, const QModelIndex &parent) 
     return this->createIndex(row, column);
 }
 
-QModelIndex DataMapModel::parent(const QModelIndex &) const
+QModelIndex VariablesModel::parent(const QModelIndex &) const
 {
     return QModelIndex();
 }
 
-int DataMapModel::rowCount(const QModelIndex &) const
+int VariablesModel::rowCount(const QModelIndex &) const
 {
     return this->_variables.length();
 }
 
-Qt::ItemFlags DataMapModel::flags(const QModelIndex &index) const
+Qt::ItemFlags VariablesModel::flags(const QModelIndex &index) const
 {
     if(!index.isValid())
         return Qt::NoItemFlags;

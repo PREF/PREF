@@ -35,7 +35,6 @@ SOURCES += main.cpp\
     views/disassemblerview/crossreferencedialog/crossreferencedialog.cpp \
     viewmodels/crossreferencemodel/crossreferencemodel.cpp \
     views/disassemblerview/datamapview/datamapview.cpp \
-    viewmodels/datamapmodel/datamapmodel.cpp \
     prefsdk/format/formatlist.cpp \
     views/hexview/formatwidget/formatsdialog/formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
@@ -160,7 +159,8 @@ SOURCES += main.cpp\
     viewmodels/crossreferencemodel/crossreferencedelegate.cpp \
     actionwidget/abstractaction.cpp \
     views/disassemblerview/gotowidget/gotowidget.cpp \
-    viewmodels/stringsymbolmodel/stringsymbolmodel.cpp
+    viewmodels/stringsymbolmodel/stringsymbolmodel.cpp \
+    viewmodels/variablesmodel/variablesmodel.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -181,7 +181,6 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/crossreferencedialog/crossreferencedialog.h \
     viewmodels/crossreferencemodel/crossreferencemodel.h \
     views/disassemblerview/datamapview/datamapview.h \
-    viewmodels/datamapmodel/datamapmodel.h \
     prefsdk/format/formatlist.h \
     views/hexview/formatwidget/formatsdialog/formatsdialog.h \
     prefsdk/categorymanager.h \
@@ -309,7 +308,8 @@ HEADERS  += mainwindow.h \
     viewmodels/crossreferencemodel/crossreferencedelegate.h \
     actionwidget/abstractaction.h \
     views/disassemblerview/gotowidget/gotowidget.h \
-    viewmodels/stringsymbolmodel/stringsymbolmodel.h
+    viewmodels/stringsymbolmodel/stringsymbolmodel.h \
+    viewmodels/variablesmodel/variablesmodel.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

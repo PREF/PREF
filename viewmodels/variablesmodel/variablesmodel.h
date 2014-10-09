@@ -1,5 +1,5 @@
-#ifndef DATAMAPMODEL_H
-#define DATAMAPMODEL_H
+#ifndef VARIABLESMODEL_H
+#define VARIABLESMODEL_H
 
 #include <QAbstractItemModel>
 #include <QGuiApplication>
@@ -7,13 +7,14 @@
 
 using namespace PrefSDK;
 
-class DataMapModel : public QAbstractItemModel
+class VariablesModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit DataMapModel(DisassemblerListing* listing, QObject *parent = 0);
+        explicit VariablesModel(DisassemblerListing* listing, QObject *parent = 0);
         const DataValue& variable(qint64 idx) const;
+        DisassemblerListing* listing() const;
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -30,4 +31,4 @@ class DataMapModel : public QAbstractItemModel
         QList<DataValue> _variables;
 };
 
-#endif // DATAMAPMODEL_H
+#endif // VARIABLESMODEL_H

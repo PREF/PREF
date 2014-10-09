@@ -10,6 +10,7 @@
 #include "qhexedit/qhexeditdata.h"
 #include "viewmodels/functionmodel/functionmodel.h"
 #include "viewmodels/stringsymbolmodel/stringsymbolmodel.h"
+#include "viewmodels/variablesmodel/variablesmodel.h"
 #include "views/abstractview.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/loader/loaderlist.h"
@@ -43,12 +44,14 @@ class DisassemblerView : public AbstractView
 
     private slots:
         void showCrossReference(Block* b);
+        void showCrossReference(const DataValue& address);
 
     private slots:
         void on_disassemblerWidget_customContextMenuRequested(const QPoint &pos);
         void on_functionList_customContextMenuRequested(const QPoint &pos);
         void on_functionList_doubleClicked(const QModelIndex &index);
         void on_tvStrings_doubleClicked(const QModelIndex &index);
+        void on_tvVariables_doubleClicked(const QModelIndex &index);
         void onFunctionsMenuXRefsTriggered();
         void onListingMenuCrossReferencesTriggered();
         void onListingMenuHexDumpTriggered();
@@ -62,6 +65,7 @@ class DisassemblerView : public AbstractView
         Ui::DisassemblerView *ui;
         DisassemblerListing* _listing;
         StringSymbolModel* _stringsymbols;
+        VariablesModel* _variablesmodel;
         FunctionModel* _functionmodel;
         ProcessorLoader* _loader;
         QToolBar* _toolbar;

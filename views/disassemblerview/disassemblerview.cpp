@@ -112,6 +112,20 @@ void DisassemblerView::showCrossReference(Block *b)
         ui->disassemblerWidget->jumpTo(crd.selectedBlock());
 }
 
+void DisassemblerView::showCrossReference(const DataValue &address)
+{
+    ReferenceTable* referencetable = this->_listing->referenceTable();
+
+    if(!referencetable->isReferenced(address))
+        return;
+
+    CrossReferenceDialog crd(address, this->_listing);
+    int res = crd.exec();
+
+    if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
+        ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+}
+
 void DisassemblerView::disassemble()
 {
     if(!this->_hexeditdata)
@@ -202,11 +216,17 @@ void DisassemblerView::displayDisassembly()
         ui->functionList->resizeColumnToContents(i);
 
     this->_stringsymbols = new StringSymbolModel(this->_listing, this->_hexeditdata, ui->tvStrings);
+    this->_variablesmodel = new VariablesModel(this->_listing, this);
+
+    ui->tvVariables->setModel(this->_variablesmodel);
+    ui->tvVariables->resizeColumnToContents(0);
+    ui->tvVariables->resizeRowsToContents();
+
     ui->tvStrings->setModel(this->_stringsymbols);
     ui->tvStrings->resizeColumnToContents(0);
     ui->tvStrings->resizeRowsToContents();
 
-    ui->dataView->setListing(this->_listing);
+    ui->dataView->setModel(this->_variablesmodel);
 }
 
 void DisassemblerView::showEntryPoints()
@@ -256,15 +276,13 @@ void DisassemblerView::on_tvStrings_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    ReferenceTable* referencetable = this->_listing->referenceTable();
-    DataValue address = this->_stringsymbols->string(index.row());
+    this->showCrossReference(this->_stringsymbols->string(index.row()));
+}
 
-    if(!referencetable->isReferenced(address))
+void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
+{
+    if(!index.isValid())
         return;
 
-    CrossReferenceDialog crd(address, this->_listing);
-    int res = crd.exec();
-
-    if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
-        ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+    this->showCrossReference(this->_variablesmodel->variable(index.row()));
 }
