@@ -23,8 +23,21 @@ CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerListing* li
     this->_crossreferencemodel = new CrossReferenceModel(block, listing, this);
     ui->crossReferenceTable->setModel(this->_crossreferencemodel);
     ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(listing, this));
+    ui->crossReferenceTable->resizeRowsToContents();
 
     this->setWindowTitle(QString("Cross References For: %1").arg(block->startAddress().toString(16).append("h")));
+}
+
+CrossReferenceDialog::CrossReferenceDialog(const DataValue &address, DisassemblerListing *listing, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), _listing(listing), _selectedinstruction(nullptr)
+{
+    ui->setupUi(this);
+
+    this->_crossreferencemodel = new CrossReferenceModel(address, listing, this);
+    ui->crossReferenceTable->setModel(this->_crossreferencemodel);
+    ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(listing, this));
+    ui->crossReferenceTable->resizeRowsToContents();
+
+    this->setWindowTitle(QString("Cross References For: %1").arg(address.toString(16).append("h")));
 }
 
 CrossReferenceDialog::~CrossReferenceDialog()

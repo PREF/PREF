@@ -1,13 +1,13 @@
 #include "crossreferencemodel.h"
 
-CrossReferenceModel::CrossReferenceModel(ReferenceSet* referenceset, const QList<Reference *> references, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _block(referenceset), _listing(listing), _references(references)
+CrossReferenceModel::CrossReferenceModel(ReferenceSet* referenceset, const QList<Reference *> references, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(referenceset->startAddress()), _listing(listing), _references(references)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
-CrossReferenceModel::CrossReferenceModel(Block *block, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _block(block), _listing(listing)
+CrossReferenceModel::CrossReferenceModel(Block *block, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(block->startAddress()), _listing(listing)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -15,6 +15,16 @@ CrossReferenceModel::CrossReferenceModel(Block *block, DisassemblerListing *list
 
     ReferenceTable* referenceset = listing->referenceTable();
     this->_references = referenceset->references(block)->referenceList();
+}
+
+CrossReferenceModel::CrossReferenceModel(const DataValue &address, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(address), _listing(listing)
+{
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
+
+    ReferenceTable* referenceset = listing->referenceTable();
+    this->_references = referenceset->references(address)->referenceList();
 }
 
 int CrossReferenceModel::columnCount(const QModelIndex &) const
@@ -56,9 +66,9 @@ QVariant CrossReferenceModel::data(const QModelIndex &index, int role) const
 
         if(index.column() == 0)
         {
-            if(r->referencedBy() > this->_block->startAddress())
+            if(r->referencedBy() > this->_address)
                 return "Down";
-            else if(r->referencedBy() < this->_block->startAddress())
+            else if(r->referencedBy() < this->_address)
                 return "Up";
             else
                 return "---";

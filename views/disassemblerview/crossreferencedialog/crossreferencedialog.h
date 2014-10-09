@@ -19,6 +19,7 @@ class CrossReferenceDialog : public QDialog
     public:
         explicit CrossReferenceDialog(ReferenceSet *referenceset, const QList<Reference*>& references, DisassemblerListing* listing, QWidget *parent = 0);
         explicit CrossReferenceDialog(Block* block, DisassemblerListing* listing, QWidget *parent = 0);
+        explicit CrossReferenceDialog(const DataValue& address, DisassemblerListing* listing, QWidget *parent = 0);
         ~CrossReferenceDialog();
         Instruction* selectedBlock();
     
