@@ -64,7 +64,7 @@ namespace PrefSDK
                         this->_symboltable->set(Symbol::Jump, op->operandValue(), QString("j_%1").arg(op->operandValue().toString(16)));
                     }
                     else
-                        this->analyzeAddress(op->operandValue());
+                        this->analyzeAddress(instruction, op->operandValue());
                 }
             }
         }
@@ -531,11 +531,16 @@ namespace PrefSDK
         return s.length() == 4;
     }
 
-    void DisassemblerListing::analyzeAddress(const DataValue &address)
+    void DisassemblerListing::analyzeAddress(Instruction* instruction, const DataValue &address)
     {
         Segment* segment = this->findSegment(address); /* Don't analyze weird address */
 
-        if(!segment || (this->_symboltable->contains(address) && !this->_symboltable->isType(address, Symbol::Address)))
+        if(!segment)
+            return;
+
+        this->_referencetable->addReference(address, instruction->startAddress(), Reference::Address);
+
+        if(this->_symboltable->contains(address) && this->_symboltable->isType(address, Symbol::Address))
             return;
 
         if(this->pointsToString(address))
@@ -550,7 +555,7 @@ namespace PrefSDK
         else if(!this->_symboltable->contains(address))
             this->_symboltable->set(Symbol::Address, address, QString("data_%1").arg(address.toString(16)));
 
-        this->_variables.insert(address);
+        this->_variables.insert(address);        
     }
 
     QString DisassemblerListing::formatOperand(Operand *operand)
