@@ -255,7 +255,7 @@ QString DisassemblerWidgetPrivate::emitInstruction(Instruction *instruction)
             else
                 stringrefs.append("# ");
 
-            stringrefs.append(QString("%1:%2: '%3'").arg(segment->name(), symbol->name(), reader.readString(offset.compatibleValue<qint64>())));
+            stringrefs.append(QString("%1:%2: '%3'").arg(segment->name(), symbol->name(), reader.readString(offset.compatibleValue<qint64>()).replace(QRegExp("[\\n\\r]"), " ")));
         }
     }
 
