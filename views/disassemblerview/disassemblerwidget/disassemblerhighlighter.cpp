@@ -199,7 +199,7 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
 
     this->setFormat(idx, regex.matchedLength(), charformat);
     this->highlightJumpLabel(text);
-    this->highlightSymbolLabel(text);
+    this->highlightSymbol(text);
 }
 
 void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
@@ -213,9 +213,9 @@ void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
     this->setFormat(idx, regex.matchedLength(), this->_jumplabelformat);
 }
 
-void DisassemblerHighlighter::highlightSymbolLabel(const QString &text)
+void DisassemblerHighlighter::highlightSymbol(const QString &text)
 {
-    QRegExp regex("[a-z_]+_[a-zA-Z0-9]+");
+    QRegExp regex("[ |,][a-zA-Z_][a-zA-Z0-9_]+[,]*");
     int idx = text.indexOf(regex);
 
     if(idx == -1)
