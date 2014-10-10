@@ -12,7 +12,7 @@ namespace PrefSDK
         Q_ENUMS(Type)
 
         public:
-            enum Type { Undefined = 0x00000000, InterruptTrap = 0x10000000, Privileged      = 0x20000000, Nop             = 0x40000000, Stop     = 0x80000000,
+            enum Type { Undefined = 0x00000000, InterruptTrap = 0x00001000, Privileged      = 0x00002000, Nop             = 0x00004000, Stop     = 0x00008000,
                         Call      = 0x00000001, Jump          = 0x00000002, ConditionalCall = 0x00000003, ConditionalJump = 0x00000004,
                         Push      = 0x00000005, Pop           = 0x00000006,
                         Add       = 0x00000007, Sub           = 0x00000008, Mul             = 0x00000009, Div             = 0x0000001A, Mod      = 0x0000001B,
