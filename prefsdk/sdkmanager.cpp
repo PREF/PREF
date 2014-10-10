@@ -2,10 +2,11 @@
 
 namespace PrefSDK
 {
-    PrefLib::SdkVersion SDKManager::_sdkversion = { false, 0, 0, 0, QString() };
     const char* SDKManager::SDK_TABLE = "Sdk";
     const QString SDKManager::SDK_DIR = "sdk";
     const QString SDKManager::MAIN_SCRIPT = "main.lua";
+    QString SDKManager::_sdkpath;
+    PrefLib::SdkVersion SDKManager::_sdkversion = { false, 0, 0, 0, QString() };
 
     SDKManager::SDKManager()
     {
@@ -52,13 +53,13 @@ namespace PrefSDK
     bool SDKManager::loadSDK()
     {
         QDir d(qApp->applicationDirPath());
-        QString sdkpath = d.absoluteFilePath(SDKManager::SDK_DIR);
+        SDKManager::_sdkpath = d.absoluteFilePath(SDKManager::SDK_DIR);
 
-        if(!QDir(sdkpath).exists())
+        if(!QDir(SDKManager::_sdkpath).exists())
             return false;
 
         lua_State* l = LuaState::instance();
-        SDKManager::loadMain(l, d.absoluteFilePath(sdkpath), SDKManager::MAIN_SCRIPT);
+        SDKManager::loadMain(l, d.absoluteFilePath(SDKManager::_sdkpath), SDKManager::MAIN_SCRIPT);
 
         FormatList::load();
         ExporterList::load();
@@ -85,5 +86,10 @@ namespace PrefSDK
         }
 
         return "Missing SDK or Invalid Version";
+    }
+
+    QString SDKManager::sdkPath()
+    {
+        return SDKManager::_sdkpath;
     }
 }

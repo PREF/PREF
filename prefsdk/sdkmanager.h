@@ -32,11 +32,13 @@ namespace PrefSDK
             static bool loadSDK();
             static void unloadSDK();
             static QString sdkVersion();
+            static QString sdkPath();
 
         private:
             static const char* SDK_TABLE;
             static const QString SDK_DIR;
             static const QString MAIN_SCRIPT;
+            static QString _sdkpath;
             static PrefLib::SdkVersion _sdkversion;
     };
 }
