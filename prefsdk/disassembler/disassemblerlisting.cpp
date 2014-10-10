@@ -565,7 +565,7 @@ namespace PrefSDK
     {
         Segment* segment = this->findSegment(address);
 
-        if(!segment)
+        if(!segment || this->_segments.contains(address) || this->_functions.contains(address) || this->_instructions.contains(address)) /* Ignore code blocks */
             return false;
 
         DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
