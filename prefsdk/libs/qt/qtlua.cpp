@@ -401,9 +401,9 @@ namespace PrefSDK
     int QtLua::methodCall(lua_State *l)
     {
         int argc = lua_gettop(l);
-        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, 1)));
         lua_Integer methodidx = lua_tointeger(l, lua_upvalueindex(1));
         const char* methodname = lua_tostring(l, lua_upvalueindex(2));
+        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, 1)));
 
         const QMetaObject* metaobj = qobject->metaObject();
         QMetaMethod metamethod = metaobj->method(methodidx);
