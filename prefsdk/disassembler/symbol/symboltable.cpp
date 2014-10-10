@@ -41,8 +41,12 @@ namespace PrefSDK
     void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue& symbolsize, DataType::Type datatype, const QString &name)
     {
         if(this->_symboltable.contains(address))
-        {
+        {   
             Symbol* symbol = this->_symboltable[address];
+
+            if(symbol->type() == Symbol::Library)
+                return; /* This symbol is locked */
+
             symbol->setType(symboltype);
             symbol->setSize(symbolsize);
             symbol->setDataType(datatype);
