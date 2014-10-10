@@ -20,8 +20,9 @@ namespace PrefSDK
         Q_PROPERTY(QString name READ name WRITE setName)
         Q_PROPERTY(QString author READ author WRITE setAuthor)
         Q_PROPERTY(QString version READ version WRITE setVersion)
-        Q_PROPERTY(PrefSDK::QtLua::LuaFunction map READ map WRITE setMap)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction baseAddress READ baseAddress WRITE setBaseAddress)
+        Q_PROPERTY(PrefSDK::QtLua::LuaFunction map READ map WRITE setMap)
+        Q_PROPERTY(PrefSDK::QtLua::LuaFunction elaborate READ elaborate WRITE setElaborate)
         Q_PROPERTY(PrefSDK::FormatDefinition* format READ format)
         Q_PROPERTY(PrefSDK::ProcessorDefinition* processor READ processor)
 
@@ -34,21 +35,25 @@ namespace PrefSDK
             const QString& name() const;
             const QString& author() const;
             const QString& version() const;
+            const PrefSDK::QtLua::LuaFunction& baseAddress() const;
             const PrefSDK::QtLua::LuaFunction& map() const;
-            const QtLua::LuaFunction& baseAddress() const;
+            const PrefSDK::QtLua::LuaFunction& elaborate() const;
             PrefSDK::FormatDefinition* format() const;
             PrefSDK::ProcessorDefinition* processor() const;
             void setName(const QString& n);
             void setAuthor(const QString& a);
             void setVersion(const QString& v);
-            void setMap(const PrefSDK::QtLua::LuaFunction& mf);
             void setBaseAddress(const PrefSDK::QtLua::LuaFunction& ba);
+            void setMap(const PrefSDK::QtLua::LuaFunction& mf);
+            void setElaborate(const PrefSDK::QtLua::LuaFunction& ef);
             bool validate(QHexEditData* hexeditdata);
             void callMap(DisassemblerListing *listing, QHexEditData* hexeditdata, LogWidget *logwidget);
+            void callElaborate();
 
         public slots:
             void createSegment(const QString& name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset);
             void createEntryPoint(const QString& name, lua_Integer address);
+            void setSymbol(lua_Integer address, const QString& name);
 
         private:
             DataValue callBaseAddress();
@@ -57,6 +62,7 @@ namespace PrefSDK
         private:
             PrefSDK::QtLua::LuaFunction _mapfunc;
             PrefSDK::QtLua::LuaFunction _baseaddressfunc;
+            PrefSDK::QtLua::LuaFunction _elaboratefunc;
             QStack<Function*> _functionstack;
             ProcessorDefinition* _processordefinition;
             ProcessorEmulator* _processoremulator;

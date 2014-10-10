@@ -17,6 +17,7 @@ namespace PrefSDK
         this->_listing->calcFunctionBounds();
         this->_processordefinition->callElaborate(this->_listing, hexeditdata);
         this->_listing->analyzeOperands();
+        this->callElaborate();
         this->unbind();
     }
 
@@ -63,6 +64,23 @@ namespace PrefSDK
         this->unbind();
     }
 
+    void ProcessorLoader::callElaborate()
+    {
+        if(!this->_elaboratefunc.isValid())
+            return;
+
+        lua_State* l = this->_elaboratefunc.state();
+        QtLua::pushObject(l, this->_listing);
+        QtLua::pushObject(l, this->_formattree);
+        bool err = this->_elaboratefunc(2);
+
+        if(err)
+        {
+            throw PrefException(QString("ProcessorLoader::callElaborate(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
+            lua_pop(l, 1);
+        }
+    }
+
     void ProcessorLoader::createSegment(const QString &name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset)
     {
         DataType::Type addresstype = static_cast<DataType::Type>(this->_processordefinition->addressType());
@@ -79,6 +97,13 @@ namespace PrefSDK
 
         this->_listing->createFunction(name, FunctionTypes::EntryPoint, addressvalue);
         this->_processoremulator->pushValue(addressvalue, Reference::EntryPoint);
+    }
+
+    void ProcessorLoader::setSymbol(lua_Integer address, const QString &name)
+    {
+        SymbolTable* symboltable = this->_listing->symbolTable();
+        DataValue addressvalue = DataValue::create(address, this->_processordefinition->addressType());
+        symboltable->set(Symbol::Library, addressvalue, name); /* Lock Symbol */
     }
 
     DataValue ProcessorLoader::callBaseAddress()
@@ -161,6 +186,11 @@ namespace PrefSDK
         return this->_mapfunc;
     }
 
+    const QtLua::LuaFunction &ProcessorLoader::elaborate() const
+    {
+        return this->_elaboratefunc;
+    }
+
     void ProcessorLoader::setName(const QString &n)
     {
         this->_name = n;
@@ -209,5 +239,10 @@ namespace PrefSDK
     void ProcessorLoader::setMap(const PrefSDK::QtLua::LuaFunction &mf)
     {
         this->_mapfunc = mf;
+    }
+
+    void ProcessorLoader::setElaborate(const QtLua::LuaFunction &ef)
+    {
+        this->_elaboratefunc = ef;
     }
 }
