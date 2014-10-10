@@ -122,13 +122,13 @@ QString DisassemblerWidgetPrivate::functionType(Function *f) const
 {
     switch(f->type())
     {
-        case FunctionTypes::EntryPoint:
+        case FunctionType::EntryPointFunction:
             return "entrypoint";
 
-        case FunctionTypes::Import:
+        case FunctionType::ImportFunction:
             return "import";
 
-        case FunctionTypes::Export:
+        case FunctionType::ExportFunction:
             return "export";
 
         default:

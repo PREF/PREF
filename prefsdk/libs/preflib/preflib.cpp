@@ -462,6 +462,7 @@ namespace PrefSDK
         this->buildInstructionCategoryTable(l);
         this->buildInstructionTypeTable(l);
         this->buildOperandTypeTable(l);
+        this->buildFunctionTypeTable(l);
         this->buildReferenceTypeTable(l);
         this->buildBlockTypeTable(l);
 
@@ -514,6 +515,15 @@ namespace PrefSDK
 
         QtLua::pushEnum(l, metaenum);
         lua_setfield(l, -2, "operandtype");
+    }
+
+    void PrefLib::buildFunctionTypeTable(lua_State *l)
+    {
+        const QMetaObject metaobj = FunctionType::staticMetaObject;
+        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
+
+        QtLua::pushEnum(l, metaenum);
+        lua_setfield(l, -2, "functiontype");
     }
 
     void PrefLib::buildReferenceTypeTable(lua_State *l)

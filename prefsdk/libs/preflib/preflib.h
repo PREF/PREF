@@ -41,6 +41,7 @@ namespace PrefSDK
             void buildInstructionCategoryTable(lua_State* l);
             void buildInstructionTypeTable(lua_State* l);
             void buildOperandTypeTable(lua_State* l);
+            void buildFunctionTypeTable(lua_State* l);
             void buildReferenceTypeTable(lua_State* l);
             void buildBlockTypeTable(lua_State* l);
 

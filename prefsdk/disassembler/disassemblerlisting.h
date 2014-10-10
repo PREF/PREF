@@ -53,8 +53,8 @@ namespace PrefSDK
             const DisassemblerListing::VariableSet& variables() const;
             void createReference(const DataValue& srcaddress, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx = -1);
             void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
-            Function* createFunction(const QString& name, FunctionTypes::Type functiontype, const DataValue& address);
-            Function* createFunction(FunctionTypes::Type functiontype, const DataValue& startaddress);
+            Function* createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address);
+            Function* createFunction(FunctionType::Type functiontype, const DataValue& startaddress);
             Instruction* createInstruction(const DataValue& address, DataType::Type opcodetype);
             Segment* findSegment(Block* block);
             Segment* findSegment(const DataValue& address);

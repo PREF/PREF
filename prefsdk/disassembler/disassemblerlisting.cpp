@@ -121,12 +121,12 @@ namespace PrefSDK
         this->_blocks.append(s);
     }
 
-    Function* DisassemblerListing::createFunction(FunctionTypes::Type functiontype, const DataValue &startaddress)
+    Function* DisassemblerListing::createFunction(FunctionType::Type functiontype, const DataValue &startaddress)
     {
         return this->createFunction(QString(), functiontype, startaddress);
     }
 
-    Function* DisassemblerListing::createFunction(const QString &name, FunctionTypes::Type functiontype, const DataValue &startaddress)
+    Function* DisassemblerListing::createFunction(const QString &name, FunctionType::Type functiontype, const DataValue &startaddress)
     {
         Function* f = nullptr;
 
@@ -140,7 +140,7 @@ namespace PrefSDK
 
         this->_functions[startaddress] = f;
 
-        if(functiontype == FunctionTypes::EntryPoint)
+        if(functiontype == FunctionType::EntryPointFunction)
         {
             this->_entrypoints.append(f);
             std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);

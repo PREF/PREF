@@ -13,13 +13,13 @@ QString FunctionModel::functionType(Function *f) const
 {
     switch(f->type())
     {
-        case FunctionTypes::EntryPoint:
+        case FunctionType::EntryPointFunction:
             return "Entry Point";
 
-        case FunctionTypes::Import:
+        case FunctionType::ImportFunction:
             return "Import";
 
-        case FunctionTypes::Export:
+        case FunctionType::ExportFunction:
             return "Export";
 
         default:
@@ -91,13 +91,13 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
     {
         switch(f->type())
         {
-            case FunctionTypes::EntryPoint:
+            case FunctionType::EntryPointFunction:
                 return QColor(Qt::yellow);
 
-            case FunctionTypes::Import:
-                return QColor(Qt::darkGray);
+            case FunctionType::ImportFunction:
+                return QColor(Qt::cyan);
 
-            case FunctionTypes::Export:
+            case FunctionType::ExportFunction:
                 return QColor(Qt::darkYellow);
 
             default:

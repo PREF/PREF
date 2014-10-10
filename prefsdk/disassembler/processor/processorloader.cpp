@@ -95,7 +95,7 @@ namespace PrefSDK
         DataType::Type addresstype = static_cast<DataType::Type>(this->_processordefinition->addressType());
         DataValue addressvalue = DataValue::create(address, addresstype);
 
-        this->_listing->createFunction(name, FunctionTypes::EntryPoint, addressvalue);
+        this->_listing->createFunction(name, FunctionType::EntryPointFunction, addressvalue);
         this->_processoremulator->pushValue(addressvalue, Reference::EntryPoint);
     }
 
@@ -157,7 +157,7 @@ namespace PrefSDK
                 }
 
                 if(Reference::isCall(procaddress.second))
-                    this->_listing->createFunction(FunctionTypes::Function, procaddress.first);
+                    this->_listing->createFunction(FunctionType::NormalFunction, procaddress.first);
                 else if(Reference::isJump(procaddress.second) && !this->_listing->referenceTable()->isReferenced(procaddress.first))
                 {
                     SymbolTable* symboltable = this->_listing->symbolTable();
