@@ -15,6 +15,8 @@ namespace PrefSDK
     {
         Q_OBJECT
 
+        Q_PROPERTY(PrefSDK::Function* firstfunction READ firstFunction)
+        Q_PROPERTY(PrefSDK::Function* lastfunction READ lastFunction)
         Q_PROPERTY(PrefSDK::Block* firstblock READ firstBlock)
         Q_PROPERTY(PrefSDK::Block* lastblock READ lastBlock)
 
@@ -37,6 +39,8 @@ namespace PrefSDK
             qint64 length() const;
             PrefSDK::Block* firstBlock();
             PrefSDK::Block* lastBlock();
+            PrefSDK::Function* firstFunction();
+            PrefSDK::Function* lastFunction();
             ReferenceTable* referenceTable();
             SymbolTable* symbolTable();
             QHexEditData* data();
@@ -64,6 +68,9 @@ namespace PrefSDK
         public slots:
             bool hasNextBlock(QObject* b);
             QObject* nextBlock(QObject* b);
+            QObject* nextFunction(QObject* f);
+            QObject* firstInstruction(QObject* f);
+            QObject* nextInstruction(QObject* i);
             PrefSDK::Instruction* replaceInstructions(QObject* b1, QObject* b2, const QString& mnemonic, lua_Integer category);
             PrefSDK::Instruction* replaceInstructions(QObject* b1, QObject* b2, const QString& mnemonic, lua_Integer category, lua_Integer type);
 

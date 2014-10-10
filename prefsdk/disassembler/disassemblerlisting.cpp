@@ -350,6 +350,41 @@ namespace PrefSDK
         return this->_blocks[idx + 1];
     }
 
+    QObject *DisassemblerListing::nextFunction(QObject *f)
+    {
+        Function* func = qobject_cast<Function*>(f);
+
+        if(func == this->_functions.last())
+            return nullptr;
+
+        FunctionMap::Iterator it = this->_functions.find(func->startAddress());
+
+        if(it == this->_functions.end())
+            return nullptr;
+
+        return (++it).value();
+    }
+
+    QObject *DisassemblerListing::firstInstruction(QObject *f)
+    {
+        Block* b = qobject_cast<Block*>(f);
+
+        if((b->blockType() != Block::FunctionBlock) || !this->_instructions.contains(b->startAddress()))
+            return nullptr;
+
+        return this->_instructions[b->startAddress()];
+    }
+
+    QObject *DisassemblerListing::nextInstruction(QObject *i)
+    {
+        Block* b = qobject_cast<Block*>(i);
+
+        if((b->blockType() != Block::InstructionBlock) || !this->_instructions.contains(b->startAddress()) || !this->_instructions.contains(b->startAddress() + b->sizeValue()))
+            return nullptr;
+
+        return this->_instructions[b->startAddress() + b->sizeValue()];
+    }
+
     Instruction *DisassemblerListing::replaceInstructions(QObject *b1, QObject *b2, const QString &mnemonic, lua_Integer category)
     {
         return this->replaceInstructions(b1, b2, mnemonic, category, InstructionType::Undefined);
@@ -365,6 +400,16 @@ namespace PrefSDK
     {
         this->checkSort();
         return this->_blocks.last();
+    }
+
+    Function *DisassemblerListing::firstFunction()
+    {
+        return this->_functions.first();
+    }
+
+    Function *DisassemblerListing::lastFunction()
+    {
+        return this->_functions.last();
     }
 
     qint64 DisassemblerListing::indexOf(Block *block)
