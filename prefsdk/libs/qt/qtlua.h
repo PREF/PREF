@@ -10,10 +10,6 @@
 #include <QVector>
 #include <QFileInfo>
 
-/* QtQuick + Qml Extensions */
-#include <QQuickView>
-#include <QQmlContext>
-
 namespace PrefSDK
 {
     class QtLua
@@ -65,14 +61,11 @@ namespace PrefSDK
 
         private:
             static void registerObjectOwnership(lua_State* l);
-            static void registerQml(lua_State* l);
             static bool isMethod(const QMetaObject* metaobj, const QString& member, int &idx);
             static bool isProperty(const QMetaObject* metaobj, const QString& member, int &idx);
             static bool checkMetaIndexOverride(lua_State* l, QObject *qobject, const QMetaObject *metaobj);
             static bool checkMetaNewIndexOverride(lua_State* l, QObject *qobject, const QMetaObject *metaobj);
             static void pushMetaTable(lua_State* l, QtLua::ObjectOwnership ownership);
-            static QString getNameField(lua_State* l, int idx);
-            static QObject* getObjectField(lua_State* l, int idx);
 
         private:
             template<typename T> static int constructorT(lua_State* l)

@@ -169,7 +169,6 @@ namespace PrefSDK
 
         luaL_register(l, "qt", QtLua::_methods.cbegin());
         QtLua::registerObjectOwnership(l);
-        QtLua::registerQml(l);
         lua_pop(l, 1); /* Pop Table */
     }
 
@@ -260,99 +259,6 @@ namespace PrefSDK
             lua_pushcfunction(l, &QtLua::metaGc);
             lua_setfield(l, -2, "__gc");
         }
-    }
-
-    QString QtLua::getNameField(lua_State *l, int idx)
-    {
-        QString s;
-        lua_getfield(l, idx, "name");
-        int t = lua_type(l, -1);
-
-        if(t <= 0) /* lua_isnoneornil() */
-            throw PrefException("qt.qml.load(): Missing 'name' field");
-        else if(t != LUA_TSTRING)
-            throw PrefException("qt.qml.load(): 'string' type expected for 'name' field");
-        else
-            s = QString::fromUtf8(lua_tostring(l, -1));
-
-        lua_pop(l, 1);
-        return s;
-    }
-
-    QObject *QtLua::getObjectField(lua_State *l, int idx)
-    {
-        QObject* obj = nullptr;
-        lua_getfield(l, idx, "object");
-        int t = lua_type(l, -1);
-
-        if(t <= 0) /* lua_isnoneornil() */
-            throw PrefException("qt.qml.load(): Missing 'object' field");
-        else if(t != LUA_TUSERDATA)
-            throw PrefException("qt.qml.load(): 'userdata' type expected for 'object' field");
-        else
-            obj = *(reinterpret_cast<QObject**>(lua_touserdata(l, -1)));
-
-        lua_pop(l, 1);
-        return obj;
-    }
-
-    int QtLua::qmlLoad(lua_State *l)
-    {
-        int argc = lua_gettop(l);
-
-        if(!argc)
-        {
-            throw PrefException("qt.qml.load(): Expected at least 1 argument");
-            return 0;
-        }
-
-        if(argc >= 1)
-        {
-            if(lua_type(l, 1) != LUA_TSTRING)
-            {
-                throw PrefException("qt.qml.load(): Argument 1 must be a string type");
-                return 0;
-            }
-
-            if(argc > 1)
-            {
-                for(int i = 2; i <= argc; i++)
-                {
-                    if(lua_type(l, i) != LUA_TTABLE)
-                    {
-                        throw PrefException(QString("qt.qml.load(): Argument %d must be a 'table' type").arg(i));
-                        return 0;
-                    }
-                }
-            }
-        }
-
-        QString qmlmain = QString::fromUtf8(lua_tostring(l, 1));
-        QQuickView* view = new QQuickView();
-        QQmlContext* ctx = view->rootContext();
-        //ctx->setBaseUrl(QFileInfo(qmlmain).absolutePath());
-
-        for(int i = 2; i <= argc; i++)
-        {
-            QString name = QtLua::getNameField(l, i);
-            QObject* object = QtLua::getObjectField(l, i);
-            ctx->setContextProperty(name, object);
-        }
-
-        view->setResizeMode(QQuickView::SizeRootObjectToView);
-        view->setSource(QUrl::fromLocalFile(qmlmain));
-        QtLua::pushObject(l, QWidget::createWindowContainer(view));
-        return 1;
-    }
-
-    void QtLua::registerQml(lua_State *l)
-    {
-        lua_newtable(l);
-
-        lua_pushcfunction(l, &QtLua::qmlLoad);
-        lua_setfield(l, -2, "load");
-
-        lua_setfield(l, -2, "qml");
     }
 
     int QtLua::metaIndex(lua_State *l)

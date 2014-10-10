@@ -100,6 +100,64 @@ namespace PrefSDK
         return 1;
     }
 
+    int PrefLib::format_loadView(lua_State *l)
+    {
+        int argc = lua_gettop(l);
+
+        if(argc < 2)
+        {
+            throw PrefException("pref.format.loadview(): Expected at least 2 arguments");
+            return 0;
+        }
+
+        if(lua_type(l, 1) != LUA_TSTRING)
+        {
+            throw PrefException("pref.format.loadview(): Argument 1 must be a 'string' type");
+            return 0;
+        }
+
+        if(lua_type(l, 2) != LUA_TUSERDATA)
+        {
+            throw PrefException("pref.format.loadview(): Argument 2 must be a 'FormatTree' type");
+            return 0;
+        }
+
+        FormatTree* formattree = *(reinterpret_cast<FormatTree**>(lua_touserdata(l, 2)));
+        AbstractView* abstractview = LoadedViews::instance()->view(formattree->data());
+        QString qmlmain = QString("%1%2%3").arg(qApp->applicationDirPath(), QDir::separator(), QString::fromUtf8(lua_tostring(l, 1)));
+
+        if(!QFileInfo(qmlmain).exists())
+        {
+            abstractview->logLine(QString("Cannot find '%1'").arg(qmlmain), LogWidget::Warning);
+            lua_pushnil(l);
+        }
+        else
+        {
+            QQuickView* view = new QQuickView();
+            QQmlContext* ctx = view->rootContext();
+
+            ctx->setContextProperty("formattree", formattree);
+            view->setResizeMode(QQuickView::SizeRootObjectToView);
+            view->setSource(qmlmain);
+
+            if(view->status() == QQuickView::Error)
+            {
+                QList<QQmlError> errors = view->errors();
+
+                abstractview->logLine("Cannot load the view.", LogWidget::Warning);
+
+                foreach(QQmlError error, errors)
+                    abstractview->logLine("- " + error.toString());
+
+                lua_pushnil(l);
+            }
+            else
+                QtLua::pushObject(l, QWidget::createWindowContainer(view));
+        }
+
+        return 1;
+    }
+
     int PrefLib::disassembler_createLoader(lua_State *l)
     {
         int argc = lua_gettop(l);
@@ -389,6 +447,9 @@ namespace PrefSDK
 
         lua_pushcfunction(l, &PrefLib::format_create);
         lua_setfield(l, -2, "create");
+
+        lua_pushcfunction(l, &PrefLib::format_loadView);
+        lua_setfield(l, -2, "loadview");
 
         lua_setfield(l, -2, "format");
     }

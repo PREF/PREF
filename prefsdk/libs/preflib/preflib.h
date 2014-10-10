@@ -14,6 +14,7 @@
 #include "luahexeditdata.h"
 #include <QtCore>
 #include <QtGui>
+#include <QtQuick>
 #include <QtQml>
 
 namespace PrefSDK
@@ -62,6 +63,7 @@ namespace PrefSDK
         /* Format Methods */
         private:
             static int format_create(lua_State* l);
+            static int format_loadView(lua_State* l);
 
         /* Disassembler Methods */
         private:
