@@ -14,7 +14,7 @@ namespace PrefSDK
 
         Q_ENUMS(Type)
 
-        Q_PROPERTY(lua_Integer type READ type)
+        Q_PROPERTY(lua_Integer type READ type WRITE setType)
         Q_PROPERTY(lua_Integer datatype READ dataType WRITE setDataType)
         Q_PROPERTY(lua_Integer value READ value WRITE setValue)
         Q_PROPERTY(QString registername READ registerName WRITE setRegisterName)
@@ -29,8 +29,9 @@ namespace PrefSDK
             lua_Integer dataType() const;
             lua_Integer value() const;
             const QString& registerName() const;
-            void setValue(lua_Integer v);
+            void setType(lua_Integer t);
             void setDataType(lua_Integer dt);
+            void setValue(lua_Integer v);
             void setRegisterName(const QString& regname);
 
         public:

@@ -47,6 +47,11 @@ namespace PrefSDK
         return this->_registername;
     }
 
+    void Operand::setType(lua_Integer t)
+    {
+        this->_operandtype = t;
+    }
+
     void Operand::setRegisterName(const QString &regname)
     {
         this->_registername = regname;
