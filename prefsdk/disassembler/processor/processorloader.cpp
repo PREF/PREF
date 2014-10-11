@@ -106,6 +106,12 @@ namespace PrefSDK
         symboltable->set(Symbol::Library, addressvalue, name); /* Lock Symbol */
     }
 
+    void ProcessorLoader::setConstant(QObject *instruction, lua_Integer datatype, lua_Integer value, const QString &name)
+    {
+        ConstantTable* constanttable = this->_listing->constantTable();
+        constanttable->set(qobject_cast<Instruction*>(instruction), DataValue::create(value, static_cast<DataType::Type>(datatype)), name);
+    }
+
     DataValue ProcessorLoader::callBaseAddress()
     {
         if(!this->_baseaddressfunc.isValid())

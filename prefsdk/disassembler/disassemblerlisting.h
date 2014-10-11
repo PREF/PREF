@@ -5,6 +5,7 @@
 #include "prefsdk/type/datavalue.h"
 #include "prefsdk/disassembler/blocks/segment.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
+#include "prefsdk/disassembler/symbol/constanttable.h"
 #include "prefsdk/disassembler/references/referencetable.h"
 #include <algorithm>
 #include <QtCore>
@@ -43,6 +44,7 @@ namespace PrefSDK
             PrefSDK::Function* lastFunction();
             ReferenceTable* referenceTable();
             SymbolTable* symbolTable();
+            ConstantTable* constantTable();
             QHexEditData* data();
             const BlockList& blocks();
             const DisassemblerListing::SegmentMap& segments() const;
@@ -83,7 +85,7 @@ namespace PrefSDK
             void checkSort();
             bool pointsToString(const DataValue& address);
             void analyzeAddress(Instruction *instruction, const DataValue& address);
-            QString formatOperand(Operand *operand);
+            QString formatOperand(Instruction *instruction, Operand *operand);
             void removeInstructions(Instruction* from, Instruction* to);
             static bool sortBlocks(Block* block1, Block* block2);
 
@@ -93,6 +95,7 @@ namespace PrefSDK
             QHexEditData* _hexeditdata;
             ReferenceTable* _referencetable;
             SymbolTable* _symboltable;
+            ConstantTable* _constanttable;
             EntryPointList _entrypoints;
             StringSymbolSet _stringsymbols;
             VariableSet _variables;

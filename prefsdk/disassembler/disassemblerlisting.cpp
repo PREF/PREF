@@ -6,6 +6,7 @@ namespace PrefSDK
     {
         this->_referencetable = new ReferenceTable(this);
         this->_symboltable = new SymbolTable(this);
+        this->_constanttable = new ConstantTable(this);
     }
 
     DataType::Type DisassemblerListing::addressType() const
@@ -263,7 +264,7 @@ namespace PrefSDK
                 if(i > 0)
                     s.append(", ");
 
-                s.append(this->formatOperand(operand));
+                s.append(this->formatOperand(instruction, operand));
             }
         }
 
@@ -309,7 +310,7 @@ namespace PrefSDK
                     }
 
                     Operand* operand = instruction->operand(opidx - 1);
-                    s.append(this->formatOperand(operand));
+                    s.append(this->formatOperand(instruction, operand));
                     break;
                 }
 
@@ -517,6 +518,11 @@ namespace PrefSDK
         return this->_symboltable;
     }
 
+    ConstantTable *DisassemblerListing::constantTable()
+    {
+        return this->_constanttable;
+    }
+
     Instruction *DisassemblerListing::replaceInstructions(QObject* i1, QObject* i2, const QString& mnemonic, lua_Integer category, lua_Integer type)
     {
         Block* b1 = qobject_cast<Block*>(i1);
@@ -613,12 +619,14 @@ namespace PrefSDK
         }
     }
 
-    QString DisassemblerListing::formatOperand(Operand *operand)
+    QString DisassemblerListing::formatOperand(Instruction* instruction, Operand *operand)
     {
         Operand::Type optype = static_cast<Operand::Type>(operand->type());
 
         if((optype == Operand::Address) && this->_symboltable->contains(operand->operandValue()))
             return this->_symboltable->name(operand->operandValue());
+        else if((optype == Operand::Immediate) && this->_constanttable->isConstant(instruction, operand->operandValue()))
+            return this->_constanttable->name(instruction, operand->operandValue());
         else if(optype == Operand::Register)
             return "$" + operand->registerName();
 

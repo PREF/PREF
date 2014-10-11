@@ -54,6 +54,7 @@ namespace PrefSDK
             void createSegment(const QString& name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset);
             void createEntryPoint(const QString& name, lua_Integer address);
             void setSymbol(lua_Integer address, const QString& name);
+            void setConstant(QObject* instruction, lua_Integer datatype, lua_Integer value, const QString& name);
 
         private:
             DataValue callBaseAddress();

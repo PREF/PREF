@@ -161,7 +161,9 @@ SOURCES += main.cpp\
     viewmodels/stringsymbolmodel/stringsymbolmodel.cpp \
     viewmodels/variablesmodel/variablesmodel.cpp \
     views/disassemblerview/loaderdialog/loaderdialog.cpp \
-    prefsdk/disassembler/functiontype.cpp
+    prefsdk/disassembler/functiontype.cpp \
+    prefsdk/disassembler/symbol/constanttable.cpp \
+    prefsdk/disassembler/symbol/constant.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -311,7 +313,9 @@ HEADERS  += mainwindow.h \
     viewmodels/stringsymbolmodel/stringsymbolmodel.h \
     viewmodels/variablesmodel/variablesmodel.h \
     views/disassemblerview/loaderdialog/loaderdialog.h \
-    prefsdk/disassembler/functiontype.h
+    prefsdk/disassembler/functiontype.h \
+    prefsdk/disassembler/symbol/constanttable.h \
+    prefsdk/disassembler/symbol/constant.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
