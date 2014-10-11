@@ -403,8 +403,15 @@ namespace PrefSDK
         int argc = lua_gettop(l);
         lua_Integer methodidx = lua_tointeger(l, lua_upvalueindex(1));
         const char* methodname = lua_tostring(l, lua_upvalueindex(2));
-        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, 1)));
+        QObject** self = reinterpret_cast<QObject**>(lua_touserdata(l, 1));
 
+        if(!self)
+        {
+            throw PrefException(QString("QtLua::methodCall(): Invalid 'self' for '%1' (maybe you'll need to replace '.' with ':') ").arg(QString::fromUtf8(methodname)));
+            return 0;
+        }
+
+        QObject* qobject = *self;
         const QMetaObject* metaobj = qobject->metaObject();
         QMetaMethod metamethod = metaobj->method(methodidx);
 
