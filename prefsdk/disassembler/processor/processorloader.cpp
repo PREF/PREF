@@ -167,7 +167,13 @@ namespace PrefSDK
                 this->_processordefinition->callEmulate(this->_processoremulator, instruction, hexeditdata);
             }
             else
+            {
                 this->warning(QString("Unknown opcode %1h at %2h").arg(instruction->opcodeValue().toString(16), instruction->startAddress().toString(16)));
+
+                instruction->clearOperands();
+                instruction->setFormat(QString());
+                instruction->setMnemonic(Instruction::INVALID_MNEMONIC);
+            }
         }
     }
 

@@ -23,6 +23,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         void highlightFunction(const QString& text);
         void highlightComment(const QString& text);
         void highlightInstruction(const QString& text);
+        void highlightInvalidInstruction(const QString& text);
         void highlightJumpLabel(const QString& text);
         void highlightSymbol(const QString& text);
 

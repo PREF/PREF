@@ -77,7 +77,7 @@ namespace PrefSDK
         public: /* Overriden Methods */
             virtual Block::Type blockType() const;
 
-        private:
+        public:
             static const QString INVALID_MNEMONIC;
 
         private:

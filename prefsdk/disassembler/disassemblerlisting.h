@@ -64,6 +64,7 @@ namespace PrefSDK
             Block* findBlock(const DataValue& address);
             QString formatInstruction(Instruction* instruction);
             QString formatInstructionCustom(Instruction* instruction);
+            QString formatInvalidInstruction(Instruction* instruction);
 
         public slots:
             bool hasNextBlock(QObject* b);

@@ -247,6 +247,9 @@ namespace PrefSDK
 
     QString DisassemblerListing::formatInstruction(Instruction *instruction)
     {
+        if(!instruction->isValid())
+            return this->formatInvalidInstruction(instruction);
+
         QString s = instruction->mnemonic() + " ";
 
         if(!instruction->format().isEmpty())
@@ -324,6 +327,11 @@ namespace PrefSDK
         }
 
         return s;
+    }
+
+    QString DisassemblerListing::formatInvalidInstruction(Instruction *instruction)
+    {
+        return QString("db (%1)").arg(instruction->hexDump().replace(" ", "h, ").append("h"));
     }
 
     bool DisassemblerListing::hasNextBlock(QObject *b)

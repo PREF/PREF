@@ -116,9 +116,15 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
 {
     Instruction* instr = qobject_cast<Instruction*>(this->_block);
 
+    if(!instr->isValid())
+    {
+        this->highlightInvalidInstruction(text);
+        return;
+    }
+
     QTextCharFormat charformat;
     charformat.setFontFamily("Monospace");
-    charformat.setFontStyleHint(QFont::TypeWriter);        
+    charformat.setFontStyleHint(QFont::TypeWriter);
 
     switch(instr->type())
     {
@@ -200,6 +206,20 @@ void DisassemblerHighlighter::highlightInstruction(const QString &text)
     this->setFormat(idx, regex.matchedLength(), charformat);
     this->highlightJumpLabel(text);
     this->highlightSymbol(text);
+}
+
+void DisassemblerHighlighter::highlightInvalidInstruction(const QString &text)
+{
+    QTextCharFormat charformat;
+    charformat.setFontFamily("Monospace");
+    charformat.setFontStyleHint(QFont::TypeWriter);
+
+    int idx = text.indexOf("db (");
+
+    if(idx == -1)
+        return;
+
+    this->setFormat(0, 2, this->_registersformat); /* Same color as register */
 }
 
 void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
