@@ -32,6 +32,11 @@ namespace PrefSDK
         this->_operandvalue = DataValue::create(v, static_cast<DataType::Type>(this->_datatype));
     }
 
+    void Operand::setDataType(lua_Integer dt)
+    {
+        this->_datatype = static_cast<DataType::Type>(dt);
+    }
+
     const DataValue &Operand::operandValue() const
     {
         return this->_operandvalue;
