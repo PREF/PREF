@@ -209,9 +209,7 @@ namespace PrefSDK
 
     DataValue& DataValue::operator =(const DataValue &rhs)
     {
-        if(this->_datatype == DataType::Invalid)
-            this->_datatype = rhs._datatype;
-
+        this->_datatype = rhs._datatype;
         this->_value = rhs._value;
         return *this;
     }
