@@ -597,7 +597,8 @@ namespace PrefSDK
         if(!segment)
             return;
 
-        this->_referencetable->addReference(address, instruction->startAddress(), Reference::Address);
+        if(!this->_referencetable->isReferenced(address))
+            this->_referencetable->addReference(address, instruction->startAddress(), Reference::Address);
 
         if(this->_symboltable->contains(address) && this->_symboltable->isType(address, Symbol::Address))
             return;
