@@ -88,6 +88,8 @@ void DisassemblerView::createListingMenu()
 
     connect(this->_actcrossreferences, SIGNAL(triggered()), this, SLOT(onListingMenuCrossReferencesTriggered()));
     connect(this->_acthexdump, SIGNAL(triggered()), this, SLOT(onListingMenuHexDumpTriggered()));
+    connect(this->_actcopyaddress, SIGNAL(triggered()), this, SLOT(copyAddress()));
+    connect(this->_actcopylisting, SIGNAL(triggered()), this, SLOT(copyListing()));
 }
 
 void DisassemblerView::createFunctionsMenu()
@@ -253,6 +255,36 @@ void DisassemblerView::gotoFunction()
 
     if(selectionmodel->hasSelection())
         ui->disassemblerWidget->jumpTo(reinterpret_cast<Function*>(selectionmodel->selectedIndexes()[0].internalPointer()));
+}
+
+void DisassemblerView::copyAddress()
+{
+    if(!ui->disassemblerWidget->selectedBlock())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+        clipboard->setText(ui->disassemblerWidget->selectedBlock()->startAddress().toString(16));
+}
+
+void DisassemblerView::copyListing()
+{
+    if(!ui->disassemblerWidget->selectedBlock())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    Block* b = ui->disassemblerWidget->selectedBlock();
+
+    if(b->blockType() == Block::InstructionBlock)
+        clipboard->setText(this->_listing->formatInstruction(qobject_cast<Instruction*>(b)));
+    else if(b->blockType() == Block::FunctionBlock)
+    {
+        const SymbolTable* symboltable = this->_listing->symbolTable();
+        clipboard->setText(QString("function %1").arg(symboltable->name(b->startAddress())));
+    }
+    else if(b->blockType() == Block::SegmentBlock)
+        clipboard->setText(QString("segment %1").arg(this->_listing->findSegment(b)->name()));
+    else if(b->blockType() == Block::ReferenceBlock)
+        clipboard->setText(QString("j_%1").arg(b->startAddress().toString(16)));
 }
 
 void DisassemblerView::gotoAddress(const DataValue &address)
