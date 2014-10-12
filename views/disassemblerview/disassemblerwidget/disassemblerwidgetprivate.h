@@ -51,6 +51,7 @@ class DisassemblerWidgetPrivate: public QWidget
 
     private slots:
         void unlockClick();
+        void updateLines(int);
 
     signals:
         void jumpToRequested();

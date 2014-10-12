@@ -14,6 +14,8 @@ DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QS
     this->setAddressForeColor(Qt::darkBlue);
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setSelectedLineColor(QColor(0xFF, 0xFF, 0xA0));
+
+    connect(this->_vscrollbar, SIGNAL(valueChanged(int)), this, SLOT(updateLines(int)));
 }
 
 Block *DisassemblerWidgetPrivate::selectedBlock() const
@@ -471,4 +473,9 @@ void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
 void DisassemblerWidgetPrivate::unlockClick()
 {
     this->_clicked = false;
+}
+
+void DisassemblerWidgetPrivate::updateLines(int)
+{
+    this->update();
 }
