@@ -19,7 +19,7 @@ namespace PrefSDK
 
     bool DataType::isString(DataType::Type type)
     {
-        return (type & (DataType::Vector | DataType::Characters));
+        return (type & DataType::Vector) && (type & DataType::Characters);
     }
 
     bool DataType::isAscii(DataType::Type type)
