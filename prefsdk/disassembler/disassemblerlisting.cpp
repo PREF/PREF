@@ -302,9 +302,9 @@ namespace PrefSDK
                     if(!ok || (opidx < 0 || opidx > instruction->operandsCount()))
                     {
                         if(!ok)
-                            throw PrefException(QString("Invalid Operand Format: Expected Integer not '%1'").arg(QString(ch)));
+                            throw PrefException(QString("Invalid Operand Format at %1h: Expected Integer not '%2'").arg(instruction->startAddress().toString(16), QString(ch)));
                         else
-                            throw PrefException("Operand Index out of range");
+                            throw PrefException(QString("Operand Index out of range at %1h").arg(instruction->startAddress().toString(16)));
 
                         continue;
                     }
