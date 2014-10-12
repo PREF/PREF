@@ -461,6 +461,7 @@ namespace PrefSDK
         this->buildSegmentTable(l);
         this->buildInstructionCategoryTable(l);
         this->buildInstructionTypeTable(l);
+        this->buildOperandDescriptorTable(l);
         this->buildOperandTypeTable(l);
         this->buildFunctionTypeTable(l);
         this->buildReferenceTypeTable(l);
@@ -506,6 +507,15 @@ namespace PrefSDK
 
         QtLua::pushEnum(l, metaenum);
         lua_setfield(l, -2, "instructiontype");
+    }
+
+    void PrefLib::buildOperandDescriptorTable(lua_State *l)
+    {
+        const QMetaObject metaobj = Operand::staticMetaObject;
+        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Descriptor"));
+
+        QtLua::pushEnum(l, metaenum);
+        lua_setfield(l, -2, "operanddescriptor");
     }
 
     void PrefLib::buildOperandTypeTable(lua_State *l)

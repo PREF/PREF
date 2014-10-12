@@ -26,11 +26,21 @@ namespace PrefSDK
         Q_PROPERTY(lua_Integer type READ type WRITE setType)
         Q_PROPERTY(lua_Integer operandscount READ operandsCount)
         Q_PROPERTY(lua_Integer opcode READ opcode WRITE setOpcode)
+        Q_PROPERTY(lua_Integer source READ source WRITE setSource)
+        Q_PROPERTY(lua_Integer destination READ destination WRITE setDestination)
+        Q_PROPERTY(lua_Integer base READ base WRITE setBase)
+        Q_PROPERTY(lua_Integer displacement READ displacement WRITE setDisplacement)
+        Q_PROPERTY(lua_Integer scale READ scale WRITE setScale)
         Q_PROPERTY(QString format READ format WRITE setFormat)
         Q_PROPERTY(QString mnemonic READ mnemonic WRITE setMnemonic)
         Q_PROPERTY(QString hexdump READ hexDump)
         Q_PROPERTY(PrefSDK::Operand* firstoperand READ firstOperand)
         Q_PROPERTY(PrefSDK::Operand* lastoperand READ lastOperand)
+        Q_PROPERTY(PrefSDK::Operand sourceoperand READ sourceOperand)
+        Q_PROPERTY(PrefSDK::Operand destinationoperand READ destinationOperand)
+        Q_PROPERTY(PrefSDK::Operand baseoperand READ baseOperand)
+        Q_PROPERTY(PrefSDK::Operand displacementoperand READ displacementOperand)
+        Q_PROPERTY(PrefSDK::Operand scaleoperand READ scaleOperand)
         Q_PROPERTY(bool valid READ isValid)
 
         public:
@@ -48,37 +58,61 @@ namespace PrefSDK
             lua_Integer type() const;
             lua_Integer operandsCount() const;
             lua_Integer opcode() const;
+            lua_Integer source() const;
+            lua_Integer destination() const;
+            lua_Integer base() const;
+            lua_Integer displacement() const;
+            lua_Integer scale() const;
             const QString& format() const;
             const QString& mnemonic() const;
             QString hexDump() const;
             PrefSDK::Operand* firstOperand() const;
             PrefSDK::Operand* lastOperand() const;
+            PrefSDK::Operand* sourceOperand() const;
+            PrefSDK::Operand* destinationOperand() const;
+            PrefSDK::Operand* baseOperand() const;
+            PrefSDK::Operand* displacementOperand() const;
+            PrefSDK::Operand* scaleOperand() const;
             void setCategory(lua_Integer category);
             void setType(lua_Integer type);
             void setOpcode(lua_Integer opc);
+            void setSource(lua_Integer idx);
+            void setDestination(lua_Integer idx);
+            void setBase(lua_Integer idx);
+            void setDisplacement(lua_Integer idx);
+            void setScale(lua_Integer idx);
             void setFormat(const QString& s);
-            void setMnemonic(const QString& mnemonic);
+            void setMnemonic(const QString& mnemonic);            
 
         public:
             void setSize(const DataValue& size);
+            const DataValue& opcodeValue() const;
+            const DataValue& offsetValue() const;
 
         public slots:
             lua_Integer next(lua_Integer datatype);
             PrefSDK::Operand* addOperand(lua_Integer operandtype, lua_Integer datatype);
+            PrefSDK::Operand* addOperand(lua_Integer operandtype, lua_Integer operanddescriptor, lua_Integer datatype);
             PrefSDK::Operand* operand(lua_Integer idx) const;
             void cloneOperand(QObject* op);
             void removeOperand(lua_Integer idx);
             void clearOperands();
 
-        public:
-            const DataValue& opcodeValue() const;
-            const DataValue& offsetValue() const;
+        private:
+            void checkDescriptor(Operand::Descriptor operanddescriptor);
 
         public: /* Overriden Methods */
             virtual Block::Type blockType() const;
 
         public:
             static const QString INVALID_MNEMONIC;
+
+        private:
+            lua_Integer _source;
+            lua_Integer _destination;
+            lua_Integer _base;
+            lua_Integer _displacement;
+            lua_Integer _scale;
 
         private:
             QHexEditData* _hexeditdata;

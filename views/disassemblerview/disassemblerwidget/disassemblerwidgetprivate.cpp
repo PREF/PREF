@@ -1,6 +1,6 @@
 #include "disassemblerwidgetprivate.h"
 
-DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _currentsegment(nullptr), _currentfunction(nullptr)
+DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
 {
     this->_charwidth = this->_charheight = 0;
 
@@ -14,8 +14,6 @@ DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QS
     this->setAddressForeColor(Qt::darkBlue);
     this->setContextMenuPolicy(Qt::CustomContextMenu);
     this->setSelectedLineColor(QColor(0xFF, 0xFF, 0xA0));
-
-    connect(this->_vscrollbar, SIGNAL(valueChanged(int)), this, SLOT(onVScrollBarValueChanged(int)));
 }
 
 Block *DisassemblerWidgetPrivate::selectedBlock() const
@@ -38,7 +36,10 @@ void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx)
     this->_selectedblock = blocks[idx];
 
     if(this->_listing)
+    {
         this->ensureVisible(idx);
+        this->update();
+    }
 }
 
 void DisassemblerWidgetPrivate::setListing(DisassemblerListing *listing)
@@ -73,10 +74,7 @@ void DisassemblerWidgetPrivate::setWheelScrollLines(int c)
 
 void DisassemblerWidgetPrivate::jumpTo(Block *block)
 {
-    qint64 idx = this->_listing->indexOf(block);
-
-    if(idx != -1)
-        this->setCurrentIndex(idx);
+    this->jumpTo(block->startAddress());
 }
 
 void DisassemblerWidgetPrivate::jumpTo(const DataValue& address)
@@ -270,7 +268,7 @@ QString DisassemblerWidgetPrivate::emitReference(ReferenceSet *referenceset)
     return QString("j_%1:\t\t%2").arg(referenceset->startAddress().toString(16), this->displayReferences("Referenced by", referenceset));
 }
 
-int DisassemblerWidgetPrivate::visibleStart(QRect r) const
+qint64 DisassemblerWidgetPrivate::visibleStart(QRect r) const
 {
     if(r.isEmpty())
         r = this->rect();
@@ -279,7 +277,7 @@ int DisassemblerWidgetPrivate::visibleStart(QRect r) const
     return slidepos + (r.top() / this->_charheight);
 }
 
-int DisassemblerWidgetPrivate::visibleEnd(QRect r) const
+qint64 DisassemblerWidgetPrivate::visibleEnd(QRect r) const
 {
     if(r.isEmpty())
         r = this->rect();
@@ -329,23 +327,18 @@ void DisassemblerWidgetPrivate::adjust()
     }
 }
 
-void DisassemblerWidgetPrivate::ensureVisible(int idx)
+void DisassemblerWidgetPrivate::ensureVisible(qint64 idx)
 {
     if(idx == -1)
         idx = 0;
+    else if(idx >= this->_listing->length())
+        idx = this->_listing->length() - 1;
 
-    int firstidx = this->_vscrollbar->sliderPosition();
-    int lastidx = firstidx + (this->height() / this->_charheight);
+    qint64 vislines = this->height() / this->_charheight;
+    qint64 slidepos = static_cast<qint64>(this->_vscrollbar->sliderPosition());
 
-    if((idx < firstidx) || (idx > lastidx))
-        this->_vscrollbar->setValue(idx);
-
-    this->update();
-}
-
-void DisassemblerWidgetPrivate::onVScrollBarValueChanged(int)
-{
-    this->update();
+    if((idx < slidepos) || (idx > (slidepos + vislines)))
+        this->_vscrollbar->setValue(qMax(idx - (vislines / 2), qint64(0)));
 }
 
 void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
@@ -431,15 +424,51 @@ void DisassemblerWidgetPrivate::resizeEvent(QResizeEvent *)
 
 void DisassemblerWidgetPrivate::mousePressEvent(QMouseEvent *e)
 {
+    if(!this->_clicked)
+    {
+        this->_clicked = true;
+        QTimer::singleShot(qApp->doubleClickInterval(), this, SLOT(unlockClick()));
+
+        if(this->_listing)
+        {
+            QPoint pos = e->pos();
+
+            if(pos.y())
+                this->setCurrentIndex(this->_vscrollbar->sliderPosition() + (pos.y() / this->_charheight));
+        }
+        else
+            this->setCurrentIndex(-1);
+    }
+
+    QWidget::mousePressEvent(e);
+}
+
+void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
+{
     if(this->_listing)
     {
         QPoint pos = e->pos();
 
-        if(pos.x() && pos.y())
-            this->setCurrentIndex(this->_vscrollbar->sliderPosition() + (pos.y() / this->_charheight));
-    }
-    else
-        this->setCurrentIndex(-1);
+        if(pos.y())
+        {
+            const DisassemblerListing::BlockList& blocks = this->_listing->blocks();
+            qint64 idx = this->_vscrollbar->sliderPosition() + (pos.y() / this->_charheight);
 
-    QWidget::mousePressEvent(e);
+            if(blocks[idx]->blockType() == Block::InstructionBlock)
+            {
+                Instruction* instruction = qobject_cast<Instruction*>(blocks[idx]);
+
+                if((instruction->isJump() || instruction->isCall()) && (instruction->destination() != -1))
+                    this->jumpTo(instruction->destinationOperand()->operandValue());
+            }
+
+        }
+    }
+
+    QWidget::mouseDoubleClickEvent(e);
+}
+
+void DisassemblerWidgetPrivate::unlockClick()
+{
+    this->_clicked = false;
 }

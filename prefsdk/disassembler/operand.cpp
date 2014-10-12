@@ -2,12 +2,12 @@
 
 namespace PrefSDK
 {
-    Operand::Operand(lua_Integer type, lua_Integer datatype, QObject *parent): QObject(parent), _operandtype(type), _datatype(datatype)
+    Operand::Operand(lua_Integer type, lua_Integer descriptor, lua_Integer datatype, QObject *parent): QObject(parent), _operandtype(type), _operanddescriptor(descriptor), _datatype(datatype)
     {
 
     }
 
-    Operand::Operand(const Operand *operand, QObject *parent): QObject(parent), _operandtype(operand->_operandtype), _datatype(operand->_datatype), _operandvalue(operand->_operandvalue), _registername(operand->_registername)
+    Operand::Operand(const Operand *operand, QObject *parent): QObject(parent), _operandtype(operand->_operandtype), _operanddescriptor(operand->_operanddescriptor), _datatype(operand->_datatype), _operandvalue(operand->_operandvalue), _registername(operand->_registername)
     {
 
     }
@@ -15,6 +15,11 @@ namespace PrefSDK
     lua_Integer Operand::type() const
     {
         return this->_operandtype;
+    }
+
+    lua_Integer Operand::descriptor() const
+    {
+        return this->_operanddescriptor;
     }
 
     lua_Integer Operand::dataType() const
@@ -50,6 +55,11 @@ namespace PrefSDK
     void Operand::setType(lua_Integer t)
     {
         this->_operandtype = t;
+    }
+
+    void Operand::setDescriptor(lua_Integer d)
+    {
+        this->_operanddescriptor = d;
     }
 
     void Operand::setRegisterName(const QString &regname)

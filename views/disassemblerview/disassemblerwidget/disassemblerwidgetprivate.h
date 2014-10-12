@@ -33,16 +33,13 @@ class DisassemblerWidgetPrivate: public QWidget
         QString emitFunction(Function *func);
         QString emitInstruction(Instruction *instruction);
         QString emitReference(ReferenceSet* referenceset);
-        int visibleStart(QRect r = QRect()) const;
-        int visibleEnd(QRect r = QRect()) const;
+        qint64 visibleStart(QRect r = QRect()) const;
+        qint64 visibleEnd(QRect r = QRect()) const;
         int drawAddress(QPainter &painter, QFontMetrics &fm, Block* block, int y);
         void drawLineBackground(QPainter& painter, qint64 idx, int y);
         void drawLine(QPainter& painter, QFontMetrics& fm, qint64 idx, int y);
-        void ensureVisible(int idx);
+        void ensureVisible(qint64 idx);
         void adjust();
-
-    private slots:
-        void onVScrollBarValueChanged(int);
 
     protected:
         void keyPressEvent(QKeyEvent* e);
@@ -50,6 +47,10 @@ class DisassemblerWidgetPrivate: public QWidget
         void paintEvent(QPaintEvent* pe);
         void resizeEvent(QResizeEvent*);
         void mousePressEvent(QMouseEvent* e);
+        void mouseDoubleClickEvent(QMouseEvent* e);
+
+    private slots:
+        void unlockClick();
 
     signals:
         void jumpToRequested();
@@ -66,6 +67,7 @@ class DisassemblerWidgetPrivate: public QWidget
         int _charwidth;
         int _charheight;
         qint64 _selectedindex;
+        bool _clicked;
 
     private:
         Segment* _currentsegment;

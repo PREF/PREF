@@ -4,7 +4,7 @@ namespace PrefSDK
 {
     const QString Instruction::INVALID_MNEMONIC = "???";
 
-    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, QObject *parent): Block(address, parent), _hexeditdata(hexeditdata), _mnemonic(Instruction::INVALID_MNEMONIC), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
+    Instruction::Instruction(const DataValue &address, const DataValue &offset, DataType::Type opcodetype, QHexEditData *hexeditdata, QObject *parent): Block(address, parent), _source(-1), _destination(-1), _base(-1), _displacement(-1), _scale(-1), _hexeditdata(hexeditdata), _mnemonic(Instruction::INVALID_MNEMONIC), _opcodetype(opcodetype), _offset(offset), _category(InstructionCategory::Undefined), _type(InstructionType::Undefined)
     {
 
     }
@@ -29,15 +29,50 @@ namespace PrefSDK
         this->_operands.clear();
     }
 
+    void Instruction::checkDescriptor(Operand::Descriptor operanddescriptor)
+    {
+        switch(operanddescriptor)
+        {
+            case Operand::Source:
+                this->_source = this->_operands.length();
+                break;
+
+            case Operand::Destination:
+                this->_destination = this->_operands.length();
+                break;
+
+            case Operand::Base:
+                this->_base = this->_operands.length();
+                break;
+
+            case Operand::Displacement:
+                this->_displacement = this->_operands.length();
+                break;
+
+            case Operand::Scale:
+                this->_scale = this->_operands.length();
+                break;
+
+            default:
+                break;
+        }
+    }
+
     void Instruction::cloneOperand(QObject *op)
     {
         this->_operands.append(new Operand(qobject_cast<Operand*>(op)));
     }
 
-    PrefSDK::Operand* Instruction::addOperand(lua_Integer operandtype, lua_Integer datatype)
+    Operand *Instruction::addOperand(lua_Integer operandtype, lua_Integer datatype)
     {
-        Operand* operand = new Operand(operandtype, datatype);
+        return this->addOperand(operandtype, Operand::Nothing, datatype);
+    }
 
+    PrefSDK::Operand* Instruction::addOperand(lua_Integer operandtype, lua_Integer operanddescriptor, lua_Integer datatype)
+    {
+        this->checkDescriptor(static_cast<Operand::Descriptor>(operanddescriptor));
+
+        Operand* operand = new Operand(operandtype, operanddescriptor, datatype);
         this->_operands.append(operand);
         return operand;
     }
@@ -90,6 +125,31 @@ namespace PrefSDK
         return this->_opcode.compatibleValue<lua_Integer>();
     }
 
+    lua_Integer Instruction::source() const
+    {
+        return this->_source;
+    }
+
+    lua_Integer Instruction::destination() const
+    {
+        return this->_destination;
+    }
+
+    lua_Integer Instruction::base() const
+    {
+        return this->_base;
+    }
+
+    lua_Integer Instruction::displacement() const
+    {
+        return this->_displacement;
+    }
+
+    lua_Integer Instruction::scale() const
+    {
+        return this->_scale;
+    }
+
     const QString &Instruction::format() const
     {
         return this->_format;
@@ -108,6 +168,46 @@ namespace PrefSDK
     PrefSDK::Operand *Instruction::lastOperand() const
     {
         return this->_operands.last();
+    }
+
+    Operand *Instruction::sourceOperand() const
+    {
+        if(this->_source == -1)
+            return nullptr;
+
+        return this->_operands[this->_source];
+    }
+
+    Operand *Instruction::destinationOperand() const
+    {
+        if(this->_destination == -1)
+            return nullptr;
+
+        return this->_operands[this->_destination];
+    }
+
+    Operand *Instruction::baseOperand() const
+    {
+        if(this->_base == -1)
+            return nullptr;
+
+        return this->_operands[this->_base];
+    }
+
+    Operand *Instruction::displacementOperand() const
+    {
+        if(this->_destination == -1)
+            return nullptr;
+
+        return this->_operands[this->_destination];
+    }
+
+    Operand *Instruction::scaleOperand() const
+    {
+        if(this->_scale == -1)
+            return nullptr;
+
+        return this->_operands[this->_scale];
     }
 
     QString Instruction::hexDump() const
@@ -145,6 +245,31 @@ namespace PrefSDK
     void Instruction::setOpcode(lua_Integer opc)
     {
         this->_opcode = DataValue::create(opc, this->_opcodetype);
+    }
+
+    void Instruction::setSource(lua_Integer idx)
+    {
+        this->_source = idx;
+    }
+
+    void Instruction::setDestination(lua_Integer idx)
+    {
+        this->_destination = idx;
+    }
+
+    void Instruction::setBase(lua_Integer idx)
+    {
+        this->_base = idx;
+    }
+
+    void Instruction::setDisplacement(lua_Integer idx)
+    {
+        this->_displacement = idx;
+    }
+
+    void Instruction::setScale(lua_Integer idx)
+    {
+        this->_scale = idx;
     }
 
     void Instruction::setSize(const DataValue &size)
