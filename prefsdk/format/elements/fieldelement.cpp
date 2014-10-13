@@ -22,6 +22,11 @@ namespace PrefSDK
         return DataType::isInteger(this->_datatype);
     }
 
+    bool FieldElement::isArray() const
+    {
+        return DataType::isArray(this->_datatype);
+    }
+
     quint64 FieldElement::size() const
     {
         return DataType::sizeOf(this->_datatype);
