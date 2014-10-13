@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <QtConcurrent>
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/exporter/exporterlist.h"
 #include "viewmodels/formatmodel/formatmodel.h"
@@ -38,6 +39,8 @@ class FormatWidget : public WorkerTab
         void onFormatObjectSelected(FormatElement* formatelement);
         void exportData(FormatElement* formatelement);
         void importData(FormatElement *formatelement);
+        void onValidationFinished();
+        void onParseFinished();
 
     signals:
         void parseStarted();
@@ -45,10 +48,13 @@ class FormatWidget : public WorkerTab
 
     private:
         Ui::FormatWidget *ui;
+        qint64 _startoffset;
         FormatModel* _formatmodel;
         QHexEdit* _hexedit;
         LogWidget* _logwidget;
         FormatDefinition* _formatdefinition;
+        QFutureWatcher<bool> _validatorwatcher;
+        QFutureWatcher<FormatTree*> _parsewatcher;
 };
 
 #endif // FORMATWIDGET_H

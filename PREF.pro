@@ -6,14 +6,13 @@
 
 # Portable Reverse Engineering Framework
 
-QT += core gui opengl quick qml
+QT += core gui opengl quick qml concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PREF
 TEMPLATE = app
 QMAKE_CXXFLAGS += -I$$PWD/include/luajit-2.0 -I$$PWD/include/sqlite -std=c++11
-# LIBS +=
 
 SOURCES += main.cpp\
         mainwindow.cpp \

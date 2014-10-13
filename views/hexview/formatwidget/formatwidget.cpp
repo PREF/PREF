@@ -1,9 +1,12 @@
 #include "formatwidget.h"
 #include "ui_formatwidget.h"
 
-FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr)
+FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _startoffset(0), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr)
 {
     ui->setupUi(this);
+
+    connect(&this->_validatorwatcher, SIGNAL(finished()), this, SLOT(onValidationFinished()));
+    connect(&this->_parsewatcher, SIGNAL(finished()), this, SLOT(onParseFinished()));
 }
 
 void FormatWidget::setLogWidget(LogWidget *logwidget)
@@ -43,28 +46,12 @@ void FormatWidget::loadFormat()
 
     if(res == FormatsDialog::Accepted)
     {
-        QWidget* formatview = nullptr;
         this->_formatdefinition = fd.selectedFormat();
-        bool validated = this->_formatdefinition->callValidate(this->_hexedit->data(), fd.offset());
+        this->_startoffset = fd.offset();
 
-        if(!validated)
-            return;
-
-        emit parseStarted();
-        FormatTree* formattree = this->_formatdefinition->callParse(this->_hexedit->data(), this->_logwidget, fd.offset());
-
-        if(formattree && !formattree->isEmpty())
-        {
-            this->_formatmodel->setFormatTree(formattree);
-
-            for(int i = 0; i < this->_formatmodel->columnCount(); i++)
-                ui->tvFormat->resizeColumnToContents(i);
-
-            if(this->_formatdefinition->hasView())
-                formatview = this->_formatdefinition->callView(this->_hexedit->data(), formattree);
-        }
-
-        emit parseFinished(formattree, formatview);
+        emit workStarted();
+        QFuture<bool> future = QtConcurrent::run(this->_formatdefinition, &FormatDefinition::callValidate, this->_hexedit->data(), this->_startoffset, false);
+        this->_validatorwatcher.setFuture(future);
     }
 }
 
@@ -119,4 +106,39 @@ void FormatWidget::importData(FormatElement *formatelement)
             writer.replace(formatelement->offset(), size, ba);
         }
     }
+}
+
+void FormatWidget::onValidationFinished()
+{
+    bool validated = this->_validatorwatcher.result();
+
+    if(!validated)
+    {
+        emit workFinished();
+        return;
+    }
+
+    emit parseStarted();
+    QFuture<FormatTree*> future = QtConcurrent::run(this->_formatdefinition, &FormatDefinition::callParse, this->_hexedit->data(), this->_logwidget, this->_startoffset);
+    this->_parsewatcher.setFuture(future);
+}
+
+void FormatWidget::onParseFinished()
+{
+    QWidget* formatview = nullptr;
+    FormatTree* formattree = this->_parsewatcher.future().result();
+
+    if(formattree && !formattree->isEmpty())
+    {
+        this->_formatmodel->setFormatTree(formattree);
+
+        for(int i = 0; i < this->_formatmodel->columnCount(); i++)
+            ui->tvFormat->resizeColumnToContents(i);
+
+        if(this->_formatdefinition->hasView())
+            formatview = this->_formatdefinition->callView(this->_hexedit->data(), formattree);
+    }
+
+    emit parseFinished(formattree, formatview);
+    emit workFinished();
 }

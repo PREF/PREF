@@ -80,9 +80,10 @@ namespace PrefSDK
         lua_State* l = LuaState::instance();
         this->bind(hexeditdata);
         FormatValidator fv(hexeditdata, baseoffset);
+        fv.moveToThread(QThread::currentThread()); /* Move FormatValidator in concurrent thread for editing */
 
         QtLua::pushObject(l, &fv);
-        bool err = this->_validatefunc(1);
+        bool err = this->_validatefunc(1, 0, true);
 
         if(err)
         {
@@ -94,6 +95,7 @@ namespace PrefSDK
             return false;
         }
 
+        fv.moveToThread(qApp->instance()->thread()); /* Editing Finished: move it back to the main thread */
         this->unbind();
         return fv.validated();
     }
@@ -103,9 +105,10 @@ namespace PrefSDK
         lua_State* l = LuaState::instance();
         this->bind(hexeditdata);
         FormatTree* formattree = new FormatTree(hexeditdata, logwidget, baseoffset);
+        formattree->moveToThread(QThread::currentThread()); /* Move FormatTree in concurrent thread for editing */
 
         QtLua::pushObject(LuaState::instance(), formattree);
-        bool err = this->_parsefunc(1);
+        bool err = this->_parsefunc(1, 0, true);
 
         if(err)
         {
@@ -117,6 +120,7 @@ namespace PrefSDK
             return nullptr;
         }
 
+        formattree->moveToThread(qApp->instance()->thread()); /* Editing Finished: move it back to the main thread */
         this->unbind();
         return formattree;
     }
