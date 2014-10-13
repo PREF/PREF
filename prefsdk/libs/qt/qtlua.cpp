@@ -35,12 +35,12 @@ namespace PrefSDK
         this->__this = nullptr;
     }
 
-    void QtLua::LuaFunction::push() const
+    void QtLua::LuaFunction::push(lua_State* l) const
     {
         if(this->_iscfunction)
-            lua_pushcfunction(this->_state, this->_storedfunc.CFunction);
+            lua_pushcfunction((!l ? this->_state: l), this->_storedfunc.CFunction);
         else if(this->_storedfunc.RegistryIdx != LUA_REFNIL)
-            lua_rawgeti(this->_state, LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
+            lua_rawgeti((!l ? this->_state : l), LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
     }
 
     bool QtLua::LuaFunction::operator()(int nargs, int nresults, bool threaded) const
@@ -49,17 +49,20 @@ namespace PrefSDK
         lua_State* l = (threaded ? lua_newthread(this->_state) : this->_state);
 
         if(threaded)
-            lua_xmove(this->_state, l, nargs);
+        {
+            lua_insert(this->_state, 1); /* Move Thread to Bottom of the Stack */
+            lua_xmove(this->_state, l, nargs); /* Copy Arguments */
+        }
 
         if(this->__this) /* Push self, if any */
         {
             QtLua::pushObject(l, this->__this);
-            lua_insert(l, -(nargs + 1));
+            lua_insert(l, 1); /* Move to Bottom */
             nargs++;
         }
 
-        this->push();
-        lua_insert(l, -(nargs + 1));
+        this->push(l);
+        lua_insert(l, 1); /* Move to Bottom */
 
         if(threaded)
         {
@@ -68,7 +71,7 @@ namespace PrefSDK
             if(err)
                 lua_xmove(l, this->_state, 1); /* Copy Error */
 
-            lua_remove(this->_state, -(nresults + 1)); /* Pop thread from stack */
+            lua_remove(this->_state, 1); /* Pop thread from stack */
         }
         else
             err = lua_pcall(this->_state, nargs, nresults, 0) != 0;

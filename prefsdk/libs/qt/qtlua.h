@@ -9,6 +9,7 @@
 #include <QMetaEnum>
 #include <QVector>
 #include <QFileInfo>
+#include <QDebug>
 
 namespace PrefSDK
 {
@@ -27,7 +28,7 @@ namespace PrefSDK
                     LuaFunction(lua_State* l, int idx, QObject* __this);
                     LuaFunction(const QtLua::LuaFunction& lf);
                     ~LuaFunction();
-                    void push() const;
+                    void push(lua_State *l = nullptr) const;
                     bool operator()(int nargs, int nresults = 0, bool threaded = false) const;
                     QtLua::LuaFunction& operator=(const QtLua::LuaFunction& lf);
                     bool isValid() const;
