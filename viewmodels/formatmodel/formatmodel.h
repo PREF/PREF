@@ -18,6 +18,7 @@ class FormatModel : public FieldDataModel
 
     public:
         explicit FormatModel(QHexEditData* hexeditdata, QObject *parent = 0);
+        QHexEditData* data();
         void setFormatTree(FormatTree *formattree);
 
     private slots:

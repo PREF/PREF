@@ -14,6 +14,11 @@ FormatModel::FormatModel(QHexEditData *hexeditdata, QObject *parent): FieldDataM
     connect(this->_hexeditdata, SIGNAL(dataChanged(qint64,qint64,QHexEditData::ActionType)), this, SLOT(updateModelData(qint64,qint64,QHexEditData::ActionType)));
 }
 
+QHexEditData *FormatModel::data()
+{
+    return this->_hexeditdata;
+}
+
 void FormatModel::setFormatTree(FormatTree *formattree)
 {
     this->beginInsertRows(QModelIndex(), 0, formattree->structureCount());
