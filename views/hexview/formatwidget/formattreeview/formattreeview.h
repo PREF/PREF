@@ -1,15 +1,16 @@
 #ifndef FORMATTREEVIEW_H
 #define FORMATTREEVIEW_H
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
 #include "copymenu.h"
 #include "numericbasemenu.h"
 #include "structuremenu.h"
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "qhexedit/qhexeditdata.h"
 #include "exportdialog.h"
+#include "prefsdk/type/datavalue.h"
+#include <QtCore>
+#include <QtGui>
+#include <QtWidgets>
 
 using namespace PrefSDK;
 
@@ -31,6 +32,7 @@ class FormatTreeView : public QTreeView
         void onTreeClicked(const QModelIndex &index);
         void setBackColor();
         void removeBackColor();
+        void onGotoOffset();
         void onStructureGotoStart();
         void onStructureGotoEnd();
         void onStructureExport();
@@ -55,6 +57,7 @@ class FormatTreeView : public QTreeView
     private:
         QMenu* _formatobjectmenu;
         QMenu* _highlightmenu;
+        QAction* _actiongoto;
         CopyMenu* _copymenu;
         NumericBaseMenu* _numericbasemenu;
         StructureMenu* _structuremenu;

@@ -1,11 +1,7 @@
 #include "formattreeview.h"
 
-FormatTreeView::FormatTreeView(QWidget *parent): QTreeView(parent)
+FormatTreeView::FormatTreeView(QWidget *parent): QTreeView(parent), _formatobjectmenu(nullptr), _highlightmenu(nullptr), _actiongoto(nullptr), _numericbasemenu(nullptr)
 {
-    this->_formatobjectmenu = nullptr;
-    this->_highlightmenu = nullptr;
-    this->_numericbasemenu = nullptr;
-
     this->configureContextMenu(true);
 
     /* FormatTreeView Signal/Slots */
@@ -66,7 +62,25 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
             this->_structuremenu->menuAction()->setVisible(false);
 
         if(formatelement->elementType() == FormatElement::FieldType)
+        {
+            FieldElement* fieldelement = qobject_cast<FieldElement*>(formatelement);
+
+            if(fieldelement->isInteger() && !fieldelement->isSigned() && !fieldelement->isOverflowed() && (DataType::bitWidth(fieldelement->dataType()) > 16))
+            {
+                QHexEditData* hexeditdata = qobject_cast<FormatModel*>(this->model())->data();
+                LuaHexEditData hed(hexeditdata);
+                DataValue value = DataValue::create(hed.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
+
+                if(!value.compatibleValue<qint64>() || (value.compatibleValue<qint64>() >= hexeditdata->length()))
+                    this->_actiongoto->setVisible(false);
+                else
+                    this->_actiongoto->setVisible(true);
+            }
+            else
+                this->_actiongoto->setVisible(false);
+
             this->_copymenu->setCopyValueVisible(true);
+        }
         else
             this->_copymenu->setCopyValueVisible(false);
 
@@ -94,6 +108,17 @@ void FormatTreeView::setBackColor()
 void FormatTreeView::removeBackColor()
 {
     this->updateColor(false);
+}
+
+void FormatTreeView::onGotoOffset()
+{
+    FieldElement* fieldelement = qobject_cast<FieldElement*>(this->selectedElement());
+    QHexEditData* hexeditdata = qobject_cast<FormatModel*>(this->model())->data();
+
+    LuaHexEditData hed(hexeditdata);
+    DataValue value = DataValue::create(hed.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
+
+    emit gotoOffset(value.compatibleValue<qint64>());
 }
 
 void FormatTreeView::onStructureGotoStart()
@@ -153,6 +178,7 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 
         this->_formatobjectmenu = new QMenu(this);
         this->_highlightmenu = new QMenu("Highlight");
+        this->_actiongoto = this->_formatobjectmenu->addAction("Goto Offset");
         this->_copymenu = new CopyMenu(this);
         this->_numericbasemenu = new NumericBaseMenu(this);
         this->_structuremenu = new StructureMenu(this);
@@ -162,6 +188,7 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 
         connect(actsetbackcolor, SIGNAL(triggered()), this, SLOT(setBackColor()));
         connect(actremovebackcolor, SIGNAL(triggered()), this, SLOT(removeBackColor()));
+        connect(this->_actiongoto, SIGNAL(triggered()), this, SLOT(onGotoOffset()));
         connect(this->_copymenu, SIGNAL(copyOffset()), this, SLOT(onCopyOffset()));
         connect(this->_copymenu, SIGNAL(copyName()), this, SLOT(onCopyName()));
         connect(this->_copymenu, SIGNAL(copyValue()), this, SLOT(onCopyValue()));
