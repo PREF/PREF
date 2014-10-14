@@ -23,7 +23,7 @@ namespace PrefSDK
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Operands..."));
         this->_listing->analyzeOperands();
 
-        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Elaborationg Instructions..."));
+        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Elaborating Instructions..."));
         this->callElaborate();
     }
 
