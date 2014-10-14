@@ -68,7 +68,9 @@ namespace PrefSDK
         {
             err = lua_resume(l, nargs) != 0;
 
-            if(err)
+            if(nresults)
+                lua_xmove(l, this->_state, nresults); /* Copy Results */
+            else if(err)
                 lua_xmove(l, this->_state, 1); /* Copy Error */
 
             lua_remove(this->_state, 1); /* Pop thread from stack */
@@ -275,7 +277,7 @@ namespace PrefSDK
 
         if(lua_type(l, 2) != LUA_TSTRING)
         {
-            throw PrefException(QString("QtLua::metaIndex(): Invalid Member Type for '%1'").arg(QString::fromUtf8(metaobj->className())));
+            throw PrefException(QString("QtLua::metaIndex(): Invalid Member Type for '%1' (%2)").arg(QString::fromUtf8(metaobj->className()), QString::fromUtf8(luaL_typename(l, 2))));
             return 0;
         }
 

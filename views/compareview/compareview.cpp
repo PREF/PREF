@@ -134,16 +134,6 @@ void CompareView::updateStatusBar()
     this->updateInfoText(QString("<b>Left Offset</b>: %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Right Offset</b>: %2h").arg(leftoffset, rightoffset));
 }
 
-void CompareView::log(const QString &)
-{
-    /* A Compare View don't need logs! */
-}
-
-void CompareView::logLine(const QString &, LogWidget::LogLevel)
-{
-    /* A Compare View don't need logs! */
-}
-
 void CompareView::on_diffList_doubleClicked(const QModelIndex &index)
 {
     if(!index.isValid())

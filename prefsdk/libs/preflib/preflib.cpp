@@ -123,12 +123,11 @@ namespace PrefSDK
         }
 
         FormatTree* formattree = *(reinterpret_cast<FormatTree**>(lua_touserdata(l, 2)));
-        AbstractView* abstractview = LoadedViews::instance()->view(formattree->data());
         QString qmlmain = QString("%1%2%3").arg(qApp->applicationDirPath(), QDir::separator(), QString::fromUtf8(lua_tostring(l, 1)));
 
         if(!QFileInfo(qmlmain).exists())
         {
-            abstractview->logLine(QString("Cannot find '%1'").arg(qmlmain), LogWidget::Warning);
+            formattree->warning(QString("Cannot find '%1'").arg(qmlmain));
             lua_pushnil(l);
         }
         else
@@ -143,11 +142,10 @@ namespace PrefSDK
             if(view->status() == QQuickView::Error)
             {
                 QList<QQmlError> errors = view->errors();
-
-                abstractview->logLine("Cannot load the view.", LogWidget::Warning);
+                formattree->warning("Cannot load the view.");
 
                 foreach(QQmlError error, errors)
-                    abstractview->logLine("- " + error.toString());
+                    formattree->logline("- " + error.toString());
 
                 lua_pushnil(l);
             }

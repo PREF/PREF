@@ -17,7 +17,7 @@ namespace PrefSDK
 
     FormatElement::~FormatElement()
     {
-        qDebug() << "Deleting: " << this->displayName();
+
     }
 
     FormatElement::Type FormatElement::elementType() const
@@ -69,7 +69,7 @@ namespace PrefSDK
 
         if(res != 0)
         {
-            this->_formattree->logWidget()->writeError(s);
+            this->_formattree->logger()->error(s);
             return QString();
         }
 
@@ -146,7 +146,7 @@ namespace PrefSDK
 
         if(res != 0)
         {
-            this->_formattree->logWidget()->writeError(QString::fromUtf8(lua_tostring(l, -1)));
+            this->_formattree->logger()->error(QString::fromUtf8(lua_tostring(l, -1)));
             lua_pop(l, 1);
         }
     }

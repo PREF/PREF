@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    ProcessorDefinition::ProcessorDefinition(InstructionSet *instructionset, RegisterSet *registerset, DataType::Type addresstype, QObject *parent): DebugObject(parent), _instructionset(instructionset), _registerset(registerset), _addresstype(addresstype)
+    ProcessorDefinition::ProcessorDefinition(InstructionSet *instructionset, RegisterSet *registerset, DataType::Type addresstype, QObject *parent): LogObject(parent), _instructionset(instructionset), _registerset(registerset), _addresstype(addresstype)
     {
         this->_instructionset->setParent(this);
         this->_registerset->setParent(this);
@@ -43,12 +43,10 @@ namespace PrefSDK
         if(!this->_analyzefunc.isValid())
             return 0;
 
-        this->bind(hexeditdata);
-
         lua_State* l = this->_analyzefunc.state();
         QtLua::pushObject(l, instruction);
         lua_pushinteger(l, baseaddress.compatibleValue<lua_Integer>());
-        bool err = this->_analyzefunc(2, 1);
+        bool err = this->_analyzefunc(2, 1, true);
 
         if(err)
         {
@@ -59,7 +57,6 @@ namespace PrefSDK
 
         lua_Integer size = lua_tointeger(l, 1);
         lua_pop(l, 1);
-        this->unbind();
         return size;
     }
 
@@ -68,20 +65,16 @@ namespace PrefSDK
         if(!this->_emulatefunc.isValid())
             return;
 
-        this->bind(hexeditdata);
-
         lua_State* l = this->_emulatefunc.state();
         QtLua::pushObject(l, emulator);
         QtLua::pushObject(l, instruction);
-        bool err = this->_emulatefunc(2);
+        bool err = this->_emulatefunc(2, 0, true);
 
         if(err)
         {
             throw new PrefException(QString::fromUtf8(lua_tostring(l, -1)));
             lua_pop(l, 1);
         }
-
-        this->unbind();
     }
 
     void ProcessorDefinition::callElaborate(DisassemblerListing *listing, QHexEditData *hexeditdata)
@@ -89,7 +82,6 @@ namespace PrefSDK
         if(!this->_elaboratefunc.isValid())
             return;
 
-        this->bind(hexeditdata);
         lua_State* l = this->_elaboratefunc.state();
         QtLua::pushObject(l, listing);
         bool err = this->_elaboratefunc(1);
@@ -99,8 +91,6 @@ namespace PrefSDK
             throw new PrefException(QString::fromUtf8(lua_tostring(l, -1)));
             lua_pop(l, 1);
         }
-
-        this->unbind();
     }
 
     DataType::Type ProcessorDefinition::addressType() const

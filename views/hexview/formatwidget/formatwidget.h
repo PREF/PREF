@@ -4,7 +4,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include <QtConcurrent>
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/exporter/exporterlist.h"
 #include "viewmodels/formatmodel/formatmodel.h"
@@ -12,6 +11,7 @@
 #include "logwidget/logwidget.h"
 #include "formattreeview/formattreeview.h"
 #include "formatsdialog/formatsdialog.h"
+#include "formatworker.h"
 
 using namespace PrefSDK;
 
@@ -27,6 +27,7 @@ class FormatWidget : public WorkerTab
         explicit FormatWidget(QWidget *parent = 0);
         void setLogWidget(LogWidget* logwidget);
         void setData(QHexEdit *hexedit);
+        QWidget* formatView();
         void resetData();
         ~FormatWidget();
 
@@ -39,22 +40,21 @@ class FormatWidget : public WorkerTab
         void onFormatObjectSelected(FormatElement* formatelement);
         void exportData(FormatElement* formatelement);
         void importData(FormatElement *formatelement);
-        void onValidationFinished();
-        void onParseFinished();
+        void onParseCompleted();
 
     signals:
-        void parseStarted();
-        void parseFinished(FormatTree* formattree, QWidget* formatview);
+        void parsingStarted();
+        void parsingCompleted();
+        void parsingFailed();
 
     private:
         Ui::FormatWidget *ui;
-        qint64 _startoffset;
+        FormatWorker* _worker;
         FormatModel* _formatmodel;
         QHexEdit* _hexedit;
         LogWidget* _logwidget;
         FormatDefinition* _formatdefinition;
-        QFutureWatcher<bool> _validatorwatcher;
-        QFutureWatcher<FormatTree*> _parsewatcher;
+        QWidget* _formatview;
 };
 
 #endif // FORMATWIDGET_H

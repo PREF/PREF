@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    ProcessorEmulator::ProcessorEmulator(DisassemblerListing *listing, DataType::Type addresstype, LogWidget* logwidget, QObject *parent): QObject(parent), _listing(listing), _logwidget(logwidget), _addresstype(addresstype)
+    ProcessorEmulator::ProcessorEmulator(DisassemblerListing *listing, DataType::Type addresstype, Logger* logger, QObject *parent): QObject(parent), _listing(listing), _logger(logger), _addresstype(addresstype)
     {
         this->_currentaddress = ProcessorEmulator::Address(DataValue(addresstype), Reference::Flow);
     }
@@ -48,7 +48,7 @@ namespace PrefSDK
             invalidsegment = (this->_listing->findSegment(this->_currentaddress.first) == nullptr);
 
             if(invalidsegment)
-                this->_logwidget->writeWarning(QString("Trying to disassemble: %1h").arg(this->_currentaddress.first.toString(16)));
+                this->_logger->warning(QString("Trying to disassemble: %1h").arg(this->_currentaddress.first.toString(16)));
         }
         while(this->_listing->isDecoded(this->_currentaddress.first) || invalidsegment);
 

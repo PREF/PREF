@@ -56,16 +56,6 @@ void HexView::updateStatusBar()
     this->updateInfoText(QString("<b>Offset:</b> %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Size:</b> %2h").arg(offset, size));
 }
 
-void HexView::logLine(const QString &text, LogWidget::LogLevel loglevel)
-{
-    ui->tabOutput->logWidget()->writeLine(text, loglevel);
-}
-
-void HexView::log(const QString &text)
-{
-    ui->tabOutput->logWidget()->write(text);
-}
-
 void HexView::createToolBar()
 {
     this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);
@@ -92,6 +82,15 @@ void HexView::createToolBar()
     ui->tbContainer->setLayout(vl);
 }
 
+void HexView::hideFormatView()
+{
+    ui->tabView->tabBar()->hide();
+    ui->tabView->setCurrentIndex(0);
+
+    if(ui->tabView->count() > 1)
+        ui->tabView->removeTab(1);
+}
+
 void HexView::inspectData(QHexEditData *hexeditdata)
 {
     ui->dataTypesWidget->setData(hexeditdata);
@@ -115,8 +114,9 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     connect(ui->visualMapWidget, SIGNAL(gotoTriggered(qint64)), ui->hexEdit, SLOT(selectPos(qint64)));
     connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
     connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
-    connect(ui->formatWidget, SIGNAL(parseStarted()), this, SLOT(onFormatParseStarted()));
-    connect(ui->formatWidget, SIGNAL(parseFinished(FormatTree*,QWidget*)), this, SLOT(onFormatParseFinished(FormatTree*,QWidget*)));
+    connect(ui->formatWidget, SIGNAL(parsingStarted()), this, SLOT(onFormatParsingStarted()));
+    connect(ui->formatWidget, SIGNAL(parsingCompleted()), this, SLOT(onFormatParsingFinished()));
+    connect(ui->formatWidget, SIGNAL(parsingFailed()), this, SLOT(onFormatParsingFailed()));
 }
 
 void HexView::selectPage(QWidget *page)
@@ -162,37 +162,31 @@ void HexView::onHexEditCustomContextMenuRequested(const QPoint &pos)
     this->_toolbar->actionMenu()->popup(newpos);
 }
 
-void HexView::onFormatParseStarted()
+void HexView::onFormatParsingStarted()
 {
-    ui->tabOutput->logWidget()->clear();
     this->_tbformat->setEnabled(false);
 }
 
-void HexView::onFormatParseFinished(FormatTree *formattree, QWidget *formatview)
+void HexView::onFormatParsingFinished()
 {
     this->_tbformat->setEnabled(true);
 
-    ui->tabView->tabBar()->hide();
-    ui->tabView->setCurrentIndex(0);
-
-    if(ui->tabView->count() > 1)
-        ui->tabView->removeTab(1);
-
-    if(!formattree || formattree->isEmpty())
+    if(ui->formatWidget->formatView())
     {
-        ui->formatWidget->resetData();
-
-        this->selectPage(ui->tabOutput);
-        return;
-    }
-
-    if(formattree && formatview)
-    {
-        ui->tabView->addTab(formatview, "Format View");
+        ui->tabView->addTab(ui->formatWidget->formatView(), "Format View");
         ui->tabView->tabBar()->setVisible(true);
     }
     else
-        ui->tabView->tabBar()->setVisible(false);
+        this->hideFormatView();
+}
+
+void HexView::onFormatParsingFailed()
+{
+    this->_tbformat->setEnabled(true);
+    ui->formatWidget->resetData();
+
+    this->hideFormatView();
+    this->selectPage(ui->tabOutput);
 }
 
 void HexView::onWorkStarted()

@@ -2,7 +2,7 @@
 #define PREFSDK_ABSTRACTTREE_H
 
 #include "qhexedit/qhexeditdata.h"
-#include "logwidget/logwidget.h"
+#include "logwidget/logobject.h"
 #include <QObject>
 #include <QHash>
 #include <QUuid>
@@ -11,7 +11,7 @@ namespace PrefSDK
 {
     class FormatElement; /* Forward Declaration */
 
-    class AbstractTree : public QObject
+    class AbstractTree : public LogObject
     {
         Q_OBJECT
 
@@ -19,15 +19,13 @@ namespace PrefSDK
             typedef QHash<QUuid, FormatElement*> ElementPool;
 
         public:
-            explicit AbstractTree(QHexEditData *hexeditdata, LogWidget *logwidget, QObject *parent = 0);
+            explicit AbstractTree(QHexEditData *hexeditdata, Logger *logger, QObject *parent = 0);
             FormatElement* elementFromPoolByUUID(const QUuid& uuid);
-            LogWidget* logWidget() const;
             QHexEditData* data() const;
             ElementPool& pool();
 
         protected:
             QHexEditData* _hexeditdata;
-            LogWidget* _logwidget;
             ElementPool _pool;
     };
 }

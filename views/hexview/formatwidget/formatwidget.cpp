@@ -1,12 +1,9 @@
 #include "formatwidget.h"
 #include "ui_formatwidget.h"
 
-FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _startoffset(0), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr)
+FormatWidget::FormatWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::FormatWidget), _worker(nullptr), _formatmodel(nullptr), _hexedit(nullptr), _logwidget(nullptr), _formatview(nullptr)
 {
     ui->setupUi(this);
-
-    connect(&this->_validatorwatcher, SIGNAL(finished()), this, SLOT(onValidationFinished()));
-    connect(&this->_parsewatcher, SIGNAL(finished()), this, SLOT(onParseFinished()));
 }
 
 void FormatWidget::setLogWidget(LogWidget *logwidget)
@@ -33,6 +30,11 @@ void FormatWidget::setData(QHexEdit *hexedit)
     connect(ui->tvFormat, SIGNAL(gotoOffset(qint64)), this->_hexedit, SLOT(setCursorPos(qint64)));
 }
 
+QWidget *FormatWidget::formatView()
+{
+    return this->_formatview;
+}
+
 void FormatWidget::resetData()
 {
     this->_formatmodel = new FormatModel(this->_hexedit->data(), this);
@@ -46,12 +48,18 @@ void FormatWidget::loadFormat()
 
     if(res == FormatsDialog::Accepted)
     {
+        this->_formatview = nullptr;
+        this->_logwidget->clear();
         this->_formatdefinition = fd.selectedFormat();
-        this->_startoffset = fd.offset();
 
-        emit workStarted();
-        QFuture<bool> future = QtConcurrent::run(this->_formatdefinition, &FormatDefinition::callValidate, this->_hexedit->data(), this->_startoffset, false);
-        this->_validatorwatcher.setFuture(future);
+        this->_worker = new FormatWorker(this->_formatdefinition, this->_logwidget, this->_hexedit->data(), fd.offset());
+        connect(this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
+        connect(this->_worker, SIGNAL(started()), this, SIGNAL(parsingStarted()));
+        connect(this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
+        connect(this->_worker, SIGNAL(finished()), this, SIGNAL(parsingCompleted()));
+        connect(this->_worker, SIGNAL(parsingFailed()), this, SIGNAL(parsingFailed()));
+        connect(this->_worker, SIGNAL(parsingCompleted()), this, SLOT(onParseCompleted()));
+        this->_worker->start();
     }
 }
 
@@ -108,37 +116,17 @@ void FormatWidget::importData(FormatElement *formatelement)
     }
 }
 
-void FormatWidget::onValidationFinished()
+void FormatWidget::onParseCompleted()
 {
-    bool validated = this->_validatorwatcher.result();
+    FormatTree* formattree = this->_worker->tree();
+    formattree->setParent(this);
+    this->_formatmodel->setFormatTree(formattree);
 
-    if(!validated)
-    {
-        emit workFinished();
-        return;
-    }
+    for(int i = 0; i < this->_formatmodel->columnCount(); i++)
+        ui->tvFormat->resizeColumnToContents(i);
 
-    emit parseStarted();
-    QFuture<FormatTree*> future = QtConcurrent::run(this->_formatdefinition, &FormatDefinition::callParse, this->_hexedit->data(), this->_logwidget, this->_startoffset);
-    this->_parsewatcher.setFuture(future);
-}
-
-void FormatWidget::onParseFinished()
-{
-    QWidget* formatview = nullptr;
-    FormatTree* formattree = this->_parsewatcher.future().result();
-
-    if(formattree && !formattree->isEmpty())
-    {
-        this->_formatmodel->setFormatTree(formattree);
-
-        for(int i = 0; i < this->_formatmodel->columnCount(); i++)
-            ui->tvFormat->resizeColumnToContents(i);
-
-        if(this->_formatdefinition->hasView())
-            formatview = this->_formatdefinition->callView(this->_hexedit->data(), formattree);
-    }
-
-    emit parseFinished(formattree, formatview);
-    emit workFinished();
+    if(this->_formatdefinition->hasView())
+        this->_formatview = this->_formatdefinition->callView(this->_hexedit->data(), formattree);
+    else
+        this->_formatview = nullptr;
 }

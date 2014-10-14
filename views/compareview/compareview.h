@@ -38,8 +38,6 @@ class CompareView : public AbstractView
         virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
-        virtual void log(const QString&);
-        virtual void logLine(const QString&, LogWidget::LogLevel = LogWidget::Nothing);
 
     private:
         Ui::CompareView *ui;

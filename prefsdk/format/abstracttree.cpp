@@ -2,18 +2,14 @@
 
 namespace PrefSDK
 {
-    AbstractTree::AbstractTree(QHexEditData* hexeditdata, LogWidget* logwidget, QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _logwidget(logwidget)
+    AbstractTree::AbstractTree(QHexEditData* hexeditdata, Logger* logger, QObject *parent): LogObject(parent), _hexeditdata(hexeditdata)
     {
+        this->setLogger(logger);
     }
 
     FormatElement *AbstractTree::elementFromPoolByUUID(const QUuid &uuid)
     {
         return this->_pool[uuid];
-    }
-
-    LogWidget *AbstractTree::logWidget() const
-    {
-        return this->_logwidget;
     }
 
     QHexEditData *AbstractTree::data() const

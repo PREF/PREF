@@ -2,12 +2,12 @@
 
 namespace PrefSDK
 {
-    FormatDefinition::FormatDefinition(QObject *parent): DebugObject(parent)
+    FormatDefinition::FormatDefinition(QObject *parent): LogObject(parent)
     {
 
     }
 
-    FormatDefinition::FormatDefinition(const QString& name, const QString& category, const QString& author, const QString& version, QObject *parent): DebugObject(parent), _name(name), _category(category), _author(author), _version(version)
+    FormatDefinition::FormatDefinition(const QString& name, const QString& category, const QString& author, const QString& version, QObject *parent): LogObject(parent), _name(name), _category(category), _author(author), _version(version)
     {
 
     }
@@ -72,40 +72,35 @@ namespace PrefSDK
         this->_viewfunc = vf;
     }
 
-    bool FormatDefinition::callValidate(QHexEditData *hexeditdata, qint64 baseoffset, bool ignoreerror)
+    bool FormatDefinition::callValidate(QHexEditData *hexeditdata, Logger* logger, qint64 baseoffset, bool ignoreerror)
     {
+        this->setLogger(logger);
+
         if(!this->_validatefunc.isValid())
             return true; /* If 'validate-procedure' is not set, the format doesn't require validation */
 
         lua_State* l = LuaState::instance();
-        this->bind(hexeditdata);
         FormatValidator fv(hexeditdata, baseoffset);
-        fv.moveToThread(QThread::currentThread()); /* Move FormatValidator in concurrent thread for editing */
 
         QtLua::pushObject(l, &fv);
         bool err = this->_validatefunc(1, 0, true);
 
         if(err)
         {
-            if(!ignoreerror)
-                this->error(QString::fromUtf8(lua_tostring(l, -1)));
+            if(logger && !ignoreerror)
+                logger->error(QString::fromUtf8(lua_tostring(l, -1)));
 
             lua_pop(l, 1);
-            this->unbind();
             return false;
         }
 
-        fv.moveToThread(qApp->instance()->thread()); /* Editing Finished: move it back to the main thread */
-        this->unbind();
         return fv.validated();
     }
 
-    FormatTree *FormatDefinition::callParse(QHexEditData *hexeditdata, LogWidget* logwidget, qint64 baseoffset)
+    FormatTree *FormatDefinition::callParse(QHexEditData *hexeditdata, Logger* logger, qint64 baseoffset)
     {
         lua_State* l = LuaState::instance();
-        this->bind(hexeditdata);
-        FormatTree* formattree = new FormatTree(hexeditdata, logwidget, baseoffset);
-        formattree->moveToThread(QThread::currentThread()); /* Move FormatTree in concurrent thread for editing */
+        FormatTree* formattree = new FormatTree(hexeditdata, logger, baseoffset);
 
         QtLua::pushObject(LuaState::instance(), formattree);
         bool err = this->_parsefunc(1, 0, true);
@@ -116,12 +111,9 @@ namespace PrefSDK
             lua_pop(l, 1);
 
             formattree->deleteLater();
-            this->unbind();
             return nullptr;
         }
 
-        formattree->moveToThread(qApp->instance()->thread()); /* Editing Finished: move it back to the main thread */
-        this->unbind();
         return formattree;
     }
 
@@ -132,7 +124,6 @@ namespace PrefSDK
 
         QWidget* w = nullptr;
         lua_State* l = LuaState::instance();
-        this->bind(hexeditdata);
 
         QtLua::pushObject(l, formattree);
         bool err = this->_viewfunc(1, 1);
@@ -151,7 +142,6 @@ namespace PrefSDK
             w = *(reinterpret_cast<QWidget**>(lua_touserdata(l, -1)));
 
         lua_pop(l, 1);
-        this->unbind();
         return w;
     }
 

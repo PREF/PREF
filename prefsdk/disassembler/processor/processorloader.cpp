@@ -2,15 +2,15 @@
 
 namespace PrefSDK
 {
-    ProcessorLoader::ProcessorLoader(const QString &name, const QString &author, const QString &version, FormatDefinition *formatdefinition, ProcessorDefinition *processordefinition, QObject *parent): DebugObject(parent), _processordefinition(processordefinition), _processoremulator(nullptr), _formatdefinition(formatdefinition), _listing(nullptr), _formattree(nullptr), _name(name), _author(author), _version(version)
+    ProcessorLoader::ProcessorLoader(const QString &name, const QString &author, const QString &version, FormatDefinition *formatdefinition, ProcessorDefinition *processordefinition, QObject *parent): LogObject(parent), _processordefinition(processordefinition), _processoremulator(nullptr), _formatdefinition(formatdefinition), _listing(nullptr), _formattree(nullptr), _name(name), _author(author), _version(version)
     {
+        this->_formatdefinition->setParent(this);
+        this->_processordefinition->setParent(this);
         this->_baseaddress = DataValue(processordefinition->addressType());
     }
 
     void ProcessorLoader::disassemble(QHexEditData *hexeditdata)
-    {
-        this->bind(hexeditdata);
-
+    {   
         while(this->_processoremulator->hasMoreInstructions())
             this->disassembleInstruction(hexeditdata);
 
@@ -18,50 +18,42 @@ namespace PrefSDK
         this->_processordefinition->callElaborate(this->_listing, hexeditdata);
         this->_listing->analyzeOperands();
         this->callElaborate();
-        this->unbind();
     }
 
-    bool ProcessorLoader::validate(QHexEditData *hexeditdata)
+    bool ProcessorLoader::validate(QHexEditData *hexeditdata, Logger* logger)
     {
-        this->bind(hexeditdata);
-        bool v = this->_formatdefinition->callValidate(hexeditdata, 0, true);
-        this->unbind();
-        return v;
+        return this->_formatdefinition->callValidate(hexeditdata, logger, 0, true);
     }
 
-    void ProcessorLoader::callMap(DisassemblerListing* listing, QHexEditData* hexeditdata, LogWidget* logwidget)
+    void ProcessorLoader::callMap(DisassemblerListing* listing, QHexEditData* hexeditdata, Logger* logger)
     {
-        bool b = this->validate(hexeditdata);
+        bool b = this->validate(hexeditdata, logger);
 
         if(!b || !this->_mapfunc.isValid())
             return;
 
-        this->bind(hexeditdata);
         this->_baseaddress = this->callBaseAddress();
 
         lua_State* l = this->_mapfunc.state();
-        this->_formattree = this->_formatdefinition->callParse(hexeditdata, logwidget, 0);
+        this->_formattree = this->_formatdefinition->callParse(hexeditdata, logger, 0);
 
         if(this->_formattree->isEmpty())
-        {
-            this->unbind();
             return;
-        }
 
         this->_listing = listing;
+        this->setLogger(logger);
+        this->_processordefinition->setLogger(logger);
         this->_listing->setAddressType(this->_processordefinition->addressType());
-        this->_processoremulator = new ProcessorEmulator(listing, this->_processordefinition->addressType(), logwidget, this);
+        this->_processoremulator = new ProcessorEmulator(listing, this->_processordefinition->addressType(), logger, this);
 
         QtLua::pushObject(l, this->_formattree);
-        bool err = this->_mapfunc(1);
+        bool err = this->_mapfunc(1, 0, true);
 
         if(err)
         {
             throw PrefException(QString("ProcessorLoader::callMap(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
             lua_pop(l, 1);
         }
-
-        this->unbind();
     }
 
     void ProcessorLoader::callElaborate()
@@ -145,7 +137,7 @@ namespace PrefSDK
         {
             lua_Integer skipsize = qMax(static_cast<lua_Integer>(1), qAbs(size));
 
-            this->warning(QString("Unknown Instruction at %1h, skipping %2 bytes").arg(procaddress.first.toString(16), QString::number(skipsize)));
+            this->_logger->warning(QString("Unknown Instruction at %1h, skipping %2 bytes").arg(procaddress.first.toString(16), QString::number(skipsize)));
             this->_processoremulator->pushValue(procaddress.first + skipsize, Reference::Flow);
         }
         else
@@ -174,7 +166,7 @@ namespace PrefSDK
             }
             else
             {
-                this->warning(QString("Unknown opcode %1h at %2h").arg(instruction->opcodeValue().toString(16), instruction->startAddress().toString(16)));
+                this->_logger->warning(QString("Unknown opcode %1h at %2h").arg(instruction->opcodeValue().toString(16), instruction->startAddress().toString(16)));
 
                 instruction->clearOperands();
                 instruction->setFormat(QString());

@@ -1,9 +1,9 @@
 #ifndef PREFSDK_PROCESSORLOADER_H
 #define PREFSDK_PROCESSORLOADER_H
 
+#include "logwidget/logobject.h"
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/libs/qt/qtlua.h"
-#include "prefsdk/debug/debugobject.h"
 #include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/references/referencetable.h"
@@ -13,7 +13,7 @@
 
 namespace PrefSDK
 {
-    class ProcessorLoader: public DebugObject
+    class ProcessorLoader: public LogObject
     {
         Q_OBJECT
 
@@ -46,8 +46,8 @@ namespace PrefSDK
             void setBaseAddress(const PrefSDK::QtLua::LuaFunction& ba);
             void setMap(const PrefSDK::QtLua::LuaFunction& mf);
             void setElaborate(const PrefSDK::QtLua::LuaFunction& ef);
-            bool validate(QHexEditData* hexeditdata);
-            void callMap(DisassemblerListing *listing, QHexEditData* hexeditdata, LogWidget *logwidget);
+            bool validate(QHexEditData* hexeditdata, Logger *logger);
+            void callMap(DisassemblerListing *listing, QHexEditData* hexeditdata, Logger *logger);
             void callElaborate();
 
         public slots:

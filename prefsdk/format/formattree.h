@@ -2,6 +2,7 @@
 #define PREFSDK_FORMATTREE_H
 
 #include <QtCore>
+#include "logwidget/logger.h"
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/libs/preflib/luahexeditdata.h"
 #include "qhexedit/qhexeditdata.h"
@@ -25,7 +26,7 @@ namespace PrefSDK
             typedef QList<quint64> StructureOffsets;
 
         public:
-            explicit FormatTree(QHexEditData* hexeditdata, LogWidget *logwidget, qint64 baseoffset, QObject* parent = 0);
+            explicit FormatTree(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, QObject* parent = 0);
             FormatElement* elementFromPool(qint64 i, FormatElement *parent = nullptr);
             quint64 structureCount();
             bool isEmpty() const;

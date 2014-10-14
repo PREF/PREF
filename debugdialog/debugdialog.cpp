@@ -39,10 +39,6 @@ DebugDialog* DebugDialog::out(QString s)
 {
     emit outHtml(s.append("\n"));
     ui->tabWidget->setCurrentIndex(1);
-
-    if(!this->isVisible())
-        this->exec();
-
     return this;
 }
 

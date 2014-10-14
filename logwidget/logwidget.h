@@ -1,10 +1,9 @@
 #ifndef LOGWIDGET_H
 #define LOGWIDGET_H
 
-#include <QtCore>
-#include <QtGui>
-#include <QtWidgets>
 #include "logwidgethightlighter.h"
+#include <QPlainTextEdit>
+#include <QGuiApplication>
 
 class LogWidget : public QPlainTextEdit
 {
@@ -18,23 +17,16 @@ class LogWidget : public QPlainTextEdit
 
     public slots:
         void write(const QString& text);
-        void writeLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
+        void writeLine(const QString& text);
         void writeNotice(const QString& text);
         void writeWarning(const QString& text);
         void writeError(const QString& text);
 
-    private slots:
-        void doWrite(const QString& text);
-        void doWriteLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
-
-    signals:
-        void writeRequested(QString);
-        void writeLineRequested(QString, LogWidget::LogLevel);
+    private:
+        void writeLine(const QString& text, LogWidget::LogLevel loglevel);
 
     private:
         LogWidgetHightlighter* _highlighter;
 };
-
-Q_DECLARE_METATYPE(LogWidget::LogLevel)
 
 #endif // LOGWIDGET_H

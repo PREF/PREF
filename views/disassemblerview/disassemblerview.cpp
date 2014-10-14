@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _listing(nullptr), _stringsymbols(nullptr), _loader(loader)
+DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _loader(loader)
 {
     ui->setupUi(this);
 
@@ -62,16 +62,6 @@ bool DisassemblerView::canSave() const
 void DisassemblerView::updateStatusBar()
 {
     this->updateInfoText(QString());
-}
-
-void DisassemblerView::log(const QString &text)
-{
-    ui->logWidget->write(text);
-}
-
-void DisassemblerView::logLine(const QString &text, LogWidget::LogLevel loglevel)
-{
-    ui->logWidget->writeLine(text, loglevel);
 }
 
 void DisassemblerView::createListingMenu()
@@ -143,11 +133,9 @@ void DisassemblerView::disassemble()
     if(!this->_hexeditdata)
         return;
 
-    this->_listing = new DisassemblerListing(this->_hexeditdata, this);
-    this->_loader->callMap(this->_listing, this->_hexeditdata, ui->logWidget);
-    this->_loader->disassemble(this->_hexeditdata);
-
-    this->displayDisassembly();
+    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_loader, ui->logWidget);
+    connect(this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
+    this->_worker->start();
 }
 
 void DisassemblerView::on_disassemblerWidget_customContextMenuRequested(const QPoint &pos)
@@ -217,6 +205,9 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
 
 void DisassemblerView::displayDisassembly()
 {
+    this->_listing = this->_worker->listing();
+    this->_listing->setParent(this);
+
     this->_toolbar->setEnabled(true);
     ui->gotoWidget->setListing(this->_listing);
     ui->disassemblerWidget->setListing(this->_listing);
@@ -321,6 +312,9 @@ void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
 
 void DisassemblerView::on_tabOverview_currentChanged(int index)
 {
+    if(this->_worker->isRunning())
+        return;
+
     switch(index)
     {
         case 0:

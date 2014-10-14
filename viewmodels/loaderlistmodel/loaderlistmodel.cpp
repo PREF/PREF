@@ -20,7 +20,7 @@ void LoaderListModel::validateLoaders(QHexEditData *hexeditdata)
     {
         ProcessorLoader* pl = loaderlist->loader(i);
 
-        if(pl->validate(hexeditdata))
+        if(pl->validate(hexeditdata, nullptr))
             this->_loaders.append(pl);
     }
 }

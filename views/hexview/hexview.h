@@ -30,11 +30,10 @@ class HexView : public AbstractView
         virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
-        virtual void log(const QString& text);
-        virtual void logLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
 
     private:
         void createToolBar();
+        void hideFormatView();
         void inspectData(QHexEditData* hexeditdata);
         void selectPage(QWidget* page);
 
@@ -45,8 +44,9 @@ class HexView : public AbstractView
         void onWorkFinished();
         void onMapViewTriggered();
         void onHexEditCustomContextMenuRequested(const QPoint& pos);
-        void onFormatParseStarted();
-        void onFormatParseFinished(FormatTree* formattree, QWidget* formatview);
+        void onFormatParsingStarted();
+        void onFormatParsingFinished();
+        void onFormatParsingFailed();
 
     private:
         Ui::HexView *ui;

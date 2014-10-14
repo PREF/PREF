@@ -1,8 +1,7 @@
 #ifndef LOGWIDGETHIGHTLIGHTER_H
 #define LOGWIDGETHIGHTLIGHTER_H
 
-#include <QtCore>
-#include <QtGui>
+#include <QSyntaxHighlighter>
 
 class LogWidgetHightlighter : public QSyntaxHighlighter
 {

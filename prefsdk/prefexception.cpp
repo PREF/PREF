@@ -7,7 +7,8 @@ namespace PrefSDK
         if(!DebugDialog::instance())
             DebugDialog::createInstance(LuaState::instance());
 
-        DebugDialog::instance()->out(msg)->exec();
+        QMetaObject::invokeMethod(DebugDialog::instance(), "out", Qt::QueuedConnection, Q_ARG(QString, msg));
+        QMetaObject::invokeMethod(DebugDialog::instance(), "exec", Qt::BlockingQueuedConnection);
     }
 
     const char *PrefException::what() const throw()

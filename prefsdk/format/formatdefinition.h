@@ -1,15 +1,15 @@
 #ifndef PREFSDK_FORMATDEFINITION_H
 #define PREFSDK_FORMATDEFINITION_H
 
+#include "logwidget/logobject.h"
 #include "prefsdk/libs/qt/qtlua.h"
-#include "prefsdk/debug/debugobject.h"
 #include "prefsdk/format/formattree.h"
 #include "formatvalidator.h"
 #include "prefsdk/luastate.h"
 
 namespace PrefSDK
 {
-    class FormatDefinition : public DebugObject
+    class FormatDefinition : public LogObject
     {
         Q_OBJECT
 
@@ -43,8 +43,8 @@ namespace PrefSDK
             void setView(const PrefSDK::QtLua::LuaFunction& vf);
 
         public:
-            bool callValidate(QHexEditData* hexeditdata, qint64 baseoffset, bool ignoreerror = false);
-            FormatTree* callParse(QHexEditData* hexeditdata, LogWidget *logwidget, qint64 baseoffset);
+            bool callValidate(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, bool ignoreerror = false);
+            FormatTree* callParse(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset);
             QWidget* callView(QHexEditData* hexeditdata, FormatTree* formattree);
 
         private:

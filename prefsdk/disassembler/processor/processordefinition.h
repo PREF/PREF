@@ -1,17 +1,17 @@
 #ifndef PREFSDK_PROCESSORDEFINITION_H
 #define PREFSDK_PROCESSORDEFINITION_H
 
-#include "prefsdk/debug/debugobject.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/blocks/instruction.h"
 #include "prefsdk/disassembler/instruction/instructionset.h"
 #include "prefsdk/disassembler/register/registerset.h"
 #include "prefsdk/disassembler/processor/processoremulator.h"
+#include "logwidget/logobject.h"
 #include <QtCore>
 
 namespace PrefSDK
 {
-    class ProcessorDefinition : public DebugObject
+    class ProcessorDefinition : public LogObject
     {
         Q_OBJECT
 

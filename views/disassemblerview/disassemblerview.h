@@ -15,6 +15,7 @@
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/loader/loaderlist.h"
 #include "prefsdk/luastate.h"
+#include "disassemblerworker.h"
 
 using namespace PrefSDK;
 
@@ -35,8 +36,6 @@ class DisassemblerView : public AbstractView
         virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
-        virtual void log(const QString& text);
-        virtual void logLine(const QString& text, LogWidget::LogLevel loglevel = LogWidget::Nothing);
 
     private:
         void createListingMenu();
@@ -66,6 +65,7 @@ class DisassemblerView : public AbstractView
 
     private:
         Ui::DisassemblerView *ui;
+        DisassemblerWorker* _worker;
         DisassemblerListing* _listing;
         StringSymbolModel* _stringsymbols;
         VariablesModel* _variablesmodel;

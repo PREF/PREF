@@ -4,7 +4,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include <QtConcurrent/QtConcurrent>
 #include "views/hexview/bytecolorsdialog/bytecolorsdialog.h"
 #include "views/hexview/workertab.h"
 #include "qhexedit/qhexeditdata.h"

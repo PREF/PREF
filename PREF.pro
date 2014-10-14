@@ -6,7 +6,7 @@
 
 # Portable Reverse Engineering Framework
 
-QT += core gui opengl quick qml concurrent
+QT += core gui opengl quick qml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -133,7 +133,6 @@ SOURCES += main.cpp\
     prefsdk/libs/qt/qtlua.cpp \
     prefsdk/libs/preflib/preflib.cpp \
     prefsdk/luastate.cpp \
-    prefsdk/debug/debugobject.cpp \
     prefsdk/format/formatdefinition.cpp \
     prefsdk/format/formatvalidator.cpp \
     prefsdk/loadedviews.cpp \
@@ -162,7 +161,11 @@ SOURCES += main.cpp\
     views/disassemblerview/loaderdialog/loaderdialog.cpp \
     prefsdk/disassembler/functiontype.cpp \
     prefsdk/disassembler/symbol/constanttable.cpp \
-    prefsdk/disassembler/symbol/constant.cpp
+    prefsdk/disassembler/symbol/constant.cpp \
+    views/disassemblerview/disassemblerworker.cpp \
+    logwidget/logger.cpp \
+    views/hexview/formatwidget/formatworker.cpp \
+    logwidget/logobject.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -285,7 +288,6 @@ HEADERS  += mainwindow.h \
     prefsdk/libs/qt/qtlua.h \
     prefsdk/libs/preflib/preflib.h \
     prefsdk/luastate.h \
-    prefsdk/debug/debugobject.h \
     prefsdk/format/formatdefinition.h \
     prefsdk/format/formatvalidator.h \
     prefsdk/loadedviews.h \
@@ -314,7 +316,11 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/loaderdialog/loaderdialog.h \
     prefsdk/disassembler/functiontype.h \
     prefsdk/disassembler/symbol/constanttable.h \
-    prefsdk/disassembler/symbol/constant.h
+    prefsdk/disassembler/symbol/constant.h \
+    views/disassemblerview/disassemblerworker.h \
+    logwidget/logger.h \
+    views/hexview/formatwidget/formatworker.h \
+    logwidget/logobject.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
