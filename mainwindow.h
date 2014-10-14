@@ -6,7 +6,6 @@
 #include <QtWidgets>
 #include "debugdialog/debugdialog.h"
 #include "prefsdk/sdkmanager.h"
-#include "prefsdk/loadedviews.h"
 #include "views/hexview/hexview.h"
 #include "views/disassemblerview/disassemblerview.h"
 #include "views/disassemblerview/loaderdialog/loaderdialog.h"

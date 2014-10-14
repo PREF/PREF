@@ -135,7 +135,6 @@ SOURCES += main.cpp\
     prefsdk/luastate.cpp \
     prefsdk/format/formatdefinition.cpp \
     prefsdk/format/formatvalidator.cpp \
-    prefsdk/loadedviews.cpp \
     prefsdk/prefexception.cpp \
     prefsdk/libs/preflib/luahexeditdata.cpp \
     prefsdk/libs/oop/oop.cpp \
@@ -290,7 +289,6 @@ HEADERS  += mainwindow.h \
     prefsdk/luastate.h \
     prefsdk/format/formatdefinition.h \
     prefsdk/format/formatvalidator.h \
-    prefsdk/loadedviews.h \
     prefsdk/prefexception.h \
     prefsdk/libs/preflib/luahexeditdata.h \
     prefsdk/libs/oop/oop.h \
