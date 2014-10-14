@@ -22,12 +22,12 @@ class AbstractView : public QWidget
         virtual bool canSave() const = 0;
         virtual void updateStatusBar() = 0;
 
-    private:
-        QLabel* _lblinfo;
-        QString _viewname;
-
     protected:
+        QLabel* _lblinfo;
         QHexEditData* _hexeditdata;
+
+    private:
+        QString _viewname;
 };
 
 #endif // ABSTRACTVIEW_H

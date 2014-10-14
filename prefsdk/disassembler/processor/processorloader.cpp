@@ -9,14 +9,21 @@ namespace PrefSDK
         this->_baseaddress = DataValue(processordefinition->addressType());
     }
 
-    void ProcessorLoader::disassemble(QHexEditData *hexeditdata)
+    void ProcessorLoader::disassemble(QLabel* infolabel, QHexEditData *hexeditdata)
     {   
         while(this->_processoremulator->hasMoreInstructions())
-            this->disassembleInstruction(hexeditdata);
+            this->disassembleInstruction(infolabel, hexeditdata);
 
+        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Calculating Function bounds..."));
         this->_listing->calcFunctionBounds();
+
+        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Instructions..."));
         this->_processordefinition->callElaborate(this->_listing, hexeditdata);
+
+        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Operands..."));
         this->_listing->analyzeOperands();
+
+        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Elaborationg Instructions..."));
         this->callElaborate();
     }
 
@@ -126,12 +133,13 @@ namespace PrefSDK
         return baseaddress;
     }
 
-    void ProcessorLoader::disassembleInstruction(QHexEditData* hexeditdata)
+    void ProcessorLoader::disassembleInstruction(QLabel* infolabel, QHexEditData* hexeditdata)
     {
         ProcessorEmulator::Address procaddress = this->_processoremulator->popValue();
-
         Instruction* instruction = this->_listing->createInstruction(procaddress.first, this->_processordefinition->instructionSet()->opcodeType());
         lua_Integer size = this->_processordefinition->callAnalyze(instruction, this->_baseaddress, hexeditdata);
+
+        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, QString("Disassembling: %1h").arg(procaddress.first.toString(16))));
 
         if(size <= 0)
         {

@@ -2,6 +2,7 @@
 #define DISASSEMBLERWORKER_H
 
 #include <QThread>
+#include <QLabel>
 #include "logwidget/logger.h"
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/disassembler/processor/processorloader.h"
@@ -14,7 +15,7 @@ class DisassemblerWorker : public QThread
     Q_OBJECT
 
     public:
-        explicit DisassemblerWorker(QHexEditData* hexeditdata, ProcessorLoader* loader, LogWidget* logwidget, QObject *parent = 0);
+        explicit DisassemblerWorker(QHexEditData* hexeditdata, ProcessorLoader* loader, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
         DisassemblerListing* listing() const;
 
     protected:
@@ -25,6 +26,7 @@ class DisassemblerWorker : public QThread
         QHexEditData* _hexeditdata;
         ProcessorLoader* _loader;
         LogWidget* _logwidget;
+        QLabel* _infolabel;
 };
 
 #endif // DISASSEMBLERWORKER_H

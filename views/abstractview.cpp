@@ -1,6 +1,6 @@
 #include "abstractview.h"
 
-AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo), _viewname(viewname), _hexeditdata(hexeditdata)
+AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo), _hexeditdata(hexeditdata), _viewname(viewname)
 {
 
 }

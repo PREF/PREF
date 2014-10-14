@@ -10,6 +10,7 @@
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "processordefinition.h"
 #include "processoremulator.h"
+#include <QLabel>
 
 namespace PrefSDK
 {
@@ -28,7 +29,7 @@ namespace PrefSDK
 
         public:
             explicit ProcessorLoader(const QString& name, const QString& author, const QString& version, FormatDefinition* formatdefinition, ProcessorDefinition* processordefinition, QObject *parent = 0);
-            void disassemble(QHexEditData *hexeditdata);
+            void disassemble(QLabel *infolabel, QHexEditData *hexeditdata);
 
         public:
             QString id() const;
@@ -58,7 +59,7 @@ namespace PrefSDK
 
         private:
             DataValue callBaseAddress();
-            void disassembleInstruction(QHexEditData *hexeditdata);
+            void disassembleInstruction(QLabel *infolabel, QHexEditData *hexeditdata);
 
         private:
             PrefSDK::QtLua::LuaFunction _mapfunc;
