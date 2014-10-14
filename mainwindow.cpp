@@ -56,9 +56,56 @@ void MainWindow::closeEvent(QCloseEvent *e)
         e->ignore();
 }
 
+void MainWindow::disassembleFile(const QString &file)
+{
+    QHexEditData* hexeditdata = QHexEditData::fromFile(file);
+    LoaderDialog ld(hexeditdata, this);
+
+    if(!ld.hasLoaders())
+    {
+        QMessageBox m;
+        m.setWindowTitle("No Loaders found...");
+        m.setText("Cannot find a valid loader, do you want do load the file in binary mode?");
+        m.setIcon(QMessageBox::Warning);
+        m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+        m.setDefaultButton(QMessageBox::Yes);
+        int ret = m.exec();
+
+        switch(ret)
+        {
+            case QMessageBox::Yes:
+                this->loadFile(file, hexeditdata);
+                break;
+
+            default:
+                break;
+        }
+
+        return;
+    }
+
+    int res = ld.exec();
+
+    if(res == LoaderDialog::Accepted && ld.selectedLoader())
+    {
+        QString viewname = QFileInfo(file).fileName();
+        DisassemblerView* dv = new DisassemblerView(ld.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+        ui->tabWidget->addTab(dv, viewname);
+        dv->disassemble();
+    }
+}
+
+void MainWindow::loadFile(const QString &file)
+{
+    this->loadFile(file, QHexEditData::fromFile(file));
+}
+
 void MainWindow::checkCommandLine()
 {
-    QStringList args = qApp->arguments();
+    QStringList args = qApp->arguments();    
+
+    if(this->checkDisassembly(args))
+        return;
 
     for(int i = 1; (i < args.length()) && (i < 10); i++)
     {
@@ -67,8 +114,22 @@ void MainWindow::checkCommandLine()
         if(!fi.isFile())
             break;
 
-        this->loadFile(args[i], QHexEditData::fromFile(args[i]));
+        this->loadFile(args[i]);
     }
+}
+
+bool MainWindow::checkDisassembly(const QStringList &args)
+{
+    if((args.count() < 3) || (QString::compare(args[1], "-disassemble", Qt::CaseInsensitive) != 0))
+        return false;
+
+    QFileInfo fi(args[2]);
+
+    if(!fi.isFile())
+        return false;
+
+    this->disassembleFile(args[2]);
+    return true;
 }
 
 bool MainWindow::closeApplication()
@@ -100,13 +161,6 @@ bool MainWindow::closeApplication()
     return true;
 }
 
-void MainWindow::loadFile(QString file, QHexEditData *hexeditdata)
-{
-    QString viewname = QFileInfo(file).fileName();
-    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
-    ui->tabWidget->addTab(hv, viewname);
-}
-
 void MainWindow::setSaveVisible(bool b)
 {
     ui->action_Save->setVisible(b);
@@ -121,9 +175,11 @@ void MainWindow::centerWindowToScreen()
     move(position.topLeft());
 }
 
-void MainWindow::loadFile(QString file)
+void MainWindow::loadFile(const QString &file, QHexEditData *hexeditdata)
 {
-    this->loadFile(file, QHexEditData::fromFile(file));
+    QString viewname = QFileInfo(file).fileName();
+    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+    ui->tabWidget->addTab(hv, viewname);
 }
 
 void MainWindow::on_action_Analyze_triggered()
@@ -264,41 +320,5 @@ void MainWindow::on_actionDisassemble_triggered()
     QString file = QFileDialog::getOpenFileName(this, "Disassemble File...");
 
     if(!file.isEmpty())
-    {
-        QHexEditData* hexeditdata = QHexEditData::fromFile(file);
-        LoaderDialog ld(hexeditdata, this);
-
-        if(!ld.hasLoaders())
-        {
-            QMessageBox m;
-            m.setWindowTitle("No Loaders found...");
-            m.setText("Cannot find a valid loader, do you want do load the file in binary mode?");
-            m.setIcon(QMessageBox::Warning);
-            m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-            m.setDefaultButton(QMessageBox::Yes);
-            int ret = m.exec();
-
-            switch(ret)
-            {
-                case QMessageBox::Yes:
-                    this->loadFile(file, hexeditdata);
-                    break;
-
-                default:
-                    break;
-            }
-
-            return;
-        }
-
-        int res = ld.exec();
-
-        if(res == LoaderDialog::Accepted && ld.selectedLoader())
-        {
-            QString viewname = QFileInfo(file).fileName();
-            DisassemblerView* dv = new DisassemblerView(ld.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
-            ui->tabWidget->addTab(dv, viewname);
-            dv->disassemble();
-        }
-    }
+        this->disassembleFile(file);
 }

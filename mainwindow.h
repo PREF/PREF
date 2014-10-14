@@ -36,15 +36,17 @@ class MainWindow : public QMainWindow
         virtual void closeEvent(QCloseEvent* e);
 
     private:
-        void loadFile(QString file, QHexEditData *hexeditdata);
+        void loadFile(const QString& file, QHexEditData* hexeditdata);
         void checkCommandLine();
+        bool checkDisassembly(const QStringList& args);
         bool closeApplication();
         void setSaveVisible(bool b);
         void centerWindowToScreen();
         void adjustSplitterPosition();
 
     private slots:
-        void loadFile(QString file);
+        void disassembleFile(const QString& file);
+        void loadFile(const QString& file);
         void on_action_Analyze_triggered();
         void on_actionDisassemble_triggered();
         void on_actionCompare_triggered();
