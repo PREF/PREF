@@ -52,7 +52,17 @@ void FormatWidget::loadFormat()
         this->_logwidget->clear();
         this->_formatdefinition = fd.selectedFormat();
 
-        this->_worker = new FormatWorker(this->_formatdefinition, this->_logwidget, this->_hexedit->data(), fd.offset());
+        Logger* logger = new Logger(this->_logwidget);
+        bool validated = this->_formatdefinition->callValidate(this->_hexedit->data(), logger, fd.offset());
+
+        if(!validated)
+        {
+            emit parsingFailed();
+            logger->deleteLater();
+            return;
+        }
+
+        this->_worker = new FormatWorker(this->_formatdefinition, logger, this->_hexedit->data(), fd.offset(), this);
         connect(this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
         connect(this->_worker, SIGNAL(started()), this, SIGNAL(parsingStarted()));
         connect(this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
@@ -126,7 +136,7 @@ void FormatWidget::onParseCompleted()
         ui->tvFormat->resizeColumnToContents(i);
 
     if(this->_formatdefinition->hasView())
-        this->_formatview = this->_formatdefinition->callView(this->_hexedit->data(), formattree);
+        this->_formatview = this->_formatdefinition->callView(formattree);
     else
         this->_formatview = nullptr;
 }

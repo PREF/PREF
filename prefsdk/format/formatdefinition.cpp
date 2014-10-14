@@ -83,7 +83,7 @@ namespace PrefSDK
         FormatValidator fv(hexeditdata, baseoffset);
 
         QtLua::pushObject(l, &fv);
-        bool err = this->_validatefunc(1, 0, true);
+        bool err = this->_validatefunc(1);
 
         if(err)
         {
@@ -117,7 +117,7 @@ namespace PrefSDK
         return formattree;
     }
 
-    QWidget *FormatDefinition::callView(QHexEditData* hexeditdata, FormatTree *formattree)
+    QWidget *FormatDefinition::callView(FormatTree *formattree)
     {
         if(!this->_viewfunc.isValid())
             return nullptr;

@@ -45,7 +45,7 @@ namespace PrefSDK
         public:
             bool callValidate(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, bool ignoreerror = false);
             FormatTree* callParse(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset);
-            QWidget* callView(QHexEditData* hexeditdata, FormatTree* formattree);
+            QWidget* callView(FormatTree* formattree);
 
         private:
             PrefSDK::QtLua::LuaFunction _validatefunc;

@@ -68,10 +68,14 @@ namespace PrefSDK
         {
             err = lua_resume(l, nargs) != 0;
 
+            if(err)
+            {
+                lua_xmove(l, this->_state, 1); /* Copy Error  */
+                lua_pop(l, nargs + nresults);  /* Clear Stack */
+            }
+
             if(nresults)
                 lua_xmove(l, this->_state, nresults); /* Copy Results */
-            else if(err)
-                lua_xmove(l, this->_state, 1); /* Copy Error */
 
             lua_remove(this->_state, 1); /* Pop thread from stack */
         }

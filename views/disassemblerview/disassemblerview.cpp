@@ -133,7 +133,7 @@ void DisassemblerView::disassemble()
     if(!this->_hexeditdata)
         return;
 
-    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_loader, ui->logWidget);
+    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_loader, ui->logWidget, this);
     connect(this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
     this->_worker->start();
 }

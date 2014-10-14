@@ -15,7 +15,7 @@ class DisassemblerWorker : public QThread
 
     public:
         explicit DisassemblerWorker(QHexEditData* hexeditdata, ProcessorLoader* loader, LogWidget* logwidget, QObject *parent = 0);
-        DisassemblerListing* listing() const    ;
+        DisassemblerListing* listing() const;
 
     protected:
         virtual void run();

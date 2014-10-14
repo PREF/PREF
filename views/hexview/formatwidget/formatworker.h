@@ -14,7 +14,7 @@ class FormatWorker : public QThread
     Q_OBJECT
 
     public:
-        explicit FormatWorker(FormatDefinition* formatdefinition, LogWidget *logwidget, QHexEditData* hexeditdata, qint64 startoffset, QObject *parent = 0);
+        explicit FormatWorker(FormatDefinition* formatdefinition, Logger *logger, QHexEditData* hexeditdata, qint64 startoffset, QObject *parent = 0);
         FormatTree* tree() const;
 
     protected:
@@ -25,7 +25,7 @@ class FormatWorker : public QThread
         void parsingCompleted();
 
     private:
-        LogWidget* _logwidget;
+        Logger* _logger;
         FormatTree* _formattree;
         FormatDefinition* _formatdefinition;
         QHexEditData* _hexeditdata;
