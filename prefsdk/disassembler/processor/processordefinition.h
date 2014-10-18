@@ -28,9 +28,9 @@ namespace PrefSDK
             void setAnalyze(const PrefSDK::QtLua::LuaFunction& af);
             void setEmulate(const PrefSDK::QtLua::LuaFunction& ef);
             void setElaborate(const PrefSDK::QtLua::LuaFunction& ef);
-            lua_Integer callAnalyze(Instruction* instruction, const DataValue &baseaddress, QHexEditData* hexeditdata);
-            void callEmulate(ProcessorEmulator* emulator, Instruction* instruction, QHexEditData* hexeditdata);
-            void callElaborate(DisassemblerListing* listing, QHexEditData *hexeditdata);
+            lua_Integer callAnalyze(Instruction* instruction, const DataValue &baseaddress);
+            void callEmulate(ProcessorEmulator* emulator, Instruction* instruction);
+            void callElaborate(DisassemblerListing* listing);
 
         public:
             const InstructionSet* instructionSet() const;

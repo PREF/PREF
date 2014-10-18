@@ -9,16 +9,16 @@ namespace PrefSDK
         this->_baseaddress = DataValue(processordefinition->addressType());
     }
 
-    void ProcessorLoader::disassemble(QLabel* infolabel, QHexEditData *hexeditdata)
+    void ProcessorLoader::disassemble(QLabel* infolabel)
     {   
         while(this->_processoremulator->hasMoreInstructions())
-            this->disassembleInstruction(infolabel, hexeditdata);
+            this->disassembleInstruction(infolabel);
 
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Calculating Function bounds..."));
         this->_listing->calcFunctionBounds();
 
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Instructions..."));
-        this->_processordefinition->callElaborate(this->_listing, hexeditdata);
+        this->_processordefinition->callElaborate(this->_listing);
 
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Operands..."));
         this->_listing->analyzeOperands();
@@ -133,11 +133,11 @@ namespace PrefSDK
         return baseaddress;
     }
 
-    void ProcessorLoader::disassembleInstruction(QLabel* infolabel, QHexEditData* hexeditdata)
+    void ProcessorLoader::disassembleInstruction(QLabel* infolabel)
     {
         ProcessorEmulator::Address procaddress = this->_processoremulator->popValue();
         Instruction* instruction = this->_listing->createInstruction(procaddress.first, this->_processordefinition->instructionSet()->opcodeType());
-        lua_Integer size = this->_processordefinition->callAnalyze(instruction, this->_baseaddress, hexeditdata);
+        lua_Integer size = this->_processordefinition->callAnalyze(instruction, this->_baseaddress);
 
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, QString("Disassembling: %1h").arg(procaddress.first.toString(16))));
 
@@ -170,7 +170,7 @@ namespace PrefSDK
                     symboltable->set(Symbol::Jump, procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
                 }
 
-                this->_processordefinition->callEmulate(this->_processoremulator, instruction, hexeditdata);
+                this->_processordefinition->callEmulate(this->_processoremulator, instruction);
             }
             else
             {

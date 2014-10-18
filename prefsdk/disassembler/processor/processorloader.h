@@ -29,7 +29,7 @@ namespace PrefSDK
 
         public:
             explicit ProcessorLoader(const QString& name, const QString& author, const QString& version, FormatDefinition* formatdefinition, ProcessorDefinition* processordefinition, QObject *parent = 0);
-            void disassemble(QLabel *infolabel, QHexEditData *hexeditdata);
+            void disassemble(QLabel *infolabel);
 
         public:
             QString id() const;
@@ -59,7 +59,7 @@ namespace PrefSDK
 
         private:
             DataValue callBaseAddress();
-            void disassembleInstruction(QLabel *infolabel, QHexEditData *hexeditdata);
+            void disassembleInstruction(QLabel *infolabel);
 
         private:
             PrefSDK::QtLua::LuaFunction _mapfunc;

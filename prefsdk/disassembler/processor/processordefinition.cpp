@@ -38,7 +38,7 @@ namespace PrefSDK
         this->_elaboratefunc = ef;
     }
 
-    lua_Integer ProcessorDefinition::callAnalyze(Instruction *instruction, const DataValue& baseaddress, QHexEditData *hexeditdata)
+    lua_Integer ProcessorDefinition::callAnalyze(Instruction *instruction, const DataValue& baseaddress)
     {
         if(!this->_analyzefunc.isValid())
             return 0;
@@ -60,7 +60,7 @@ namespace PrefSDK
         return size;
     }
 
-    void ProcessorDefinition::callEmulate(ProcessorEmulator* emulator, Instruction *instruction, QHexEditData *hexeditdata)
+    void ProcessorDefinition::callEmulate(ProcessorEmulator* emulator, Instruction *instruction)
     {
         if(!this->_emulatefunc.isValid())
             return;
@@ -77,7 +77,7 @@ namespace PrefSDK
         }
     }
 
-    void ProcessorDefinition::callElaborate(DisassemblerListing *listing, QHexEditData *hexeditdata)
+    void ProcessorDefinition::callElaborate(DisassemblerListing *listing)
     {
         if(!this->_elaboratefunc.isValid())
             return;

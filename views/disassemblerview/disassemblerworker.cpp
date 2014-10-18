@@ -16,7 +16,7 @@ void DisassemblerWorker::run()
 
     this->_listing = new DisassemblerListing(this->_hexeditdata);
     this->_loader->callMap(this->_listing, this->_listing->data(), logger);
-    this->_loader->disassemble(this->_infolabel, this->_listing->data());
+    this->_loader->disassemble(this->_infolabel);
 
     this->_listing->moveToThread(qApp->instance()->thread());
     this->_loader->moveToThread(qApp->instance()->thread());
