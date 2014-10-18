@@ -33,6 +33,8 @@ class CompareView : public AbstractView
 
     private:
         void createToolbar(QHexEdit *hexedit, QWidget* tbcontainer, ActionWidget *actionwidget);
+        void highlightDiffBytes(qint64& offset);
+        void highlightSameBytes(qint64& offset);
 
     public: /* Overriden Methods */
         virtual QHexEditData* data();
@@ -41,13 +43,16 @@ class CompareView : public AbstractView
 
     private:
         Ui::CompareView *ui;
-        CompareWorker _worker;
+        CompareWorker* _worker;
         CompareWorker::OffsetList _offsetlist;
         CompareWorker::DifferenceMap _differencemap;
         CompareModel* _comparemodel;
         QHexEditData* _lefthexeditdata;
         QHexEditData* _righthexeditdata;
+        QHexEditDataReader* _leftreader;
+        QHexEditDataReader* _rightreader;
         QColor _diffcolor;
+        QColor _samecolor;
 };
 
 #endif // COMPAREVIEW_H

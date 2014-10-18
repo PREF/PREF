@@ -1,15 +1,8 @@
 #include "comparemodel.h"
 
-CompareModel::CompareModel(QObject *parent): QAbstractItemModel(parent)
+CompareModel::CompareModel(const CompareModel::OffsetList &offsetlist, const CompareModel::DifferenceMap &differences, QObject *parent): QAbstractItemModel(parent), _offsetlist(offsetlist), _differencemap(differences)
 {
-}
 
-void CompareModel::setData(const CompareModel::OffsetList &offsetlist, const CompareModel::DifferenceMap &differences)
-{
-    this->beginInsertRows(QModelIndex(), offsetlist.length(), offsetlist.length());
-    this->_offsetlist = offsetlist;
-    this->_differencemap = differences;
-    this->endInsertRows();
 }
 
 int CompareModel::columnCount(const QModelIndex &) const

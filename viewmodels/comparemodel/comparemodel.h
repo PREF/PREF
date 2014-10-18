@@ -12,8 +12,7 @@ class CompareModel : public QAbstractItemModel
         typedef QHash<qint64, qint64> DifferenceMap;
 
     public:
-        explicit CompareModel(QObject *parent = 0);
-        void setData(const CompareModel::OffsetList& offsetlist, const CompareModel::DifferenceMap& differences);
+        explicit CompareModel(const CompareModel::OffsetList& offsetlist, const CompareModel::DifferenceMap& differences, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -25,8 +24,8 @@ class CompareModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        OffsetList _offsetlist;
-        DifferenceMap _differencemap;
+        const OffsetList& _offsetlist;
+        const DifferenceMap& _differencemap;
 };
 
 #endif // COMPAREMODEL_H

@@ -13,8 +13,7 @@ class CompareWorker : public QThread
         typedef QHash<qint64, qint64> DifferenceMap;
 
     public:
-        explicit CompareWorker(QObject *parent = 0);
-        void setData(QHexEditData* lefthexeditdata, QHexEditData* righthexeditdata);
+        explicit CompareWorker(QHexEdit* lefthexedit, QHexEdit* righthexedit, QObject *parent = 0);
         const CompareWorker::OffsetList& offsetList() const;
         const CompareWorker::DifferenceMap& differences() const;
 
@@ -22,8 +21,8 @@ class CompareWorker : public QThread
         virtual void run();
 
     private:
-        QHexEditData* _lefthexeditdata;
-        QHexEditData* _righthexeditdata;
+        QHexEdit* _lefthexedit;
+        QHexEdit* _righthexedit;
         OffsetList _offsetlist;
         DifferenceMap _differencemap;
 };
