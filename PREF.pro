@@ -164,7 +164,8 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerworker.cpp \
     logwidget/logger.cpp \
     views/hexview/formatwidget/formatworker.cpp \
-    logwidget/logobject.cpp
+    logwidget/logobject.cpp \
+    qhexedit/sparserangemap.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
