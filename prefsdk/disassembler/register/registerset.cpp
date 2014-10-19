@@ -6,30 +6,33 @@ namespace PrefSDK
     {
     }
 
-    QString RegisterSet::name(const DataValue &id) const
+    QString RegisterSet::name(lua_Integer id) const
     {
-        return this->_names[id];
+        return this->_idmap[id]->name();
+    }
+
+    Register *RegisterSet::registerById(lua_Integer id)
+    {
+        return this->_idmap[id];
     }
 
     int RegisterSet::metaIndex(lua_State *l, lua_Integer key)
     {
-        DataValue dv = DataValue::create(key, this->_registertype);
-
-        if(this->_names.contains(dv))
+        if(this->_idmap.contains(key))
         {
-            lua_pushstring(l, this->_names[dv].toUtf8().constData());
+            QtLua::pushObject(l, this->_idmap[key]);
             return 1;
         }
 
-        throw PrefException(QString("RegisterSet::metaIndex(): Invalid Register Id: %1h").arg(dv.toString(16)));
+        throw PrefException(QString("RegisterSet::metaIndex(): Invalid Register Id: %1h").arg(QString::number(key, 16).toUpper()));
         return 0;
     }
 
     int RegisterSet::metaIndex(lua_State *l, QString key)
     {
-        if(this->_ids.contains(key))
+        if(this->_namemap.contains(key))
         {
-            lua_pushinteger(l, this->_ids[key].compatibleValue<lua_Integer>());
+            QtLua::pushObject(l, this->_namemap[key]);
             return 1;
         }
 
@@ -47,11 +50,11 @@ namespace PrefSDK
             return false;
         }
 
-        DataValue dv = DataValue::create(key, this->_registertype);
+        QString registername = QString::fromUtf8(lua_tostring(l, 3));
+        Register* reg = new Register(key, registername, this->_registertype, this);
 
-        QString regname = QString::fromUtf8(lua_tostring(l, 3));
-        this->_ids[regname] = dv;
-        this->_names[dv] = regname;
+        this->_namemap[registername] = reg;
+        this->_idmap[key] = reg;
         return true;
     }
 }

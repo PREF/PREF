@@ -5,6 +5,7 @@
 #include "prefsdk/type/datavalue.h"
 #include "prefsdk/prefexception.h"
 #include "prefsdk/libs/qt/qtlua.h"
+#include "register.h"
 #include <QtCore>
 
 namespace PrefSDK
@@ -15,7 +16,8 @@ namespace PrefSDK
 
         public:
             explicit RegisterSet(DataType::Type registertype, QObject *parent = 0);
-            QString name(const DataValue& id) const;
+            QString name(lua_Integer id) const;
+            Register* registerById(lua_Integer id);
 
         protected:
             Q_INVOKABLE int metaIndex(lua_State* l, lua_Integer key);
@@ -23,8 +25,8 @@ namespace PrefSDK
             Q_INVOKABLE bool metaNewIndex(lua_State* l, lua_Integer key);
 
         private:
-            QHash<DataValue, QString> _names;
-            QHash<QString, DataValue> _ids;
+            QHash<lua_Integer, Register*> _idmap;
+            QHash<QString, Register*> _namemap;
             DataType::Type _registertype;
     };
 }

@@ -159,7 +159,7 @@ namespace PrefSDK
                     Operand* operand = instruction->operand(i);
 
                     if(operand->type() == Operand::Register)
-                        operand->setRegisterName(registerset->name(operand->operandValue()));
+                        operand->setRegisterName(registerset->name(operand->value()));
                 }
 
                 if(Reference::isCall(procaddress.second))

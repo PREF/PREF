@@ -30,6 +30,8 @@ namespace PrefSDK
         qRegisterMetaType<PrefSDK::Segment*>();
         qRegisterMetaType<PrefSDK::ReferenceSet*>();
         qRegisterMetaType<PrefSDK::Operand*>();
+        qRegisterMetaType<PrefSDK::RegisterSet*>();
+        qRegisterMetaType<PrefSDK::Register*>();
 
         /* QML Types */
         qmlRegisterType<PrefSDK::DataType>("Pref", 1, 0, "DataType");

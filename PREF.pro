@@ -165,7 +165,8 @@ SOURCES += main.cpp\
     logwidget/logger.cpp \
     views/hexview/formatwidget/formatworker.cpp \
     logwidget/logobject.cpp \
-    qhexedit/sparserangemap.cpp
+    qhexedit/sparserangemap.cpp \
+    prefsdk/disassembler/register/register.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -319,7 +320,8 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/disassemblerworker.h \
     logwidget/logger.h \
     views/hexview/formatwidget/formatworker.h \
-    logwidget/logobject.h
+    logwidget/logobject.h \
+    prefsdk/disassembler/register/register.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
