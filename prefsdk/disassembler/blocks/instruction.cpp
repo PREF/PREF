@@ -29,6 +29,11 @@ namespace PrefSDK
         this->_operands.clear();
     }
 
+    void Instruction::resetFormat()
+    {
+        this->_format = QString();
+    }
+
     void Instruction::checkDescriptor(Operand::Descriptor operanddescriptor)
     {
         switch(operanddescriptor)
@@ -236,7 +241,7 @@ namespace PrefSDK
     {
         if((idx < 0) || idx >= this->_operands.count())
         {
-            throw PrefException(QString("Trying to get Operand %1 from Instruction at %2h").arg(QString::number(idx), this->_startaddress.toString(16)));
+            throw PrefException(QString("Trying to get Operand %1 from Instruction at %2h (Mnemonic: '%3')").arg(QString::number(idx), this->_startaddress.toString(16), this->_mnemonic));
             return nullptr;
         }
 

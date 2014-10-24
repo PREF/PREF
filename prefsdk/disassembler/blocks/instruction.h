@@ -97,6 +97,7 @@ namespace PrefSDK
             void cloneOperand(QObject* op);
             void removeOperand(lua_Integer idx);
             void clearOperands();
+            void resetFormat();
 
         private:
             void checkDescriptor(Operand::Descriptor operanddescriptor);
