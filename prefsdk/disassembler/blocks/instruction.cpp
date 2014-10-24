@@ -234,6 +234,12 @@ namespace PrefSDK
 
     PrefSDK::Operand *Instruction::operand(lua_Integer idx) const
     {
+        if((idx < 0) || idx >= this->_operands.count())
+        {
+            throw PrefException(QString("Trying to get Operand %1 from Instruction at %2h").arg(QString::number(idx), this->_startaddress.toString(16)));
+            return nullptr;
+        }
+
         return this->_operands[idx];
     }
 
