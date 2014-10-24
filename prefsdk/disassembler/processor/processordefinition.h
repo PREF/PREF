@@ -15,6 +15,8 @@ namespace PrefSDK
     {
         Q_OBJECT
 
+        Q_PROPERTY(PrefSDK::InstructionSet* instructionset READ instructionSet)
+        Q_PROPERTY(PrefSDK::RegisterSet* registerset READ registerSet)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction analyze READ analyze WRITE setAnalyze)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction emulate READ emulate WRITE setEmulate)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction elaborate READ elaborate WRITE setElaborate)
@@ -33,8 +35,8 @@ namespace PrefSDK
             void callElaborate(DisassemblerListing* listing);
 
         public:
-            InstructionSet *instructionSet() const;
-            RegisterSet* registerSet() const;
+            PrefSDK::InstructionSet *instructionSet() const;
+            PrefSDK::RegisterSet* registerSet() const;
             bool decode(Instruction* instruction);
 
         private:

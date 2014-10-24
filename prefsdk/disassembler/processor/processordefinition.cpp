@@ -98,12 +98,12 @@ namespace PrefSDK
         return this->_addresstype;
     }
 
-    InstructionSet *ProcessorDefinition::instructionSet() const
+    PrefSDK::InstructionSet *ProcessorDefinition::instructionSet() const
     {
         return this->_instructionset;
     }
 
-    RegisterSet *ProcessorDefinition::registerSet() const
+    PrefSDK::RegisterSet *ProcessorDefinition::registerSet() const
     {
         return this->_registerset;
     }
