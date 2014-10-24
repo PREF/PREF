@@ -33,8 +33,8 @@ namespace PrefSDK
             void callElaborate(DisassemblerListing* listing);
 
         public:
-            const InstructionSet* instructionSet() const;
-            const RegisterSet* registerSet() const;
+            InstructionSet *instructionSet() const;
+            RegisterSet* registerSet() const;
             bool decode(Instruction* instruction);
 
         private:
