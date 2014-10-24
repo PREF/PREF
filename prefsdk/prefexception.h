@@ -2,6 +2,8 @@
 #define PREFSDK_PREFEXCEPTION_H
 
 #include <QString>
+#include <QThread>
+#include <QGuiApplication>
 #include <exception>
 #include "debugdialog/debugdialog.h"
 #include "prefsdk/luastate.h"

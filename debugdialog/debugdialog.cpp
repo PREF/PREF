@@ -18,8 +18,11 @@ DebugDialog::DebugDialog(lua_State* l, QWidget *parent): QDialog(parent), ui(new
 
 void DebugDialog::createInstance(lua_State *l)
 {
-    if(!DebugDialog::_instance)
-        DebugDialog::_instance = new DebugDialog(l);
+    if(DebugDialog::_instance)
+        return;
+
+    DebugDialog::_instance = new DebugDialog(l);
+    DebugDialog::_instance->moveToThread(qApp->thread());
 }
 
 DebugDialog* DebugDialog::instance()
