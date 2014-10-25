@@ -33,6 +33,8 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
 
     this->createListingMenu();
     this->createFunctionsMenu();
+    this->createVariablesMenu();
+    this->createStringsMenu();
 
     ui->disassemblerWidget->setFocus();
 
@@ -84,12 +86,44 @@ void DisassemblerView::createListingMenu()
 
 void DisassemblerView::createFunctionsMenu()
 {
-    this->_functionsmenu = new QMenu();
+    this->_functionsmenu = new QMenu(this);
     QAction* actjump = this->_functionsmenu->addAction(QIcon(":/action_icons/res/goto.png"), "Jump To Address");
     QAction* actxrefs = this->_functionsmenu->addAction(QIcon(":/misc_icons/res/crossreference.png"), "Cross References");
 
     connect(actjump, SIGNAL(triggered()), this, SLOT(gotoFunction()));
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
+}
+
+void DisassemblerView::createVariablesMenu()
+{
+    this->_variablesmenu = new QMenu(this);
+    QAction* copyvariable = this->_variablesmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy");
+    QMenu* copymenu = this->_variablesmenu->addMenu(QIcon(":/action_icons/res/copy.png"), "Copy Column...");
+    QAction* copyaddress = copymenu->addAction("Address");
+    QAction* copyname = copymenu->addAction("Name");
+    this->_variablesmenu->addSeparator();
+    QAction* exportcsv = this->_variablesmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
+
+    connect(copyvariable, SIGNAL(triggered()), this, SLOT(copyVariable()));
+    connect(copyaddress, SIGNAL(triggered()), this, SLOT(copyVariableAddress()));
+    connect(copyname, SIGNAL(triggered()), this, SLOT(copyVariableName()));
+    connect(exportcsv, SIGNAL(triggered()), this, SLOT(exportVariables()));
+}
+
+void DisassemblerView::createStringsMenu()
+{
+    this->_stringsmenu = new QMenu(this);
+    QAction* copystring = this->_stringsmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy");
+    QMenu* copymenu = this->_stringsmenu->addMenu(QIcon(":/action_icons/res/copy.png"), "Copy Column...");
+    QAction* copyaddress = copymenu->addAction("Address");
+    QAction* copystringval = copymenu->addAction("String");
+    this->_stringsmenu->addSeparator();
+    QAction* exportcsv = this->_stringsmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
+
+    connect(copystring, SIGNAL(triggered()), this, SLOT(copyString()));
+    connect(copyaddress, SIGNAL(triggered()), this, SLOT(copyStringAddress()));
+    connect(copystringval, SIGNAL(triggered()), this, SLOT(copyStringValue()));
+    connect(exportcsv, SIGNAL(triggered()), this, SLOT(exportStrings()));
 }
 
 void DisassemblerView::showCrossReference(Block *b)
@@ -278,6 +312,108 @@ void DisassemblerView::copyListing()
         clipboard->setText(QString("j_%1").arg(b->startAddress().toString(16)));
 }
 
+void DisassemblerView::copyVariable()
+{
+    QAbstractItemModel* model = ui->tvVariables->model();
+    QItemSelectionModel* selectionmodel = ui->tvVariables->selectionModel();
+    QModelIndexList addresslist = selectionmodel->selectedRows(0);
+    QModelIndexList variablelist = selectionmodel->selectedRows(1);
+
+    if(addresslist.isEmpty() || variablelist.isEmpty())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(QString("%1 %2").arg(model->data(addresslist[0]).toString(), model->data(variablelist[0]).toString()));
+}
+
+void DisassemblerView::copyVariableAddress()
+{
+    QAbstractItemModel* model = ui->tvVariables->model();
+    QItemSelectionModel* selectionmodel = ui->tvVariables->selectionModel();
+    QModelIndexList indexlist = selectionmodel->selectedRows(0);
+
+    if(indexlist.isEmpty())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(model->data(indexlist[0]).toString());
+}
+
+void DisassemblerView::copyVariableName()
+{
+    QAbstractItemModel* model = ui->tvVariables->model();
+    QItemSelectionModel* selectionmodel = ui->tvVariables->selectionModel();
+    QModelIndexList indexlist = selectionmodel->selectedRows(1);
+
+    if(indexlist.isEmpty())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(model->data(indexlist[0]).toString());
+}
+
+void DisassemblerView::copyString()
+{
+    QAbstractItemModel* model = ui->tvStrings->model();
+    QItemSelectionModel* selectionmodel = ui->tvStrings->selectionModel();
+    QModelIndexList addresslist = selectionmodel->selectedRows(0);
+    QModelIndexList stringlist = selectionmodel->selectedRows(1);
+
+    if(addresslist.isEmpty() || stringlist.isEmpty())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(QString("%1 %2").arg(model->data(addresslist[0]).toString(), model->data(stringlist[0]).toString()));
+}
+
+void DisassemblerView::copyStringAddress()
+{
+    QAbstractItemModel* model = ui->tvStrings->model();
+    QItemSelectionModel* selectionmodel = ui->tvStrings->selectionModel();
+    QModelIndexList indexlist = selectionmodel->selectedRows(0);
+
+    if(indexlist.isEmpty())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(model->data(indexlist[0]).toString());
+}
+
+void DisassemblerView::copyStringValue()
+{
+    QAbstractItemModel* model = ui->tvStrings->model();
+    QItemSelectionModel* selectionmodel = ui->tvStrings->selectionModel();
+    QModelIndexList indexlist = selectionmodel->selectedRows(1);
+
+    if(indexlist.isEmpty())
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(model->data(indexlist[0]).toString());
+}
+
+void DisassemblerView::exportVariables()
+{
+    QString s = QFileDialog::getSaveFileName(this, "Export Variables...");
+
+    if(s.isEmpty())
+        return;
+
+    CSVExporter csvexporter;
+    csvexporter.dump(s, ui->tvVariables->model());
+}
+
+void DisassemblerView::exportStrings()
+{
+    QString s = QFileDialog::getSaveFileName(this, "Export Strings...");
+
+    if(s.isEmpty())
+        return;
+
+    CSVExporter csvexporter;
+    csvexporter.dump(s, ui->tvStrings->model());
+}
+
 void DisassemblerView::gotoAddress(const DataValue &address)
 {
     Block* b = this->_listing->findBlock(address);
@@ -338,4 +474,20 @@ void DisassemblerView::on_tabOverview_currentChanged(int index)
         default:
             break;
     }
+}
+
+void DisassemblerView::on_tvStrings_customContextMenuRequested(const QPoint &pos)
+{
+    if(this->_worker->isRunning())
+        return;
+
+    this->_stringsmenu->exec(ui->tvStrings->mapToGlobal(pos));
+}
+
+void DisassemblerView::on_tvVariables_customContextMenuRequested(const QPoint &pos)
+{
+    if(this->_worker->isRunning())
+        return;
+
+    this->_variablesmenu->exec(ui->tvVariables->mapToGlobal(pos));
 }

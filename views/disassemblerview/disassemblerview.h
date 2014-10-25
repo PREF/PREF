@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "csvexporterdialog/csvexporter.h"
 #include "crossreferencedialog/crossreferencedialog.h"
 #include "entrypointsdialog/entrypointsdialog.h"
 #include "segmentsdialog/segmentsdialog.h"
@@ -40,17 +41,22 @@ class DisassemblerView : public AbstractView
     private:
         void createListingMenu();
         void createFunctionsMenu();
+        void createVariablesMenu();
+        void createStringsMenu();
 
     private slots:
         void showCrossReference(Block* b);
         void showCrossReference(const DataValue& address);
 
     private slots:
+        void on_tabOverview_currentChanged(int index);
         void on_disassemblerWidget_customContextMenuRequested(const QPoint &pos);
         void on_functionList_customContextMenuRequested(const QPoint &pos);
         void on_functionList_doubleClicked(const QModelIndex &index);
         void on_tvStrings_doubleClicked(const QModelIndex &index);
         void on_tvVariables_doubleClicked(const QModelIndex &index);
+        void on_tvStrings_customContextMenuRequested(const QPoint &pos);
+        void on_tvVariables_customContextMenuRequested(const QPoint &pos);
         void onFunctionsMenuXRefsTriggered();
         void onListingMenuCrossReferencesTriggered();
         void onListingMenuHexDumpTriggered();
@@ -60,8 +66,15 @@ class DisassemblerView : public AbstractView
         void gotoFunction();
         void copyAddress();
         void copyListing();
+        void copyVariable();
+        void copyVariableAddress();
+        void copyVariableName();
+        void copyString();
+        void copyStringAddress();
+        void copyStringValue();
+        void exportVariables();
+        void exportStrings();
         void gotoAddress(const PrefSDK::DataValue& address);
-        void on_tabOverview_currentChanged(int index);
 
     private:
         Ui::DisassemblerView *ui;
@@ -74,6 +87,8 @@ class DisassemblerView : public AbstractView
         QToolBar* _toolbar;
         QMenu* _functionsmenu;
         QMenu* _listingmenu;
+        QMenu* _variablesmenu;
+        QMenu* _stringsmenu;
         QAction* _actsegments;
         QAction* _actentrypoints;
         QAction* _actgoto;
