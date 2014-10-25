@@ -33,8 +33,11 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
     this->_actback->setEnabled(false);
     this->_actforward->setEnabled(false);
 
-    this->_actentrypoints->setShortcut(QKeySequence("CTRL+E"));
-    this->_actsegments->setShortcut(QKeySequence("CTRL+S"));
+    this->_actback->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Left));
+    this->_actforward->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Right));
+    this->_actgoto->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
+    this->_actentrypoints->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
+    this->_actsegments->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
 
     this->createListingMenu();
     this->createFunctionsMenu();

@@ -433,18 +433,15 @@ void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
         this->setCurrentIndex(this->_listing->length() - 1);
     else if(e->modifiers() == Qt::ControlModifier)
     {
-        if(e->key() == Qt::LeftArrow)
+        if(e->key() == Qt::Key_Left)
             this->back();
-        else if(e->key() == Qt::RightArrow)
+        else if(e->key() == Qt::Key_Right)
             this->forward();
-    }
-    else if(e->modifiers() == Qt::NoModifier)
-    {
-        if(e->key() == Qt::Key_G)
+        else if(e->key() == Qt::Key_G)
             emit jumpToRequested();
-        else if(e->key() == Qt::Key_X)
-            emit crossReferenceRequested(this->_selectedblock);
     }
+    else if((e->modifiers() == Qt::NoModifier) && (e->key() == Qt::Key_X))
+        emit crossReferenceRequested(this->_selectedblock);
 
     QWidget::keyPressEvent(e);
 }
