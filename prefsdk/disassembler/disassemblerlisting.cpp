@@ -657,14 +657,25 @@ namespace PrefSDK
     {
         if(block1->startAddress() == block2->startAddress())
         {
-            if(block1->blockType() == Block::ReferenceBlock)
-                return true; /* Reference Block are always displayed first */
-
+            /* Segments first of All: (Segment < Function | Instruction) */
             if(block1->blockType() == Block::SegmentBlock)
-                return true; /* Segment < Function | Instruction */
+                return true;
+            else if(block2->blockType() == Block::SegmentBlock)
+                return false;
 
+            /* Reference Block is always displayed first */
+            if(block1->blockType() == Block::ReferenceBlock)
+                return true;
+            else if(block2->blockType() == Block::ReferenceBlock)
+                return false;
+
+            /* Function < Instruction */
             if((block1->blockType() == Block::FunctionBlock) && (block2->blockType() == Block::InstructionBlock))
-                return true; /* Function < Instruction */
+                return true;
+            else if((block1->blockType() == Block::InstructionBlock) && (block2->blockType() == Block::FunctionBlock))
+                return false;
+
+            Q_ASSERT(false);
         }
 
         return block1->startAddress() < block2->startAddress();
