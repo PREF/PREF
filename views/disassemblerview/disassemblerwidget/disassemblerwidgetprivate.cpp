@@ -361,6 +361,9 @@ void DisassemblerWidgetPrivate::adjust()
 
 void DisassemblerWidgetPrivate::pushBack(qint64 idx)
 {
+    if(!this->_backstack.isEmpty() && (idx == this->_backstack.top())) /* Don't push duplicate indexes on stack */
+        return;
+
     bool firesignal = this->_backstack.isEmpty();
     this->_backstack.push(idx);
 
@@ -370,6 +373,9 @@ void DisassemblerWidgetPrivate::pushBack(qint64 idx)
 
 void DisassemblerWidgetPrivate::pushForward(qint64 idx)
 {
+    if(!this->_forwardstack.isEmpty() && (idx == this->_forwardstack.top())) /* Don't push duplicate indexes on stack */
+        return;
+
     bool firesignal = this->_forwardstack.isEmpty();
     this->_forwardstack.push(idx);
 
