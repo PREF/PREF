@@ -136,6 +136,13 @@ namespace PrefSDK
     void ProcessorLoader::disassembleInstruction(QLabel* infolabel)
     {
         ProcessorEmulator::Address procaddress = this->_processoremulator->popValue();
+
+        if(procaddress.second == Reference::Invalid)
+        {
+            this->_logger->error("Disassembling Aborted (Stack is Empty)");
+            return;
+        }
+
         Instruction* instruction = this->_listing->createInstruction(procaddress.first, this->_processordefinition->instructionSet()->opcodeType());
         lua_Integer size = this->_processordefinition->callAnalyze(instruction, this->_baseaddress);
 

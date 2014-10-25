@@ -35,6 +35,7 @@ namespace PrefSDK
             Logger* _logger;
             DataType::Type _addresstype;
             Address _currentaddress;
+            Address _invalidaddress;
     };
 }
 

@@ -32,6 +32,8 @@ namespace PrefSDK
                 Address         = Data | 0x00000001,
                 Read            = Data | 0x00000002,
                 Write           = Data | 0x00000004,
+
+                Invalid         = 0xFFFFFFFF,
             };
 
         public:

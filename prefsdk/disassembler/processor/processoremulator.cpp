@@ -5,6 +5,7 @@ namespace PrefSDK
     ProcessorEmulator::ProcessorEmulator(DisassemblerListing *listing, DataType::Type addresstype, Logger* logger, QObject *parent): QObject(parent), _listing(listing), _logger(logger), _addresstype(addresstype)
     {
         this->_currentaddress = ProcessorEmulator::Address(DataValue(addresstype), Reference::Flow);
+        this->_invalidaddress = ProcessorEmulator::Address(DataValue(addresstype), Reference::Invalid);
     }
 
     void ProcessorEmulator::push(lua_Integer address, lua_Integer referencetype)
@@ -44,6 +45,9 @@ namespace PrefSDK
 
         do // Pop until we find an undecoded instruction
         {
+            if(this->_addrstack.isEmpty())
+                return this->_invalidaddress; /* Something Wrong: Return an Invalid Address */
+
             this->_currentaddress = this->_addrstack.pop();
             invalidsegment = (this->_listing->findSegment(this->_currentaddress.first) == nullptr);
 
