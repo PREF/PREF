@@ -166,7 +166,10 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formatworker.cpp \
     logwidget/logobject.cpp \
     qhexedit/sparserangemap.cpp \
-    prefsdk/disassembler/register/register.cpp
+    prefsdk/disassembler/register/register.cpp \
+    csvexporterdialog/csvexporterworker.cpp \
+    csvexporterdialog/csvexporter.cpp \
+    csvexporterdialog/csvexporterdialog.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -321,7 +324,10 @@ HEADERS  += mainwindow.h \
     logwidget/logger.h \
     views/hexview/formatwidget/formatworker.h \
     logwidget/logobject.h \
-    prefsdk/disassembler/register/register.h
+    prefsdk/disassembler/register/register.h \
+    csvexporterdialog/csvexporterworker.h \
+    csvexporterdialog/csvexporter.h \
+    csvexporterdialog/csvexporterdialog.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -352,7 +358,8 @@ FORMS    += mainwindow.ui \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.ui \
     views/hexview/outputwidget/outputwidget.ui \
     views/disassemblerview/gotowidget/gotowidget.ui \
-    views/disassemblerview/loaderdialog/loaderdialog.ui
+    views/disassemblerview/loaderdialog/loaderdialog.ui \
+    csvexporterdialog/csvexporterdialog.ui
 
 RESOURCES += resources.qrc
 
