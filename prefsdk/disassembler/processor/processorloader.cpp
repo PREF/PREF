@@ -9,7 +9,7 @@ namespace PrefSDK
         this->_baseaddress = DataValue(processordefinition->addressType());
     }
 
-    void ProcessorLoader::disassemble(QLabel* infolabel)
+    void ProcessorLoader::disassemble(QLabel* infolabel, bool elaborateinstructions, bool analyzelisting)
     {   
         while(this->_processoremulator->hasMoreInstructions())
             this->disassembleInstruction(infolabel);
@@ -17,14 +17,20 @@ namespace PrefSDK
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Calculating Function bounds..."));
         this->_listing->calcFunctionBounds();
 
-        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Instructions..."));
-        this->_processordefinition->callElaborate(this->_listing);
+        if(elaborateinstructions)
+        {
+            QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Instructions..."));
+            this->_processordefinition->callElaborate(this->_listing);
+        }
 
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Operands..."));
         this->_listing->analyzeOperands();
 
-        QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Elaborating Instructions..."));
-        this->callElaborate();
+        if(analyzelisting)
+        {
+            QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Elaborating Instructions..."));
+            this->callElaborate();
+        }
     }
 
     bool ProcessorLoader::validate(QHexEditData *hexeditdata, Logger* logger)

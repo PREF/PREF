@@ -15,13 +15,15 @@ class DisassemblerWorker : public QThread
     Q_OBJECT
 
     public:
-        explicit DisassemblerWorker(QHexEditData* hexeditdata, ProcessorLoader* loader, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
+        explicit DisassemblerWorker(QHexEditData* hexeditdata, ProcessorLoader* loader, bool elaborateinstructions, bool analyzelisting, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
         DisassemblerListing* listing() const;
 
     protected:
         virtual void run();
 
     private:
+        bool _elaborateinstructions;
+        bool _analyzelisting;
         DisassemblerListing* _listing;
         QHexEditData* _hexeditdata;
         ProcessorLoader* _loader;

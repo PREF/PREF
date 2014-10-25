@@ -13,6 +13,16 @@ LoaderDialog::LoaderDialog(QHexEditData *hexeditdata, QWidget *parent): QDialog(
     ui->loaderTable->resizeColumnToContents(0);
 }
 
+bool LoaderDialog::elaborateInstructions() const
+{
+    return ui->cbElaborateInstructions->isChecked();
+}
+
+bool LoaderDialog::analyzeListing() const
+{
+    return ui->cbElaborateInstructions->isChecked() && ui->cbAnalyzeListing->isChecked();
+}
+
 bool LoaderDialog::hasLoaders() const
 {
     return this->_loaderlistmodel->rowCount() > 0;
@@ -42,4 +52,9 @@ void LoaderDialog::on_loaderTable_doubleClicked(const QModelIndex&)
 void LoaderDialog::on_loaderTable_clicked(const QModelIndex &index)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(index.isValid());
+}
+
+void LoaderDialog::on_cbElaborateInstructions_stateChanged(int state)
+{
+    ui->cbAnalyzeListing->setEnabled(((state == Qt::Checked) ? true : false));
 }

@@ -20,6 +20,8 @@ class LoaderDialog : public QDialog
 
     public:
         explicit LoaderDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
+        bool elaborateInstructions() const;
+        bool analyzeListing() const;
         bool hasLoaders() const;
         ProcessorLoader *selectedLoader() const;
         ~LoaderDialog();
@@ -27,6 +29,7 @@ class LoaderDialog : public QDialog
     private slots:
         void on_loaderTable_doubleClicked(const QModelIndex &);
         void on_loaderTable_clicked(const QModelIndex &index);
+        void on_cbElaborateInstructions_stateChanged(int state);
 
     private:
         Ui::LoaderDialog *ui;

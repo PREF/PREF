@@ -91,7 +91,7 @@ void MainWindow::disassembleFile(const QString &file)
         QString viewname = QFileInfo(file).fileName();
         DisassemblerView* dv = new DisassemblerView(ld.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
         ui->tabWidget->addTab(dv, viewname);
-        dv->disassemble();
+        dv->disassemble(ld.elaborateInstructions(), ld.analyzeListing());
     }
 }
 

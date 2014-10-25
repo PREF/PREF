@@ -29,7 +29,7 @@ namespace PrefSDK
 
         public:
             explicit ProcessorLoader(const QString& name, const QString& author, const QString& version, FormatDefinition* formatdefinition, ProcessorDefinition* processordefinition, QObject *parent = 0);
-            void disassemble(QLabel *infolabel);
+            void disassemble(QLabel *infolabel, bool elaborateinstructions, bool analyzelisting);
 
         public:
             QString id() const;
