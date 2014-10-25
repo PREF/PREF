@@ -23,10 +23,13 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
     return this->_selectedblock;
 }
 
-void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx)
+void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
 {
     if(idx == this->_selectedindex)
         return;
+
+    if(savehistory)
+        this->pushBack(this->_selectedindex); /* Save Previous Position */
 
     if(idx < 0)
         idx = 0;
@@ -54,7 +57,7 @@ void DisassemblerWidgetPrivate::setListing(DisassemblerListing *listing)
     if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
     {
         qint64 idx = this->_listing->indexOf(this->_listing->entryPoints().first());
-        this->setCurrentIndex(idx);
+        this->setCurrentIndex(idx, false);
     }
 }
 
@@ -85,6 +88,33 @@ void DisassemblerWidgetPrivate::jumpTo(const DataValue& address)
 
     if(idx != -1)
         this->setCurrentIndex(idx);
+}
+
+void DisassemblerWidgetPrivate::clearNavigationHistory()
+{
+    this->_backstack.clear();
+    this->_forwardstack.clear();
+
+    emit backAvailable(false);
+    emit forwardAvailable(false);
+}
+
+void DisassemblerWidgetPrivate::back()
+{
+    if(this->_backstack.isEmpty())
+        return;
+
+    this->pushForward(this->_selectedindex);
+    this->setCurrentIndex(this->popBack(), false);
+}
+
+void DisassemblerWidgetPrivate::forward()
+{
+    if(this->_forwardstack.isEmpty())
+        return;
+
+    this->pushBack(this->_selectedindex);
+    this->setCurrentIndex(this->popForward(), false);
 }
 
 qint64 DisassemblerWidgetPrivate::currentIndex() const
@@ -329,6 +359,44 @@ void DisassemblerWidgetPrivate::adjust()
     }
 }
 
+void DisassemblerWidgetPrivate::pushBack(qint64 idx)
+{
+    bool firesignal = this->_backstack.isEmpty();
+    this->_backstack.push(idx);
+
+    if(firesignal)
+        emit backAvailable(true);
+}
+
+void DisassemblerWidgetPrivate::pushForward(qint64 idx)
+{
+    bool firesignal = this->_forwardstack.isEmpty();
+    this->_forwardstack.push(idx);
+
+    if(firesignal)
+        emit forwardAvailable(true);
+}
+
+qint64 DisassemblerWidgetPrivate::popBack()
+{
+    qint64 idx = this->_backstack.pop();
+
+    if(this->_backstack.isEmpty())
+        emit backAvailable(false);
+
+    return idx;
+}
+
+qint64 DisassemblerWidgetPrivate::popForward()
+{
+    qint64 idx = this->_forwardstack.pop();
+
+    if(this->_forwardstack.isEmpty())
+        emit forwardAvailable(false);
+
+    return idx;
+}
+
 void DisassemblerWidgetPrivate::ensureVisible(qint64 idx)
 {
     if(idx == -1)
@@ -363,6 +431,13 @@ void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
         this->setCurrentIndex(0);
     else if(e->matches(QKeySequence::MoveToEndOfDocument))
         this->setCurrentIndex(this->_listing->length() - 1);
+    else if(e->modifiers() == Qt::ControlModifier)
+    {
+        if(e->key() == Qt::LeftArrow)
+            this->back();
+        else if(e->key() == Qt::RightArrow)
+            this->forward();
+    }
     else if(e->modifiers() == Qt::NoModifier)
     {
         if(e->key() == Qt::Key_G)

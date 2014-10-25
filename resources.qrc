@@ -27,6 +27,8 @@
         <file>res/analyze.png</file>
         <file>res/segments.png</file>
         <file>res/entry.png</file>
+        <file>res/back.png</file>
+        <file>res/forward.png</file>
     </qresource>
     <qresource prefix="/app_icons">
         <file>res/app.png</file>

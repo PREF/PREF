@@ -27,6 +27,8 @@ DisassemblerWidget::DisassemblerWidget(QWidget *parent): QFrame(parent)
     connect(this->_disasmwidget_p, SIGNAL(customContextMenuRequested(QPoint)), this, SIGNAL(customContextMenuRequested(QPoint)));
     connect(this->_disasmwidget_p, SIGNAL(jumpToRequested()), this, SIGNAL(jumpToRequested()));
     connect(this->_disasmwidget_p, SIGNAL(crossReferenceRequested(Block*)), this, SIGNAL(crossReferenceRequested(Block*)));
+    connect(this->_disasmwidget_p, SIGNAL(backAvailable(bool)), this, SIGNAL(backAvailable(bool)));
+    connect(this->_disasmwidget_p, SIGNAL(forwardAvailable(bool)), this, SIGNAL(forwardAvailable(bool)));
 }
 
 void DisassemblerWidget::setCurrentIndex(int idx)
@@ -62,6 +64,21 @@ void DisassemblerWidget::jumpTo(Block *block)
 void DisassemblerWidget::jumpTo(const PrefSDK::DataValue& address)
 {
     this->_disasmwidget_p->jumpTo(address);
+}
+
+void DisassemblerWidget::clearNavigationHistory()
+{
+    this->_disasmwidget_p->clearNavigationHistory();
+}
+
+void DisassemblerWidget::back()
+{
+    this->_disasmwidget_p->back();
+}
+
+void DisassemblerWidget::forward()
+{
+    this->_disasmwidget_p->forward();
 }
 
 qint64 DisassemblerWidget::currentIndex() const

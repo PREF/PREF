@@ -16,7 +16,7 @@ class DisassemblerWidgetPrivate: public QWidget
     public:
         explicit DisassemblerWidgetPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent = 0);
         qint64 currentIndex() const;
-        void setCurrentIndex(qint64 idx);
+        void setCurrentIndex(qint64 idx, bool savehistory = true);
         Block* selectedBlock() const;
         void setListing(DisassemblerListing* listing);
         void setAddressForeColor(const QColor& c);
@@ -24,6 +24,9 @@ class DisassemblerWidgetPrivate: public QWidget
         void setWheelScrollLines(int c);
         void jumpTo(Block* block);
         void jumpTo(const DataValue &address);
+        void clearNavigationHistory();
+        void back();
+        void forward();
 
     private:
         Block* findBlock(qint64 idx);
@@ -40,6 +43,10 @@ class DisassemblerWidgetPrivate: public QWidget
         void drawLine(QPainter& painter, QFontMetrics& fm, qint64 idx, int y);
         void ensureVisible(qint64 idx);
         void adjust();
+        void pushBack(qint64 idx);
+        void pushForward(qint64 idx);
+        qint64 popBack();
+        qint64 popForward();
 
     protected:
         void keyPressEvent(QKeyEvent* e);
@@ -56,6 +63,8 @@ class DisassemblerWidgetPrivate: public QWidget
     signals:
         void jumpToRequested();
         void crossReferenceRequested(Block* block);
+        void backAvailable(bool);
+        void forwardAvailable(bool);
 
     private:
         QScrollArea* _scrollarea;
@@ -69,6 +78,8 @@ class DisassemblerWidgetPrivate: public QWidget
         int _charheight;
         qint64 _selectedindex;
         bool _clicked;
+        QStack<qint64> _backstack;
+        QStack<qint64> _forwardstack;
 
     private:
         Segment* _currentsegment;

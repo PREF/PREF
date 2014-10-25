@@ -23,10 +23,15 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
 
     ui->verticalLayout->insertWidget(0, this->_toolbar);
 
+    this->_actback = this->_toolbar->addAction(QIcon(":/action_icons/res/back.png"), "Back");
+    this->_actforward = this->_toolbar->addAction(QIcon(":/action_icons/res/forward.png"), "Forward");
+    this->_actgoto = this->_toolbar->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
+    this->_toolbar->addSeparator();
     this->_actentrypoints = this->_toolbar->addAction(QIcon(":/action_icons/res/entry.png"), "Entry Points");
     this->_actsegments = this->_toolbar->addAction(QIcon(":/action_icons/res/segments.png"), "Segments");
-    this->_toolbar->addSeparator();
-    this->_actgoto = this->_toolbar->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
+
+    this->_actback->setEnabled(false);
+    this->_actforward->setEnabled(false);
 
     this->_actentrypoints->setShortcut(QKeySequence("CTRL+E"));
     this->_actsegments->setShortcut(QKeySequence("CTRL+S"));
@@ -38,10 +43,14 @@ DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexedi
 
     ui->disassemblerWidget->setFocus();
 
+    connect(this->_actback, SIGNAL(triggered()), ui->disassemblerWidget, SLOT(back()));
+    connect(this->_actforward, SIGNAL(triggered()), ui->disassemblerWidget, SLOT(forward()));
+    connect(this->_actgoto, SIGNAL(triggered()), ui->gotoWidget, SLOT(show()));
     connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
     connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
-    connect(this->_actgoto, SIGNAL(triggered()), ui->gotoWidget, SLOT(show()));
     connect(ui->gotoWidget, SIGNAL(addressRequested(PrefSDK::DataValue)), this, SLOT(gotoAddress(PrefSDK::DataValue)));
+    connect(ui->disassemblerWidget, SIGNAL(backAvailable(bool)), this->_actback, SLOT(setEnabled(bool)));
+    connect(ui->disassemblerWidget, SIGNAL(forwardAvailable(bool)), this->_actforward, SLOT(setEnabled(bool)));
     connect(ui->disassemblerWidget, SIGNAL(crossReferenceRequested(Block*)), this, SLOT(showCrossReference(Block*)));
     connect(ui->disassemblerWidget, SIGNAL(jumpToRequested()), ui->gotoWidget, SLOT(show()));
 }

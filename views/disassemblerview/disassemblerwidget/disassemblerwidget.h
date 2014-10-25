@@ -26,10 +26,15 @@ class DisassemblerWidget : public QFrame
         void setCurrentIndex(int idx);
         void jumpTo(Block* block);
         void jumpTo(const PrefSDK::DataValue &address);
+        void clearNavigationHistory();
+        void back();
+        void forward();
 
     signals:
         void jumpToRequested();
         void crossReferenceRequested(Block* block);
+        void backAvailable(bool);
+        void forwardAvailable(bool);
 
     private:
         DisassemblerWidgetPrivate* _disasmwidget_p;

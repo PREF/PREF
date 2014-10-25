@@ -89,9 +89,11 @@ class DisassemblerView : public AbstractView
         QMenu* _listingmenu;
         QMenu* _variablesmenu;
         QMenu* _stringsmenu;
+        QAction* _actback;
+        QAction* _actforward;
+        QAction* _actgoto;
         QAction* _actsegments;
         QAction* _actentrypoints;
-        QAction* _actgoto;
         QAction* _actcrossreferences;
         QAction* _actjumptoaddress;
         QAction* _acthexdump;
