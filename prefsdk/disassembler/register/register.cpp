@@ -27,6 +27,11 @@ namespace PrefSDK
         this->_value = DataValue::create(v, this->_datatype);
     }
 
+    void Register::undefine()
+    {
+        this->_value = DataValue(this->_datatype);
+    }
+
     const DataValue &Register::registerValue() const
     {
         return this->_value;

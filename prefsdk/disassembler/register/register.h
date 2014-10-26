@@ -23,6 +23,9 @@ namespace PrefSDK
             lua_Integer value() const;
             void setValue(lua_Integer v);
 
+        public slots:
+            void undefine();
+
         public:
             const DataValue& registerValue() const;
             void setRegisterValue(const DataValue& dv);
