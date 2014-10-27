@@ -313,7 +313,7 @@ namespace PrefSDK
         DataType::Type dt = static_cast<DataType::Type>(datatype);
         this->_size += DataValue::create(DataType::sizeOf(dt), dt);
 
-        LuaHexEditData luahexeditdata(this->_hexeditdata);
-        return luahexeditdata.readType(this->offset(), datatype);
+        DataBuffer databuffer(this->_hexeditdata);
+        return databuffer.readType(this->offset(), datatype);
     }
 }

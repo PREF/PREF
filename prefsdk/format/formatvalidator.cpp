@@ -5,7 +5,7 @@ namespace PrefSDK
     FormatValidator::FormatValidator(QHexEditData *hexeditdata, qint64 baseoffset, QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _baseoffset(baseoffset), _validated(true)
     {
         this->_reader = new QHexEditDataReader(hexeditdata, this);
-        this->_luahexeditdata = new LuaHexEditData(hexeditdata, this);
+        this->_databuffer = new DataBuffer(hexeditdata, this);
     }
 
     bool FormatValidator::validated() const
@@ -18,9 +18,9 @@ namespace PrefSDK
         this->_validated = b;
     }
 
-    PrefSDK::LuaHexEditData *FormatValidator::buffer()
+    PrefSDK::DataBuffer *FormatValidator::buffer()
     {
-        return this->_luahexeditdata;
+        return this->_databuffer;
     }
 
     bool FormatValidator::checkAscii(lua_Integer offset, const QString &expected, bool throwerr)

@@ -4,7 +4,7 @@
 #include "prefsdk/type/datatype.h"
 #include "prefsdk/type/datavalue.h"
 #include "prefsdk/prefexception.h"
-#include "prefsdk/libs/preflib/luahexeditdata.h"
+#include "prefsdk/libs/preflib/databuffer.h"
 #include "prefsdk/disassembler/operand.h"
 #include "prefsdk/disassembler/blocks/block.h"
 #include "prefsdk/disassembler/instruction/instructioncategory.h"

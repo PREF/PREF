@@ -43,11 +43,11 @@ namespace PrefSDK
 
         lua_State* l = this->_dumpfunction.state();
         QHexEditData* hexeditdataout = QHexEditData::fromFile(filename);
-        LuaHexEditData* luahexeditdatain = new LuaHexEditData(hexeditdatain);
-        LuaHexEditData* luahexeditdataout = new LuaHexEditData(hexeditdataout);
+        DataBuffer* databufferin = new DataBuffer(hexeditdatain);
+        DataBuffer* databufferout = new DataBuffer(hexeditdataout);
 
-        QtLua::pushObject(l, luahexeditdatain);
-        QtLua::pushObject(l, luahexeditdataout);
+        QtLua::pushObject(l, databufferin);
+        QtLua::pushObject(l, databufferout);
         lua_pushinteger(l, startoffset);
         lua_pushinteger(l, endoffset);
         bool err = this->_dumpfunction(4);
@@ -58,8 +58,8 @@ namespace PrefSDK
             lua_pop(l, 1);
         }
 
-        luahexeditdataout->deleteLater();
-        luahexeditdatain->deleteLater();
+        databufferout->deleteLater();
+        databufferin->deleteLater();
         hexeditdataout->deleteLater();
     }
 

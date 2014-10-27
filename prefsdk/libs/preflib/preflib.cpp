@@ -13,7 +13,7 @@ namespace PrefSDK
 
     void PrefLib::registerPrefTypes()
     {
-        qRegisterMetaType<PrefSDK::LuaHexEditData*>();
+        qRegisterMetaType<PrefSDK::DataBuffer*>();
 
         /* Format Parser */
         qRegisterMetaType<PrefSDK::FormatElement*>();
@@ -304,7 +304,7 @@ namespace PrefSDK
             return 0;
         }
 
-        LuaHexEditData** luahexeditdata = reinterpret_cast<LuaHexEditData**>(lua_touserdata(l, 1));
+        DataBuffer** luahexeditdata = reinterpret_cast<DataBuffer**>(lua_touserdata(l, 1));
         qint64 start = 0, size = (*luahexeditdata)->length();
 
         if(argc >= 2)

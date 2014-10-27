@@ -4,7 +4,7 @@ namespace PrefSDK
 {
     FormatTree::FormatTree(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, QObject *parent): AbstractTree(hexeditdata, logger, parent), _baseoffset(baseoffset)
     {
-        this->_luahexeditdata = new LuaHexEditData(hexeditdata, this);
+        this->_databuffer = new DataBuffer(hexeditdata, this);
     }
 
     bool FormatTree::isEmpty() const
@@ -12,9 +12,9 @@ namespace PrefSDK
         return this->_structureoffsets.isEmpty();
     }
 
-    LuaHexEditData *FormatTree::buffer()
+    DataBuffer *FormatTree::buffer()
     {
-        return this->_luahexeditdata;
+        return this->_databuffer;
     }
 
     PrefSDK::Structure *FormatTree::addStructure(const QString &name)

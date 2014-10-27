@@ -4,7 +4,7 @@
 #include <QtCore>
 #include "logwidget/logger.h"
 #include "prefsdk/libs/qt/qtlua.h"
-#include "prefsdk/libs/preflib/luahexeditdata.h"
+#include "prefsdk/libs/preflib/databuffer.h"
 #include "qhexedit/qhexeditdata.h"
 #include "elements/structure.h"
 #include "elements/fieldarray.h"
@@ -18,7 +18,7 @@ namespace PrefSDK
     {
         Q_OBJECT
 
-        Q_PROPERTY(PrefSDK::LuaHexEditData* buffer READ buffer)
+        Q_PROPERTY(PrefSDK::DataBuffer* buffer READ buffer)
 
         private:
             typedef QHash<quint64, Structure*> StructureMap; /* Offset -> Structure* */
@@ -32,7 +32,7 @@ namespace PrefSDK
             bool isEmpty() const;
 
         private:
-            PrefSDK::LuaHexEditData* buffer();
+            PrefSDK::DataBuffer* buffer();
 
         protected:
             Q_INVOKABLE int metaIndex(lua_State* l, const QString& key);
@@ -44,7 +44,7 @@ namespace PrefSDK
             PrefSDK::Structure* addStructure(const QString& name, lua_Integer offset);
 
         private:
-            LuaHexEditData* _luahexeditdata;
+            DataBuffer* _databuffer;
             StructureOffsets _structureoffsets;
             StructureNames _structurenames;
             StructureMap _structures;

@@ -4,7 +4,7 @@
 #include <QtCore>
 #include "prefsdk/type/datatype.h"
 #include "qhexedit/qhexeditdatareader.h"
-#include "prefsdk/libs/preflib/luahexeditdata.h"
+#include "prefsdk/libs/preflib/databuffer.h"
 #include "prefsdk/luastate.h"
 
 namespace PrefSDK
@@ -13,7 +13,7 @@ namespace PrefSDK
     {
         Q_OBJECT
 
-        Q_PROPERTY(PrefSDK::LuaHexEditData* buffer READ buffer)
+        Q_PROPERTY(PrefSDK::DataBuffer* buffer READ buffer)
         Q_PROPERTY(bool validated READ validated WRITE setValidated)
 
         public:
@@ -22,7 +22,7 @@ namespace PrefSDK
             void setValidated(bool b);
 
         private:
-            PrefSDK::LuaHexEditData* buffer();
+            PrefSDK::DataBuffer* buffer();
             bool checkInt8(lua_Integer offset, qint8 expected, bool throwerr);
             bool checkInt16(lua_Integer offset, qint16 expected, int byteorder, bool throwerr);
             bool checkInt32(lua_Integer offset, qint32 expected, int byteorder, bool throwerr);
@@ -41,7 +41,7 @@ namespace PrefSDK
         private:
             QHexEditData* _hexeditdata;
             QHexEditDataReader* _reader;
-            LuaHexEditData* _luahexeditdata;
+            DataBuffer* _databuffer;
             qint64 _baseoffset;
             bool _validated;
     };

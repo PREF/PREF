@@ -1,26 +1,26 @@
-#include "luahexeditdata.h"
+#include "databuffer.h"
 
 namespace PrefSDK
 {
-    LuaHexEditData::LuaHexEditData(QHexEditData* hexeditdata, QObject *parent): QObject(parent), _hexeditdata(hexeditdata)
+    DataBuffer::DataBuffer(QHexEditData* hexeditdata, QObject *parent): QObject(parent), _hexeditdata(hexeditdata)
     {
         this->_reader = new QHexEditDataReader(hexeditdata, this);
         this->_writer = new QHexEditDataWriter(hexeditdata, this);
     }
 
-    QHexEditData *LuaHexEditData::hexEditData() const
+    QHexEditData *DataBuffer::hexEditData() const
     {
         return this->_hexeditdata;
     }
 
-    lua_Integer LuaHexEditData::length() const
+    lua_Integer DataBuffer::length() const
     {
         return this->_hexeditdata->length();
     }
 
-    void LuaHexEditData::copyTo(QObject *luahexeditdata, lua_Integer start, lua_Integer end)
+    void DataBuffer::copyTo(QObject *luahexeditdata, lua_Integer start, lua_Integer end)
     {
-        LuaHexEditData* luahexeditdataout = qobject_cast<LuaHexEditData*>(luahexeditdata);
+        DataBuffer* luahexeditdataout = qobject_cast<DataBuffer*>(luahexeditdata);
 
         QHexEditDataDevice datain(this->_hexeditdata);
         QHexEditDataDevice dataout(luahexeditdataout->_hexeditdata);
@@ -37,12 +37,12 @@ namespace PrefSDK
         luahexeditdataout->_hexeditdata->save();
     }
 
-    lua_Integer LuaHexEditData::indexOf(const QString &s, lua_Integer startpos)
+    lua_Integer DataBuffer::indexOf(const QString &s, lua_Integer startpos)
     {
         return this->_reader->indexOf(s.toUtf8(), startpos);
     }
 
-    lua_Integer LuaHexEditData::readType(lua_Integer pos, lua_Integer datatype)
+    lua_Integer DataBuffer::readType(lua_Integer pos, lua_Integer datatype)
     {
         DataType::Type dt = static_cast<DataType::Type>(datatype);
 
@@ -95,7 +95,7 @@ namespace PrefSDK
         return 0;
     }
 
-    void LuaHexEditData::writeType(lua_Integer pos, lua_Integer datatype, lua_Integer value)
+    void DataBuffer::writeType(lua_Integer pos, lua_Integer datatype, lua_Integer value)
     {
         DataType::Type dt = static_cast<DataType::Type>(datatype);
 
@@ -158,7 +158,7 @@ namespace PrefSDK
         luaL_error(LuaState::instance(), "LuaHexEditData:writeType(): Unsupported DataType '%s'", dtenum.valueToKey(dt));
     }
 
-    QString LuaHexEditData::readLine(lua_Integer pos)
+    QString DataBuffer::readLine(lua_Integer pos)
     {
         QString s;
         char ch = '\0';
@@ -176,17 +176,17 @@ namespace PrefSDK
         return s;
     }
 
-    QString LuaHexEditData::readString(lua_Integer pos, lua_Integer maxlen)
+    QString DataBuffer::readString(lua_Integer pos, lua_Integer maxlen)
     {
         return this->_reader->readString(pos, maxlen);
     }
 
-    void LuaHexEditData::writeString(lua_Integer pos, const QString &s)
+    void DataBuffer::writeString(lua_Integer pos, const QString &s)
     {
         this->_writer->replace(pos, s.length(), s.toUtf8());
     }
 
-    int LuaHexEditData::metaIndex(lua_State *l, lua_Integer key)
+    int DataBuffer::metaIndex(lua_State *l, lua_Integer key)
     {
         if((key < 0) || (key >= this->_hexeditdata->length()))
         {

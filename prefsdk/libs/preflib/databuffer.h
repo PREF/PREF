@@ -1,5 +1,5 @@
-#ifndef PREFSDK_LUAHEXEDITDATA_H
-#define PREFSDK_LUAHEXEDITDATA_H
+#ifndef PREFSDK_DATABUFFER_H
+#define PREFSDK_DATABUFFER_H
 
 #include <QObject>
 #include <lua.hpp>
@@ -16,14 +16,14 @@ namespace PrefSDK
     /*
      * Simplified QHexEditData's interface for Lua
      */
-    class LuaHexEditData : public QObject
+    class DataBuffer : public QObject
     {
         Q_OBJECT
 
         Q_PROPERTY(lua_Integer length READ length)
 
         public:
-            explicit LuaHexEditData(QHexEditData* hexeditdata, QObject *parent = 0);
+            explicit DataBuffer(QHexEditData* hexeditdata, QObject *parent = 0);
             QHexEditData* hexEditData() const;
             lua_Integer length() const;
 
@@ -46,4 +46,4 @@ namespace PrefSDK
     };
 }
 
-#endif // PREFSDK_LUAHEXEDITDATA_H
+#endif // PREFSDK_DATABUFFER_H

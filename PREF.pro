@@ -136,7 +136,6 @@ SOURCES += main.cpp\
     prefsdk/format/formatdefinition.cpp \
     prefsdk/format/formatvalidator.cpp \
     prefsdk/prefexception.cpp \
-    prefsdk/libs/preflib/luahexeditdata.cpp \
     prefsdk/libs/oop/oop.cpp \
     prefsdk/exporter/exporterdefinition.cpp \
     prefsdk/disassembler/processor/processorloader.cpp \
@@ -169,7 +168,8 @@ SOURCES += main.cpp\
     prefsdk/disassembler/register/register.cpp \
     csvexporterdialog/csvexporterworker.cpp \
     csvexporterdialog/csvexporter.cpp \
-    csvexporterdialog/csvexporterdialog.cpp
+    csvexporterdialog/csvexporterdialog.cpp \
+    prefsdk/libs/preflib/databuffer.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -295,7 +295,6 @@ HEADERS  += mainwindow.h \
     prefsdk/format/formatdefinition.h \
     prefsdk/format/formatvalidator.h \
     prefsdk/prefexception.h \
-    prefsdk/libs/preflib/luahexeditdata.h \
     prefsdk/libs/oop/oop.h \
     prefsdk/exporter/exporterdefinition.h \
     prefsdk/disassembler/processor/processorloader.h \
@@ -327,7 +326,8 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/register/register.h \
     csvexporterdialog/csvexporterworker.h \
     csvexporterdialog/csvexporter.h \
-    csvexporterdialog/csvexporterdialog.h
+    csvexporterdialog/csvexporterdialog.h \
+    prefsdk/libs/preflib/databuffer.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

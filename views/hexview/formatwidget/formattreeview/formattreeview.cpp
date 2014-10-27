@@ -68,8 +68,8 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
             if(fieldelement->isInteger() && !fieldelement->isSigned() && !fieldelement->isOverflowed() && (DataType::bitWidth(fieldelement->dataType()) > 16))
             {
                 QHexEditData* hexeditdata = qobject_cast<FormatModel*>(this->model())->data();
-                LuaHexEditData hed(hexeditdata);
-                DataValue value = DataValue::create(hed.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
+                DataBuffer databuffer(hexeditdata);
+                DataValue value = DataValue::create(databuffer.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
 
                 if(!value.compatibleValue<qint64>() || (value.compatibleValue<qint64>() >= hexeditdata->length()))
                     this->_actiongoto->setVisible(false);
@@ -115,7 +115,7 @@ void FormatTreeView::onGotoOffset()
     FieldElement* fieldelement = qobject_cast<FieldElement*>(this->selectedElement());
     QHexEditData* hexeditdata = qobject_cast<FormatModel*>(this->model())->data();
 
-    LuaHexEditData hed(hexeditdata);
+    DataBuffer hed(hexeditdata);
     DataValue value = DataValue::create(hed.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
 
     emit gotoOffset(value.compatibleValue<qint64>());

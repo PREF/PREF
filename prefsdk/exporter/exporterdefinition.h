@@ -3,7 +3,7 @@
 
 #include <QtCore>
 #include "prefsdk/libs/qt/qtlua.h"
-#include "prefsdk/libs/preflib/luahexeditdata.h"
+#include "prefsdk/libs/preflib/databuffer.h"
 
 namespace PrefSDK
 {

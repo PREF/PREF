@@ -11,7 +11,7 @@
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/prefexception.h"
 #include "prefsdk/math.h"
-#include "luahexeditdata.h"
+#include "databuffer.h"
 #include <QtCore>
 #include <QtGui>
 #include <QtQuick>
