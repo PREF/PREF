@@ -6,6 +6,7 @@
 #include "prefsdk/disassembler/instruction/instructionset.h"
 #include "prefsdk/disassembler/register/registerset.h"
 #include "prefsdk/disassembler/processor/processoremulator.h"
+#include "prefsdk/disassembler/memorybuffer.h"
 #include "logwidget/logobject.h"
 #include <QtCore>
 
@@ -31,7 +32,7 @@ namespace PrefSDK
             void setEmulate(const PrefSDK::QtLua::LuaFunction& ef);
             void setElaborate(const PrefSDK::QtLua::LuaFunction& ef);
             lua_Integer callAnalyze(Instruction* instruction, const DataValue &baseaddress);
-            void callEmulate(ProcessorEmulator* emulator, Instruction* instruction);
+            void callEmulate(ProcessorEmulator* emulator, MemoryBuffer* memorybuffer, Instruction* instruction);
             void callElaborate(DisassemblerListing* listing);
 
         public:

@@ -8,6 +8,7 @@
 #include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/references/referencetable.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
+#include "prefsdk/disassembler/memorybuffer.h"
 #include "processordefinition.h"
 #include "processoremulator.h"
 #include <QLabel>
@@ -65,7 +66,7 @@ namespace PrefSDK
             PrefSDK::QtLua::LuaFunction _mapfunc;
             PrefSDK::QtLua::LuaFunction _baseaddressfunc;
             PrefSDK::QtLua::LuaFunction _elaboratefunc;
-            QStack<Function*> _functionstack;
+            MemoryBuffer* _memorybuffer;
             ProcessorDefinition* _processordefinition;
             ProcessorEmulator* _processoremulator;
             FormatDefinition* _formatdefinition;

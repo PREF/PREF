@@ -60,15 +60,16 @@ namespace PrefSDK
         return size;
     }
 
-    void ProcessorDefinition::callEmulate(ProcessorEmulator* emulator, Instruction *instruction)
+    void ProcessorDefinition::callEmulate(ProcessorEmulator* emulator, MemoryBuffer* memorybuffer, Instruction* instruction)
     {
         if(!this->_emulatefunc.isValid())
             return;
 
         lua_State* l = this->_emulatefunc.state();
         QtLua::pushObject(l, emulator);
+        QtLua::pushObject(l, memorybuffer);
         QtLua::pushObject(l, instruction);
-        bool err = this->_emulatefunc(2, 0, true);
+        bool err = this->_emulatefunc(3, 0, true);
 
         if(err)
         {

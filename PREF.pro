@@ -169,7 +169,8 @@ SOURCES += main.cpp\
     csvexporterdialog/csvexporterworker.cpp \
     csvexporterdialog/csvexporter.cpp \
     csvexporterdialog/csvexporterdialog.cpp \
-    prefsdk/libs/preflib/databuffer.cpp
+    prefsdk/libs/preflib/databuffer.cpp \
+    prefsdk/disassembler/memorybuffer.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -327,7 +328,8 @@ HEADERS  += mainwindow.h \
     csvexporterdialog/csvexporterworker.h \
     csvexporterdialog/csvexporter.h \
     csvexporterdialog/csvexporterdialog.h \
-    prefsdk/libs/preflib/databuffer.h
+    prefsdk/libs/preflib/databuffer.h \
+    prefsdk/disassembler/memorybuffer.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

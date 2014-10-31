@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    ProcessorLoader::ProcessorLoader(const QString &name, const QString &author, const QString &version, FormatDefinition *formatdefinition, ProcessorDefinition *processordefinition, QObject *parent): LogObject(parent), _processordefinition(processordefinition), _processoremulator(nullptr), _formatdefinition(formatdefinition), _listing(nullptr), _formattree(nullptr), _name(name), _author(author), _version(version)
+    ProcessorLoader::ProcessorLoader(const QString &name, const QString &author, const QString &version, FormatDefinition *formatdefinition, ProcessorDefinition *processordefinition, QObject *parent): LogObject(parent), _memorybuffer(nullptr), _processordefinition(processordefinition), _processoremulator(nullptr), _formatdefinition(formatdefinition), _listing(nullptr), _formattree(nullptr), _name(name), _author(author), _version(version)
     {
         this->_formatdefinition->setParent(this);
         this->_processordefinition->setParent(this);
@@ -17,6 +17,7 @@ namespace PrefSDK
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Calculating Function bounds..."));
         this->_listing->calcFunctionBounds();
 
+        /*
         if(elaborateinstructions)
         {
             QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Instructions..."));
@@ -25,6 +26,7 @@ namespace PrefSDK
 
         QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Analyzing Operands..."));
         this->_listing->analyzeOperands();
+        */
 
         if(analyzelisting)
         {
@@ -57,6 +59,7 @@ namespace PrefSDK
         this->setLogger(logger);
         this->_processordefinition->setLogger(logger);
         this->_listing->setAddressType(this->_processordefinition->addressType());
+        this->_memorybuffer = new MemoryBuffer(hexeditdata, listing, logger, this->_processordefinition->addressType(), this);
         this->_processoremulator = new ProcessorEmulator(listing, this->_processordefinition->addressType(), logger, this);
 
         QtLua::pushObject(l, this->_formattree);
@@ -163,36 +166,25 @@ namespace PrefSDK
         }
         else
         {
-            if(this->_processordefinition->decode(instruction))
-            {
-                const RegisterSet* registerset = this->_processordefinition->registerSet();
-
-                for(int i = 0; i < instruction->operandsCount(); i++)
-                {
-                    Operand* operand = instruction->operand(i);
-
-                    if(operand->type() == Operand::Register)
-                        operand->setRegisterName(registerset->name(operand->value()));
-                }
-
-                if(Reference::isCall(procaddress.second))
-                    this->_listing->createFunction(FunctionType::NormalFunction, procaddress.first);
-                else if(Reference::isJump(procaddress.second) && !this->_listing->referenceTable()->isReferenced(procaddress.first))
-                {
-                    SymbolTable* symboltable = this->_listing->symbolTable();
-                    symboltable->set(Symbol::Jump, procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
-                }
-
-                this->_processordefinition->callEmulate(this->_processoremulator, instruction);
-            }
-            else
+            if(!this->_processordefinition->instructionSet()->isOpcode(instruction->opcodeValue()))
             {
                 this->_logger->warning(QString("Unknown opcode %1h at %2h").arg(instruction->opcodeValue().toString(16), instruction->startAddress().toString(16)));
 
                 instruction->clearOperands();
                 instruction->setFormat(QString());
                 instruction->setMnemonic(Instruction::INVALID_MNEMONIC);
+                return;
             }
+
+            if(Reference::isCall(procaddress.second))
+                this->_listing->createFunction(FunctionType::NormalFunction, procaddress.first);
+            else if(Reference::isJump(procaddress.second) && !this->_listing->referenceTable()->isReferenced(procaddress.first))
+            {
+                SymbolTable* symboltable = this->_listing->symbolTable();
+                symboltable->set(Symbol::Jump, procaddress.first, QString("j_%1").arg(procaddress.first.toString(16)));
+            }
+
+            this->_processordefinition->callEmulate(this->_processoremulator, this->_memorybuffer, instruction);
         }
     }
 
