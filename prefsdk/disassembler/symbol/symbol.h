@@ -14,7 +14,7 @@ namespace PrefSDK
         Q_ENUMS(Type)
 
         public:
-            enum Type { Unknown, Library, Function, Jump, Address, Immediate, String };
+            enum Type { Unknown, Library, Function, Address, String };
 
         public:
             explicit Symbol(Symbol::Type symboltype, const DataValue& address, const DataValue& size, DataType::Type datatype, const QString& name, QObject *parent = 0);

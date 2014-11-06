@@ -14,7 +14,9 @@ CrossReferenceModel::CrossReferenceModel(Block *block, DisassemblerListing *list
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
     ReferenceTable* referenceset = listing->referenceTable();
-    this->_references = referenceset->references(block)->referenceList();
+
+    if(referenceset->count())
+        this->_references = referenceset->references(block)->referenceList();
 }
 
 CrossReferenceModel::CrossReferenceModel(const DataValue &address, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(address), _listing(listing)

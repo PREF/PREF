@@ -4,7 +4,7 @@
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/exporter/exporterdefinition.h"
-#include "prefsdk/disassembler/processor/processorloader.h"
+#include "prefsdk/disassembler/disassemblerdefinition.h"
 #include "prefsdk/disassembler/instruction/instructionset.h"
 #include "prefsdk/disassembler/register/registerset.h"
 #include "prefsdk/disassembler/references/reference.h"
@@ -38,13 +38,10 @@ namespace PrefSDK
 
         private:
             void buildSegmentTable(lua_State* l);
-            void buildInstructionCategoryTable(lua_State* l);
-            void buildInstructionTypeTable(lua_State* l);
-            void buildOperandDescriptorTable(lua_State* l);
-            void buildOperandTypeTable(lua_State* l);
             void buildFunctionTypeTable(lua_State* l);
             void buildReferenceTypeTable(lua_State* l);
             void buildBlockTypeTable(lua_State* l);
+            void buildSymbolTypeTable(lua_State* l);
 
         public:
             static void open(lua_State* l, SdkVersion* sdkversion);
@@ -69,10 +66,7 @@ namespace PrefSDK
 
         /* Disassembler Methods */
         private:
-            static int disassembler_createLoader(lua_State* l);
-            static int disassembler_createProcessor(lua_State* l);
-            static int disassembler_createInstructionSet(lua_State* l);
-            static int disassembler_createRegisterSet(lua_State* l);
+            static int disassembler_create(lua_State* l);
 
         private:
             static int setSdkVersion(lua_State* l);

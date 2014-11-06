@@ -17,6 +17,7 @@ namespace PrefSDK
             DataType::Type dataType() const;
             const DataValue::ValueU& valueUnion() const;
             bool isNull() const;
+            bool isZero() const;
             QString toString(int base = 10) const;
 
         private:

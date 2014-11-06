@@ -1,6 +1,6 @@
 #include "crossreferencedelegate.h"
 
-CrossReferenceDelegate::CrossReferenceDelegate(DisassemblerListing *listing, QObject *parent): QStyledItemDelegate(parent), _listing(listing)
+CrossReferenceDelegate::CrossReferenceDelegate(DisassemblerDefinition* disassembler, DisassemblerListing *listing, QObject *parent): QStyledItemDelegate(parent), _disassembler(disassembler), _listing(listing)
 {
 }
 
@@ -33,15 +33,17 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
         return;
     }
 
-    if((b->blockType() != Block::SegmentBlock) && (b->blockType() != Block::ReferenceBlock))
+    if(b->blockType() == Block::InstructionBlock)
     {
-        if(b->blockType() == Block::InstructionBlock)
-            document.setPlainText(this->_listing->formatInstruction(qobject_cast<Instruction*>(b)));
-        else if(b->blockType() == Block::FunctionBlock)
-        {
-            SymbolTable* symboltable = this->_listing->symbolTable();
-            document.setPlainText(QString("function %1()").arg(symboltable->name(b->startAddress())));
-        }
+        ListingPrinter printer(this->_disassembler->addressType());
+        this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b));
+        return;
+    }
+
+    if(b->blockType() == Block::FunctionBlock)
+    {
+        SymbolTable* symboltable = this->_listing->symbolTable();
+        document.setPlainText(QString("function %1()").arg(symboltable->name(b->startAddress())));
     }
 
     DisassemblerHighlighter highlighter(&document, b);

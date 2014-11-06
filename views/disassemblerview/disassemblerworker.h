@@ -5,7 +5,7 @@
 #include <QLabel>
 #include "logwidget/logger.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/disassembler/processor/processorloader.h"
+#include "prefsdk/disassembler/disassemblerdefinition.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 
 using namespace PrefSDK;
@@ -15,7 +15,7 @@ class DisassemblerWorker : public QThread
     Q_OBJECT
 
     public:
-        explicit DisassemblerWorker(QHexEditData* hexeditdata, ProcessorLoader* loader, bool elaborateinstructions, bool analyzelisting, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
+        explicit DisassemblerWorker(QHexEditData* hexeditdata, DisassemblerDefinition* disassemblerdefinition, bool elaborateinstructions, bool analyzelisting, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
         DisassemblerListing* listing() const;
 
     protected:
@@ -26,7 +26,7 @@ class DisassemblerWorker : public QThread
         bool _analyzelisting;
         DisassemblerListing* _listing;
         QHexEditData* _hexeditdata;
-        ProcessorLoader* _loader;
+        DisassemblerDefinition* _disassemblerdefinition;
         LogWidget* _logwidget;
         QLabel* _infolabel;
 };

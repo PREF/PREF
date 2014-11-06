@@ -16,7 +16,6 @@ class StringSymbolModel : public QAbstractItemModel
 
     public:
         explicit StringSymbolModel(DisassemblerListing* listing, QHexEditData* hexeditdata, QObject *parent = 0);
-        const DataValue& string(qint64 idx);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -32,7 +31,7 @@ class StringSymbolModel : public QAbstractItemModel
         DisassemblerListing* _listing;
         QHexEditData* _hexeditdata;
         QHexEditDataReader* _reader;
-        QList<DataValue> _strings;
+        QList<Symbol*> _strings;
 
     private:
         static const qint64 STRING_MAX_LENGTH;

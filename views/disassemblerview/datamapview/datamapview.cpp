@@ -40,17 +40,15 @@ DataMapView::~DataMapView()
 void DataMapView::highlightData()
 {
     QColor color;
-    const DisassemblerListing::VariableSet& variables = this->_listing->variables();
-    SymbolTable* symbols = this->_listing->symbolTable();
     Symbol* lastsymbol = nullptr;
 
-    for(DisassemblerListing::VariableSet::ConstIterator it = variables.begin(); it != variables.end(); it++)
+    for(int i = 0; i < this->_variablesmodel->rowCount(); i++)
     {
-        DataValue variable = *it;
-        Segment* segment = this->_listing->findSegment(variable);
-        Symbol* symbol = symbols->get(variable);
-        qint64 offset = ((variable - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
-        qint64 endoffset = (offset + symbol->size().compatibleValue<qint64>()) - 1;
+        Symbol* symbol = reinterpret_cast<Symbol*>(this->_variablesmodel->index(i, 0).internalPointer());
+        Segment* segment = this->_listing->findSegment(symbol->address());
+
+        if(!segment)
+            continue;
 
         if(symbol->type() == Symbol::Address)
         {
@@ -59,9 +57,11 @@ void DataMapView::highlightData()
             else
                 color = this->_addresscolor;
         }
-        else if(symbol->type() == Symbol::String)
+        else /* if(symbol->type() == Symbol::String) */
             color = this->_stringcolor;
 
+        qint64 offset = ((symbol->address() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
+        qint64 endoffset = (offset + symbol->size().compatibleValue<qint64>()) - 1;
         ui->hexView->highlightBackground(offset, endoffset, color);
         ui->hexView->commentRange(offset, endoffset, symbol->name());
         lastsymbol = symbol;
@@ -73,11 +73,12 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    SymbolTable* symbols = this->_listing->symbolTable();
-    DataValue variable = this->_variablesmodel->variable(index.row());
-    Symbol* symbol = symbols->get(variable);
-    Segment* segment = this->_listing->findSegment(variable);
-    qint64 offset = ((variable - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
+    Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
+    Segment* segment = this->_listing->findSegment(symbol->address());
 
+    if(!segment)
+        return;
+
+    qint64 offset = ((symbol->address() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
     ui->hexView->setSelectionRange(offset, symbol->size().compatibleValue<qint64>());
 }

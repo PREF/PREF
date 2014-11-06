@@ -82,6 +82,11 @@ namespace PrefSDK
         return this->_datatype == DataType::Invalid;
     }
 
+    bool DataValue::isZero() const
+    {
+        return this->_value.UInt64 == 0;
+    }
+
     QString DataValue::toString(int base) const
     {
         if(DataType::isSigned(this->_datatype))
@@ -145,16 +150,16 @@ namespace PrefSDK
 
     DataValue DataValue::operator ++(int)
     {
-        DataValue dv(*this);
-        ++dv._value.Int64;
-        return dv;
+        DataValue result = *this;
+        ++this->_value.Int64;
+        return result;
     }
 
     DataValue DataValue::operator --(int)
     {
-        DataValue dv(*this);
-        --dv._value.Int64;
-        return dv;
+        DataValue result = *this;
+        --this->_value.Int64;
+        return result;
     }
 
     DataValue DataValue::operator +(const DataValue &rhs) const

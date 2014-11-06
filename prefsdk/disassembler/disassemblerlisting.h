@@ -7,6 +7,8 @@
 #include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/symbol/constanttable.h"
 #include "prefsdk/disassembler/references/referencetable.h"
+#include "qhexedit/qhexeditdata.h"
+#include "qhexedit/qhexeditdatareader.h"
 #include <algorithm>
 #include <QtCore>
 
@@ -34,9 +36,10 @@ namespace PrefSDK
             explicit DisassemblerListing(QHexEditData* hexeditdata, QObject *parent = 0);
             DataType::Type addressType() const;
             void setAddressType(DataType::Type addresstype);
+            bool isAddress(const DataValue& address) const;
             bool isDecoded(const DataValue& address) const;
+            qint64 pointsToString(const DataValue& address) const;
             void calcFunctionBounds();
-            void analyzeOperands();
             qint64 length() const;
             PrefSDK::Block* firstBlock();
             PrefSDK::Block* lastBlock();
@@ -55,18 +58,15 @@ namespace PrefSDK
             const DisassemblerListing::VariableSet& variables() const;
             void createReference(const DataValue& srcaddress, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx = -1);
             void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
-            Function* createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address);
-            Function* createFunction(FunctionType::Type functiontype, const DataValue& startaddress);
-            Instruction* createInstruction(const DataValue& address, DataType::Type opcodetype);
+            void createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address);
+            void createFunction(FunctionType::Type functiontype, const DataValue& startaddress);
+            void addInstruction(Instruction *instruction);
             Segment* findSegment(Block* block);
-            Segment* findSegment(const DataValue& address);
+            Segment* findSegment(const DataValue& address) const;
             Function* findFunction(Block* block);
             Function* findFunction(const DataValue& address);
             Instruction* findInstruction(const DataValue& address);
             Block* findBlock(const DataValue& address);
-            QString formatInstruction(Instruction* instruction);
-            QString formatInstructionCustom(Instruction* instruction);
-            QString formatInvalidInstruction(Instruction* instruction);
 
         public slots:
             bool hasNextBlock(QObject* b);
@@ -74,8 +74,6 @@ namespace PrefSDK
             QObject* nextFunction(QObject* f);
             QObject* firstInstruction(QObject* f);
             QObject* nextInstruction(QObject* i);
-            PrefSDK::Instruction* replaceInstructions(QObject* b1, QObject* b2, const QString& mnemonic, lua_Integer category);
-            PrefSDK::Instruction* replaceInstructions(QObject* b1, QObject* b2, const QString& mnemonic, lua_Integer category, lua_Integer type);
 
         public: /* Modified Binary Search O(log(n) + 2k) */
             qint64 indexOf(Block* block);
@@ -83,15 +81,11 @@ namespace PrefSDK
 
         private:
             void checkSort();
-            bool pointsToString(const DataValue& address);
-            void analyzeAddress(Instruction *instruction, const DataValue& address);
-            QString formatOperand(Instruction *instruction, Operand *operand);
             void removeInstructions(Instruction* from, Instruction* to);
             static bool sortBlocks(Block* block1, Block* block2);
 
         private:
             bool _blocksorted;
-            DataType::Type _addresstype;
             QHexEditData* _hexeditdata;
             ReferenceTable* _referencetable;
             SymbolTable* _symboltable;

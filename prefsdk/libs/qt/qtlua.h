@@ -18,6 +18,28 @@ namespace PrefSDK
         public:
             enum ObjectOwnership { CppOwnership, LuaOwnership };
 
+            class LuaTable
+            {
+                public:
+                    LuaTable();
+                    LuaTable(lua_State* l, int idx);
+                    LuaTable(const QtLua::LuaTable& tc);
+                    virtual ~LuaTable();
+                    QtLua::LuaTable& operator=(const QtLua::LuaTable& tc);
+                    void push(lua_State* l = nullptr) const;
+                    void getField(const QString& name) const;
+                    bool isValid() const;
+
+                public: /* Useful Interface */
+                    QString getString(const QString& name) const;
+                    lua_Integer getInteger(const QString& name) const;
+                    bool getBoolean(const QString& name) const;
+
+                private:
+                    lua_State* _state;
+                    int _registryidx;
+            };
+
             class LuaFunction
             {
                 private:
@@ -103,6 +125,7 @@ namespace PrefSDK
     };
 }
 
+Q_DECLARE_METATYPE(PrefSDK::QtLua::LuaTable)
 Q_DECLARE_METATYPE(PrefSDK::QtLua::LuaFunction)
 
 #endif // PREFSDK_QTLUA_H

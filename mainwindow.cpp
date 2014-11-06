@@ -59,13 +59,13 @@ void MainWindow::closeEvent(QCloseEvent *e)
 void MainWindow::disassembleFile(const QString &file)
 {
     QHexEditData* hexeditdata = QHexEditData::fromFile(file);
-    LoaderDialog ld(hexeditdata, this);
+    DisassemblerDialog ld(hexeditdata, this);
 
     if(!ld.hasLoaders())
     {
         QMessageBox m;
         m.setWindowTitle("No Loaders found...");
-        m.setText("Cannot find a valid loader, do you want do load the file in binary mode?");
+        m.setText("Cannot find a valid disassembler, do you want do load the file in binary mode?");
         m.setIcon(QMessageBox::Warning);
         m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         m.setDefaultButton(QMessageBox::Yes);
@@ -86,10 +86,10 @@ void MainWindow::disassembleFile(const QString &file)
 
     int res = ld.exec();
 
-    if(res == LoaderDialog::Accepted && ld.selectedLoader())
+    if(res == DisassemblerDialog::Accepted && ld.selectedDisassembler())
     {
         QString viewname = QFileInfo(file).fileName();
-        DisassemblerView* dv = new DisassemblerView(ld.selectedLoader(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
+        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
         ui->tabWidget->addTab(dv, viewname);
         dv->disassemble(ld.elaborateInstructions(), ld.analyzeListing());
     }

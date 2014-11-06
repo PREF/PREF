@@ -109,8 +109,8 @@ SOURCES += main.cpp\
     viewmodels/visualmapmodel/visualmapdelegate.cpp \
     viewmodels/datatypesmodel/datatypesdelegate.cpp \
     views/disassemblerview/disassemblerview.cpp \
-    prefsdk/disassembler/loader/loaderlist.cpp \
-    viewmodels/loaderlistmodel/loaderlistmodel.cpp \
+    prefsdk/disassembler/disassemblerlist.cpp \
+    viewmodels/disassemblerlistmodel/disassemblerlistmodel.cpp \
     prefsdk/disassembler/blocks/block.cpp \
     prefsdk/disassembler/blocks/segment.cpp \
     views/disassemblerview/segmentsdialog/segmentsdialog.cpp \
@@ -138,7 +138,7 @@ SOURCES += main.cpp\
     prefsdk/prefexception.cpp \
     prefsdk/libs/oop/oop.cpp \
     prefsdk/exporter/exporterdefinition.cpp \
-    prefsdk/disassembler/processor/processorloader.cpp \
+    prefsdk/disassembler/disassemblerdefinition.cpp \
     prefsdk/disassembler/processor/processordefinition.cpp \
     prefsdk/disassembler/instruction/instructionset.cpp \
     prefsdk/disassembler/instruction/instructioncategory.cpp \
@@ -156,7 +156,7 @@ SOURCES += main.cpp\
     views/disassemblerview/gotowidget/gotowidget.cpp \
     viewmodels/stringsymbolmodel/stringsymbolmodel.cpp \
     viewmodels/variablesmodel/variablesmodel.cpp \
-    views/disassemblerview/loaderdialog/loaderdialog.cpp \
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.cpp \
     prefsdk/disassembler/functiontype.cpp \
     prefsdk/disassembler/symbol/constanttable.cpp \
     prefsdk/disassembler/symbol/constant.cpp \
@@ -170,7 +170,9 @@ SOURCES += main.cpp\
     csvexporterdialog/csvexporter.cpp \
     csvexporterdialog/csvexporterdialog.cpp \
     prefsdk/libs/preflib/databuffer.cpp \
-    prefsdk/disassembler/memorybuffer.cpp
+    prefsdk/disassembler/memorybuffer.cpp \
+    prefsdk/disassembler/operand/operandtype.cpp \
+    prefsdk/disassembler/listingprinter.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -268,8 +270,8 @@ HEADERS  += mainwindow.h \
     viewmodels/visualmapmodel/visualmapdelegate.h \
     viewmodels/datatypesmodel/datatypesdelegate.h \
     views/disassemblerview/disassemblerview.h \
-    prefsdk/disassembler/loader/loaderlist.h \
-    viewmodels/loaderlistmodel/loaderlistmodel.h \
+    prefsdk/disassembler/disassemblerlist.h \
+    viewmodels/disassemblerlistmodel/disassemblerlistmodel.h \
     prefsdk/disassembler/blocks/block.h \
     prefsdk/disassembler/blocks/segment.h \
     views/disassemblerview/segmentsdialog/segmentsdialog.h \
@@ -298,7 +300,7 @@ HEADERS  += mainwindow.h \
     prefsdk/prefexception.h \
     prefsdk/libs/oop/oop.h \
     prefsdk/exporter/exporterdefinition.h \
-    prefsdk/disassembler/processor/processorloader.h \
+    prefsdk/disassembler/disassemblerdefinition.h \
     prefsdk/disassembler/processor/processordefinition.h \
     prefsdk/disassembler/instruction/instructionset.h \
     prefsdk/disassembler/instruction/instructioncategory.h \
@@ -316,7 +318,7 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/gotowidget/gotowidget.h \
     viewmodels/stringsymbolmodel/stringsymbolmodel.h \
     viewmodels/variablesmodel/variablesmodel.h \
-    views/disassemblerview/loaderdialog/loaderdialog.h \
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.h \
     prefsdk/disassembler/functiontype.h \
     prefsdk/disassembler/symbol/constanttable.h \
     prefsdk/disassembler/symbol/constant.h \
@@ -329,7 +331,9 @@ HEADERS  += mainwindow.h \
     csvexporterdialog/csvexporter.h \
     csvexporterdialog/csvexporterdialog.h \
     prefsdk/libs/preflib/databuffer.h \
-    prefsdk/disassembler/memorybuffer.h
+    prefsdk/disassembler/memorybuffer.h \
+    prefsdk/disassembler/operand/operandtype.h \
+    prefsdk/disassembler/listingprinter.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -360,8 +364,8 @@ FORMS    += mainwindow.ui \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.ui \
     views/hexview/outputwidget/outputwidget.ui \
     views/disassemblerview/gotowidget/gotowidget.ui \
-    views/disassemblerview/loaderdialog/loaderdialog.ui \
-    csvexporterdialog/csvexporterdialog.ui
+    csvexporterdialog/csvexporterdialog.ui \
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui
 
 RESOURCES += resources.qrc
 

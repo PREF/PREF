@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(ProcessorLoader *loader, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _loader(loader)
+DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinition, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _disassembler(disassemblerdefinition)
 {
     ui->setupUi(this);
 
@@ -153,7 +153,7 @@ void DisassemblerView::showCrossReference(Block *b)
         refset = referencetable->references(b);
 
     QList<Reference*> references = refset->referenceList();
-    CrossReferenceDialog crd(refset, references, this->_listing);
+    CrossReferenceDialog crd(refset, references, this->_disassembler, this->_listing);
     int res = crd.exec();
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -167,7 +167,7 @@ void DisassemblerView::showCrossReference(const DataValue &address)
     if(!referencetable->isReferenced(address))
         return;
 
-    CrossReferenceDialog crd(address, this->_listing);
+    CrossReferenceDialog crd(address, this->_disassembler, this->_listing);
     int res = crd.exec();
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -179,7 +179,7 @@ void DisassemblerView::disassemble(bool elaborateinstructions, bool analyzelisti
     if(!this->_hexeditdata)
         return;
 
-    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_loader, elaborateinstructions, analyzelisting, ui->logWidget, this->_lblinfo, this);
+    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, elaborateinstructions, analyzelisting, ui->logWidget, this->_lblinfo, this);
     connect(this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
     this->_worker->start();
 }
@@ -201,7 +201,7 @@ void DisassemblerView::onFunctionsMenuXRefsTriggered()
 
     if(index.isValid())
     {
-        CrossReferenceDialog crd(reinterpret_cast<Function*>(index.internalPointer()), this->_listing);
+        CrossReferenceDialog crd(reinterpret_cast<Function*>(index.internalPointer()), this->_disassembler, this->_listing);
         int res = crd.exec();
 
         if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -237,8 +237,9 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
 
         case Block::InstructionBlock:
         {
+            Segment* s = this->_listing->findSegment(b);
             Instruction* i = qobject_cast<Instruction*>(b);
-            ui->dataView->selectRange(i->offsetValue(), i->sizeValue());
+            ui->dataView->selectRange((i->startAddress() - s->startAddress()) + s->baseOffset(), i->sizeValue());
             break;
         }
 
@@ -255,7 +256,8 @@ void DisassemblerView::displayDisassembly()
     this->_listing->setParent(this);
 
     this->_toolbar->setEnabled(true);
-    ui->gotoWidget->setListing(this->_listing);
+    ui->gotoWidget->setDisassembler(this->_disassembler);
+    ui->disassemblerWidget->setDisassembler(this->_disassembler);
     ui->disassemblerWidget->setListing(this->_listing);
 
     this->_functionmodel = new FunctionModel(this->_listing, ui->functionList);
@@ -312,7 +314,7 @@ void DisassemblerView::copyListing()
     Block* b = ui->disassemblerWidget->selectedBlock();
 
     if(b->blockType() == Block::InstructionBlock)
-        clipboard->setText(this->_listing->formatInstruction(qobject_cast<Instruction*>(b)));
+        clipboard->setText(this->_disassembler->emitInstruction(qobject_cast<Instruction*>(b)));
     else if(b->blockType() == Block::FunctionBlock)
     {
         const SymbolTable* symboltable = this->_listing->symbolTable();
@@ -447,7 +449,7 @@ void DisassemblerView::on_tvStrings_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    this->showCrossReference(this->_stringsymbols->string(index.row()));
+    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer())->address());
 }
 
 void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
@@ -455,7 +457,7 @@ void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    this->showCrossReference(this->_variablesmodel->variable(index.row()));
+    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer())->address());
 }
 
 void DisassemblerView::on_tabOverview_currentChanged(int index)

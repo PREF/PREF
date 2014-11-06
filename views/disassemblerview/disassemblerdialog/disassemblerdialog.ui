@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LoaderDialog</class>
- <widget class="QDialog" name="LoaderDialog">
+ <class>DisassemblerDialog</class>
+ <widget class="QDialog" name="DisassemblerDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>466</width>
-    <height>301</height>
+    <width>462</width>
+    <height>297</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select Loader...</string>
+   <string>Available Disassemblers</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="QTableView" name="loaderTable">
+    <widget class="QTableView" name="disassemblerTable">
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>
      </property>
@@ -101,7 +101,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>LoaderDialog</receiver>
+   <receiver>DisassemblerDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -117,7 +117,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>LoaderDialog</receiver>
+   <receiver>DisassemblerDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

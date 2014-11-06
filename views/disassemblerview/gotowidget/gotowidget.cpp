@@ -1,7 +1,7 @@
 #include "gotowidget.h"
 #include "ui_gotowidget.h"
 
-GotoWidget::GotoWidget(QWidget *parent): QWidget(parent), ui(new Ui::GotoWidget), _listing(nullptr)
+GotoWidget::GotoWidget(QWidget *parent): QWidget(parent), ui(new Ui::GotoWidget), _disassembler(nullptr)
 {
     ui->setupUi(this);
     ui->leAddress->setInputType(QNumberLineEdit::HexString);
@@ -17,12 +17,10 @@ GotoWidget::~GotoWidget()
     delete ui;
 }
 
-void GotoWidget::setListing(DisassemblerListing *listing)
+void GotoWidget::setDisassembler(DisassemblerDefinition* disassembler)
 {
-    if(!this->_listing)
-        ui->leAddress->setMaxLength(DataType::byteWidth(listing->addressType()));
-
-    this->_listing = listing;
+    this->_disassembler = disassembler;
+    ui->leAddress->setMaxLength(DataType::byteWidth(disassembler->addressType()));
 }
 
 QLineEdit *GotoWidget::addressWidget()
@@ -32,7 +30,7 @@ QLineEdit *GotoWidget::addressWidget()
 
 void GotoWidget::gotoBlock()
 {
-    DataType::Type addresstype = this->_listing->addressType();
+    DataType::Type addresstype = this->_disassembler->addressType();
 
     if(static_cast<uint>(ui->leAddress->text().length()) != DataType::byteWidth(addresstype))
         return;

@@ -2,18 +2,11 @@
 
 VariablesModel::VariablesModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
-    this->_variables = listing->variables().toList();
+    this->_variables = listing->symbolTable()->variables();
 
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
-
-    std::sort(this->_variables.begin(), this->_variables.end());
-}
-
-const DataValue &VariablesModel::variable(qint64 idx) const
-{
-    return this->_variables[idx];
 }
 
 DisassemblerListing *VariablesModel::listing() const
@@ -59,7 +52,8 @@ QVariant VariablesModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        DataValue address = this->_variables[index.row()];
+        Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
+        const DataValue& address = symbol->address();
 
         switch(index.column())
         {
@@ -77,17 +71,10 @@ QVariant VariablesModel::data(const QModelIndex &index, int role) const
                 return address.toString(16).append("h");
 
             case 2:
-            {
-                const SymbolTable* symbols = this->_listing->symbolTable();
-                Symbol* symbol = symbols->get(address);
                 return symbol->size().toString();
-            }
 
             case 3:
-            {
-                const SymbolTable* symbols = this->_listing->symbolTable();
-                return symbols->name(address);
-            }
+                return symbol->name();
 
             default:
                 break;
@@ -98,7 +85,7 @@ QVariant VariablesModel::data(const QModelIndex &index, int role) const
         if(index.column() == 0 || index.column() == 1 || index.column() == 2)
             return QColor(Qt::darkBlue);
 
-        Symbol* symbol = this->_listing->symbolTable()->get(this->_variables[index.row()]);
+        Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
 
         if(symbol->type() == Symbol::Address)
             return QColor(Qt::darkCyan);
@@ -116,7 +103,7 @@ QModelIndex VariablesModel::index(int row, int column, const QModelIndex &parent
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column);
+    return this->createIndex(row, column, this->_variables[row]);
 }
 
 QModelIndex VariablesModel::parent(const QModelIndex &) const

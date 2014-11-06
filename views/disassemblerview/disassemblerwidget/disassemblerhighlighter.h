@@ -5,7 +5,6 @@
 #include <QtGui>
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/blocks/block.h"
-#include "prefsdk/disassembler/blocks/instruction.h"
 
 using namespace PrefSDK;
 
@@ -22,10 +21,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         void highlightSegment(const QString& text);
         void highlightFunction(const QString& text);
         void highlightComment(const QString& text);
-        void highlightInstruction(const QString& text);
-        void highlightInvalidInstruction(const QString& text);
         void highlightJumpLabel(const QString& text);
-        void highlightSymbol(const QString& text);
 
     protected:
         virtual void highlightBlock(const QString &text);
@@ -37,10 +33,8 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         QTextCharFormat _functionformat;
         QTextCharFormat _functionnameformat;
         QTextCharFormat _hexdigitsformat;
-        QTextCharFormat _registersformat;
         QTextCharFormat _commentformat;
         QTextCharFormat _jumplabelformat;
-        QTextCharFormat _symbollabelformat;
 };
 
 #endif // DISASSEMBLERHIGHLIGHTER_H

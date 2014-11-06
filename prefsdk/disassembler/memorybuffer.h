@@ -12,8 +12,13 @@ namespace PrefSDK
     {
         Q_OBJECT
 
+        Q_PROPERTY(lua_Integer baseaddress READ baseAddress)
+
         public:
-            explicit MemoryBuffer(QHexEditData* hexeditdata, DisassemblerListing* listing, Logger* logger, DataType::Type datatype, QObject *parent = 0);
+            explicit MemoryBuffer(QHexEditData* hexeditdata, DisassemblerListing* listing, Logger* logger, const DataValue& baseaddress, DataType::Type addresstype, QObject *parent = 0);
+            DataValue read(const DataValue& address, DataType::Type datatype);
+            DataValue read(const DataValue& address);
+            lua_Integer baseAddress() const;
 
         public slots:
             lua_Integer read(lua_Integer address, lua_Integer datatype);
@@ -22,7 +27,8 @@ namespace PrefSDK
             DataBuffer* _databuffer;
             DisassemblerListing* _listing;
             Logger* _logger;
-            DataType::Type _datatype;
+            DataValue _baseaddress;
+            DataType::Type _addresstype;
     };
 }
 

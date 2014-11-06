@@ -107,6 +107,7 @@ namespace PrefSDK
             static uint byteWidth(DataType::Type type);
             static uint bitWidth(DataType::Type type);
             static QSysInfo::Endian byteOrder(DataType::Type type);
+            static DataType::Type adjust(DataType::Type type, QSysInfo::Endian byteorder);
             static QString stringValue(DataType::Type type);
     };
 

@@ -44,8 +44,8 @@ namespace PrefSDK
         {   
             Symbol* symbol = this->_symboltable[address];
 
-            if(symbol->type() == Symbol::Library)
-                return; /* This symbol is locked */
+            if((symbol->type() == Symbol::Library) || ((symboltype == Symbol::Address) && (symbol->type() == Symbol::Function)))
+                return; /* Symbol is locked or it is a Function */
 
             symbol->setType(symboltype);
             symbol->setSize(symbolsize);
@@ -54,7 +54,18 @@ namespace PrefSDK
             return;
         }
 
-        this->_symboltable[address] = new Symbol(symboltype, address, symbolsize, datatype, name, this);
+        Symbol* s = new Symbol(symboltype, address, symbolsize, datatype, name, this);
+        this->_symboltable[address] = s;
+
+        if((symboltype == Symbol::Address) || (symboltype == Symbol::String))
+        {
+            this->_variables[address] = s;
+
+            if(symboltype == Symbol::String)
+                this->_strings[address] = s;
+        }
+        else if(symboltype == Symbol::Function)
+            this->_functions[address] = s;
     }
 
     QString SymbolTable::name(const DataValue &address) const
@@ -68,5 +79,20 @@ namespace PrefSDK
     Symbol *SymbolTable::get(const DataValue &address) const
     {
         return this->_symboltable[address];
+    }
+
+    QList<Symbol *> SymbolTable::functions() const
+    {
+        return this->_functions.values();
+    }
+
+    QList<Symbol*> SymbolTable::variables() const
+    {
+        return this->_variables.values();
+    }
+
+    QList<Symbol *> SymbolTable::strings() const
+    {
+        return this->_strings.values();
     }
 }

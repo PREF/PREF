@@ -14,7 +14,7 @@
 #include "viewmodels/variablesmodel/variablesmodel.h"
 #include "views/abstractview.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
-#include "prefsdk/disassembler/loader/loaderlist.h"
+#include "prefsdk/disassembler/disassemblerlist.h"
 #include "prefsdk/luastate.h"
 #include "disassemblerworker.h"
 
@@ -29,7 +29,7 @@ class DisassemblerView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit DisassemblerView(ProcessorLoader* loader, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
+        explicit DisassemblerView(DisassemblerDefinition* disassemblerdefinition, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~DisassemblerView();
         void disassemble(bool elaborateinstructions, bool analyzelisting);
 
@@ -83,7 +83,7 @@ class DisassemblerView : public AbstractView
         StringSymbolModel* _stringsymbols;
         VariablesModel* _variablesmodel;
         FunctionModel* _functionmodel;
-        ProcessorLoader* _loader;
+        DisassemblerDefinition* _disassembler;
         QToolBar* _toolbar;
         QMenu* _functionsmenu;
         QMenu* _listingmenu;

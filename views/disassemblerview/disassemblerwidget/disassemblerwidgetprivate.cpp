@@ -1,6 +1,6 @@
 #include "disassemblerwidgetprivate.h"
 
-DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
+DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _printer(nullptr), _disassembler(nullptr), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
 {
     this->_charwidth = this->_charheight = 0;
 
@@ -23,6 +23,12 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
     return this->_selectedblock;
 }
 
+void DisassemblerWidgetPrivate::setDisassembler(DisassemblerDefinition *disassembler)
+{
+    this->_disassembler = disassembler;
+    this->_printer = new ListingPrinter(disassembler->addressType(), this);
+}
+
 void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
 {
     if(idx == this->_selectedindex)
@@ -40,7 +46,7 @@ void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
     this->_selectedindex = idx;
     this->_selectedblock = blocks[idx];
 
-    if(this->_listing)
+    if(this->_disassembler && this->_listing)
     {
         this->ensureVisible(idx);
         this->update();
@@ -212,6 +218,12 @@ void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qi
     QTextDocument document;
     int x = this->drawAddress(painter, fm, block, y);
 
+    if(block->blockType() == Block::InstructionBlock)
+    {
+        this->drawInstruction(qobject_cast<Instruction*>(block), painter, fm, x + (this->_charwidth * 5), y);
+        return;
+    }
+
     switch(block->blockType())
     {
         case Block::SegmentBlock:
@@ -221,11 +233,6 @@ void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qi
         case Block::FunctionBlock:
             document.setPlainText(this->emitFunction(qobject_cast<Function*>(block)));
             x += this->_charwidth * 2;
-            break;
-
-        case Block::InstructionBlock:
-            document.setPlainText(this->emitInstruction(qobject_cast<Instruction*>(block)));
-            x += this->_charwidth * 5;
             break;
 
         case Block::ReferenceBlock:
@@ -255,8 +262,8 @@ QString DisassemblerWidgetPrivate::emitSegment(Segment *segment)
 QString DisassemblerWidgetPrivate::emitFunction(Function* func)
 {
     QString refstring;
-    SymbolTable* symboltable = this->_listing->symbolTable();
     ReferenceTable* referencetable = this->_listing->referenceTable();
+    SymbolTable* symboltable = this->_listing->symbolTable();
 
     if(referencetable->isReferenced(func))
         refstring = this->displayReferences("Called by", referencetable->references(func));
@@ -264,35 +271,11 @@ QString DisassemblerWidgetPrivate::emitFunction(Function* func)
     return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), refstring);
 }
 
-QString DisassemblerWidgetPrivate::emitInstruction(Instruction *instruction)
+void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y)
 {
-    SymbolTable* symboltable = this->_listing->symbolTable();
-    QHexEditDataReader reader(this->_listing->data());
-    QString stringrefs, instructionout = this->_listing->formatInstruction(instruction);
-
-    for(lua_Integer i = 0; i < instruction->operandsCount(); i++)
-    {
-        Operand* op = instruction->operand(i);
-
-        if((op->type() == Operand::Address) && (symboltable->contains(op->operandValue())) && symboltable->isType(op->operandValue(), Symbol::String))
-        {
-            Segment* segment = this->_listing->findSegment(op->operandValue());
-            Symbol* symbol = symboltable->get(op->operandValue());
-            DataValue offset = (op->operandValue() - segment->startAddress()) + segment->baseOffset();
-
-            if(!stringrefs.isEmpty())
-                stringrefs.append(" | ");
-            else
-                stringrefs.append("# ");
-
-            stringrefs.append(QString("%1:%2: '%3'").arg(segment->name(), symbol->name(), reader.readString(offset.compatibleValue<qint64>()).replace(QRegExp("[\\n\\r]"), " ")));
-        }
-    }
-
-    if(stringrefs.isEmpty())
-        return instructionout;
-
-    return QString("%1\t%2").arg(instructionout, stringrefs);
+    this->_printer->reset();
+    this->_disassembler->callOutput(this->_printer, instruction); /* Call Lua in order to compile instruction */
+    this->_printer->draw(painter, fm, x, y);
 }
 
 QString DisassemblerWidgetPrivate::emitReference(ReferenceSet *referenceset)
@@ -336,7 +319,7 @@ void DisassemblerWidgetPrivate::adjust()
     this->_charwidth = fm.width(" ");
     this->_charheight = fm.height();
 
-    if(this->_listing)
+    if(this->_disassembler && this->_listing)
     {
         qint64 vislines = this->height() / this->_charheight;
 
@@ -454,7 +437,7 @@ void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
 
 void DisassemblerWidgetPrivate::wheelEvent(QWheelEvent *e)
 {
-    if(this->_listing)
+    if(this->_disassembler && this->_listing)
     {
         int numDegrees = e->delta() / 8;
         int numSteps = numDegrees / 15;
@@ -509,7 +492,7 @@ void DisassemblerWidgetPrivate::mousePressEvent(QMouseEvent *e)
         this->_clicked = true;
         QTimer::singleShot(qApp->doubleClickInterval(), this, SLOT(unlockClick()));
 
-        if(this->_listing)
+        if(this->_disassembler && this->_listing)
         {
             QPoint pos = e->pos();
 
@@ -525,7 +508,7 @@ void DisassemblerWidgetPrivate::mousePressEvent(QMouseEvent *e)
 
 void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
 {
-    if(this->_listing)
+    if(this->_disassembler && this->_listing)
     {
         QPoint pos = e->pos();
 
@@ -538,10 +521,9 @@ void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
             {
                 Instruction* instruction = qobject_cast<Instruction*>(blocks[idx]);
 
-                if((instruction->isJump() || instruction->isCall()) && (instruction->destination() != -1))
-                    this->jumpTo(instruction->destinationOperand()->operandValue());
+                if((instruction->isJump() || instruction->isCall()) && instruction->isDestinationValid())
+                    this->jumpTo(instruction->destination());
             }
-
         }
     }
 

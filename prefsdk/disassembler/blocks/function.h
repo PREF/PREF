@@ -13,29 +13,18 @@ namespace PrefSDK
     {
         Q_OBJECT
 
-        Q_PROPERTY(lua_Integer type READ type WRITE setType)
-
         public:
-            typedef QList<Instruction*> InstructionList;
-            typedef QSet<Reference*> ReferenceSet;
-
-        public:
-            explicit Function(const QString& name, FunctionType::Type type, const DataValue& startaddress, QObject* parent = 0);
             explicit Function(FunctionType::Type type, const DataValue& startaddress, QObject* parent = 0);
-            const QString& name() const;
             lua_Integer type() const;
             bool isEntryPoint() const;
             bool isImport() const;
             bool isExport() const;
-            void setType(lua_Integer ft);
+            void setType(FunctionType::Type ft);
 
         public: /* Overriden Methods */
             virtual Block::Type blockType() const;
 
         private:
-            ReferenceSet _references;
-            InstructionList _instructions;
-            QString _name;
             FunctionType::Type _type;
     };
 }

@@ -70,6 +70,65 @@ namespace PrefSDK
         return QSysInfo::ByteOrder;
     }
 
+    DataType::Type DataType::adjust(DataType::Type type, QSysInfo::Endian byteorder)
+    {
+        switch(DataType::bitWidth(type))
+        {
+            case 16:
+            {
+                if(DataType::isSigned(type))
+                {
+                    if(byteorder == QSysInfo::LittleEndian)
+                        return DataType::Int16_LE;
+
+                    return DataType::Int16_BE;
+                }
+
+                if(byteorder == QSysInfo::LittleEndian)
+                    return DataType::UInt16_LE;
+
+                return DataType::UInt16_BE;
+            }
+
+            case 32:
+            {
+                if(DataType::isSigned(type))
+                {
+                    if(byteorder == QSysInfo::LittleEndian)
+                        return DataType::Int32_LE;
+
+                    return DataType::Int32_BE;
+                }
+
+                if(byteorder == QSysInfo::LittleEndian)
+                    return DataType::UInt32_LE;
+
+                return DataType::UInt32_BE;
+            }
+
+            case 64:
+            {
+                if(DataType::isSigned(type))
+                {
+                    if(byteorder == QSysInfo::LittleEndian)
+                        return DataType::Int64_LE;
+
+                    return DataType::Int64_BE;
+                }
+
+                if(byteorder == QSysInfo::LittleEndian)
+                    return DataType::UInt64_LE;
+
+                return DataType::UInt64_BE;
+            }
+
+            default:
+                break;
+        }
+
+        return type;
+    }
+
     QString DataType::stringValue(DataType::Type type)
     {
         switch(type)

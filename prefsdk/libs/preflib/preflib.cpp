@@ -29,10 +29,8 @@ namespace PrefSDK
         qRegisterMetaType<PrefSDK::Function*>();
         qRegisterMetaType<PrefSDK::Segment*>();
         qRegisterMetaType<PrefSDK::ReferenceSet*>();
-        qRegisterMetaType<PrefSDK::Operand*>();
-        qRegisterMetaType<PrefSDK::InstructionSet*>();
-        qRegisterMetaType<PrefSDK::RegisterSet*>();
         qRegisterMetaType<PrefSDK::Register*>();
+        qRegisterMetaType<PrefSDK::ListingPrinter*>();
 
         /* QML Types */
         qmlRegisterType<PrefSDK::DataType>("Pref", 1, 0, "DataType");
@@ -159,13 +157,13 @@ namespace PrefSDK
         return 1;
     }
 
-    int PrefLib::disassembler_createLoader(lua_State *l)
+    int PrefLib::disassembler_create(lua_State *l)
     {
         int argc = lua_gettop(l);
 
         if(argc != 5)
         {
-            throw PrefException(QString("pref.disassembler.createloader(): Expected 5 arguments not %1").arg(argc));
+            throw PrefException(QString("pref.disassembler.create(): Expected 5 arguments not %1").arg(argc));
             return 0;
         }
 
@@ -173,103 +171,29 @@ namespace PrefSDK
         {
             if(lua_type(l, i) != LUA_TSTRING)
             {
-                throw PrefException(QString("pref.disassembler.createloader(): Argument %1 must be a string").arg(i));
+                throw PrefException(QString("pref.disassembler.create(): Argument %1 must be a string").arg(i));
                 return 0;
             }
         }
 
-        for(int i = 4; i <= 5; i++)
+        if(lua_type(l, 4) != LUA_TNUMBER)
         {
-            if(lua_type(l, i) != LUA_TUSERDATA)
-            {
-                throw PrefException(QString("pref.disassembler.createloader(): Argument %1 must be a userdata").arg(i));
-                return 0;
-            }
+            throw PrefException("pref.disassembler.create(): Argument 4 must be a number");
+            return 0;
         }
 
-        ProcessorLoader* pl = new ProcessorLoader(QString::fromUtf8(lua_tostring(l, 1)),
+        if(lua_type(l, 5) != LUA_TUSERDATA)
+        {
+            throw PrefException("pref.disassembler.create(): Argument 5 must be an userdata");
+            return 0;
+        }
+
+        DisassemblerDefinition* dd = new DisassemblerDefinition(QString::fromUtf8(lua_tostring(l, 1)),
                                                   QString::fromUtf8(lua_tostring(l, 2)),
                                                   QString::fromUtf8(lua_tostring(l, 3)),
-                                                  *(reinterpret_cast<FormatDefinition**>(lua_touserdata(l, 4))),
-                                                  *(reinterpret_cast<ProcessorDefinition**>(lua_touserdata(l, 5))));
-        QtLua::pushObject(l, pl);
-        return 1;
-    }
-
-    int PrefLib::disassembler_createProcessor(lua_State *l)
-    {
-        int argc = lua_gettop(l);
-
-        if(argc != 3)
-        {
-            throw PrefException(QString("pref.disassembler.createprocessor(): Expected 3 arguments not %1").arg(argc));
-            return 0;
-        }
-
-        for(int i = 1; i <= argc - 1; i++)
-        {
-            if(lua_type(l, i) != LUA_TUSERDATA)
-            {
-                throw PrefException(QString("pref.disassembler.createprocessor(): Argument %1 must be a userdata").arg(i));
-                return 0;
-            }
-        }
-
-        if(lua_type(l, argc) != LUA_TNUMBER)
-        {
-            throw PrefException("pref.disassembler.createprocessor(): Argument 3 must be a number type");
-            return 0;
-        }
-
-        InstructionSet* instructionset = *(reinterpret_cast<InstructionSet**>(lua_touserdata(l, 1)));
-        RegisterSet* registerset = *(reinterpret_cast<RegisterSet**>(lua_touserdata(l, 2)));
-        DataType::Type addresstype = static_cast<DataType::Type>(lua_tointeger(l, 3));
-
-        ProcessorDefinition* pd = new ProcessorDefinition(instructionset, registerset, addresstype);
-        QtLua::pushObject(l, pd);
-        return 1;
-    }
-
-    int PrefLib::disassembler_createInstructionSet(lua_State *l)
-    {
-        int argc = lua_gettop(l);
-
-        if(argc != 1)
-        {
-            throw PrefException(QString("pref.disassembler.createinstructionset(): Expected 1 argument not %1").arg(argc));
-            return 0;
-        }
-
-        if(lua_type(l, 1) != LUA_TNUMBER)
-        {
-            throw PrefException("pref.disassembler.createinstructionset(): Argument 1 must be an integer");
-            return 0;
-        }
-
-        DataType::Type dt = static_cast<DataType::Type>(lua_tointeger(l, 1));
-        QtLua::pushObject(l, new InstructionSet(dt));
-        return 1;
-    }
-
-    int PrefLib::disassembler_createRegisterSet(lua_State *l)
-    {
-        int argc = lua_gettop(l);
-
-        if(argc != 1)
-        {
-            throw PrefException(QString("pref.disassembler.createregisterset(): Expected 1 argument not %1").arg(argc));
-            return 0;
-        }
-
-        if(lua_type(l, 1) != LUA_TNUMBER)
-        {
-            throw PrefException("pref.disassembler.createregisterset(): Argument 1 must be an integer");
-            return 0;
-        }
-
-        DataType::Type dt = static_cast<DataType::Type>(lua_tointeger(l, 1));
-
-        QtLua::pushObject(l, new RegisterSet(dt));
+                                                  static_cast<DataType::Type>(lua_tointeger(l, 4)),
+                                                  *(reinterpret_cast<FormatDefinition**>(lua_touserdata(l, 5))));
+        QtLua::pushObject(l, dd);
         return 1;
     }
 
@@ -460,25 +384,13 @@ namespace PrefSDK
         lua_newtable(l);
 
         this->buildSegmentTable(l);
-        this->buildInstructionCategoryTable(l);
-        this->buildInstructionTypeTable(l);
-        this->buildOperandDescriptorTable(l);
-        this->buildOperandTypeTable(l);
         this->buildFunctionTypeTable(l);
         this->buildReferenceTypeTable(l);
         this->buildBlockTypeTable(l);
+        this->buildSymbolTypeTable(l);
 
-        lua_pushcfunction(l, &PrefLib::disassembler_createLoader);
-        lua_setfield(l, -2, "createloader");
-
-        lua_pushcfunction(l, &PrefLib::disassembler_createProcessor);
-        lua_setfield(l, -2, "createprocessor");
-
-        lua_pushcfunction(l, &PrefLib::disassembler_createInstructionSet);
-        lua_setfield(l, -2, "createinstructionset");
-
-        lua_pushcfunction(l, &PrefLib::disassembler_createRegisterSet);
-        lua_setfield(l, -2, "createregisterset");
+        lua_pushcfunction(l, &PrefLib::disassembler_create);
+        lua_setfield(l, -2, "create");
 
         lua_setfield(l, -2, "disassembler");
     }
@@ -490,42 +402,6 @@ namespace PrefSDK
 
         QtLua::pushEnum(l, metaenum);
         lua_setfield(l, -2, "segment");
-    }
-
-    void PrefLib::buildInstructionCategoryTable(lua_State *l)
-    {
-        const QMetaObject metaobj = InstructionCategory::staticMetaObject;
-        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Category"));
-
-        QtLua::pushEnum(l, metaenum);
-        lua_setfield(l, -2, "instructioncategory");
-    }
-
-    void PrefLib::buildInstructionTypeTable(lua_State *l)
-    {
-        const QMetaObject metaobj = InstructionType::staticMetaObject;
-        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
-
-        QtLua::pushEnum(l, metaenum);
-        lua_setfield(l, -2, "instructiontype");
-    }
-
-    void PrefLib::buildOperandDescriptorTable(lua_State *l)
-    {
-        const QMetaObject metaobj = Operand::staticMetaObject;
-        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Descriptor"));
-
-        QtLua::pushEnum(l, metaenum);
-        lua_setfield(l, -2, "operanddescriptor");
-    }
-
-    void PrefLib::buildOperandTypeTable(lua_State *l)
-    {
-        const QMetaObject metaobj = Operand::staticMetaObject;
-        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
-
-        QtLua::pushEnum(l, metaenum);
-        lua_setfield(l, -2, "operandtype");
     }
 
     void PrefLib::buildFunctionTypeTable(lua_State *l)
@@ -553,5 +429,14 @@ namespace PrefSDK
 
         QtLua::pushEnum(l, metaenum);
         lua_setfield(l, -2, "blocktype");
+    }
+
+    void PrefLib::buildSymbolTypeTable(lua_State *l)
+    {
+        const QMetaObject metaobj = Symbol::staticMetaObject;
+        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
+
+        QtLua::pushEnum(l, metaenum);
+        lua_setfield(l, -2, "symboltype");
     }
 }

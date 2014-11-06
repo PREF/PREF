@@ -38,7 +38,6 @@ namespace PrefSDK
         public:
             PrefSDK::InstructionSet *instructionSet() const;
             PrefSDK::RegisterSet* registerSet() const;
-            bool decode(Instruction* instruction);
 
         private:
             PrefSDK::QtLua::LuaFunction _analyzefunc;

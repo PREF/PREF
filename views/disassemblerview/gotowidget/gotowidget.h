@@ -5,7 +5,7 @@
 #include <QTableView>
 #include <QListView>
 #include <QCompleter>
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include "prefsdk/disassembler/disassemblerdefinition.h"
 
 using namespace PrefSDK;
 
@@ -20,7 +20,7 @@ class GotoWidget : public QWidget
     public:
         explicit GotoWidget(QWidget *parent = 0);
         ~GotoWidget();
-        void setListing(DisassemblerListing* listing);
+        void setDisassembler(DisassemblerDefinition* definition);
         QLineEdit *addressWidget();
 
     private slots:
@@ -36,7 +36,7 @@ class GotoWidget : public QWidget
 
     private:
         Ui::GotoWidget *ui;
-        DisassemblerListing* _listing;
+        DisassemblerDefinition* _disassembler;
 };
 
 #endif // GOTOWIDGET_H

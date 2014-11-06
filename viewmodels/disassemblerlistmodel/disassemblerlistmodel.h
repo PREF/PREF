@@ -1,22 +1,22 @@
-#ifndef LOADERLISTMODEL_H
-#define LOADERLISTMODEL_H
+#ifndef DISASSEMBLERLISTMODEL_H
+#define DISASSEMBLERLISTMODEL_H
 
 #include <QtCore>
 #include "prefsdk/sdkmanager.h"
-#include "prefsdk/disassembler/loader/loaderlist.h"
+#include "prefsdk/disassembler/disassemblerlist.h"
 
 using namespace PrefSDK;
 
-class LoaderListModel : public QAbstractItemModel
+class DisassemblerListModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit LoaderListModel(QHexEditData* hexeditdata, QObject *parent = 0);
-        ProcessorLoader *loader(int idx) const;
+        explicit DisassemblerListModel(QHexEditData* hexeditdata, QObject *parent = 0);
+        DisassemblerDefinition *disassembler(int idx) const;
 
     private:
-        void validateLoaders(QHexEditData* hexeditdata);
+        void validateDisassemblers(QHexEditData* hexeditdata);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -28,8 +28,8 @@ class LoaderListModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        QList<ProcessorLoader*> _loaders;
-        QImage _icoloader;
+        QList<DisassemblerDefinition*> _disassemblers;
+        QImage _icodisassembler;
 };
 
-#endif // LOADERLISTMODEL_H
+#endif // DISASSEMBLERLISTMODEL_H

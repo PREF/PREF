@@ -13,7 +13,7 @@
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/format/formattree.h"
 #include "prefsdk/exporter/exporterlist.h"
-#include "prefsdk/disassembler/loader/loaderlist.h"
+#include "prefsdk/disassembler/disassemblerlist.h"
 #include "prefsdk/luastate.h"
 
 namespace PrefSDK

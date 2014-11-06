@@ -2,6 +2,92 @@
 
 namespace PrefSDK
 {
+    QtLua::LuaTable::LuaTable(): _state(nullptr), _registryidx(LUA_REFNIL)
+    {
+
+    }
+
+    QtLua::LuaTable::LuaTable(lua_State *l, int idx): _state(l)
+    {
+        lua_pushvalue(l, idx);
+        this->_registryidx = luaL_ref(l, LUA_REGISTRYINDEX);
+    }
+
+    QtLua::LuaTable::LuaTable(const QtLua::LuaTable &tc)
+    {
+        *this = tc;
+    }
+
+    QtLua::LuaTable::~LuaTable()
+    {
+        if(this->_registryidx != LUA_REFNIL)
+            luaL_unref(this->_state, LUA_REGISTRYINDEX, this->_registryidx);
+
+        this->_state = nullptr;
+    }
+
+    QtLua::LuaTable &QtLua::LuaTable::operator=(const QtLua::LuaTable &tc)
+    {
+        this->_state = tc._state;
+
+        if(tc._registryidx != LUA_REFNIL)
+        {
+            tc.push();
+            this->_registryidx = luaL_ref(tc._state, LUA_REGISTRYINDEX);
+        }
+
+        return *this;
+    }
+
+    void QtLua::LuaTable::push(lua_State* l) const
+    {
+        lua_rawgeti((!l ? this->_state : l), LUA_REGISTRYINDEX, this->_registryidx);
+    }
+
+    bool QtLua::LuaTable::isValid() const
+    {
+        return this->_registryidx != LUA_REFNIL;
+    }
+
+    void QtLua::LuaTable::getField(const QString &name) const
+    {
+        this->push();
+        lua_getfield(this->_state, -1, name.toUtf8().constData());
+
+        if(lua_isnoneornil(this->_state, -1))
+        {
+            lua_pop(this->_state, 1);
+            throw PrefException(QString("LuaTable::getField(): Cannot find %1 field").arg(name));
+            return;
+        }
+
+        lua_remove(this->_state, -2); /* Pop Table From Stack */
+    }
+
+    QString QtLua::LuaTable::getString(const QString &name) const
+    {
+        this->getField(name);
+        QString s = QString::fromUtf8(lua_tostring(this->_state, -1));
+        lua_pop(this->_state, 1);
+        return s;
+    }
+
+    lua_Integer QtLua::LuaTable::getInteger(const QString &name) const
+    {
+        this->getField(name);
+        lua_Integer i = lua_tointeger(this->_state, -1);
+        lua_pop(this->_state, 1);
+        return i;
+    }
+
+    bool QtLua::LuaTable::getBoolean(const QString &name) const
+    {
+        this->getField(name);
+        bool b = lua_toboolean(this->_state, -1) == true;
+        lua_pop(this->_state, 1);
+        return b;
+    }
+
     QtLua::LuaFunction::LuaFunction(): _state(nullptr), __this(nullptr)
     {
         this->_storedfunc.RegistryIdx = LUA_REFNIL;
@@ -326,6 +412,8 @@ namespace PrefSDK
                 lua_pushnumber(l, v.toDouble());
             else if(v.userType() == QMetaType::QString)
                 lua_pushstring(l, v.toString().toUtf8().constData());
+            else if(v.userType() == QMetaType::type("PrefSDK::QtLua::LuaTable"))
+                v.value<QtLua::LuaTable>().push();
             else if(v.userType() == QMetaType::type("PrefSDK::QtLua::LuaFunction"))
                 v.value<QtLua::LuaFunction>().push();
             else if(v.canConvert(QMetaType::QObjectStar))
@@ -389,6 +477,8 @@ namespace PrefSDK
             }
             else if(luaproptype == LUA_TSTRING)
                 metaproperty.write(qobject, QVariant(QString::fromUtf8(lua_tostring(l, 3))));
+            else if(luaproptype == LUA_TTABLE)
+                metaproperty.write(qobject, QVariant::fromValue(QtLua::LuaTable(l, 3)));
             else if(luaproptype == LUA_TFUNCTION)
                 metaproperty.write(qobject, QVariant::fromValue(QtLua::LuaFunction(l, 3, qobject)));
             else
@@ -441,6 +531,8 @@ namespace PrefSDK
                 args[n] = QVariant(QString::fromUtf8(lua_tostring(l, i)));
             else if(type == LUA_TUSERDATA)
                 args[n] = QVariant::fromValue(*(reinterpret_cast<QObject**>(lua_touserdata(l, i))));
+            else if(type == LUA_TTABLE)
+                args[n] = QVariant::fromValue(QtLua::LuaTable(l, i));
             else if(type == LUA_TFUNCTION)
                 args[n] = QVariant::fromValue(QtLua::LuaFunction(l, i, qobject));
             else

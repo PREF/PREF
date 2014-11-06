@@ -1,8 +1,8 @@
 #include "block.h"
 
 namespace PrefSDK
-{
-    Block::Block(const DataValue& startaddress, const DataValue& size, QObject *parent): QObject(parent), _startaddress(startaddress), _size(size)
+{    
+    Block::Block(QObject *parent): QObject(parent)
     {
 
     }
@@ -10,6 +10,11 @@ namespace PrefSDK
     Block::Block(const DataValue &startaddress, QObject *parent): QObject(parent), _startaddress(startaddress)
     {
         this->_size = DataValue(startaddress.dataType());
+    }
+
+    Block::Block(const DataValue& startaddress, const DataValue& size, QObject *parent): QObject(parent), _startaddress(startaddress), _size(size)
+    {
+
     }
 
     const DataValue& Block::startAddress() const

@@ -8,7 +8,7 @@
 #include "prefsdk/sdkmanager.h"
 #include "views/hexview/hexview.h"
 #include "views/disassemblerview/disassemblerview.h"
-#include "views/disassemblerview/loaderdialog/loaderdialog.h"
+#include "views/disassemblerview/disassemblerdialog/disassemblerdialog.h"
 #include "views/compareview/compareview.h"
 #include "views/compareview/comparedialog/comparedialog.h"
 #include "signaturedatabasedialog/signaturedatabasedialog.h"

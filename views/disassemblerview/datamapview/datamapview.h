@@ -24,10 +24,10 @@ class DataMapView : public QWidget
         void selectRange(const DataValue& offset, const DataValue& length);
         ~DataMapView();
 
-private slots:
+    private slots:
         void on_dataView_doubleClicked(const QModelIndex &index);
 
-private:
+    private:
         void highlightData();
 
     private:

@@ -13,7 +13,6 @@ class VariablesModel : public QAbstractItemModel
 
     public:
         explicit VariablesModel(DisassemblerListing* listing, QObject *parent = 0);
-        const DataValue& variable(qint64 idx) const;
         DisassemblerListing* listing() const;
 
     public: /* Overriden Methods */
@@ -28,7 +27,7 @@ class VariablesModel : public QAbstractItemModel
     private:
         DisassemblerListing* _listing;
         QFont _monospacefont;
-        QList<DataValue> _variables;
+        QList<Symbol*> _variables;
 };
 
 #endif // VARIABLESMODEL_H

@@ -2,21 +2,11 @@
 
 namespace PrefSDK
 {
-    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, QObject *parent): QObject(parent), _blocksorted(false), _addresstype(DataType::Invalid), _hexeditdata(hexeditdata)
+    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, QObject *parent): QObject(parent), _blocksorted(false), _hexeditdata(hexeditdata)
     {
         this->_referencetable = new ReferenceTable(this);
         this->_symboltable = new SymbolTable(this);
         this->_constanttable = new ConstantTable(this);
-    }
-
-    DataType::Type DisassemblerListing::addressType() const
-    {
-        return this->_addresstype;
-    }
-
-    void DisassemblerListing::setAddressType(DataType::Type addresstype)
-    {
-        this->_addresstype = addresstype;
     }
 
     void DisassemblerListing::calcFunctionBounds()
@@ -41,34 +31,17 @@ namespace PrefSDK
         }
     }
 
-    void DisassemblerListing::analyzeOperands()
+    bool DisassemblerListing::isAddress(const DataValue &address) const
     {
-        for(InstructionMap::Iterator it = this->_instructions.begin(); it != this->_instructions.end(); it++)
+        for(SegmentMap::ConstIterator it = this->_segments.cbegin(); it != this->_segments.cend(); it++)
         {
-            Instruction* instruction = it.value();
+            Segment* segment = it.value();
 
-            for(lua_Integer i = 0; i < instruction->operandsCount(); i++)
-            {
-                Operand* op = instruction->operand(i);
-
-                if(op->type() == Operand::Address)
-                {
-                    qint64 idx = -1;
-
-                    if(instruction->isJump() && !this->_symboltable->contains(op->operandValue()) && (idx = this->indexOf(op->operandValue(), Block::InstructionBlock)) != -1)
-                    {
-                        Reference::Type referencetype = ((instruction->type() == InstructionType::ConditionalJump) ? Reference::ConditionalJump : Reference::Jump);
-
-                        if(!this->_referencetable->isReferenced(op->operandValue()))
-                            this->createReference(op->operandValue(), instruction->startAddress(), referencetype, idx);
-
-                        this->_symboltable->set(Symbol::Jump, op->operandValue(), QString("j_%1").arg(op->operandValue().toString(16)));
-                    }
-                    else
-                        this->analyzeAddress(instruction, op->operandValue());
-                }
-            }
+            if(segment->contains(address))
+                return true;
         }
+
+        return false;
     }
 
     bool DisassemblerListing::isDecoded(const DataValue& address) const
@@ -122,23 +95,18 @@ namespace PrefSDK
         this->_blocks.append(s);
     }
 
-    Function* DisassemblerListing::createFunction(FunctionType::Type functiontype, const DataValue &startaddress)
+    void DisassemblerListing::createFunction(FunctionType::Type functiontype, const DataValue &startaddress)
     {
-        return this->createFunction(QString(), functiontype, startaddress);
+        this->createFunction(QString(), functiontype, startaddress);
     }
 
-    Function* DisassemblerListing::createFunction(const QString &name, FunctionType::Type functiontype, const DataValue &startaddress)
+    void DisassemblerListing::createFunction(const QString &name, FunctionType::Type functiontype, const DataValue &startaddress)
     {
-        Function* f = nullptr;
-
         if(this->_functions.contains(startaddress))
-            return this->_functions[startaddress];
+            return;
 
-        if(name.isEmpty())
-            f = new Function(functiontype, startaddress, this);
-        else
-            f = new Function(name, functiontype, startaddress, this);
-
+        QString funcname = name.isEmpty() ? QString("sub_%1").arg(startaddress.toString(16)) : name;
+        Function* f = new Function(functiontype, startaddress, this);
         this->_functions[startaddress] = f;
 
         if(functiontype == FunctionType::EntryPointFunction)
@@ -148,29 +116,31 @@ namespace PrefSDK
         }
 
         if(!this->_symboltable->contains(startaddress)) /* Apply Symbol, if needed */
-            this->_symboltable->set(Symbol::Function, startaddress, f->name());
+            this->_symboltable->set(Symbol::Function, startaddress, funcname);
 
         this->_blocks.append(f);
-        return f;
     }
 
-    Instruction *DisassemblerListing::createInstruction(const DataValue& address, DataType::Type opcodetype)
+    void DisassemblerListing::addInstruction(Instruction* instruction)
     {
+        DataValue address = instruction->startAddress();
+
         if(this->_instructions.contains(address))
         {
-            throw PrefException(QString("DisassemblerListing::createInstruction(): Instruction at %1h already exists").arg(address.toString(16)));
-            return nullptr;
+            instruction->deleteLater();
+            throw PrefException(QString("DisassemblerListing::addInstruction(): Instruction at %1h already exists").arg(address.toString(16)));
         }
 
         Segment* segment = this->findSegment(address);
 
         if(!segment)
+        {
+            instruction->deleteLater();
             throw PrefException(QString("No segment for: %1").arg(address.toString(16)));
+        }
 
-        Instruction* instruction = new Instruction(address, (address - segment->startAddress()) + segment->baseOffset(), opcodetype, this->_hexeditdata, this);
         this->_instructions[address] = instruction;
         this->_blocks.append(instruction);
-        return instruction;
     }
 
     Segment *DisassemblerListing::findSegment(Block *block)
@@ -178,12 +148,12 @@ namespace PrefSDK
         return this->findSegment(block->startAddress());
     }
 
-    Segment *DisassemblerListing::findSegment(const DataValue &address)
+    Segment *DisassemblerListing::findSegment(const DataValue &address) const
     {
         if(this->_segments.contains(address))  /* We're lucky, return the block directly! */
             return this->_segments[address];
 
-        for(SegmentMap::iterator it = this->_segments.begin(); it != this->_segments.end(); it++)
+        for(SegmentMap::ConstIterator it = this->_segments.begin(); it != this->_segments.end(); it++)
         {
             Segment* s = it.value();
 
@@ -246,95 +216,6 @@ namespace PrefSDK
         return nullptr;
     }
 
-    QString DisassemblerListing::formatInstruction(Instruction *instruction)
-    {
-        if(!instruction->isValid())
-            return this->formatInvalidInstruction(instruction);
-
-        QString s = instruction->mnemonic() + " ";
-
-        if(!instruction->format().isEmpty())
-            s.append(this->formatInstructionCustom(instruction));
-        else
-        {
-            for(int i = 0; i < instruction->operandsCount(); i++)
-            {
-                Operand* operand = instruction->operand(i);
-
-                if(i > 0)
-                    s.append(", ");
-
-                s.append(this->formatOperand(instruction, operand));
-            }
-        }
-
-        return s;
-    }
-
-    QString DisassemblerListing::formatInstructionCustom(Instruction *instruction)
-    {
-        int i = 0;
-        QChar ch;
-        QString s, format = instruction->format();
-
-        while(i < format.length())
-        {
-            ch = format[i];
-
-            switch(ch.toLatin1())
-            {
-                case '%':
-                {
-                    ch = format[++i];
-
-                    if(ch.isNull())
-                        break;
-
-                    if(ch == '%')
-                    {
-                        s.append("%");
-                        break;
-                    }
-
-                    bool ok = false;
-                    int opidx = QString(ch).toInt(&ok);
-
-                    if(!ok || (opidx < 0 || opidx > instruction->operandsCount()))
-                    {
-                        if(!ok)
-                            throw PrefException(QString("DisassemblerListing::formatInstructionCustom(): Invalid Operand Format at %1h: Expected Integer not '%2'").arg(instruction->startAddress().toString(16), QString(ch)));
-                        else
-                            throw PrefException(QString("DisassemblerListing::formatInstructionCustom(): Operand Index out of range at %1h").arg(instruction->startAddress().toString(16)));
-
-                        continue;
-                    }
-
-                    Operand* operand = instruction->operand(opidx - 1);
-                    s.append(this->formatOperand(instruction, operand));
-                    break;
-                }
-
-                case '\0':
-                    return s; /* Something wrong: reached EOS */
-
-                default:
-                {
-                    s.append(ch);
-                    break;
-                }
-            }
-
-            i++;
-        }
-
-        return s;
-    }
-
-    QString DisassemblerListing::formatInvalidInstruction(Instruction *instruction)
-    {
-        return QString("db (%1)").arg(instruction->hexDump().replace(" ", "h, ").append("h"));
-    }
-
     bool DisassemblerListing::hasNextBlock(QObject *b)
     {
         Block* block = qobject_cast<Block*>(b);
@@ -392,11 +273,6 @@ namespace PrefSDK
             return nullptr;
 
         return this->_instructions[b->startAddress() + b->sizeValue()];
-    }
-
-    Instruction *DisassemblerListing::replaceInstructions(QObject *b1, QObject *b2, const QString &mnemonic, lua_Integer category)
-    {
-        return this->replaceInstructions(b1, b2, mnemonic, category, InstructionType::Undefined);
     }
 
     PrefSDK::Block *DisassemblerListing::firstBlock()
@@ -523,49 +399,6 @@ namespace PrefSDK
         return this->_constanttable;
     }
 
-    Instruction *DisassemblerListing::replaceInstructions(QObject* i1, QObject* i2, const QString& mnemonic, lua_Integer category, lua_Integer type)
-    {
-        Block* b1 = qobject_cast<Block*>(i1);
-        Block* b2 = qobject_cast<Block*>(i2);
-
-        if(b1->blockType() != Block::InstructionBlock)
-        {
-            throw PrefException("DisassemblerListing::replaceInstructions(): Argument 1 is not an instruction block");
-            return nullptr;
-        }
-
-        if(b2->blockType() != Block::InstructionBlock)
-        {
-            throw PrefException("DisassemblerListing::replaceInstructions(): Argument 2 is not an instruction block");
-            return nullptr;
-        }
-
-        if(!this->_instructions.contains(b1->startAddress()) || !this->_instructions.contains(b2->startAddress()))
-        {
-            if(!this->_instructions.contains(b1->startAddress()))
-                throw PrefException("DisassemblerListing::replaceInstructions(): Argument 1 not in listing");
-
-            if(!this->_instructions.contains(b2->startAddress()))
-                throw PrefException("DisassemblerListing::replaceInstructions(): Argument 2 not in listing");
-
-            return nullptr;
-        }
-
-        Instruction* instruction1 = qobject_cast<Instruction*>(b1);
-        Instruction* newinstruction = new Instruction(instruction1->startAddress(), instruction1->offsetValue(), instruction1->opcodeValue().dataType(), this->_hexeditdata, this->_symboltable);
-        newinstruction->setEndAddress(b2->endAddress());
-        newinstruction->setMnemonic(mnemonic);
-        newinstruction->setCategory(category);
-        newinstruction->setType(type);
-
-        qint64 idx = this->indexOf(instruction1);
-        this->removeInstructions(instruction1, qobject_cast<Instruction*>(b2));
-        this->_instructions[newinstruction->startAddress()] = newinstruction;
-        this->_blocks.insert(idx, newinstruction);
-
-        return newinstruction;
-    }
-
     void DisassemblerListing::checkSort()
     {        
         if(!this->_blocksorted)
@@ -575,7 +408,7 @@ namespace PrefSDK
         }
     }
 
-    bool DisassemblerListing::pointsToString(const DataValue &address)
+    qint64 DisassemblerListing::pointsToString(const DataValue &address) const
     {
         Segment* segment = this->findSegment(address);
 
@@ -583,55 +416,13 @@ namespace PrefSDK
             return false;
 
         DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
-
         QHexEditDataReader reader(this->_hexeditdata);
-        QString s = reader.readString(offset.compatibleValue<qint64>(), 4);
+        QString s = reader.readString(offset.compatibleValue<qint64>());
 
-        return s.length() == 4;
-    }
+        if(s.length() < 4)
+            return 0;
 
-    void DisassemblerListing::analyzeAddress(Instruction* instruction, const DataValue &address)
-    {
-        Segment* segment = this->findSegment(address); /* Don't analyze weird address */
-
-        if(!segment)
-            return;
-
-        if(!this->_referencetable->isReferenced(address))
-            this->_referencetable->addReference(address, instruction->startAddress(), Reference::Address);
-
-        if(this->_symboltable->contains(address) && this->_symboltable->isType(address, Symbol::Address))
-            return;
-
-        if(this->pointsToString(address))
-        {
-            QHexEditDataReader reader(this->_hexeditdata);
-            DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
-            QString s = reader.readString(offset.compatibleValue<qint64>());
-
-            this->_stringsymbols.insert(address);
-            this->_variables.insert(address);
-            this->_symboltable->set(Symbol::String, address, DataValue::create(s.length(), this->_addresstype), DataType::AsciiString, QString("string_%1").arg(address.toString(16)));
-        }
-        else if(!this->_symboltable->contains(address))
-        {
-            this->_variables.insert(address);
-            this->_symboltable->set(Symbol::Address, address, QString("data_%1").arg(address.toString(16)));
-        }
-    }
-
-    QString DisassemblerListing::formatOperand(Instruction* instruction, Operand *operand)
-    {
-        Operand::Type optype = static_cast<Operand::Type>(operand->type());
-
-        if((optype == Operand::Address) && this->_symboltable->contains(operand->operandValue()))
-            return this->_symboltable->name(operand->operandValue());
-        else if((optype == Operand::Immediate) && this->_constanttable->isConstant(instruction, operand->operandValue()))
-            return this->_constanttable->name(instruction, operand->operandValue());
-        else if(optype == Operand::Register)
-            return "$" + operand->registerName();
-
-        return operand->operandValue().toString(16) + "h";
+        return s.length();
     }
 
     void DisassemblerListing::removeInstructions(Instruction *from, Instruction *to)

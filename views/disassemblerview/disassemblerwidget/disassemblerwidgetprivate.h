@@ -4,7 +4,9 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "prefsdk/disassembler/disassemblerdefinition.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
+#include "prefsdk/disassembler/listingprinter.h"
 #include "disassemblerhighlighter.h"
 
 using namespace PrefSDK;
@@ -18,6 +20,7 @@ class DisassemblerWidgetPrivate: public QWidget
         qint64 currentIndex() const;
         void setCurrentIndex(qint64 idx, bool savehistory = true);
         Block* selectedBlock() const;
+        void setDisassembler(DisassemblerDefinition* disassembler);
         void setListing(DisassemblerListing* listing);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);
@@ -34,13 +37,13 @@ class DisassemblerWidgetPrivate: public QWidget
         QString displayReferences(const QString& prefix, const ReferenceSet *referenceset) const;
         QString emitSegment(Segment* segment);
         QString emitFunction(Function *func);
-        QString emitInstruction(Instruction *instruction);
         QString emitReference(ReferenceSet* referenceset);
         qint64 visibleStart(QRect r = QRect()) const;
         qint64 visibleEnd(QRect r = QRect()) const;
         int drawAddress(QPainter &painter, QFontMetrics &fm, Block* block, int y);
         void drawLineBackground(QPainter& painter, qint64 idx, int y);
         void drawLine(QPainter& painter, QFontMetrics& fm, qint64 idx, int y);
+        void drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y);
         void ensureVisible(qint64 idx);
         void adjust();
         void pushBack(qint64 idx);
@@ -69,6 +72,8 @@ class DisassemblerWidgetPrivate: public QWidget
     private:
         QScrollArea* _scrollarea;
         QScrollBar* _vscrollbar;
+        ListingPrinter* _printer;
+        DisassemblerDefinition* _disassembler;
         DisassemblerListing* _listing;
         QColor _addressforecolor;
         QColor _sellinecolor;

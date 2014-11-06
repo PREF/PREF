@@ -4,6 +4,7 @@
 #include "symbol.h"
 #include <QObject>
 #include <QHash>
+#include <QMap>
 #include <lua.hpp>
 
 namespace PrefSDK
@@ -22,9 +23,15 @@ namespace PrefSDK
             void set(Symbol::Type symboltype, const DataValue& address, const DataValue &symbolsize, DataType::Type datatype, const QString& name);
             QString name(const DataValue& address) const;
             Symbol* get(const DataValue& address) const;
+            QList<Symbol*> functions() const;
+            QList<Symbol*> variables() const;
+            QList<Symbol*> strings() const;
 
         private:
             QHash<DataValue, Symbol*> _symboltable;
+            QMap<DataValue, Symbol*> _functions;
+            QMap<DataValue, Symbol*> _variables;
+            QMap<DataValue, Symbol*> _strings;
     };
 }
 

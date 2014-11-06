@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "prefsdk/disassembler/disassemblerdefinition.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "disassemblerwidgetprivate.h"
 
@@ -15,6 +16,7 @@ class DisassemblerWidget : public QFrame
 
     public:
         explicit DisassemblerWidget(QWidget *parent = 0);
+        void setDisassembler(DisassemblerDefinition* disassembler);
         void setListing(DisassemblerListing* listing);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);

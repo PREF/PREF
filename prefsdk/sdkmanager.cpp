@@ -63,7 +63,7 @@ namespace PrefSDK
 
         FormatList::load();
         ExporterList::load();
-        LoaderList::load();
+        DisassemblerList::load();
 
         SQLite::SQLiteDatabase::initialize();
         SignatureDatabase::load();

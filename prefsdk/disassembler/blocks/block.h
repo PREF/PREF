@@ -22,8 +22,9 @@ namespace PrefSDK
             enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock };
 
         public:
-            explicit Block(const DataValue& startaddress, const DataValue& size, QObject* parent = 0);
+            explicit Block(QObject* parent = 0);
             explicit Block(const DataValue& startaddress, QObject* parent = 0);
+            explicit Block(const DataValue& startaddress, const DataValue& size, QObject* parent = 0);
             const DataValue& startAddress() const;
             const DataValue& sizeValue() const;
             DataValue endAddress() const;

@@ -31,6 +31,11 @@ DisassemblerWidget::DisassemblerWidget(QWidget *parent): QFrame(parent)
     connect(this->_disasmwidget_p, SIGNAL(forwardAvailable(bool)), this, SIGNAL(forwardAvailable(bool)));
 }
 
+void DisassemblerWidget::setDisassembler(DisassemblerDefinition *disassembler)
+{
+    this->_disasmwidget_p->setDisassembler(disassembler);
+}
+
 void DisassemblerWidget::setCurrentIndex(int idx)
 {
     this->_disasmwidget_p->setCurrentIndex(idx);

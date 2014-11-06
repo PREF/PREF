@@ -108,16 +108,4 @@ namespace PrefSDK
     {
         return this->_registerset;
     }
-
-    bool ProcessorDefinition::decode(Instruction *instruction)
-    {
-        if(!this->_instructionset->isOpcode(instruction->opcodeValue()))
-            return false;
-
-        InstructionDefinition* instructiondefinition = this->_instructionset->instructionDefinition(instruction->opcodeValue());
-        instruction->setMnemonic(instructiondefinition->mnemonic());
-        instruction->setCategory(instructiondefinition->category());
-        instruction->setType(instructiondefinition->type());
-        return true;
-    }
 }
