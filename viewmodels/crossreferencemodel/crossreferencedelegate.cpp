@@ -2,6 +2,9 @@
 
 CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing *listing, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler), _listing(listing)
 {
+    this->_monospacefont.setFamily("Monospace");
+    this->_monospacefont.setPointSize(qApp->font().pointSize());
+    this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
 void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -16,6 +19,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     this->initStyleOption(&options, index);
 
     options.text = QString();
+    options.font = this->_monospacefont;
     options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
 
     QTextDocument document;
@@ -26,7 +30,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     {
         ListingPrinter printer(this->_disassembler->addressType());
         this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b));
-        printer.draw(painter, option.fontMetrics, option.rect.left(), option.rect.top());
+        printer.draw(painter, options.fontMetrics, options.rect.left(), options.rect.top());
         return;
     }
 
@@ -40,7 +44,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     highlighter.rehighlight();  /* Apply Syntax Highlighting */
 
     painter->save();
-        painter->translate(option.rect.left(), option.rect.top());
+        painter->translate(options.rect.left(), options.rect.top());
         document.drawContents(painter, QRect(0, 0, options.rect.width(), options.rect.height()));
     painter->restore();
 }

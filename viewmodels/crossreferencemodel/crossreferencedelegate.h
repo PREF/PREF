@@ -24,6 +24,7 @@ class CrossReferenceDelegate : public QStyledItemDelegate
         const QList<DataValue>& _sources;
         DisassemblerDefinition* _disassembler;
         DisassemblerListing* _listing;
+        QFont _monospacefont;
 };
 
 #endif // CROSSREFERENCEDELEGATE_H
