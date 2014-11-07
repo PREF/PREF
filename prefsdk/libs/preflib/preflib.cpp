@@ -4,7 +4,6 @@ namespace PrefSDK
 {
     PrefLib* PrefLib::_instance = nullptr;
     const char* PrefLib::PREF_TABLE = "pref";
-    const char* PrefLib::FORMAT_TABLE = "format";
 
     PrefLib::PrefLib(QObject *parent): QObject(parent), _sdkversion(nullptr)
     {
@@ -25,11 +24,9 @@ namespace PrefSDK
 
         /* Disassembler Engine */
         qRegisterMetaType<PrefSDK::Block*>();
-        qRegisterMetaType<PrefSDK::Instruction*>();
         qRegisterMetaType<PrefSDK::Function*>();
         qRegisterMetaType<PrefSDK::Segment*>();
         qRegisterMetaType<PrefSDK::ReferenceSet*>();
-        qRegisterMetaType<PrefSDK::Register*>();
         qRegisterMetaType<PrefSDK::ListingPrinter*>();
 
         /* QML Types */

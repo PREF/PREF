@@ -21,7 +21,7 @@ class DisassemblerHighlighter : public QSyntaxHighlighter
         void highlightSegment(const QString& text);
         void highlightFunction(const QString& text);
         void highlightComment(const QString& text);
-        void highlightJumpLabel(const QString& text);
+        void highlightLabel(const QString& text);
 
     protected:
         virtual void highlightBlock(const QString &text);

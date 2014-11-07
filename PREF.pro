@@ -118,7 +118,6 @@ SOURCES += main.cpp\
     viewmodels/segmentsmodel/segmentsmodel.cpp \
     viewmodels/entrypointsmodel/entrypointsmodel.cpp \
     prefsdk/disassembler/blocks/instruction.cpp \
-    prefsdk/disassembler/operand.cpp \
     prefsdk/disassembler/blocks/function.cpp \
     prefsdk/disassembler/disassemblerlisting.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
@@ -139,13 +138,6 @@ SOURCES += main.cpp\
     prefsdk/libs/oop/oop.cpp \
     prefsdk/exporter/exporterdefinition.cpp \
     prefsdk/disassembler/disassemblerdefinition.cpp \
-    prefsdk/disassembler/processor/processordefinition.cpp \
-    prefsdk/disassembler/instruction/instructionset.cpp \
-    prefsdk/disassembler/instruction/instructioncategory.cpp \
-    prefsdk/disassembler/instruction/instructiontype.cpp \
-    prefsdk/disassembler/instruction/instructiondefinition.cpp \
-    prefsdk/disassembler/register/registerset.cpp \
-    prefsdk/disassembler/processor/processoremulator.cpp \
     prefsdk/disassembler/symbol/symboltable.cpp \
     prefsdk/disassembler/references/referencetable.cpp \
     prefsdk/type/datavalue.cpp \
@@ -165,14 +157,13 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formatworker.cpp \
     logwidget/logobject.cpp \
     qhexedit/sparserangemap.cpp \
-    prefsdk/disassembler/register/register.cpp \
     csvexporterdialog/csvexporterworker.cpp \
     csvexporterdialog/csvexporter.cpp \
     csvexporterdialog/csvexporterdialog.cpp \
     prefsdk/libs/preflib/databuffer.cpp \
     prefsdk/disassembler/memorybuffer.cpp \
-    prefsdk/disassembler/operand/operandtype.cpp \
-    prefsdk/disassembler/listingprinter.cpp
+    prefsdk/disassembler/listingprinter.cpp \
+    prefsdk/disassembler/blocks/label.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -279,7 +270,6 @@ HEADERS  += mainwindow.h \
     viewmodels/segmentsmodel/segmentsmodel.h \
     viewmodels/entrypointsmodel/entrypointsmodel.h \
     prefsdk/disassembler/blocks/instruction.h \
-    prefsdk/disassembler/operand.h \
     prefsdk/disassembler/blocks/function.h \
     prefsdk/disassembler/disassemblerlisting.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
@@ -301,13 +291,6 @@ HEADERS  += mainwindow.h \
     prefsdk/libs/oop/oop.h \
     prefsdk/exporter/exporterdefinition.h \
     prefsdk/disassembler/disassemblerdefinition.h \
-    prefsdk/disassembler/processor/processordefinition.h \
-    prefsdk/disassembler/instruction/instructionset.h \
-    prefsdk/disassembler/instruction/instructioncategory.h \
-    prefsdk/disassembler/instruction/instructiontype.h \
-    prefsdk/disassembler/instruction/instructiondefinition.h \
-    prefsdk/disassembler/register/registerset.h \
-    prefsdk/disassembler/processor/processoremulator.h \
     prefsdk/disassembler/symbol/symboltable.h \
     prefsdk/disassembler/references/referencetable.h \
     prefsdk/type/datavalue.h \
@@ -326,14 +309,13 @@ HEADERS  += mainwindow.h \
     logwidget/logger.h \
     views/hexview/formatwidget/formatworker.h \
     logwidget/logobject.h \
-    prefsdk/disassembler/register/register.h \
     csvexporterdialog/csvexporterworker.h \
     csvexporterdialog/csvexporter.h \
     csvexporterdialog/csvexporterdialog.h \
     prefsdk/libs/preflib/databuffer.h \
     prefsdk/disassembler/memorybuffer.h \
-    prefsdk/disassembler/operand/operandtype.h \
-    prefsdk/disassembler/listingprinter.h
+    prefsdk/disassembler/listingprinter.h \
+    prefsdk/disassembler/blocks/label.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

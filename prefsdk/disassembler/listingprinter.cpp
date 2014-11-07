@@ -6,6 +6,7 @@ namespace PrefSDK
     {
         this->_defaultcolor = QColor(Qt::black);
         this->_valuecolor = QColor(Qt::darkBlue);
+        this->_commentcolor = QColor(Qt::darkGreen);
     }
 
     QString ListingPrinter::printString()
@@ -22,9 +23,9 @@ namespace PrefSDK
     {
         foreach(ListingPrinter::Chunk c, this->_chunks)
         {
-            int w = fm.width(c.first);
+            int w = fm.width(c.first, -1, Qt::TextExpandTabs);
             painter.setPen(c.second);
-            painter.drawText(x, y, w, fm.height(), Qt::AlignLeft | Qt::AlignTop, c.first);
+            painter.drawText(x, y, w, fm.height(), Qt::TextExpandTabs | Qt::AlignLeft | Qt::AlignTop, c.first);
 
             x += w;
         }
@@ -64,6 +65,11 @@ namespace PrefSDK
     ListingPrinter *ListingPrinter::outword(const QString &s, lua_Integer rgb)
     {
         return this->outword(s, QColor::fromRgb(rgb));
+    }
+
+    ListingPrinter *ListingPrinter::outcomment(const QString &s)
+    {
+        return this->out(QString("\t# %1").arg(s), this->_commentcolor);
     }
 
     ListingPrinter *ListingPrinter::outregister(const QString &s)

@@ -8,7 +8,7 @@ namespace PrefSDK
         this->_baseaddress = DataValue(addresstype);
     }
 
-    void DisassemblerDefinition::callDisassemble(QLabel* infolabel, bool elaborateinstructions, bool analyzelisting)
+    void DisassemblerDefinition::callDisassemble(QLabel* infolabel)
     {   
         if(!this->_disassemblefunc.isValid())
             return;
@@ -206,6 +206,20 @@ namespace PrefSDK
         return this->_listing->symbolTable()->contains(addressvalue);
     }
 
+    bool DisassemblerDefinition::isStringSymbol(lua_Integer address)
+    {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        SymbolTable* symboltable = this->_listing->symbolTable();
+
+        if(symboltable->contains(addressvalue))
+        {
+            Symbol* symbol = symboltable->get(addressvalue);
+            return symbol->type() == Symbol::String;
+        }
+
+        return false;
+    }
+
     void DisassemblerDefinition::addInstruction(const PrefSDK::QtLua::LuaTable &instructiontable)
     {
         this->_listing->addInstruction(new Instruction(instructiontable, this->_addresstype));
@@ -247,6 +261,14 @@ namespace PrefSDK
     void DisassemblerDefinition::createFunction(lua_Integer address)
     {
         this->createFunction(address, QString());
+    }
+
+    void DisassemblerDefinition::createLabel(lua_Integer destaddress, const QtLua::LuaTable &instructiontable, const QString &name)
+    {
+        Instruction instruction(instructiontable, this->_addresstype);
+        DataValue destaddressvalue = DataValue::create(destaddress, this->_addresstype);
+
+        this->_listing->createLabel(destaddressvalue, &instruction, name);
     }
 
     void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer symboltype, const QString &name)

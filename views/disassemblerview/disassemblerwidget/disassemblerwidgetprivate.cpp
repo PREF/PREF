@@ -235,8 +235,8 @@ void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qi
             x += this->_charwidth * 2;
             break;
 
-        case Block::ReferenceBlock:
-            document.setPlainText(this->emitReference(qobject_cast<ReferenceSet*>(block)));
+        case Block::LabelBlock:
+            document.setPlainText(this->emitLabel(qobject_cast<Label*>(block)));
             x += this->_charwidth * 2;
             break;
 
@@ -269,6 +269,11 @@ QString DisassemblerWidgetPrivate::emitFunction(Function* func)
         refstring = this->displayReferences("Called by", referencetable->references(func));
 
     return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), refstring);
+}
+
+QString DisassemblerWidgetPrivate::emitLabel(Label *label)
+{
+    return QString("%1:").arg(label->name());
 }
 
 void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y)

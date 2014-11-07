@@ -37,6 +37,7 @@ class DisassemblerWidgetPrivate: public QWidget
         QString displayReferences(const QString& prefix, const ReferenceSet *referenceset) const;
         QString emitSegment(Segment* segment);
         QString emitFunction(Function *func);
+        QString emitLabel(Label* label);
         QString emitReference(ReferenceSet* referenceset);
         qint64 visibleStart(QRect r = QRect()) const;
         qint64 visibleEnd(QRect r = QRect()) const;

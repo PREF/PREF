@@ -174,12 +174,12 @@ void DisassemblerView::showCrossReference(const DataValue &address)
         ui->disassemblerWidget->jumpTo(crd.selectedBlock());
 }
 
-void DisassemblerView::disassemble(bool elaborateinstructions, bool analyzelisting)
+void DisassemblerView::disassemble()
 {
     if(!this->_hexeditdata)
         return;
 
-    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, elaborateinstructions, analyzelisting, ui->logWidget, this->_lblinfo, this);
+    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, ui->logWidget, this->_lblinfo, this);
     connect(this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
     this->_worker->start();
 }

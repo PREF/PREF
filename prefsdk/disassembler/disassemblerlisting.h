@@ -4,6 +4,7 @@
 #include "prefsdk/type/datatype.h"
 #include "prefsdk/type/datavalue.h"
 #include "prefsdk/disassembler/blocks/segment.h"
+#include "prefsdk/disassembler/blocks/label.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/symbol/constanttable.h"
 #include "prefsdk/disassembler/references/referencetable.h"
@@ -27,6 +28,7 @@ namespace PrefSDK
             typedef QMap<DataValue, Segment*> SegmentMap;
             typedef QMap<DataValue, Function*> FunctionMap;
             typedef QMap<DataValue, Instruction*> InstructionMap;
+            typedef QMap<DataValue, Label*> LabelMap;
             typedef QList<Block*> BlockList;
             typedef QSet<DataValue> StringSymbolSet;
             typedef QSet<DataValue> VariableSet;
@@ -57,6 +59,7 @@ namespace PrefSDK
             const DisassemblerListing::StringSymbolSet& strings() const;
             const DisassemblerListing::VariableSet& variables() const;
             void createReference(const DataValue& srcaddress, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx = -1);
+            void createLabel(const DataValue& destaddress, Instruction* instruction, const QString& name);
             void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
             void createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address);
             void createFunction(FunctionType::Type functiontype, const DataValue& startaddress);
@@ -65,7 +68,7 @@ namespace PrefSDK
             Segment* findSegment(const DataValue& address) const;
             Function* findFunction(Block* block);
             Function* findFunction(const DataValue& address);
-            Instruction* findInstruction(const DataValue& address);
+            Instruction* findInstruction(const DataValue& address) const;
             Block* findBlock(const DataValue& address);
 
         public slots:
@@ -96,6 +99,7 @@ namespace PrefSDK
             SegmentMap _segments;
             FunctionMap _functions;
             InstructionMap _instructions;
+            LabelMap _labels;
             BlockList _blocks;
     };
 }

@@ -45,8 +45,8 @@ namespace PrefSDK
     }
 
     bool DisassemblerListing::isDecoded(const DataValue& address) const
-    {
-        return this->_instructions.contains(address);
+    {        
+        return this->findInstruction(address) != nullptr;
     }
 
     qint64 DisassemblerListing::length() const
@@ -82,6 +82,29 @@ namespace PrefSDK
             else
                 this->_blocks.insert(insertidx, refset);
         }
+    }
+
+    void DisassemblerListing::createLabel(const DataValue &destaddress, Instruction *instruction, const QString &name)
+    {
+        Segment* segment = this->findSegment(destaddress);
+
+        if(!segment)
+            throw PrefException(QString("No segment for: %1").arg(destaddress.toString(16)));
+
+        Label* label = nullptr;
+
+        if(!this->_labels.contains(destaddress))
+        {
+            label = new Label(destaddress, name, this);
+
+            this->_labels[destaddress] = label;
+            this->_symboltable->set(Symbol::Label, destaddress, name);
+            this->_blocks.append(label);
+        }
+        else
+            label = this->_labels[destaddress];
+
+        label->addSource(instruction->startAddress());
     }
 
     void DisassemblerListing::createSegment(const QString &name, Segment::Type segmenttype, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset)
@@ -128,7 +151,7 @@ namespace PrefSDK
         if(this->_instructions.contains(address))
         {
             instruction->deleteLater();
-            throw PrefException(QString("DisassemblerListing::addInstruction(): Instruction at %1h already exists").arg(address.toString(16)));
+            return;
         }
 
         Segment* segment = this->findSegment(address);
@@ -185,17 +208,35 @@ namespace PrefSDK
         return nullptr;
     }
 
-    Instruction *DisassemblerListing::findInstruction(const DataValue &address)
-    {        
-        if(this->_instructions.contains(address))  /* We're lucky, return the block directly! */
+    Instruction *DisassemblerListing::findInstruction(const DataValue &address) const
+    {
+        if(this->_instructions.contains(address))
             return this->_instructions[address];
 
-        for(InstructionMap::iterator it = this->_instructions.begin(); it != this->_instructions.end(); it++)
-        {
-            Instruction* i = it.value();
+        /* Try to find the instruction containing this address */
+        InstructionMap::ConstIterator it = this->_instructions.lowerBound(address);
 
-            if(i->contains(address))
-                return i;
+        if(it == this->_instructions.end())
+            return nullptr;
+
+        Instruction* i = it.value();
+
+        if((it != this->_instructions.begin()) && (address < i->startAddress()))
+        {
+            it--;
+
+            while(it != this->_instructions.begin())
+            {
+                i = it.value();
+
+                if(i->endAddress() < address)
+                    break;
+
+                if(i->contains(address))
+                    return i;
+
+                it--;
+            }
         }
 
         return nullptr;
@@ -454,10 +495,10 @@ namespace PrefSDK
             else if(block2->blockType() == Block::SegmentBlock)
                 return false;
 
-            /* Reference Block is always displayed first */
-            if(block1->blockType() == Block::ReferenceBlock)
+            /* Label Block is always displayed first */
+            if(block1->blockType() == Block::LabelBlock)
                 return true;
-            else if(block2->blockType() == Block::ReferenceBlock)
+            else if(block2->blockType() == Block::LabelBlock)
                 return false;
 
             /* Function < Instruction */

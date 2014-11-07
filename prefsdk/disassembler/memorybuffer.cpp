@@ -12,10 +12,7 @@ namespace PrefSDK
         Segment* segment = this->_listing->findSegment(address);
 
         if(!segment)
-        {
-            this->_logger->warning(QString("Trying to read an invalid address: %1h").arg(address.toString(16)));
-            return DataValue(datatype);
-        }
+            return DataValue(datatype); /* Return 0, it's an invalid segment */
 
         DataValue offsetvalue = (address - segment->startAddress()) + segment->baseOffset();
         DataType::Type adjustedtype = DataType::adjust(datatype, DataType::byteOrder(this->_addresstype));
@@ -35,5 +32,32 @@ namespace PrefSDK
     lua_Integer MemoryBuffer::read(lua_Integer address, lua_Integer datatype)
     {
         return this->read(DataValue::create(address, this->_addresstype), static_cast<DataType::Type>(datatype)).compatibleValue<lua_Integer>();
+    }
+
+    QString MemoryBuffer::readString(lua_Integer address, lua_Integer maxlen)
+    {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        Segment* segment = this->_listing->findSegment(addressvalue);
+
+        if(!segment)
+            return QString(); /* Return 0, it's an invalid segment */
+
+        DataValue offsetvalue = (addressvalue - segment->startAddress()) + segment->baseOffset();
+        return this->_databuffer->readString(offsetvalue.compatibleValue<lua_Integer>(), maxlen);
+    }
+
+    QString MemoryBuffer::readString(lua_Integer address)
+    {
+        return this->readString(address, -1);
+    }
+
+    QString MemoryBuffer::readDisplayString(lua_Integer address)
+    {
+        return this->readDisplayString(address, -1);
+    }
+
+    QString MemoryBuffer::readDisplayString(lua_Integer address, lua_Integer maxlen)
+    {
+        return this->readString(address, maxlen).replace(QRegExp("[\\n\\r]"), " ");
     }
 }

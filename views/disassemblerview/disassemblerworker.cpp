@@ -1,6 +1,6 @@
 #include "disassemblerworker.h"
 
-DisassemblerWorker::DisassemblerWorker(QHexEditData *hexeditdata, DisassemblerDefinition *disassemblerdefinition, bool elaborateinstructions, bool analyzelisting, LogWidget *logwidget, QLabel *infolabel, QObject *parent): QThread(parent), _elaborateinstructions(elaborateinstructions), _analyzelisting(analyzelisting), _listing(nullptr), _hexeditdata(hexeditdata), _disassemblerdefinition(disassemblerdefinition), _logwidget(logwidget), _infolabel(infolabel)
+DisassemblerWorker::DisassemblerWorker(QHexEditData *hexeditdata, DisassemblerDefinition *disassemblerdefinition, LogWidget *logwidget, QLabel *infolabel, QObject *parent): QThread(parent), _listing(nullptr), _hexeditdata(hexeditdata), _disassemblerdefinition(disassemblerdefinition), _logwidget(logwidget), _infolabel(infolabel)
 {
     disassemblerdefinition->moveToThread(this);
 }
@@ -16,7 +16,7 @@ void DisassemblerWorker::run()
 
     this->_listing = new DisassemblerListing(this->_hexeditdata);
     this->_disassemblerdefinition->callMap(this->_listing, this->_listing->data(), logger);
-    this->_disassemblerdefinition->callDisassemble(this->_infolabel, this->_elaborateinstructions, this->_analyzelisting);
+    this->_disassemblerdefinition->callDisassemble(this->_infolabel);
 
     this->_listing->moveToThread(qApp->instance()->thread());
     this->_disassemblerdefinition->moveToThread(qApp->instance()->thread());

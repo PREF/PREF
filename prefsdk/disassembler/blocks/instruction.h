@@ -15,9 +15,11 @@ namespace PrefSDK
             explicit Instruction(const QtLua::LuaTable& tc, DataType::Type addresstype, QObject* parent = 0);
             void push() const;
             QString mnemonic() const;
+            bool isConditional() const;
             bool isJump() const;
             bool isCall() const;
             bool isDestinationValid() const;
+            bool isMacro() const;
             DataValue destination() const;
 
         public: /* Overriden Methods */

@@ -102,9 +102,9 @@ void DisassemblerHighlighter::highlightComment(const QString &text)
     }
 }
 
-void DisassemblerHighlighter::highlightJumpLabel(const QString &text)
+void DisassemblerHighlighter::highlightLabel(const QString &text)
 {
-    QRegExp regex("j_[a-zA-Z0-9]+[\\:]*");
+    QRegExp regex("[a-zA-Z_]+[a-zA-Z0-9]*_[a-zA-Z0-9]+[\\:]*");
     int idx = text.indexOf(regex);
 
     if(idx == -1)
@@ -119,8 +119,8 @@ void DisassemblerHighlighter::highlightBlock(const QString &text)
         this->highlightSegment(text);
     else if(this->_block->blockType() == Block::FunctionBlock)
         this->highlightFunction(text);
-    else if(this->_block->blockType() == Block::ReferenceBlock)
-        this->highlightJumpLabel(text);
+    else if(this->_block->blockType() == Block::LabelBlock)
+        this->highlightLabel(text);
 
     this->highlightComment(text);
     this->highlight(text, "\\b[0-9a-fA-F]+h\\b", this->_hexdigitsformat);

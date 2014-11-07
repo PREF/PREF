@@ -24,12 +24,14 @@ namespace PrefSDK
             QString name(const DataValue& address) const;
             Symbol* get(const DataValue& address) const;
             QList<Symbol*> functions() const;
+            QList<Symbol*> labels() const;
             QList<Symbol*> variables() const;
             QList<Symbol*> strings() const;
 
         private:
             QHash<DataValue, Symbol*> _symboltable;
             QMap<DataValue, Symbol*> _functions;
+            QMap<DataValue, Symbol*> _labels;
             QMap<DataValue, Symbol*> _variables;
             QMap<DataValue, Symbol*> _strings;
     };

@@ -19,7 +19,7 @@ namespace PrefSDK
         Q_PROPERTY(bool empty READ isEmpty)
 
         public:
-            enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock };
+            enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock, LabelBlock };
 
         public:
             explicit Block(QObject* parent = 0);

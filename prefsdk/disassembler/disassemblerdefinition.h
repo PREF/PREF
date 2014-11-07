@@ -10,8 +10,6 @@
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/listingprinter.h"
 #include "prefsdk/disassembler/memorybuffer.h"
-#include "prefsdk/disassembler/processor/processordefinition.h"
-#include "prefsdk/disassembler/processor/processoremulator.h"
 #include <QLabel>
 
 namespace PrefSDK
@@ -58,7 +56,7 @@ namespace PrefSDK
             void setOutput(const PrefSDK::QtLua::LuaFunction& of);
             void setElaborate(const PrefSDK::QtLua::LuaFunction& ef);
             void callMap(DisassemblerListing *listing, QHexEditData* hexeditdata, Logger *logger);
-            void callDisassemble(QLabel *infolabel, bool elaborateinstructions, bool analyzelisting);
+            void callDisassemble(QLabel *infolabel);
             void callOutput(ListingPrinter* printer, Instruction* instruction);
             void callElaborate();
 
@@ -73,12 +71,14 @@ namespace PrefSDK
             QString symbolName(lua_Integer address);
             bool isAddress(lua_Integer address);
             bool isSymbol(lua_Integer address);
+            bool isStringSymbol(lua_Integer address);
             void enqueue(lua_Integer address);
             void addInstruction(const PrefSDK::QtLua::LuaTable& instructiontable);
             void createSegment(const QString& name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset);
             void createEntryPoint(lua_Integer address, const QString& name);
             void createFunction(lua_Integer address, const QString& name);
             void createFunction(lua_Integer address);
+            void createLabel(lua_Integer destaddress, const PrefSDK::QtLua::LuaTable& instructiontable, const QString& name);
             void setSymbol(lua_Integer address, lua_Integer symboltype, const QString& name);
             void setSymbol(lua_Integer address, lua_Integer symboltype);
             void setFunction(lua_Integer address, const QString& name);

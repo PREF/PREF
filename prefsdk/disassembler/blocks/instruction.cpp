@@ -23,6 +23,11 @@ namespace PrefSDK
         return this->_instructiontable.getString("mnemonic");
     }
 
+    bool Instruction::isConditional() const
+    {
+        return this->_instructiontable.getBoolean("isconditional");
+    }
+
     bool Instruction::isJump() const
     {
         return this->_instructiontable.getBoolean("isjump");
@@ -36,6 +41,11 @@ namespace PrefSDK
     bool Instruction::isDestinationValid() const
     {
         return this->_instructiontable.getBoolean("isdestinationvalid");
+    }
+
+    bool Instruction::isMacro() const
+    {
+        return this->_instructiontable.getBoolean("ismacro");
     }
 
     DataValue Instruction::destination() const

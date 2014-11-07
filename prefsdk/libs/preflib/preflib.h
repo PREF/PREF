@@ -5,8 +5,6 @@
 #include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/exporter/exporterdefinition.h"
 #include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "prefsdk/disassembler/instruction/instructionset.h"
-#include "prefsdk/disassembler/register/registerset.h"
 #include "prefsdk/disassembler/references/reference.h"
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/prefexception.h"
@@ -81,7 +79,6 @@ namespace PrefSDK
         private:
             static PrefLib* _instance;
             static const char* PREF_TABLE;
-            static const char* FORMAT_TABLE;
     };
 }
 

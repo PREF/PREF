@@ -31,7 +31,7 @@ class DisassemblerView : public AbstractView
     public:
         explicit DisassemblerView(DisassemblerDefinition* disassemblerdefinition, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~DisassemblerView();
-        void disassemble(bool elaborateinstructions, bool analyzelisting);
+        void disassemble();
 
     public: /* Overriden Methods */
         virtual QHexEditData* data();

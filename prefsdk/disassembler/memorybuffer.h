@@ -22,6 +22,10 @@ namespace PrefSDK
 
         public slots:
             lua_Integer read(lua_Integer address, lua_Integer datatype);
+            QString readString(lua_Integer address, lua_Integer maxlen);
+            QString readString(lua_Integer address);
+            QString readDisplayString(lua_Integer address, lua_Integer maxlen);
+            QString readDisplayString(lua_Integer address);
 
         private:
             DataBuffer* _databuffer;
