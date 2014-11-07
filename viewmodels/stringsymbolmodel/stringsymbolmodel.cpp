@@ -45,7 +45,7 @@ QVariant StringSymbolModel::data(const QModelIndex &index, int role) const
     if(role == Qt::DisplayRole)
     {
         Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
-        const DataValue& address = symbol->address();
+        const DataValue& address = symbol->startAddress();
 
         switch(index.column())
         {

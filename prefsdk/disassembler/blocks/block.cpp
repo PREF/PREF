@@ -19,10 +19,11 @@ namespace PrefSDK
 
     void Block::addSource(const DataValue &srcaddress)
     {
-        this->_sources.append(srcaddress);
+        if(!srcaddress.isNull() && !this->_sources.contains(srcaddress))
+            this->_sources.append(srcaddress);
     }
 
-    const QList<DataValue>& Block::sources() const
+    const QList<DataValue> &Block::sources() const
     {
         return this->_sources;
     }
@@ -37,7 +38,7 @@ namespace PrefSDK
         return this->_startaddress;
     }
 
-    const DataValue& Block::sizeValue() const
+    const DataValue& Block::size() const
     {
         return this->_size;
     }

@@ -2,19 +2,9 @@
 
 namespace PrefSDK
 {
-    Symbol::Symbol(Symbol::Type symboltype, const DataValue &address, const DataValue &size, DataType::Type datatype, const QString &name, QObject *parent): QObject(parent), _symboltype(symboltype), _address(address), _size(size), _datatype(datatype), _name(name)
+    Symbol::Symbol(Symbol::Type symboltype, const DataValue &address, const DataValue &size, DataType::Type datatype, const QString &name, QObject *parent): Block(address, size, parent), _symboltype(symboltype), _datatype(datatype), _name(name)
     {
 
-    }
-
-    const PrefSDK::DataValue &Symbol::address() const
-    {
-        return this->_address;
-    }
-
-    const PrefSDK::DataValue &Symbol::size() const
-    {
-        return this->_size;
     }
 
     PrefSDK::DataType::Type Symbol::dataType() const
@@ -34,7 +24,7 @@ namespace PrefSDK
 
     void Symbol::setSize(const PrefSDK::DataValue &size)
     {
-        this->_size = size;
+        this->setEndAddress(this->_startaddress + size);
     }
 
     void Symbol::setDataType(PrefSDK::DataType::Type datatype)
@@ -50,5 +40,10 @@ namespace PrefSDK
     void Symbol::setType(const PrefSDK::Symbol::Type symboltype)
     {
         this->_symboltype = symboltype;
+    }
+
+    Block::Type Symbol::blockType() const
+    {
+        return Block::SymbolBlock;
     }
 }

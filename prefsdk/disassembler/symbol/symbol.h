@@ -3,11 +3,12 @@
 
 #include "prefsdk/type/datatype.h"
 #include "prefsdk/type/datavalue.h"
+#include "prefsdk/disassembler/blocks/block.h"
 #include <QObject>
 
 namespace PrefSDK
 {
-    class Symbol : public QObject
+    class Symbol : public Block
     {
         Q_OBJECT
 
@@ -18,8 +19,6 @@ namespace PrefSDK
 
         public:
             explicit Symbol(Symbol::Type symboltype, const DataValue& address, const DataValue& size, DataType::Type datatype, const QString& name, QObject *parent = 0);
-            const PrefSDK::DataValue& address() const;
-            const PrefSDK::DataValue& size() const;
             PrefSDK::DataType::Type dataType() const;
             PrefSDK::Symbol::Type type() const;
             const QString& name() const;
@@ -28,10 +27,11 @@ namespace PrefSDK
             void setName(const QString& name);
             void setType(const PrefSDK::Symbol::Type symboltype);
 
+        public: /* Overriden Methods */
+            virtual Block::Type blockType() const;
+
         private:
             PrefSDK::Symbol::Type _symboltype;
-            PrefSDK::DataValue _address;
-            PrefSDK::DataValue _size;
             PrefSDK::DataType::Type _datatype;
             QString _name;
     };

@@ -29,22 +29,28 @@ namespace PrefSDK
 
     void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const QString &name)
     {
-        this->set(symboltype, address, address.dataType(), name);
+        this->set(symboltype, address, DataValue(), address.dataType(), name);
     }
 
-    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, DataType::Type datatype, const QString &name)
+    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue &calleraddress, const QString &name)
+    {
+        this->set(symboltype, address, calleraddress, address.dataType(), name);
+    }
+
+    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue &calleraddress, DataType::Type datatype, const QString &name)
     {
         DataValue symbolsize = DataValue::create(DataType::sizeOf(datatype), address.dataType());
-        this->set(symboltype, address, symbolsize, datatype, name);
+        this->set(symboltype, address, symbolsize, calleraddress, datatype, name);
     }
 
-    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue& symbolsize, DataType::Type datatype, const QString &name)
+    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue& symbolsize, const DataValue &calleraddress, DataType::Type datatype, const QString &name)
     {
         Symbol* symbol = nullptr;
 
         if(this->_symboltable.contains(address))
         {   
             symbol = this->_symboltable[address];
+            symbol->addSource(calleraddress);
 
             if(symbol->type() > symboltype) /* Check SymbolType's weight */
                 return;
@@ -60,6 +66,7 @@ namespace PrefSDK
         else
         {
             symbol = new Symbol(symboltype, address, symbolsize, datatype, name, this);
+            symbol->addSource(calleraddress);
             this->_symboltable[address] = symbol;
         }
 
@@ -105,15 +112,15 @@ namespace PrefSDK
 
         if((symboltype == Symbol::Address) || (symboltype == Symbol::String))
         {
-            this->_variables.remove(symbol->address());
+            this->_variables.remove(symbol->startAddress());
 
             if(symboltype == Symbol::String)
-                this->_strings.remove(symbol->address());
+                this->_strings.remove(symbol->startAddress());
         }
         else if(symboltype == Symbol::Function)
-            this->_functions.remove(symbol->address());
+            this->_functions.remove(symbol->startAddress());
         else if(symboltype == Symbol::Label)
-            this->_labels.remove(symbol->address());
+            this->_labels.remove(symbol->startAddress());
     }
 
     void SymbolTable::pushSymbol(Symbol *symbol)
@@ -122,14 +129,14 @@ namespace PrefSDK
 
         if((symboltype == Symbol::Address) || (symboltype == Symbol::String))
         {
-            this->_variables[symbol->address()] = symbol;
+            this->_variables[symbol->startAddress()] = symbol;
 
             if(symboltype == Symbol::String)
-                this->_strings[symbol->address()] = symbol;
+                this->_strings[symbol->startAddress()] = symbol;
         }
         else if(symboltype == Symbol::Function)
-            this->_functions[symbol->address()] = symbol;
+            this->_functions[symbol->startAddress()] = symbol;
         else if(symboltype == Symbol::Label)
-            this->_labels[symbol->address()] = symbol;
+            this->_labels[symbol->startAddress()] = symbol;
     }
 }

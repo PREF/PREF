@@ -213,7 +213,7 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
         case Block::SegmentBlock:
         {
             Segment* s = qobject_cast<Segment*>(b);
-            ui->dataView->selectRange(s->baseOffset(), s->sizeValue());
+            ui->dataView->selectRange(s->baseOffset(), s->size());
             break;
         }
 
@@ -221,7 +221,7 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
         {
             Segment* s = this->_listing->findSegment(b);
             Function* f = qobject_cast<Function*>(b);
-            ui->dataView->selectRange((f->startAddress() - s->startAddress()) + s->baseOffset(), f->sizeValue());
+            ui->dataView->selectRange((f->startAddress() - s->startAddress()) + s->baseOffset(), f->size());
             break;
         }
 
@@ -229,7 +229,7 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
         {
             Segment* s = this->_listing->findSegment(b);
             Instruction* i = qobject_cast<Instruction*>(b);
-            ui->dataView->selectRange((i->startAddress() - s->startAddress()) + s->baseOffset(), i->sizeValue());
+            ui->dataView->selectRange((i->startAddress() - s->startAddress()) + s->baseOffset(), i->size());
             break;
         }
 
@@ -439,7 +439,7 @@ void DisassemblerView::on_tvStrings_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer())->address());
+    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer()));
 }
 
 void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
@@ -447,7 +447,7 @@ void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer())->address());
+    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer()));
 }
 
 void DisassemblerView::on_tabOverview_currentChanged(int index)

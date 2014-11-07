@@ -13,7 +13,7 @@ namespace PrefSDK
         Q_ENUMS(Type)
 
         public:
-            enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock, LabelBlock };
+            enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock, LabelBlock, SymbolBlock };
 
         public:
             explicit Block(QObject* parent = 0);
@@ -25,7 +25,7 @@ namespace PrefSDK
             void setEndAddress(const DataValue& address);
             DataValue endAddress() const;
             const DataValue& startAddress() const;
-            const DataValue& sizeValue() const;
+            const DataValue& size() const;
             bool contains(const DataValue &address) const;
             bool isEmpty() const;
 

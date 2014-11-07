@@ -45,14 +45,14 @@ void DataMapView::highlightData()
     for(int i = 0; i < this->_variablesmodel->rowCount(); i++)
     {
         Symbol* symbol = reinterpret_cast<Symbol*>(this->_variablesmodel->index(i, 0).internalPointer());
-        Segment* segment = this->_listing->findSegment(symbol->address());
+        Segment* segment = this->_listing->findSegment(symbol->startAddress());
 
         if(!segment)
             continue;
 
         if(symbol->type() == Symbol::Address)
         {
-            if(lastsymbol && ((lastsymbol->address() + lastsymbol->size())) == symbol->address())
+            if(lastsymbol && ((lastsymbol->startAddress() + lastsymbol->size())) == symbol->startAddress())
                 color = ((color == this->_addresscolor) ? this->_addressalternatecolor : this->_addresscolor);
             else
                 color = this->_addresscolor;
@@ -60,7 +60,7 @@ void DataMapView::highlightData()
         else /* if(symbol->type() == Symbol::String) */
             color = this->_stringcolor;
 
-        qint64 offset = ((symbol->address() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
+        qint64 offset = ((symbol->startAddress() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
         qint64 endoffset = (offset + symbol->size().compatibleValue<qint64>()) - 1;
         ui->hexView->highlightBackground(offset, endoffset, color);
         ui->hexView->commentRange(offset, endoffset, symbol->name());
@@ -74,11 +74,11 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
         return;
 
     Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
-    Segment* segment = this->_listing->findSegment(symbol->address());
+    Segment* segment = this->_listing->findSegment(symbol->startAddress());
 
     if(!segment)
         return;
 
-    qint64 offset = ((symbol->address() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
+    qint64 offset = ((symbol->startAddress() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
     ui->hexView->setSelectionRange(offset, symbol->size().compatibleValue<qint64>());
 }

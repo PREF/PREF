@@ -62,7 +62,7 @@ namespace PrefSDK
             label = new Label(destaddress, this);
 
             this->_labels[destaddress] = label;
-            this->_symboltable->set(Symbol::Label, destaddress, name);
+            this->_symboltable->set(Symbol::Label, destaddress, calleraddress, name);
             this->_blocks.append(label);
         }
         else
@@ -127,7 +127,7 @@ namespace PrefSDK
             std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);
         }
 
-        this->_symboltable->set(Symbol::Function, address, funcname);
+        this->_symboltable->set(Symbol::Function, address, calleraddress, funcname);
         this->_blocks.append(f);
     }
 

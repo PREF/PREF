@@ -19,8 +19,9 @@ namespace PrefSDK
             bool contains(const DataValue& address) const;
             bool isType(const DataValue& address, Symbol::Type symboltype) const;
             void set(Symbol::Type symboltype, const DataValue& address, const QString& name);
-            void set(Symbol::Type symboltype, const DataValue& address, DataType::Type datatype, const QString& name);
-            void set(Symbol::Type symboltype, const DataValue& address, const DataValue &symbolsize, DataType::Type datatype, const QString& name);
+            void set(Symbol::Type symboltype, const DataValue& address, const DataValue &calleraddress, const QString& name);
+            void set(Symbol::Type symboltype, const DataValue& address, const DataValue &calleraddress, DataType::Type datatype, const QString& name);
+            void set(Symbol::Type symboltype, const DataValue& address, const DataValue &symbolsize, const DataValue &calleraddress, DataType::Type datatype, const QString& name);
             QString name(const DataValue& address) const;
             Symbol* get(const DataValue& address) const;
             QList<Symbol*> functions() const;

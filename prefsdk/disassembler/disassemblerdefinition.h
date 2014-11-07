@@ -61,7 +61,7 @@ namespace PrefSDK
             void callElaborate();
 
         public:
-            void setSymbol(const DataValue& address, Symbol::Type symboltype, const QString& name);
+            void setSymbol(const DataValue& address, const DataValue& calleraddress, Symbol::Type symboltype, const QString& name);
             bool validate(QHexEditData* hexeditdata, Logger *logger);
             QString emitInstruction(Instruction* instruction);
 
@@ -79,7 +79,8 @@ namespace PrefSDK
             void createFunction(lua_Integer address, const QString& name, lua_Integer calleraddress);
             void createFunction(lua_Integer address, lua_Integer calleraddress);
             void createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString& name);
-            void setSymbol(lua_Integer address, lua_Integer symboltype, const QString& name);
+            void setSymbol(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype, const QString& name);
+            void setSymbol(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype);
             void setSymbol(lua_Integer address, lua_Integer symboltype);
             void setFunction(lua_Integer address, const QString& name);
             void setFunction(lua_Integer address, const QString& name, lua_Integer functiontype);

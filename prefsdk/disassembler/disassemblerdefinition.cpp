@@ -131,7 +131,7 @@ namespace PrefSDK
         }
     }
 
-    void DisassemblerDefinition::setSymbol(const DataValue &address, Symbol::Type symboltype, const QString &name)
+    void DisassemblerDefinition::setSymbol(const DataValue &address, const DataValue &calleraddress, Symbol::Type symboltype, const QString &name)
     {
         SymbolTable* symboltable = this->_listing->symbolTable();
         QString symbolname = name.isEmpty() ? QString("data_%1").arg(address.toString(16)) : name;
@@ -142,12 +142,12 @@ namespace PrefSDK
 
             if(len)
             {
-                symboltable->set(Symbol::String, address, DataValue::create(len, this->_addresstype), DataType::AsciiString, symbolname);
+                symboltable->set(Symbol::String, address, DataValue::create(len, this->_addresstype), calleraddress, DataType::AsciiString, symbolname);
                 return;
             }
         }
 
-        symboltable->set(symboltype, address, symbolname);
+        symboltable->set(symboltype, address, calleraddress, symbolname);
     }
 
     void DisassemblerDefinition::enqueue(lua_Integer address)
@@ -271,15 +271,22 @@ namespace PrefSDK
         this->_listing->createLabel(destaddressvalue, calleraddressvalue, name);
     }
 
-    void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer symboltype, const QString &name)
+    void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype, const QString &name)
     {
         DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        this->setSymbol(addressvalue, static_cast<Symbol::Type>(symboltype), name);
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
+        this->setSymbol(addressvalue, calleraddressvalue, static_cast<Symbol::Type>(symboltype), name);
+    }
+
+    void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype)
+    {
+        this->setSymbol(address, calleraddress, symboltype, QString());
     }
 
     void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer symboltype)
     {
-        this->setSymbol(address, symboltype, QString());
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        this->setSymbol(addressvalue, DataValue(), static_cast<Symbol::Type>(symboltype), QString());
     }
 
     void DisassemblerDefinition::setFunction(lua_Integer address, const QString &name)
@@ -296,7 +303,7 @@ namespace PrefSDK
         if(!functions.contains(addressvalue))
             return;
 
-        this->setSymbol(addressvalue, Symbol::Function, name);
+        this->setSymbol(addressvalue, DataValue(), Symbol::Function, name);
         Function* f = functions[addressvalue];
 
         if(ft != f->type())
