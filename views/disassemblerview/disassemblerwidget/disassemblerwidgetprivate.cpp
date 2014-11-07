@@ -85,7 +85,10 @@ void DisassemblerWidgetPrivate::setWheelScrollLines(int c)
 
 void DisassemblerWidgetPrivate::jumpTo(Block *block)
 {
-    this->jumpTo(block->startAddress());
+    qint64 idx = this->_listing->indexOf(block->startAddress(), block->blockType());
+
+    if(idx != -1)
+        this->setCurrentIndex(idx);
 }
 
 void DisassemblerWidgetPrivate::jumpTo(const DataValue& address)
@@ -281,7 +284,7 @@ void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPaint
 {
     this->_printer->reset();
     this->_disassembler->callOutput(this->_printer, instruction); /* Call Lua in order to compile instruction */
-    this->_printer->draw(painter, fm, x, y);
+    this->_printer->draw(&painter, fm, x, y);
 }
 
 QString DisassemblerWidgetPrivate::emitReference(ReferenceSet *referenceset)
@@ -522,13 +525,21 @@ void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
         {
             const DisassemblerListing::BlockList& blocks = this->_listing->blocks();
             qint64 idx = this->_vscrollbar->sliderPosition() + (pos.y() / this->_charheight);
+            Block* block = blocks[idx];
 
-            if(blocks[idx]->blockType() == Block::InstructionBlock)
+            if(block->blockType() == Block::InstructionBlock)
             {
-                Instruction* instruction = qobject_cast<Instruction*>(blocks[idx]);
+                Instruction* instruction = qobject_cast<Instruction*>(block);
 
                 if((instruction->isJump() || instruction->isCall()) && instruction->isDestinationValid())
                     this->jumpTo(instruction->destination());
+            }
+            else if((block->blockType() == Block::LabelBlock) && block->hasSources())
+            {
+                if(block->sources().count() == 1)
+                    this->jumpTo(block->sources()[0]);
+                else
+                    emit crossReferenceRequested(block);
             }
         }
     }

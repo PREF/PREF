@@ -140,20 +140,10 @@ void DisassemblerView::createStringsMenu()
 
 void DisassemblerView::showCrossReference(Block *b)
 {
-    ReferenceTable* referencetable = this->_listing->referenceTable();
-
-    if(!referencetable->isReferenced(b))
+    if(!b->hasSources())
         return;
 
-    ReferenceSet* refset = nullptr;
-
-    if(b->blockType() == Block::ReferenceBlock)
-        refset = qobject_cast<ReferenceSet*>(b);
-    else
-        refset = referencetable->references(b);
-
-    QList<Reference*> references = refset->referenceList();
-    CrossReferenceDialog crd(refset, references, this->_disassembler, this->_listing);
+    CrossReferenceDialog crd(b, this->_disassembler, this->_listing);
     int res = crd.exec();
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -162,12 +152,12 @@ void DisassemblerView::showCrossReference(Block *b)
 
 void DisassemblerView::showCrossReference(const DataValue &address)
 {
-    ReferenceTable* referencetable = this->_listing->referenceTable();
+    Block* b = this->_listing->findBlock(address);
 
-    if(!referencetable->isReferenced(address))
+    if(!b || !b->hasSources())
         return;
 
-    CrossReferenceDialog crd(address, this->_disassembler, this->_listing);
+    CrossReferenceDialog crd(b, this->_disassembler, this->_listing);
     int res = crd.exec();
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -322,8 +312,8 @@ void DisassemblerView::copyListing()
     }
     else if(b->blockType() == Block::SegmentBlock)
         clipboard->setText(QString("segment %1").arg(this->_listing->findSegment(b)->name()));
-    else if(b->blockType() == Block::ReferenceBlock)
-        clipboard->setText(QString("j_%1").arg(b->startAddress().toString(16)));
+    else if(b->blockType() == Block::LabelBlock)
+        clipboard->setText(QString("%1:").arg(this->_listing->symbolTable()->name(b->startAddress())));
 }
 
 void DisassemblerView::copyVariable()

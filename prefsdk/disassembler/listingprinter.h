@@ -19,7 +19,7 @@ namespace PrefSDK
         public:
             explicit ListingPrinter(DataType::Type addresstype, QObject *parent = 0);
             QString printString();
-            void draw(QPainter &painter, const QFontMetrics& fm, int x, int y);
+            void draw(QPainter *painter, const QFontMetrics& fm, int x, int y);
             void reset();
 
         private:

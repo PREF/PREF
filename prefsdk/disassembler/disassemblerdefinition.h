@@ -76,9 +76,9 @@ namespace PrefSDK
             void addInstruction(const PrefSDK::QtLua::LuaTable& instructiontable);
             void createSegment(const QString& name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset);
             void createEntryPoint(lua_Integer address, const QString& name);
-            void createFunction(lua_Integer address, const QString& name);
-            void createFunction(lua_Integer address);
-            void createLabel(lua_Integer destaddress, const PrefSDK::QtLua::LuaTable& instructiontable, const QString& name);
+            void createFunction(lua_Integer address, const QString& name, lua_Integer calleraddress);
+            void createFunction(lua_Integer address, lua_Integer calleraddress);
+            void createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString& name);
             void setSymbol(lua_Integer address, lua_Integer symboltype, const QString& name);
             void setSymbol(lua_Integer address, lua_Integer symboltype);
             void setFunction(lua_Integer address, const QString& name);

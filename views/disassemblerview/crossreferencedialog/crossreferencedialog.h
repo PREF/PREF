@@ -17,11 +17,9 @@ class CrossReferenceDialog : public QDialog
     Q_OBJECT
     
     public:
-        explicit CrossReferenceDialog(ReferenceSet *referenceset, const QList<Reference*>& references, DisassemblerDefinition *disassembler, DisassemblerListing* listing, QWidget *parent = 0);
         explicit CrossReferenceDialog(Block* block, DisassemblerDefinition *disassembler, DisassemblerListing* listing, QWidget *parent = 0);
-        explicit CrossReferenceDialog(const DataValue& address, DisassemblerDefinition *disassembler, DisassemblerListing* listing, QWidget *parent = 0);
         ~CrossReferenceDialog();
-        Instruction* selectedBlock();
+        Block* selectedBlock();
     
     private slots:
         void on_crossReferenceTable_doubleClicked(const QModelIndex &index);
@@ -29,9 +27,10 @@ class CrossReferenceDialog : public QDialog
 
     private:
         Ui::CrossReferenceDialog *ui;
+        const QList<DataValue>& _sources;
         CrossReferenceModel* _crossreferencemodel;
         DisassemblerListing* _listing;
-        Instruction* _selectedinstruction;
+        Block* _selectedblock;
 };
 
 #endif // CROSSREFERENCEDIALOG_H

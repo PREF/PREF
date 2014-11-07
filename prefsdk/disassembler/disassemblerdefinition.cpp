@@ -243,7 +243,7 @@ namespace PrefSDK
         this->_addrstack.push(addressvalue);
     }
 
-    void DisassemblerDefinition::createFunction(lua_Integer address, const QString &name)
+    void DisassemblerDefinition::createFunction(lua_Integer address, const QString &name, lua_Integer calleraddress)
     {
         DataType::Type addresstype = static_cast<DataType::Type>(this->_addresstype);
         DataValue startaddress = DataValue::create(address, addresstype);
@@ -254,21 +254,21 @@ namespace PrefSDK
             return;
         }
 
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
         QString funcname = name.isEmpty() ? QString("sub_%1").arg(startaddress.toString(16)) : name;
-        this->_listing->createFunction(funcname, FunctionType::NormalFunction, startaddress);
+        this->_listing->createFunction(funcname, FunctionType::NormalFunction, startaddress, calleraddressvalue);
     }
 
-    void DisassemblerDefinition::createFunction(lua_Integer address)
+    void DisassemblerDefinition::createFunction(lua_Integer address, lua_Integer calleraddress)
     {
-        this->createFunction(address, QString());
+        this->createFunction(address, QString(), calleraddress);
     }
 
-    void DisassemblerDefinition::createLabel(lua_Integer destaddress, const QtLua::LuaTable &instructiontable, const QString &name)
+    void DisassemblerDefinition::createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString &name)
     {
-        Instruction instruction(instructiontable, this->_addresstype);
         DataValue destaddressvalue = DataValue::create(destaddress, this->_addresstype);
-
-        this->_listing->createLabel(destaddressvalue, &instruction, name);
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
+        this->_listing->createLabel(destaddressvalue, calleraddressvalue, name);
     }
 
     void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer symboltype, const QString &name)

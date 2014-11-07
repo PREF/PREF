@@ -9,28 +9,6 @@ namespace PrefSDK
         this->_constanttable = new ConstantTable(this);
     }
 
-    void DisassemblerListing::calcFunctionBounds()
-    {
-        QList<DataValue> funcep = this->_functions.keys();
-
-        for(int i = 0; i < funcep.length(); i++)
-        {
-            if(i == (funcep.length() - 1))
-            {
-                this->_functions.last()->setEndAddress(this->_blocks.last()->endAddress());
-                return;
-            }
-
-            qint64 idx = this->indexOf(funcep[i + 1], Block::InstructionBlock) - 1;
-            Block* b = this->_blocks[idx];
-
-            while(b->blockType() != Block::InstructionBlock)
-                b = this->_blocks[--idx];
-
-            this->_functions[funcep[i]]->setEndAddress(b->endAddress());
-        }
-    }
-
     bool DisassemblerListing::isAddress(const DataValue &address) const
     {
         for(SegmentMap::ConstIterator it = this->_segments.cbegin(); it != this->_segments.cend(); it++)
@@ -70,21 +48,7 @@ namespace PrefSDK
         return this->_referencetable;
     }
 
-    void DisassemblerListing::createReference(const DataValue& address, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx)
-    {
-        bool newreference = !this->_referencetable->isReferenced(address);
-        ReferenceSet* refset = this->_referencetable->addReference(address, referencedby, referencetype);
-
-        if(newreference && Reference::isJump(referencetype)) /* Insert Jump Label in listing */
-        {
-            if(insertidx == -1)
-                this->_blocks.append(refset);
-            else
-                this->_blocks.insert(insertidx, refset);
-        }
-    }
-
-    void DisassemblerListing::createLabel(const DataValue &destaddress, Instruction *instruction, const QString &name)
+    void DisassemblerListing::createLabel(const DataValue &destaddress, const DataValue& calleraddress, const QString &name)
     {
         Segment* segment = this->findSegment(destaddress);
 
@@ -104,7 +68,7 @@ namespace PrefSDK
         else
             label = this->_labels[destaddress];
 
-        label->addSource(instruction->startAddress());
+        label->addSource(calleraddress);
     }
 
     void DisassemblerListing::createSegment(const QString &name, Segment::Type segmenttype, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset)
@@ -118,19 +82,18 @@ namespace PrefSDK
         this->_blocks.append(s);
     }
 
-    void DisassemblerListing::createFunction(FunctionType::Type functiontype, const DataValue &startaddress)
+    void DisassemblerListing::createFunction(FunctionType::Type functiontype,  const DataValue& address, const DataValue &calleraddress)
     {
-        this->createFunction(QString(), functiontype, startaddress);
+        this->createFunction(QString(), functiontype, address, calleraddress);
     }
 
-    void DisassemblerListing::createFunction(const QString &name, FunctionType::Type functiontype, const DataValue &startaddress)
+    void DisassemblerListing::createFunction(const QString& name, FunctionType::Type functiontype, const DataValue &address)
     {
-        if(this->_functions.contains(startaddress))
+        if(this->_functions.contains(address))
             return;
 
-        QString funcname = name.isEmpty() ? QString("sub_%1").arg(startaddress.toString(16)) : name;
-        Function* f = new Function(functiontype, startaddress, this);
-        this->_functions[startaddress] = f;
+        Function* f = new Function(functiontype, address, this);
+        this->_functions[address] = f;
 
         if(functiontype == FunctionType::EntryPointFunction)
         {
@@ -138,9 +101,33 @@ namespace PrefSDK
             std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);
         }
 
-        if(!this->_symboltable->contains(startaddress)) /* Apply Symbol, if needed */
-            this->_symboltable->set(Symbol::Function, startaddress, funcname);
+        this->_symboltable->set(Symbol::Function, address, name);
+        this->_blocks.append(f);
+    }
 
+    void DisassemblerListing::createFunction(const QString &name, FunctionType::Type functiontype, const DataValue &address, const DataValue& calleraddress)
+    {
+        Function* f = nullptr;
+
+        if(this->_functions.contains(address))
+        {
+            f = this->_functions[address];
+            f->addSource(calleraddress);
+            return;
+        }
+
+        QString funcname = name.isEmpty() ? QString("sub_%1").arg(address.toString(16)) : name;
+        f = new Function(functiontype, address, this);
+        f->addSource(calleraddress);
+        this->_functions[address] = f;
+
+        if(functiontype == FunctionType::EntryPointFunction)
+        {
+            this->_entrypoints.append(f);
+            std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);
+        }
+
+        this->_symboltable->set(Symbol::Function, address, funcname);
         this->_blocks.append(f);
     }
 
@@ -257,87 +244,6 @@ namespace PrefSDK
         return nullptr;
     }
 
-    bool DisassemblerListing::hasNextBlock(QObject *b)
-    {
-        Block* block = qobject_cast<Block*>(b);
-        return block != this->_blocks.last();
-    }
-
-    QObject* DisassemblerListing::nextBlock(QObject* b)
-    {
-        Block* block = qobject_cast<Block*>(b);
-
-        if(block == this->_blocks.last())
-            return nullptr;
-
-        qint64 idx = this->indexOf(block);
-
-        if(idx == -1)
-        {
-            throw PrefException("DisassemblerListing::nextBlock(): Cannot find selected block");
-            return nullptr;
-        }
-
-        return this->_blocks[idx + 1];
-    }
-
-    QObject *DisassemblerListing::nextFunction(QObject *f)
-    {
-        Function* func = qobject_cast<Function*>(f);
-
-        if(func == this->_functions.last())
-            return nullptr;
-
-        FunctionMap::Iterator it = this->_functions.find(func->startAddress());
-
-        if(it == this->_functions.end())
-            return nullptr;
-
-        return (++it).value();
-    }
-
-    QObject *DisassemblerListing::firstInstruction(QObject *f)
-    {
-        Block* b = qobject_cast<Block*>(f);
-
-        if((b->blockType() != Block::FunctionBlock) || !this->_instructions.contains(b->startAddress()))
-            return nullptr;
-
-        return this->_instructions[b->startAddress()];
-    }
-
-    QObject *DisassemblerListing::nextInstruction(QObject *i)
-    {
-        Block* b = qobject_cast<Block*>(i);
-
-        if((b->blockType() != Block::InstructionBlock) || !this->_instructions.contains(b->startAddress()) || !this->_instructions.contains(b->startAddress() + b->sizeValue()))
-            return nullptr;
-
-        return this->_instructions[b->startAddress() + b->sizeValue()];
-    }
-
-    PrefSDK::Block *DisassemblerListing::firstBlock()
-    {
-        this->checkSort();
-        return this->_blocks.first();
-    }
-
-    PrefSDK::Block *DisassemblerListing::lastBlock()
-    {
-        this->checkSort();
-        return this->_blocks.last();
-    }
-
-    Function *DisassemblerListing::firstFunction()
-    {
-        return this->_functions.first();
-    }
-
-    Function *DisassemblerListing::lastFunction()
-    {
-        return this->_functions.last();
-    }
-
     qint64 DisassemblerListing::indexOf(Block *block)
     {
         return this->indexOf(block->startAddress(), block->blockType());
@@ -408,21 +314,6 @@ namespace PrefSDK
     const DisassemblerListing::EntryPointList &DisassemblerListing::entryPoints() const
     {
         return this->_entrypoints;
-    }
-
-    const DisassemblerListing::InstructionMap &DisassemblerListing::instructions() const
-    {
-        return this->_instructions;
-    }
-
-    const DisassemblerListing::StringSymbolSet &DisassemblerListing::strings() const
-    {
-        return this->_stringsymbols;
-    }
-
-    const DisassemblerListing::VariableSet &DisassemblerListing::variables() const
-    {
-        return this->_variables;
     }
 
     const DisassemblerListing::FunctionMap &DisassemblerListing::functions() const

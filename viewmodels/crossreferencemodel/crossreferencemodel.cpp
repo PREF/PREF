@@ -1,32 +1,10 @@
 #include "crossreferencemodel.h"
 
-CrossReferenceModel::CrossReferenceModel(ReferenceSet* referenceset, const QList<Reference *> references, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(referenceset->startAddress()), _listing(listing), _references(references)
+CrossReferenceModel::CrossReferenceModel(Block *block, QObject *parent): QAbstractItemModel(parent), _sources(block->sources()), _address(block->startAddress())
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
-}
-
-CrossReferenceModel::CrossReferenceModel(Block *block, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(block->startAddress()), _listing(listing)
-{
-    this->_monospacefont.setFamily("Monospace");
-    this->_monospacefont.setPointSize(qApp->font().pointSize());
-    this->_monospacefont.setStyleHint(QFont::TypeWriter);
-
-    ReferenceTable* referenceset = listing->referenceTable();
-
-    if(referenceset->count())
-        this->_references = referenceset->references(block)->referenceList();
-}
-
-CrossReferenceModel::CrossReferenceModel(const DataValue &address, DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _address(address), _listing(listing)
-{
-    this->_monospacefont.setFamily("Monospace");
-    this->_monospacefont.setPointSize(qApp->font().pointSize());
-    this->_monospacefont.setStyleHint(QFont::TypeWriter);
-
-    ReferenceTable* referenceset = listing->referenceTable();
-    this->_references = referenceset->references(address)->referenceList();
 }
 
 int CrossReferenceModel::columnCount(const QModelIndex &) const
@@ -64,21 +42,19 @@ QVariant CrossReferenceModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        Reference* r = reinterpret_cast<Reference*>(index.internalPointer());
+        DataValue sourceaddress = this->_sources[index.row()];
 
         if(index.column() == 0)
         {
-            if(r->referencedBy() > this->_address)
+            if(sourceaddress > this->_address)
                 return "Down";
-            else if(r->referencedBy() < this->_address)
+            else if(sourceaddress < this->_address)
                 return "Up";
             else
                 return "---";
         }
         else if(index.column() == 1)
-            return r->referencedBy().toString(16).append("h");
-        //else if(index.column() == 2)
-            //return DisassembledInstructionManager::generateInstruction(item.second);
+            return sourceaddress.toString(16).append("h");
     }
     else if(role == Qt::FontRole && index.column() > 0)
         return this->_monospacefont;
@@ -93,7 +69,7 @@ QModelIndex CrossReferenceModel::index(int row, int column, const QModelIndex &p
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column, this->_references[row]);
+    return this->createIndex(row, column);
 }
 
 QModelIndex CrossReferenceModel::parent(const QModelIndex &) const
@@ -103,7 +79,7 @@ QModelIndex CrossReferenceModel::parent(const QModelIndex &) const
 
 int CrossReferenceModel::rowCount(const QModelIndex&) const
 {
-    return this->_references.length();
+    return this->_sources.length();
 }
 
 Qt::ItemFlags CrossReferenceModel::flags(const QModelIndex &index) const

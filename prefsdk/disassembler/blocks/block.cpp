@@ -27,6 +27,11 @@ namespace PrefSDK
         return this->_sources;
     }
 
+    bool Block::hasSources() const
+    {
+        return !this->_sources.isEmpty();
+    }
+
     const DataValue& Block::startAddress() const
     {
         return this->_startaddress;

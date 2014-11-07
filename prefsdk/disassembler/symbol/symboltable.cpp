@@ -55,9 +55,7 @@ namespace PrefSDK
         }
 
         Symbol* s = new Symbol(symboltype, address, symbolsize, datatype, name, this);
-
-        if(symboltype != Symbol::Label)
-            this->_symboltable[address] = s;
+        this->_symboltable[address] = s;
 
         if((symboltype == Symbol::Address) || (symboltype == Symbol::String))
         {

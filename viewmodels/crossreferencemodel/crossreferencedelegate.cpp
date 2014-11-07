@@ -1,6 +1,6 @@
 #include "crossreferencedelegate.h"
 
-CrossReferenceDelegate::CrossReferenceDelegate(DisassemblerDefinition* disassembler, DisassemblerListing *listing, QObject *parent): QStyledItemDelegate(parent), _disassembler(disassembler), _listing(listing)
+CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing *listing, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler), _listing(listing)
 {
 }
 
@@ -19,24 +19,14 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
 
     QTextDocument document;
-    Reference* r = reinterpret_cast<Reference*>(index.internalPointer());
-    Block* b = this->_listing->findBlock(r->referencedBy());
-
-    if(!b)
-    {
-        document.setPlainText("<Invalid Reference>");
-
-        painter->save();
-            painter->translate(option.rect.left(), option.rect.top());
-            document.drawContents(painter, QRect(0, 0, options.rect.width(), options.rect.height()));
-        painter->restore();
-        return;
-    }
+    DataValue sourceaddress = this->_sources[index.row()];
+    Block* b = this->_listing->findBlock(sourceaddress);
 
     if(b->blockType() == Block::InstructionBlock)
     {
         ListingPrinter printer(this->_disassembler->addressType());
         this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b));
+        printer.draw(painter, option.fontMetrics, option.rect.left(), option.rect.top());
         return;
     }
 

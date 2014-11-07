@@ -21,6 +21,7 @@ namespace PrefSDK
             explicit Block(const DataValue& startaddress, const DataValue& size, QObject* parent = 0);
             void addSource(const DataValue& srcaddress);
             const QList<DataValue>& sources() const;
+            bool hasSources() const;
             void setEndAddress(const DataValue& address);
             DataValue endAddress() const;
             const DataValue& startAddress() const;

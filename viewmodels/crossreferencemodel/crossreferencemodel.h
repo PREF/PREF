@@ -12,9 +12,7 @@ class CrossReferenceModel : public QAbstractItemModel
     Q_OBJECT
 
     public:
-        explicit CrossReferenceModel(ReferenceSet *referenceset, const QList<Reference*> references, DisassemblerListing* listing, QObject *parent = 0);
-        explicit CrossReferenceModel(Block* block, DisassemblerListing* listing, QObject *parent = 0);
-        explicit CrossReferenceModel(const DataValue& address, DisassemblerListing* listing, QObject *parent = 0);
+        explicit CrossReferenceModel(Block* block, QObject *parent = 0);
         void addCrossReference(quint64 va);
     
     public: /* Overriden Methods */
@@ -27,10 +25,9 @@ class CrossReferenceModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
+        const QList<DataValue>& _sources;
         QFont _monospacefont;
         DataValue _address;
-        DisassemblerListing* _listing;
-        QList<Reference*> _references;
 };
 
 #endif // CROSSREFERENCEMODEL_H

@@ -19,13 +19,13 @@ namespace PrefSDK
         return s;
     }
 
-    void ListingPrinter::draw(QPainter& painter, const QFontMetrics &fm, int x, int y)
+    void ListingPrinter::draw(QPainter* painter, const QFontMetrics &fm, int x, int y)
     {
         foreach(ListingPrinter::Chunk c, this->_chunks)
         {
             int w = fm.width(c.first, -1, Qt::TextExpandTabs);
-            painter.setPen(c.second);
-            painter.drawText(x, y, w, fm.height(), Qt::TextExpandTabs | Qt::AlignLeft | Qt::AlignTop, c.first);
+            painter->setPen(c.second);
+            painter->drawText(x, y, w, fm.height(), Qt::TextExpandTabs | Qt::AlignLeft | Qt::AlignTop, c.first);
 
             x += w;
         }

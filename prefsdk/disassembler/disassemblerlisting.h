@@ -19,11 +19,6 @@ namespace PrefSDK
     {
         Q_OBJECT
 
-        Q_PROPERTY(PrefSDK::Function* firstfunction READ firstFunction)
-        Q_PROPERTY(PrefSDK::Function* lastfunction READ lastFunction)
-        Q_PROPERTY(PrefSDK::Block* firstblock READ firstBlock)
-        Q_PROPERTY(PrefSDK::Block* lastblock READ lastBlock)
-
         public:
             typedef QMap<DataValue, Segment*> SegmentMap;
             typedef QMap<DataValue, Function*> FunctionMap;
@@ -31,22 +26,14 @@ namespace PrefSDK
             typedef QMap<DataValue, Label*> LabelMap;
             typedef QList<Block*> BlockList;
             typedef QSet<DataValue> StringSymbolSet;
-            typedef QSet<DataValue> VariableSet;
             typedef QList<Function*> EntryPointList;
 
         public:
             explicit DisassemblerListing(QHexEditData* hexeditdata, QObject *parent = 0);
-            DataType::Type addressType() const;
-            void setAddressType(DataType::Type addresstype);
             bool isAddress(const DataValue& address) const;
             bool isDecoded(const DataValue& address) const;
             qint64 pointsToString(const DataValue& address) const;
-            void calcFunctionBounds();
             qint64 length() const;
-            PrefSDK::Block* firstBlock();
-            PrefSDK::Block* lastBlock();
-            PrefSDK::Function* firstFunction();
-            PrefSDK::Function* lastFunction();
             ReferenceTable* referenceTable();
             SymbolTable* symbolTable();
             ConstantTable* constantTable();
@@ -55,14 +42,11 @@ namespace PrefSDK
             const DisassemblerListing::SegmentMap& segments() const;
             const DisassemblerListing::FunctionMap& functions() const;
             const DisassemblerListing::EntryPointList& entryPoints() const;
-            const DisassemblerListing::InstructionMap& instructions() const;
-            const DisassemblerListing::StringSymbolSet& strings() const;
-            const DisassemblerListing::VariableSet& variables() const;
-            void createReference(const DataValue& srcaddress, const DataValue &referencedby, Reference::Type referencetype, qint64 insertidx = -1);
-            void createLabel(const DataValue& destaddress, Instruction* instruction, const QString& name);
+            void createLabel(const DataValue& destaddress, const DataValue &calleraddress, const QString& name);
             void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
-            void createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address);
-            void createFunction(FunctionType::Type functiontype, const DataValue& startaddress);
+            void createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address, const DataValue &calleraddress);
+            void createFunction(FunctionType::Type functiontype, const DataValue& address, const DataValue &calleraddress);
+            void createFunction(const QString &name, FunctionType::Type functiontype, const DataValue& address);
             void addInstruction(Instruction *instruction);
             Segment* findSegment(Block* block);
             Segment* findSegment(const DataValue& address) const;
@@ -70,13 +54,6 @@ namespace PrefSDK
             Function* findFunction(const DataValue& address);
             Instruction* findInstruction(const DataValue& address) const;
             Block* findBlock(const DataValue& address);
-
-        public slots:
-            bool hasNextBlock(QObject* b);
-            QObject* nextBlock(QObject* b);
-            QObject* nextFunction(QObject* f);
-            QObject* firstInstruction(QObject* f);
-            QObject* nextInstruction(QObject* i);
 
         public: /* Modified Binary Search O(log(n) + 2k) */
             qint64 indexOf(Block* block);
@@ -94,8 +71,6 @@ namespace PrefSDK
             SymbolTable* _symboltable;
             ConstantTable* _constanttable;
             EntryPointList _entrypoints;
-            StringSymbolSet _stringsymbols;
-            VariableSet _variables;
             SegmentMap _segments;
             FunctionMap _functions;
             InstructionMap _instructions;
