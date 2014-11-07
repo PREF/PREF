@@ -29,6 +29,10 @@ namespace PrefSDK
             QList<Symbol*> strings() const;
 
         private:
+            void popSymbol(Symbol* symbol);
+            void pushSymbol(Symbol* symbol);
+
+        private:
             QHash<DataValue, Symbol*> _symboltable;
             QMap<DataValue, Symbol*> _functions;
             QMap<DataValue, Symbol*> _labels;
