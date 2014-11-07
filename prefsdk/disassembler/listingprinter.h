@@ -5,6 +5,8 @@
 #include <QObject>
 #include <QColor>
 #include <QPainter>
+#include <QTextDocument>
+#include <QTextCursor>
 #include <lua.hpp>
 
 namespace PrefSDK
@@ -19,6 +21,7 @@ namespace PrefSDK
         public:
             explicit ListingPrinter(DataType::Type addresstype, QObject *parent = 0);
             QString printString();
+            QString printHtmlString();
             void draw(QPainter *painter, const QFontMetrics& fm, int x, int y);
             void reset();
 

@@ -30,6 +30,7 @@ class DisassemblerWidgetPrivate: public QWidget
         void clearNavigationHistory();
         void back();
         void forward();
+        void save(const QString& filename);
 
     private:
         Block* findBlock(qint64 idx);
@@ -38,6 +39,7 @@ class DisassemblerWidgetPrivate: public QWidget
         QString emitFunction(Function *func);
         QString emitLabel(Label* label);
         QString displayReferences(const QString &prefix, Block *block);
+        QString emitLine(qint64 idx);
         qint64 visibleStart(QRect r = QRect()) const;
         qint64 visibleEnd(QRect r = QRect()) const;
         int drawAddress(QPainter &painter, QFontMetrics &fm, Block* block, int y);

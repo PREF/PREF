@@ -28,6 +28,7 @@ class DisassemblerWidget : public QFrame
         void setCurrentIndex(int idx);
         void jumpTo(Block* block);
         void jumpTo(const PrefSDK::DataValue &address);
+        void save(const QString& filename);
         void clearNavigationHistory();
         void back();
         void forward();

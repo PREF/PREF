@@ -11,8 +11,12 @@ class AbstractView : public QWidget
 
     public:
         explicit AbstractView(QHexEditData *hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
-        const QString& viewName() const;
         virtual ~AbstractView();
+        virtual bool canSaveAs() const;
+        virtual QString saveFilter() const;
+        virtual void save(const QString&, const QString&);
+        virtual void save();
+        const QString& viewName() const;
 
     protected:
         void updateInfoText(const QString& s);

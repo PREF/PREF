@@ -71,6 +71,11 @@ void DisassemblerWidget::jumpTo(const PrefSDK::DataValue& address)
     this->_disasmwidget_p->jumpTo(address);
 }
 
+void DisassemblerWidget::save(const QString &filename)
+{
+    this->_disasmwidget_p->save(filename);
+}
+
 void DisassemblerWidget::clearNavigationHistory()
 {
     this->_disasmwidget_p->clearNavigationHistory();

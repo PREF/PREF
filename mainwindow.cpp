@@ -161,10 +161,10 @@ bool MainWindow::closeApplication()
     return true;
 }
 
-void MainWindow::setSaveVisible(bool b)
+void MainWindow::setSaveVisible(bool cansave, bool cansaveas)
 {
-    ui->action_Save->setVisible(b);
-    ui->action_Save_As->setVisible(b);
+    ui->action_Save->setVisible(cansave);
+    ui->action_Save_As->setVisible(cansaveas);
 }
 
 void MainWindow::centerWindowToScreen()
@@ -207,7 +207,7 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
             if(ui->tabWidget->count() == 1)
             {
                 this->_lblinfo->clear(); /* Clear Status Bar Information */
-                this->setSaveVisible(false);
+                this->setSaveVisible(false, false);
             }
 
             ui->tabWidget->removeTab(index);
@@ -221,10 +221,13 @@ void MainWindow::on_tabWidget_tabCloseRequested(int index)
 
 void MainWindow::on_action_Save_As_triggered()
 {
-    QString filename = QFileDialog::getSaveFileName(this, "Save as...");
+    AbstractView* abstractview = qobject_cast<AbstractView*>(ui->tabWidget->currentWidget());
+    QFileDialog fd(this, "Save as...", QString(), abstractview->saveFilter());
+    fd.setAcceptMode(QFileDialog::AcceptSave);
+    int res = fd.exec();
 
-    if(!filename.isEmpty())
-        ((HexView*)ui->tabWidget->currentWidget())->save(filename);
+    if(res == QFileDialog::Accepted)
+        abstractview->save(fd.selectedFiles()[0], fd.selectedNameFilter());
 }
 
 void MainWindow::on_action_Save_triggered()
@@ -283,13 +286,13 @@ void MainWindow::on_tabWidget_currentChanged(int index)
 {
     if(index == -1)
     {
-        this->setSaveVisible(false);
+        this->setSaveVisible(false, false);
         return;
     }
 
     AbstractView* av = dynamic_cast<AbstractView*>(ui->tabWidget->widget(index));
     av->updateStatusBar();
-    this->setSaveVisible(av->canSave());
+    this->setSaveVisible(av->canSave(), av->canSaveAs());
 }
 
 void MainWindow::on_actionSignature_DB_triggered()

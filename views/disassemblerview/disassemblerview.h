@@ -31,11 +31,14 @@ class DisassemblerView : public AbstractView
     public:
         explicit DisassemblerView(DisassemblerDefinition* disassemblerdefinition, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~DisassemblerView();
+        virtual void save(const QString& filename, const QString&);
+        virtual QString saveFilter() const;
         void disassemble();
 
     public: /* Overriden Methods */
         virtual QHexEditData* data();
         virtual bool canSave() const;
+        virtual bool canSaveAs() const;
         virtual void updateStatusBar();
 
     private:

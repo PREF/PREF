@@ -27,7 +27,7 @@ void HexView::save()
     this->_hexeditdata->save();
 }
 
-void HexView::save(QString filename)
+void HexView::save(const QString& filename, const QString&)
 {
     QFile f(filename);
     this->_hexeditdata->saveTo(&f);

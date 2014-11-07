@@ -126,6 +126,20 @@ void DisassemblerWidgetPrivate::forward()
     this->setCurrentIndex(this->popForward(), false);
 }
 
+void DisassemblerWidgetPrivate::save(const QString &filename)
+{
+    if(!this->_disassembler || !this->_listing)
+        return;
+
+    QFile f(filename);
+    f.open(QFile::WriteOnly | QFile::Truncate);
+
+    for(qint64 i = 0; i < this->_listing->length(); i++)
+        f.write(this->emitLine(i).append("\n").toUtf8());
+
+    f.close();
+}
+
 qint64 DisassemblerWidgetPrivate::currentIndex() const
 {
     return this->_selectedindex;
@@ -278,6 +292,28 @@ QString DisassemblerWidgetPrivate::displayReferences(const QString& prefix, Bloc
     }
 
     return s;
+}
+
+
+QString DisassemblerWidgetPrivate::emitLine(qint64 idx)
+{
+    QString blockstring;
+    Block* block = this->findBlock(idx);
+
+    if(block->blockType() == Block::InstructionBlock)
+    {
+        ListingPrinter lp(this->_disassembler->addressType());
+        this->_disassembler->callOutput(&lp, qobject_cast<Instruction*>(block));
+        blockstring = QString(" ").repeated(6) + lp.printString();
+    }
+    else if(block->blockType() == Block::SegmentBlock)
+        blockstring = this->emitSegment(qobject_cast<Segment*>(block));
+    else if(block->blockType() == Block::FunctionBlock)
+        blockstring = QString(" ").repeated(2) + this->emitFunction(qobject_cast<Function*>(block));
+    else if(block->blockType() == Block::LabelBlock)
+        blockstring = QString(" ").repeated(4) + this->emitLabel(qobject_cast<Label*>(block));
+
+    return QString("%1:%2 %3").arg(this->_currentsegment->name(), block->startAddress().toString(16), blockstring);
 }
 
 qint64 DisassemblerWidgetPrivate::visibleStart(QRect r) const

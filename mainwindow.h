@@ -40,7 +40,7 @@ class MainWindow : public QMainWindow
         void checkCommandLine();
         bool checkDisassembly(const QStringList& args);
         bool closeApplication();
-        void setSaveVisible(bool b);
+        void setSaveVisible(bool cansave, bool cansaveas);
         void centerWindowToScreen();
         void adjustSplitterPosition();
 

@@ -63,6 +63,16 @@ DisassemblerView::~DisassemblerView()
     delete ui;
 }
 
+void DisassemblerView::save(const QString& filename, const QString&)
+{
+    ui->disassemblerWidget->save(filename);
+}
+
+QString DisassemblerView::saveFilter() const
+{
+    return "Text File|*.txt";
+}
+
 QHexEditData *DisassemblerView::data()
 {
     return this->_hexeditdata;
@@ -71,6 +81,11 @@ QHexEditData *DisassemblerView::data()
 bool DisassemblerView::canSave() const
 {
     return false;
+}
+
+bool DisassemblerView::canSaveAs() const
+{
+    return true;
 }
 
 void DisassemblerView::updateStatusBar()

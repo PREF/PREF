@@ -19,6 +19,22 @@ namespace PrefSDK
         return s;
     }
 
+    QString ListingPrinter::printHtmlString()
+    {
+        QTextCharFormat charformat;
+        QTextDocument document;
+        QTextCursor cursor(&document);
+
+        foreach(ListingPrinter::Chunk c, this->_chunks)
+        {
+            charformat.setForeground(QBrush(c.second));
+            cursor.setCharFormat(charformat);
+            cursor.insertText(c.first);
+        }
+
+        return document.toHtml();
+    }
+
     void ListingPrinter::draw(QPainter* painter, const QFontMetrics &fm, int x, int y)
     {
         foreach(ListingPrinter::Chunk c, this->_chunks)

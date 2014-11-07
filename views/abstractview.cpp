@@ -10,9 +10,29 @@ AbstractView::~AbstractView()
 
 }
 
+bool AbstractView::canSaveAs() const
+{
+    return this->canSave();
+}
+
+QString AbstractView::saveFilter() const
+{
+    return "All Files| *.*";
+}
+
 const QString &AbstractView::viewName() const
 {
     return this->_viewname;
+}
+
+void AbstractView::save(const QString &, const QString &)
+{
+
+}
+
+void AbstractView::save()
+{
+
 }
 
 void AbstractView::updateInfoText(const QString &s)
