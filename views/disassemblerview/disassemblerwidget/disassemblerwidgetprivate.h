@@ -34,11 +34,10 @@ class DisassemblerWidgetPrivate: public QWidget
     private:
         Block* findBlock(qint64 idx);
         QString functionType(Function *f) const;
-        QString displayReferences(const QString& prefix, const ReferenceSet *referenceset) const;
         QString emitSegment(Segment* segment);
         QString emitFunction(Function *func);
         QString emitLabel(Label* label);
-        QString emitReference(ReferenceSet* referenceset);
+        QString displayReferences(const QString &prefix, Block *block);
         qint64 visibleStart(QRect r = QRect()) const;
         qint64 visibleEnd(QRect r = QRect()) const;
         int drawAddress(QPainter &painter, QFontMetrics &fm, Block* block, int y);

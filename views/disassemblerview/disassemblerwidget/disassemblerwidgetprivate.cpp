@@ -177,31 +177,6 @@ QString DisassemblerWidgetPrivate::functionType(Function *f) const
     return QString();
 }
 
-QString DisassemblerWidgetPrivate::displayReferences(const QString &prefix, const ReferenceSet* referenceset) const
-{
-    Segment* segment = nullptr;
-    const QSet<Reference*>& references = referenceset->references();
-    QString s = QString("# %1: ").arg(prefix);
-
-    for(QSet<Reference*>::ConstIterator it = references.begin(); it != references.end(); it++)
-    {
-        if(it != references.begin())
-            s.append(", ");
-
-        const DataValue& referencedaddress = (*it)->referencedBy();
-
-        if(!segment || !segment->contains(referencedaddress))
-            segment = this->_listing->findSegment(referencedaddress);
-
-        if(segment)
-            s.append(QString("%1:%2").arg(segment->name(), referencedaddress.toString(16)));
-        else
-            s.append(QString("???:%1").arg(referencedaddress.toString(16)));
-    }
-
-    return s;
-}
-
 void DisassemblerWidgetPrivate::drawLineBackground(QPainter &painter, qint64 idx, int y)
 {
     QRect linerect(0, y, this->width(), this->_charheight);
@@ -264,20 +239,14 @@ QString DisassemblerWidgetPrivate::emitSegment(Segment *segment)
 
 QString DisassemblerWidgetPrivate::emitFunction(Function* func)
 {
-    QString refstring;
-    ReferenceTable* referencetable = this->_listing->referenceTable();
     SymbolTable* symboltable = this->_listing->symbolTable();
-
-    if(referencetable->isReferenced(func))
-        refstring = this->displayReferences("Called by", referencetable->references(func));
-
-    return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), refstring);
+    return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), this->displayReferences("Called by: ", func));
 }
 
 QString DisassemblerWidgetPrivate::emitLabel(Label *label)
 {
     SymbolTable* symboltable = this->_listing->symbolTable();
-    return QString("%1:").arg(symboltable->name(label->startAddress()));
+    return QString("%1:\t\t%2").arg(symboltable->name(label->startAddress()), this->displayReferences("XREF: ", label));
 }
 
 void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y)
@@ -287,9 +256,28 @@ void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPaint
     this->_printer->draw(&painter, fm, x, y);
 }
 
-QString DisassemblerWidgetPrivate::emitReference(ReferenceSet *referenceset)
+QString DisassemblerWidgetPrivate::displayReferences(const QString& prefix, Block* block)
 {
-    return QString("j_%1:\t\t%2").arg(referenceset->startAddress().toString(16), this->displayReferences("Referenced by", referenceset));
+    if(!block->hasSources())
+        return QString();
+
+    const QList<DataValue>& sources = block->sources();
+    Segment* segment = nullptr;
+    QString s = "# " + prefix;
+
+    for(int i = 0; i < sources.count(); i++)
+    {
+        if(!segment || !segment->contains(sources[i]))
+            segment = this->_listing->findSegment(sources[i]);
+
+        QString segmentname = (segment ? segment->name() : "???");
+        s.append(segmentname + ":" + sources[i].toString(16));
+
+        if(i < (sources.count() - 1))
+            s.append(" | ");
+    }
+
+    return s;
 }
 
 qint64 DisassemblerWidgetPrivate::visibleStart(QRect r) const
