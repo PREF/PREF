@@ -17,6 +17,16 @@ namespace PrefSDK
 
     }
 
+    void Block::addSource(const DataValue &srcaddress)
+    {
+        this->_sources.append(srcaddress);
+    }
+
+    const QList<DataValue>& Block::sources() const
+    {
+        return this->_sources;
+    }
+
     const DataValue& Block::startAddress() const
     {
         return this->_startaddress;
@@ -37,11 +47,6 @@ namespace PrefSDK
         this->_size = address - this->_startaddress;
     }
 
-    bool Block::contains(const Block *block) const
-    {
-        return this->contains(block->startAddress());
-    }
-
     bool Block::contains(const DataValue& address) const
     {
         return (address >= this->_startaddress && address < this->endAddress());
@@ -50,27 +55,6 @@ namespace PrefSDK
     bool Block::isEmpty() const
     {
         return this->_startaddress >= this->endAddress();
-    }
-
-    lua_Integer Block::start() const
-    {
-        return this->_startaddress.compatibleValue<lua_Integer>();
-    }
-
-    lua_Integer Block::end() const
-    {
-        return this->endAddress().compatibleValue<lua_Integer>();
-    }
-
-    lua_Integer Block::size() const
-    {
-        return this->_size.compatibleValue<lua_Integer>();
-    }
-
-    bool Block::contains(lua_Integer address)
-    {
-        DataValue dv = DataValue::create(address, this->_startaddress.dataType());
-        return this->contains(dv);
     }
 
     Block::Type Block::blockType() const

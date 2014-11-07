@@ -95,7 +95,7 @@ namespace PrefSDK
 
         if(!this->_labels.contains(destaddress))
         {
-            label = new Label(destaddress, name, this);
+            label = new Label(destaddress, this);
 
             this->_labels[destaddress] = label;
             this->_symboltable->set(Symbol::Label, destaddress, name);

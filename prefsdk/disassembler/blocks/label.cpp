@@ -2,23 +2,8 @@
 
 namespace PrefSDK
 {
-    Label::Label(const DataValue& destaddress, const QString& name, QObject *parent): Block(destaddress, parent), _name(name)
+    Label::Label(const DataValue& destaddress, QObject *parent): Block(destaddress, parent)
     {
-    }
-
-    void Label::addSource(const DataValue &srcaddress)
-    {
-        this->_sources.append(srcaddress);
-    }
-
-    const QList<DataValue>& Label::sources() const
-    {
-        return this->_sources;
-    }
-
-    const QString &Label::name() const
-    {
-        return this->_name;
     }
 
     Block::Type Label::blockType() const

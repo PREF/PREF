@@ -273,7 +273,8 @@ QString DisassemblerWidgetPrivate::emitFunction(Function* func)
 
 QString DisassemblerWidgetPrivate::emitLabel(Label *label)
 {
-    return QString("%1:").arg(label->name());
+    SymbolTable* symboltable = this->_listing->symbolTable();
+    return QString("%1:").arg(symboltable->name(label->startAddress()));
 }
 
 void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y)

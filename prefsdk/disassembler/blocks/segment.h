@@ -15,8 +15,6 @@ namespace PrefSDK
 
         public:
             enum Type { Code, Data };
-            typedef QList<Function*> FunctionList;
-            typedef QList<Function*> EntryPointList;
 
         public:
             explicit Segment(const QString& name, Segment::Type type, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset, QObject* parent = 0);
@@ -28,8 +26,6 @@ namespace PrefSDK
             virtual Block::Type blockType() const;
 
         private:
-            FunctionList _functions;
-            EntryPointList _entrypoints;
             DataValue _baseoffset;
             Segment::Type _type;
             QString _name;

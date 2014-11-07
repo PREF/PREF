@@ -12,12 +12,6 @@ namespace PrefSDK
 
         Q_ENUMS(Type)
 
-        Q_PROPERTY(lua_Integer blocktype READ blockType)
-        Q_PROPERTY(lua_Integer startaddress READ start)
-        Q_PROPERTY(lua_Integer endaddress READ end)
-        Q_PROPERTY(lua_Integer size READ size)
-        Q_PROPERTY(bool empty READ isEmpty)
-
         public:
             enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock, LabelBlock };
 
@@ -25,21 +19,14 @@ namespace PrefSDK
             explicit Block(QObject* parent = 0);
             explicit Block(const DataValue& startaddress, QObject* parent = 0);
             explicit Block(const DataValue& startaddress, const DataValue& size, QObject* parent = 0);
+            void addSource(const DataValue& srcaddress);
+            const QList<DataValue>& sources() const;
+            void setEndAddress(const DataValue& address);
+            DataValue endAddress() const;
             const DataValue& startAddress() const;
             const DataValue& sizeValue() const;
-            DataValue endAddress() const;
-            void setEndAddress(const DataValue& address);
             bool contains(const DataValue &address) const;
-
-        private: /* Lua Properties */
             bool isEmpty() const;
-            lua_Integer start() const;
-            lua_Integer end() const;
-            lua_Integer size() const;
-
-        public slots:
-            bool contains(const Block* block) const;
-            bool contains(lua_Integer address);
 
         public:
             virtual Block::Type blockType() const;
@@ -47,6 +34,7 @@ namespace PrefSDK
         protected:
             DataValue _startaddress;
             DataValue _size;
+            QList<DataValue> _sources;
     };
 }
 #endif // PREFSDK_BLOCK_H

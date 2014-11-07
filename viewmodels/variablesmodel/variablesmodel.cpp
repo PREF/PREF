@@ -88,7 +88,7 @@ QVariant VariablesModel::data(const QModelIndex &index, int role) const
         Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
 
         if(symbol->type() == Symbol::Address)
-            return QColor(Qt::darkCyan);
+            return QColor(Qt::blue);
         else
             return QColor(Qt::darkGreen);
     }
