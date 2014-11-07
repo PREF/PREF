@@ -26,7 +26,6 @@ namespace PrefSDK
         qRegisterMetaType<PrefSDK::Block*>();
         qRegisterMetaType<PrefSDK::Function*>();
         qRegisterMetaType<PrefSDK::Segment*>();
-        qRegisterMetaType<PrefSDK::ReferenceSet*>();
         qRegisterMetaType<PrefSDK::ListingPrinter*>();
 
         /* QML Types */
@@ -382,7 +381,6 @@ namespace PrefSDK
 
         this->buildSegmentTable(l);
         this->buildFunctionTypeTable(l);
-        this->buildReferenceTypeTable(l);
         this->buildBlockTypeTable(l);
         this->buildSymbolTypeTable(l);
 
@@ -408,15 +406,6 @@ namespace PrefSDK
 
         QtLua::pushEnum(l, metaenum);
         lua_setfield(l, -2, "functiontype");
-    }
-
-    void PrefLib::buildReferenceTypeTable(lua_State *l)
-    {
-        const QMetaObject metaobj = Reference::staticMetaObject;
-        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
-
-        QtLua::pushEnum(l, metaenum);
-        lua_setfield(l, -2, "referencetype");
     }
 
     void PrefLib::buildBlockTypeTable(lua_State *l)

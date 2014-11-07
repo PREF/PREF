@@ -5,7 +5,6 @@
 #include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/exporter/exporterdefinition.h"
 #include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "prefsdk/disassembler/references/reference.h"
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/prefexception.h"
 #include "prefsdk/math.h"
@@ -37,7 +36,6 @@ namespace PrefSDK
         private:
             void buildSegmentTable(lua_State* l);
             void buildFunctionTypeTable(lua_State* l);
-            void buildReferenceTypeTable(lua_State* l);
             void buildBlockTypeTable(lua_State* l);
             void buildSymbolTypeTable(lua_State* l);
 

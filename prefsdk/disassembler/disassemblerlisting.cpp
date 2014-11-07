@@ -4,7 +4,6 @@ namespace PrefSDK
 {
     DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, QObject *parent): QObject(parent), _blocksorted(false), _hexeditdata(hexeditdata)
     {
-        this->_referencetable = new ReferenceTable(this);
         this->_symboltable = new SymbolTable(this);
         this->_constanttable = new ConstantTable(this);
     }
@@ -41,11 +40,6 @@ namespace PrefSDK
     {
         this->checkSort();
         return this->_blocks;
-    }
-
-    ReferenceTable *DisassemblerListing::referenceTable()
-    {
-        return this->_referencetable;
     }
 
     void DisassemblerListing::createLabel(const DataValue &destaddress, const DataValue& calleraddress, const QString &name)

@@ -2,7 +2,6 @@
 #define CROSSREFERENCEDELEGATE_H
 
 #include "prefsdk/disassembler/blocks/instruction.h"
-#include "prefsdk/disassembler/references/reference.h"
 #include "prefsdk/disassembler/listingprinter.h"
 #include "prefsdk/disassembler/disassemblerdefinition.h"
 #include "views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h"

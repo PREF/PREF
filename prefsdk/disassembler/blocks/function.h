@@ -4,7 +4,6 @@
 #include <algorithm>
 #include "block.h"
 #include "prefsdk/disassembler/blocks/instruction.h"
-#include "prefsdk/disassembler/references/reference.h"
 #include "prefsdk/disassembler/functiontype.h"
 
 namespace PrefSDK

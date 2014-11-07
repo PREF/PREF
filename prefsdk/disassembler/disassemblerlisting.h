@@ -7,7 +7,6 @@
 #include "prefsdk/disassembler/blocks/label.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/symbol/constanttable.h"
-#include "prefsdk/disassembler/references/referencetable.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include <algorithm>
@@ -34,7 +33,6 @@ namespace PrefSDK
             bool isDecoded(const DataValue& address) const;
             qint64 pointsToString(const DataValue& address) const;
             qint64 length() const;
-            ReferenceTable* referenceTable();
             SymbolTable* symbolTable();
             ConstantTable* constantTable();
             QHexEditData* data();
@@ -67,7 +65,6 @@ namespace PrefSDK
         private:
             bool _blocksorted;
             QHexEditData* _hexeditdata;
-            ReferenceTable* _referencetable;
             SymbolTable* _symboltable;
             ConstantTable* _constanttable;
             EntryPointList _entrypoints;

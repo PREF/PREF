@@ -6,7 +6,6 @@
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
-#include "prefsdk/disassembler/references/referencetable.h"
 #include "prefsdk/disassembler/disassemblerlisting.h"
 #include "prefsdk/disassembler/listingprinter.h"
 #include "prefsdk/disassembler/memorybuffer.h"

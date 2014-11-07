@@ -123,7 +123,6 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
     viewmodels/functionmodel/functionmodel.cpp \
-    prefsdk/disassembler/references/reference.cpp \
     prefsdk/disassembler/symbol/symbol.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
     logwidget/logwidget.cpp \
@@ -139,9 +138,7 @@ SOURCES += main.cpp\
     prefsdk/exporter/exporterdefinition.cpp \
     prefsdk/disassembler/disassemblerdefinition.cpp \
     prefsdk/disassembler/symbol/symboltable.cpp \
-    prefsdk/disassembler/references/referencetable.cpp \
     prefsdk/type/datavalue.cpp \
-    prefsdk/disassembler/references/referenceset.cpp \
     prefsdk/format/abstracttree.cpp \
     viewmodels/crossreferencemodel/crossreferencedelegate.cpp \
     actionwidget/abstractaction.cpp \
@@ -275,7 +272,6 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
     viewmodels/functionmodel/functionmodel.h \
-    prefsdk/disassembler/references/reference.h \
     prefsdk/disassembler/symbol/symbol.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     qhexedit/sparserangemap.h \
@@ -292,9 +288,7 @@ HEADERS  += mainwindow.h \
     prefsdk/exporter/exporterdefinition.h \
     prefsdk/disassembler/disassemblerdefinition.h \
     prefsdk/disassembler/symbol/symboltable.h \
-    prefsdk/disassembler/references/referencetable.h \
     prefsdk/type/datavalue.h \
-    prefsdk/disassembler/references/referenceset.h \
     prefsdk/format/abstracttree.h \
     viewmodels/crossreferencemodel/crossreferencedelegate.h \
     actionwidget/abstractaction.h \
