@@ -344,8 +344,8 @@ namespace PrefSDK
     {
         Segment* segment = this->findSegment(address);
 
-        if(!segment || this->_segments.contains(address) || this->_functions.contains(address) || this->_instructions.contains(address)) /* Ignore code blocks */
-            return false;
+        if(!segment || this->_functions.contains(address) || this->_instructions.contains(address)) /* Ignore code blocks */
+            return 0;
 
         DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
         QHexEditDataReader reader(this->_hexeditdata);
