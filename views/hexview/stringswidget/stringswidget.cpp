@@ -136,7 +136,7 @@ void StringsWidget::on_tbSearchUp_clicked()
     QModelIndex index = this->search(StringsModel::Up);
 
     if(index.isValid())
-        selmodel->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        selmodel->setCurrentIndex(index, QItemSelectionModel::Rows | QItemSelectionModel::SelectCurrent);
     else
         this->displayNotFoundMessage();
 }
@@ -147,7 +147,7 @@ void StringsWidget::on_tbSearchDown_clicked()
     QModelIndex index = this->search(StringsModel::Down);
 
     if(index.isValid())
-        selmodel->select(index, QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        selmodel->setCurrentIndex(index, QItemSelectionModel::Rows | QItemSelectionModel::SelectCurrent);
     else
         this->displayNotFoundMessage();
 }
