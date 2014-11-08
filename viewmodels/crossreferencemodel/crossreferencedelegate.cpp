@@ -1,6 +1,6 @@
 #include "crossreferencedelegate.h"
 
-CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing *listing, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler), _listing(listing)
+CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing *listing, MemoryBuffer *memorybuffer, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler), _listing(listing), _memorybuffer(memorybuffer)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -29,7 +29,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     if(b->blockType() == Block::InstructionBlock)
     {
         ListingPrinter printer(this->_disassembler->addressType());
-        this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b));
+        this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b), this->_listing, this->_memorybuffer);
         printer.draw(painter, options.fontMetrics, options.rect.left(), options.rect.top());
         return;
     }

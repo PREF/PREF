@@ -1,13 +1,13 @@
 #include "crossreferencedialog.h"
 #include "ui_crossreferencedialog.h"
 
-CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing* listing, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), _sources(block->sources()), _listing(listing), _selectedblock(nullptr)
+CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing* listing, MemoryBuffer* memorybuffer, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), _sources(block->sources()), _listing(listing), _selectedblock(nullptr)
 {
     ui->setupUi(this);
 
     this->_crossreferencemodel = new CrossReferenceModel(block, this);
     ui->crossReferenceTable->setModel(this->_crossreferencemodel);
-    ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(block, disassembler, listing, this));
+    ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(block, disassembler, listing, memorybuffer, this));
     ui->crossReferenceTable->resizeRowsToContents();
 
     this->setWindowTitle(QString("Cross References For: %1").arg(block->startAddress().toString(16).append("h")));

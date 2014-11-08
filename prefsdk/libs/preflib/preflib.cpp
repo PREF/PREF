@@ -26,6 +26,7 @@ namespace PrefSDK
         qRegisterMetaType<PrefSDK::Block*>();
         qRegisterMetaType<PrefSDK::Function*>();
         qRegisterMetaType<PrefSDK::Segment*>();
+        qRegisterMetaType<PrefSDK::SymbolTable*>();
         qRegisterMetaType<PrefSDK::ListingPrinter*>();
 
         /* QML Types */

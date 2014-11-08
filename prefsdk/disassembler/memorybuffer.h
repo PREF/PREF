@@ -16,16 +16,17 @@ namespace PrefSDK
 
         public:
             explicit MemoryBuffer(QHexEditData* hexeditdata, DisassemblerListing* listing, Logger* logger, const DataValue& baseaddress, DataType::Type addresstype, QObject *parent = 0);
-            DataValue read(const DataValue& address, DataType::Type datatype);
-            DataValue read(const DataValue& address);
+            DataValue read(const DataValue& address, DataType::Type datatype) const;
+            DataValue read(const DataValue& address) const;
             lua_Integer baseAddress() const;
 
-        public slots:
-            lua_Integer read(lua_Integer address, lua_Integer datatype);
-            QString readString(lua_Integer address, lua_Integer maxlen);
-            QString readString(lua_Integer address);
-            QString readDisplayString(lua_Integer address, lua_Integer maxlen);
-            QString readDisplayString(lua_Integer address);
+        public:
+            Q_INVOKABLE lua_Integer pointsToString(lua_Integer address) const;
+            Q_INVOKABLE lua_Integer read(lua_Integer address, lua_Integer datatype) const;
+            Q_INVOKABLE QString readString(lua_Integer address, lua_Integer maxlen) const;
+            Q_INVOKABLE QString readString(lua_Integer address) const;
+            Q_INVOKABLE QString readDisplayString(lua_Integer address, lua_Integer maxlen) const;
+            Q_INVOKABLE QString readDisplayString(lua_Integer address) const;
 
         private:
             DataBuffer* _databuffer;

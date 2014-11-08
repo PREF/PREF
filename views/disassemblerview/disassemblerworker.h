@@ -17,12 +17,14 @@ class DisassemblerWorker : public QThread
     public:
         explicit DisassemblerWorker(QHexEditData* hexeditdata, DisassemblerDefinition* disassemblerdefinition, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
         DisassemblerListing* listing() const;
+        MemoryBuffer* memoryBuffer() const;
 
     protected:
         virtual void run();
 
     private:
         DisassemblerListing* _listing;
+        MemoryBuffer* _memorybuffer;
         QHexEditData* _hexeditdata;
         DisassemblerDefinition* _disassemblerdefinition;
         LogWidget* _logwidget;

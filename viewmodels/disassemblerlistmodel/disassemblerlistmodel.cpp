@@ -20,7 +20,7 @@ void DisassemblerListModel::validateDisassemblers(QHexEditData *hexeditdata)
     {
         DisassemblerDefinition* dd = disassemblerlist->disassembler(i);
 
-        if(dd->validate(hexeditdata, nullptr))
+        if(dd->validate(hexeditdata))
             this->_disassemblers.append(dd);
     }
 }

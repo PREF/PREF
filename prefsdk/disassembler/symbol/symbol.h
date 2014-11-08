@@ -18,12 +18,10 @@ namespace PrefSDK
             enum Type { Unknown, Address, Label, String, Function, Library };
 
         public:
-            explicit Symbol(Symbol::Type symboltype, const DataValue& address, const DataValue& size, DataType::Type datatype, const QString& name, QObject *parent = 0);
-            PrefSDK::DataType::Type dataType() const;
+            explicit Symbol(Symbol::Type symboltype, const DataValue& address, const DataValue& size, const QString& name, QObject *parent = 0);
             PrefSDK::Symbol::Type type() const;
             const QString& name() const;
             void setSize(const PrefSDK::DataValue& size);
-            void setDataType(PrefSDK::DataType::Type datatype);
             void setName(const QString& name);
             void setType(const PrefSDK::Symbol::Type symboltype);
 
@@ -32,7 +30,6 @@ namespace PrefSDK
 
         private:
             PrefSDK::Symbol::Type _symboltype;
-            PrefSDK::DataType::Type _datatype;
             QString _name;
     };
 }

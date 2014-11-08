@@ -7,7 +7,7 @@ namespace PrefSDK
         this->_databuffer = new DataBuffer(hexeditdata, this);
     }
 
-    DataValue MemoryBuffer::read(const DataValue &address, DataType::Type datatype)
+    DataValue MemoryBuffer::read(const DataValue &address, DataType::Type datatype) const
     {
         Segment* segment = this->_listing->findSegment(address);
 
@@ -19,7 +19,7 @@ namespace PrefSDK
         return DataValue::create(this->_databuffer->readType(offsetvalue.compatibleValue<lua_Integer>(), adjustedtype), adjustedtype);
     }
 
-    DataValue MemoryBuffer::read(const DataValue &address)
+    DataValue MemoryBuffer::read(const DataValue &address) const
     {
         return this->read(address, this->_addresstype);
     }
@@ -29,12 +29,18 @@ namespace PrefSDK
         return this->_baseaddress.compatibleValue<lua_Integer>();
     }
 
-    lua_Integer MemoryBuffer::read(lua_Integer address, lua_Integer datatype)
+    lua_Integer MemoryBuffer::pointsToString(lua_Integer address) const
+    {
+        QString s = this->readString(address);
+        return s.length();
+    }
+
+    lua_Integer MemoryBuffer::read(lua_Integer address, lua_Integer datatype) const
     {
         return this->read(DataValue::create(address, this->_addresstype), static_cast<DataType::Type>(datatype)).compatibleValue<lua_Integer>();
     }
 
-    QString MemoryBuffer::readString(lua_Integer address, lua_Integer maxlen)
+    QString MemoryBuffer::readString(lua_Integer address, lua_Integer maxlen) const
     {
         DataValue addressvalue = DataValue::create(address, this->_addresstype);
         Segment* segment = this->_listing->findSegment(addressvalue);
@@ -46,17 +52,17 @@ namespace PrefSDK
         return this->_databuffer->readString(offsetvalue.compatibleValue<lua_Integer>(), maxlen);
     }
 
-    QString MemoryBuffer::readString(lua_Integer address)
+    QString MemoryBuffer::readString(lua_Integer address) const
     {
         return this->readString(address, -1);
     }
 
-    QString MemoryBuffer::readDisplayString(lua_Integer address)
+    QString MemoryBuffer::readDisplayString(lua_Integer address) const
     {
         return this->readDisplayString(address, -1);
     }
 
-    QString MemoryBuffer::readDisplayString(lua_Integer address, lua_Integer maxlen)
+    QString MemoryBuffer::readDisplayString(lua_Integer address, lua_Integer maxlen) const
     {
         return this->readString(address, maxlen).replace(QRegExp("[\\n\\r]"), " ");
     }

@@ -14,7 +14,7 @@ namespace PrefSDK
         Q_ENUMS(Type)
 
         public:
-            enum Type { Code, Data };
+            enum Type { Code, Data }; //FIXME: Spostare in SegmentType
 
         public:
             explicit Segment(const QString& name, Segment::Type type, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset, QObject* parent = 0);

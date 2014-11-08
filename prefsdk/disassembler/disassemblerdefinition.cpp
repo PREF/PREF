@@ -2,13 +2,13 @@
 
 namespace PrefSDK
 {
-    DisassemblerDefinition::DisassemblerDefinition(const QString &name, const QString &author, const QString &version, DataType::Type addresstype, FormatDefinition *formatdefinition, QObject *parent): LogObject(parent), _addresstype(addresstype), _memorybuffer(nullptr), _formatdefinition(formatdefinition), _listing(nullptr), _formattree(nullptr), _name(name), _author(author), _version(version)
+    DisassemblerDefinition::DisassemblerDefinition(const QString &name, const QString &author, const QString &version, DataType::Type addresstype, FormatDefinition *formatdefinition, QObject *parent): LogObject(parent), _addresstype(addresstype), _memorybuffer(nullptr), _formatdefinition(formatdefinition), _name(name), _author(author), _version(version)
     {
         this->_formatdefinition->setParent(this);
         this->_baseaddress = DataValue(addresstype);
     }
 
-    void DisassemblerDefinition::callDisassemble(QLabel* infolabel)
+    void DisassemblerDefinition::callDisassemble(QLabel* infolabel, DisassemblerListing* listing, MemoryBuffer* memorybuffer)
     {   
         if(!this->_disassemblefunc.isValid())
             return;
@@ -21,10 +21,10 @@ namespace PrefSDK
 
             do
             {
-                if(this->_listing->isDecoded(address))
+                if(listing->isDecoded(address))
                     break;
 
-                if(!this->_listing->isAddress(address))
+                if(!listing->isAddress(address))
                 {
                     this->warning(QString("Trying to disassemble %1, this address does not belong to any Segment").arg(address.toString(16)));
                     break;
@@ -33,7 +33,9 @@ namespace PrefSDK
                 QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, QString("Disassembling: %1").arg(address.toString(16))));
 
                 lua_pushinteger(l, address.compatibleValue<lua_Integer>());
-                bool err = this->_disassemblefunc(1, 1);
+                QtLua::pushObject(l, listing);
+                QtLua::pushObject(l, memorybuffer);
+                bool err = this->_disassemblefunc(3, 1);
 
                 if(err)
                 {
@@ -55,7 +57,7 @@ namespace PrefSDK
         }
     }
 
-    void DisassemblerDefinition::callOutput(ListingPrinter *printer, Instruction *instruction)
+    void DisassemblerDefinition::callOutput(ListingPrinter *printer, Instruction *instruction, DisassemblerListing* listing, MemoryBuffer* memorybuffer)
     {
         if(!this->_outputfunc.isValid())
             return;
@@ -64,7 +66,9 @@ namespace PrefSDK
 
         QtLua::pushObject(l, printer);
         instruction->push();
-        bool err = this->_outputfunc(2);
+        QtLua::pushObject(l, listing);
+        QtLua::pushObject(l, memorybuffer);
+        bool err = this->_outputfunc(4);
 
         if(err)
         {
@@ -74,80 +78,53 @@ namespace PrefSDK
         }
     }
 
-    bool DisassemblerDefinition::validate(QHexEditData *hexeditdata, Logger* logger)
+    bool DisassemblerDefinition::validate(QHexEditData *hexeditdata)
     {
-        return this->_formatdefinition->callValidate(hexeditdata, logger, 0, true);
+        return this->_formatdefinition->callValidate(hexeditdata, this->_logger, 0, true);
     }
 
-    QString DisassemblerDefinition::emitInstruction(Instruction *instruction)
+    QString DisassemblerDefinition::emitInstruction(Instruction *instruction, DisassemblerListing* listing, MemoryBuffer* memorybuffer)
     {
         ListingPrinter printer(this->_addresstype);
 
-        this->callOutput(&printer, instruction);
+        this->callOutput(&printer, instruction, listing, memorybuffer);
         return printer.printString();
     }
 
-    void DisassemblerDefinition::callMap(DisassemblerListing* listing, QHexEditData* hexeditdata, Logger* logger)
+    MemoryBuffer *DisassemblerDefinition::callMap(DisassemblerListing* listing, QHexEditData* hexeditdata)
     {
-        bool b = this->validate(hexeditdata, logger);
+        bool b = this->validate(hexeditdata);
 
         if(!b || !this->_mapfunc.isValid())
-            return;
+            return nullptr;
 
         lua_State* l = this->_mapfunc.state();
-        this->_formattree = this->_formatdefinition->callParse(hexeditdata, logger, 0);
+        FormatTree* formattree = this->_formatdefinition->callParse(hexeditdata, this->_logger, 0);
 
-        if(this->_formattree->isEmpty())
-            return;
+        if(formattree->isEmpty())
+            return nullptr;
 
+        listing->setFormatTree(formattree);
         this->_baseaddress = this->callBaseAddress();
+        MemoryBuffer* memorybuffer = new MemoryBuffer(hexeditdata, listing, this->_logger, this->_baseaddress, this->_addresstype, listing);
 
-        this->_listing = listing;
-        this->setLogger(logger);
-        this->_memorybuffer = new MemoryBuffer(hexeditdata, listing, logger, this->_baseaddress, this->_addresstype, this);
-        bool err = this->_mapfunc(0, 0, true);
+        QtLua::pushObject(l, listing);
+        QtLua::pushObject(l, memorybuffer);
+        bool err = this->_mapfunc(2);
 
         if(err)
         {
             throw PrefException(QString("ProcessorLoader::callMap(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
             lua_pop(l, 1);
         }
-    }
 
-    void DisassemblerDefinition::callElaborate()
-    {
-        if(!this->_elaboratefunc.isValid())
-            return;
+        /* Load Entry Points */
+        const QList<Function*>& ep = listing->entryPoints();
 
-        lua_State* l = this->_elaboratefunc.state();
-        QtLua::pushObject(l, this->_listing);
-        QtLua::pushObject(l, this->_formattree);
-        bool err = this->_elaboratefunc(2);
+        for(int i = 0; i < ep.count(); i++)
+            this->_addrstack.push(ep[i]->startAddress());
 
-        if(err)
-        {
-            throw PrefException(QString("ProcessorLoader::callElaborate(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
-            lua_pop(l, 1);
-        }
-    }
-
-    void DisassemblerDefinition::setSymbol(const DataValue &address, const DataValue &calleraddress, Symbol::Type symboltype, const QString &name)
-    {
-        SymbolTable* symboltable = this->_listing->symbolTable();
-        QString symbolname = name.isEmpty() ? QString("data_%1").arg(address.toString(16)) : name;
-
-        if((symboltype == Symbol::Address) && this->_listing->isAddress(address))
-        {
-            qint64 len = this->_listing->pointsToString(address);
-
-            if(len)
-            {
-                symboltable->set(Symbol::String, address, DataValue::create(len, this->_addresstype), calleraddress, DataType::AsciiString, symbolname);
-                return;
-            }
-        }
-
-        symboltable->set(symboltype, address, calleraddress, symbolname);
+        return memorybuffer;
     }
 
     void DisassemblerDefinition::enqueue(lua_Integer address)
@@ -179,152 +156,13 @@ namespace PrefSDK
         return dump;
     }
 
-    QString DisassemblerDefinition::symbolName(lua_Integer address)
-    {
-        SymbolTable* symboltable = this->_listing->symbolTable();
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-
-        if(!symboltable->contains(addressvalue))
-        {
-            QString addressstring = addressvalue.toString(16);
-            this->warning(QString("Trying to get an invalid symbol at %1").arg(addressstring));
-            return addressstring;
-        }
-
-        return symboltable->name(addressvalue);
-    }
-
-    bool DisassemblerDefinition::isAddress(lua_Integer address)
-    {
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        return this->_listing->isAddress(addressvalue);
-    }
-
-    bool DisassemblerDefinition::isSymbol(lua_Integer address)
-    {
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        return this->_listing->symbolTable()->contains(addressvalue);
-    }
-
-    bool DisassemblerDefinition::isStringSymbol(lua_Integer address)
-    {
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        SymbolTable* symboltable = this->_listing->symbolTable();
-
-        if(symboltable->contains(addressvalue))
-        {
-            Symbol* symbol = symboltable->get(addressvalue);
-            return symbol->type() == Symbol::String;
-        }
-
-        return false;
-    }
-
-    void DisassemblerDefinition::addInstruction(const PrefSDK::QtLua::LuaTable &instructiontable)
-    {
-        this->_listing->addInstruction(new Instruction(instructiontable, this->_addresstype));
-    }
-
-    void DisassemblerDefinition::createSegment(const QString &name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset)
-    {
-        DataType::Type addresstype = static_cast<DataType::Type>(this->_addresstype);
-
-        this->_listing->createSegment(name, static_cast<Segment::Type>(segmenttype), DataValue::create(startaddress, addresstype),
-                                                                                     DataValue::create(size, addresstype),
-                                                                                     DataValue::create(baseoffset, addresstype));
-    }
-
-    void DisassemblerDefinition::createEntryPoint(lua_Integer address, const QString &name)
-    {
-        DataType::Type addresstype = static_cast<DataType::Type>(this->_addresstype);
-        DataValue addressvalue = DataValue::create(address, addresstype);
-
-        this->_listing->createFunction(name, FunctionType::EntryPointFunction, addressvalue);
-        this->_addrstack.push(addressvalue);
-    }
-
-    void DisassemblerDefinition::createFunction(lua_Integer address, const QString &name, lua_Integer calleraddress)
-    {
-        DataType::Type addresstype = static_cast<DataType::Type>(this->_addresstype);
-        DataValue startaddress = DataValue::create(address, addresstype);
-
-        if(!this->_listing->isAddress(startaddress))
-        {
-            this->warning(QString("Trying to creating an out of segment function at %1").arg(startaddress.toString(16)));
-            return;
-        }
-
-        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
-        QString funcname = name.isEmpty() ? QString("sub_%1").arg(startaddress.toString(16)) : name;
-        this->_listing->createFunction(funcname, FunctionType::NormalFunction, startaddress, calleraddressvalue);
-    }
-
-    void DisassemblerDefinition::createFunction(lua_Integer address, lua_Integer calleraddress)
-    {
-        this->createFunction(address, QString(), calleraddress);
-    }
-
-    void DisassemblerDefinition::createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString &name)
-    {
-        DataValue destaddressvalue = DataValue::create(destaddress, this->_addresstype);
-        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
-        this->_listing->createLabel(destaddressvalue, calleraddressvalue, name);
-    }
-
-    void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype, const QString &name)
-    {
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
-        this->setSymbol(addressvalue, calleraddressvalue, static_cast<Symbol::Type>(symboltype), name);
-    }
-
-    void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype)
-    {
-        this->setSymbol(address, calleraddress, symboltype, QString());
-    }
-
-    void DisassemblerDefinition::setSymbol(lua_Integer address, lua_Integer symboltype)
-    {
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        this->setSymbol(addressvalue, DataValue(), static_cast<Symbol::Type>(symboltype), QString());
-    }
-
-    void DisassemblerDefinition::setFunction(lua_Integer address, const QString &name)
-    {
-        this->setFunction(address, name, FunctionType::NormalFunction);
-    }
-
-    void DisassemblerDefinition::setFunction(lua_Integer address, const QString &name, lua_Integer functiontype)
-    {
-        DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        FunctionType::Type ft = static_cast<FunctionType::Type>(functiontype);
-        const DisassemblerListing::FunctionMap& functions = this->_listing->functions();
-
-        if(!functions.contains(addressvalue))
-            return;
-
-        this->setSymbol(addressvalue, DataValue(), Symbol::Function, name);
-        Function* f = functions[addressvalue];
-
-        if(ft != f->type())
-            f->setType(ft);
-    }
-
-    void DisassemblerDefinition::setConstant(QObject *instruction, lua_Integer datatype, lua_Integer value, const QString &name)
-    {
-        ConstantTable* constanttable = this->_listing->constantTable();
-        constanttable->set(qobject_cast<Instruction*>(instruction), DataValue::create(value, static_cast<DataType::Type>(datatype)), name);
-    }
-
     DataValue DisassemblerDefinition::callBaseAddress()
     {
         if(!this->_baseaddressfunc.isValid())
             return DataValue();
 
         lua_State* l = this->_baseaddressfunc.state();
-
-        QtLua::pushObject(l, this->_formattree);
-        bool err = this->_baseaddressfunc(1, 1);
+        bool err = this->_baseaddressfunc(0, 1);
 
         if(err)
         {
@@ -336,16 +174,6 @@ namespace PrefSDK
         DataValue baseaddress = DataValue::create(lua_tointeger(l, -1), this->_addresstype);
         lua_pop(l, 1);
         return baseaddress;
-    }
-
-    FormatDefinition *DisassemblerDefinition::format() const
-    {
-        return this->_formatdefinition;
-    }
-
-    FormatTree *DisassemblerDefinition::formatTree() const
-    {
-        return this->_formattree;
     }
 
     const QtLua::LuaFunction &DisassemblerDefinition::map() const
@@ -361,11 +189,6 @@ namespace PrefSDK
     const QtLua::LuaFunction &DisassemblerDefinition::output() const
     {
         return this->_outputfunc;
-    }
-
-    const QtLua::LuaFunction &DisassemblerDefinition::elaborate() const
-    {
-        return this->_elaboratefunc;
     }
 
     MemoryBuffer *DisassemblerDefinition::memoryBuffer() const
@@ -436,10 +259,5 @@ namespace PrefSDK
     void DisassemblerDefinition::setOutput(const QtLua::LuaFunction &of)
     {
         this->_outputfunc = of;
-    }
-
-    void DisassemblerDefinition::setElaborate(const QtLua::LuaFunction &ef)
-    {
-        this->_elaboratefunc = ef;
     }
 }

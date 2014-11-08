@@ -2,10 +2,22 @@
 
 namespace PrefSDK
 {
-    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, QObject *parent): QObject(parent), _blocksorted(false), _hexeditdata(hexeditdata)
+    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, DataType::Type addresstype, QObject *parent): LogObject(parent), _blocksorted(false), _hexeditdata(hexeditdata), _formattree(nullptr), _addresstype(addresstype)
     {
-        this->_symboltable = new SymbolTable(this);
+        this->_symboltable = new SymbolTable(addresstype, this);
         this->_constanttable = new ConstantTable(this);
+    }
+
+    void DisassemblerListing::setLogger(Logger *logger)
+    {
+        LogObject::setLogger(logger);
+        this->_symboltable->setLogger(logger);
+    }
+
+    void DisassemblerListing::setFormatTree(FormatTree *formattree)
+    {
+        this->_formattree = formattree;
+        this->_formattree->setParent(this);
     }
 
     bool DisassemblerListing::isAddress(const DataValue &address) const
@@ -26,9 +38,55 @@ namespace PrefSDK
         return this->findInstruction(address) != nullptr;
     }
 
+    void DisassemblerListing::createFunction(const DataValue &address, const DataValue &calleraddress, FunctionType::Type functiontype, const QString &name)
+    {
+        if(!this->isAddress(address))
+        {
+            this->warning(QString("Trying to creating an out of segment function at %1").arg(address.toString(16)));
+            return;
+        }
+
+        if(this->_functions.contains(address))
+        {
+            this->_functions[address]->addSource(calleraddress);
+            return;
+        }
+
+        Function* f = new Function(functiontype, address, this);
+
+        if(!calleraddress.isNull())
+            f->addSource(calleraddress);
+
+        this->_functions[address] = f;
+
+        if(functiontype == FunctionType::EntryPointFunction)
+        {
+            this->_entrypoints.append(f);
+            std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);
+        }
+
+        this->_symboltable->set(Symbol::Function, address, calleraddress, name);
+        this->_blocks.append(f);
+    }
+
+    void DisassemblerListing::createFunction(const DataValue &address, const DataValue &calleraddress, const QString &name)
+    {
+        this->createFunction(address, calleraddress, FunctionType::NormalFunction, name);
+    }
+
+    void DisassemblerListing::createFunction(const DataValue &address, const DataValue &calleraddress)
+    {
+        this->createFunction(address, calleraddress, QString("sub_%1").arg(address.toString(16)));
+    }
+
     qint64 DisassemblerListing::length() const
     {
         return this->_blocks.length();
+    }
+
+    FormatTree *DisassemblerListing::formatTree()
+    {
+        return this->_formattree;
     }
 
     QHexEditData *DisassemblerListing::data()
@@ -42,91 +100,76 @@ namespace PrefSDK
         return this->_blocks;
     }
 
-    void DisassemblerListing::createLabel(const DataValue &destaddress, const DataValue& calleraddress, const QString &name)
+    void DisassemblerListing::createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString &name)
     {
-        Segment* segment = this->findSegment(destaddress);
+        DataValue destaddressvalue = DataValue::create(destaddress, this->_addresstype);
+        Segment* segment = this->findSegment(destaddressvalue);
 
         if(!segment)
-            throw PrefException(QString("No segment for: %1").arg(destaddress.toString(16)));
+            throw PrefException(QString("No segment for: %1").arg(destaddressvalue.toString(16)));
 
         Label* label = nullptr;
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
 
-        if(!this->_labels.contains(destaddress))
+        if(!this->_labels.contains(destaddressvalue))
         {
-            label = new Label(destaddress, this);
+            label = new Label(destaddressvalue, this);
 
-            this->_labels[destaddress] = label;
-            this->_symboltable->set(Symbol::Label, destaddress, calleraddress, name);
+            this->_labels[destaddressvalue] = label;
+            this->_symboltable->set(Symbol::Label, destaddressvalue, calleraddressvalue, name);
             this->_blocks.append(label);
         }
         else
-            label = this->_labels[destaddress];
+            label = this->_labels[destaddressvalue];
 
-        label->addSource(calleraddress);
+        label->addSource(calleraddressvalue);
     }
 
-    void DisassemblerListing::createSegment(const QString &name, Segment::Type segmenttype, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset)
+    void DisassemblerListing::createSegment(const QString &name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset)
     {
-        if(this->_segments.contains(startaddress))
+        DataValue startaddressvalue = DataValue::create(startaddress, this->_addresstype);
+
+        if(this->_segments.contains(startaddressvalue))
             return;
 
-        Segment* s = new Segment(name, segmenttype, startaddress, size, baseoffset, this);
+        DataValue sizevalue = DataValue::create(size, this->_addresstype);
+        DataValue baseoffsetvalue = DataValue::create(baseoffset, this->_addresstype);
 
-        this->_segments[startaddress] = s;
+        Segment* s = new Segment(name, static_cast<Segment::Type>(segmenttype), startaddressvalue, sizevalue, baseoffsetvalue, this);
+        this->_segments[startaddressvalue] = s;
         this->_blocks.append(s);
     }
 
-    void DisassemblerListing::createFunction(FunctionType::Type functiontype,  const DataValue& address, const DataValue &calleraddress)
+    void DisassemblerListing::createFunction(lua_Integer address, lua_Integer calleraddress, lua_Integer functiontype, const QString &name)
     {
-        this->createFunction(QString(), functiontype, address, calleraddress);
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
+        this->createFunction(addressvalue, calleraddressvalue, static_cast<FunctionType::Type>(functiontype), name);
     }
 
-    void DisassemblerListing::createFunction(const QString& name, FunctionType::Type functiontype, const DataValue &address)
+    void DisassemblerListing::createFunction(lua_Integer address, lua_Integer calleraddress, const QString &name)
     {
-        if(this->_functions.contains(address))
-            return;
-
-        Function* f = new Function(functiontype, address, this);
-        this->_functions[address] = f;
-
-        if(functiontype == FunctionType::EntryPointFunction)
-        {
-            this->_entrypoints.append(f);
-            std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);
-        }
-
-        this->_symboltable->set(Symbol::Function, address, name);
-        this->_blocks.append(f);
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
+        this->createFunction(addressvalue, calleraddressvalue, name);
     }
 
-    void DisassemblerListing::createFunction(const QString &name, FunctionType::Type functiontype, const DataValue &address, const DataValue& calleraddress)
+    void DisassemblerListing::createFunction(lua_Integer address, lua_Integer calleraddress)
     {
-        Function* f = nullptr;
-
-        if(this->_functions.contains(address))
-        {
-            f = this->_functions[address];
-            f->addSource(calleraddress);
-            return;
-        }
-
-        QString funcname = name.isEmpty() ? QString("sub_%1").arg(address.toString(16)) : name;
-        f = new Function(functiontype, address, this);
-        f->addSource(calleraddress);
-        this->_functions[address] = f;
-
-        if(functiontype == FunctionType::EntryPointFunction)
-        {
-            this->_entrypoints.append(f);
-            std::sort(this->_entrypoints.begin(), this->_entrypoints.end(), &DisassemblerListing::sortBlocks);
-        }
-
-        this->_symboltable->set(Symbol::Function, address, calleraddress, funcname);
-        this->_blocks.append(f);
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);
+        this->createFunction(addressvalue, calleraddressvalue);
     }
 
-    void DisassemblerListing::addInstruction(Instruction* instruction)
+    void DisassemblerListing::createEntryPoint(lua_Integer address, const QString &name)
     {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        this->createFunction(addressvalue, DataValue(), FunctionType::EntryPointFunction, name);
+    }
+
+    void DisassemblerListing::addInstruction(const PrefSDK::QtLua::LuaTable& instructiontable)
+    {
+        Instruction* instruction = new Instruction(instructiontable, this->_addresstype, this);
         DataValue address = instruction->startAddress();
 
         if(this->_instructions.contains(address))
@@ -135,16 +178,35 @@ namespace PrefSDK
             return;
         }
 
-        Segment* segment = this->findSegment(address);
-
-        if(!segment)
+        if(!this->isAddress(address))
         {
             instruction->deleteLater();
-            throw PrefException(QString("No segment for: %1").arg(address.toString(16)));
+            throw PrefException(QString("Address %1 is invalid").arg(address.toString(16)));
+            return;
         }
 
         this->_instructions[address] = instruction;
         this->_blocks.append(instruction);
+    }
+
+    void DisassemblerListing::setFunction(lua_Integer address, const QString &name)
+    {
+        this->setFunction(address, FunctionType::NormalFunction, name);
+    }
+
+    void DisassemblerListing::setFunction(lua_Integer address, lua_Integer functiontype, const QString &name)
+    {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        FunctionType::Type ft = static_cast<FunctionType::Type>(functiontype);
+
+        if(!this->_functions.contains(addressvalue))
+            return;
+
+        this->_symboltable->set(Symbol::Function, addressvalue, DataValue(), name);
+        Function* f = this->_functions[addressvalue];
+
+        if(ft > f->type())
+            f->setType(ft);
     }
 
     Segment *DisassemblerListing::findSegment(Block *block)
@@ -238,6 +300,12 @@ namespace PrefSDK
         return nullptr;
     }
 
+    bool DisassemblerListing::isAddress(lua_Integer address)
+    {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        return this->isAddress(addressvalue);
+    }
+
     qint64 DisassemblerListing::indexOf(Block *block)
     {
         return this->indexOf(block->startAddress(), block->blockType());
@@ -315,7 +383,7 @@ namespace PrefSDK
         return this->_functions;
     }
 
-    SymbolTable *DisassemblerListing::symbolTable()
+    PrefSDK::SymbolTable *DisassemblerListing::symbolTable()
     {
         return this->_symboltable;
     }
@@ -332,23 +400,6 @@ namespace PrefSDK
             std::sort(this->_blocks.begin(), this->_blocks.end(), &DisassemblerListing::sortBlocks);
             this->_blocksorted = true;
         }
-    }
-
-    qint64 DisassemblerListing::pointsToString(const DataValue &address) const
-    {
-        Segment* segment = this->findSegment(address);
-
-        if(!segment || this->_functions.contains(address) || this->_instructions.contains(address)) /* Ignore code blocks */
-            return 0;
-
-        DataValue offset = (address - segment->startAddress()) + segment->baseOffset();
-        QHexEditDataReader reader(this->_hexeditdata);
-        QString s = reader.readString(offset.compatibleValue<qint64>());
-
-        if(s.length() < 4)
-            return 0;
-
-        return s.length();
     }
 
     void DisassemblerListing::removeInstructions(Instruction *from, Instruction *to)

@@ -11,7 +11,7 @@ class LogObject : public QObject
     public:
         explicit LogObject(QObject *parent = 0);
         Logger* logger() const;
-        void setLogger(Logger* logger);
+        virtual void setLogger(Logger* logger);
 
     public slots:
         void log(const QString& msg);

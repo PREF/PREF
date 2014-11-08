@@ -1,8 +1,10 @@
 #ifndef PREFSDK_DISASSEMBLERLISTING_H
 #define PREFSDK_DISASSEMBLERLISTING_H
 
+#include "logwidget/logobject.h"
 #include "prefsdk/type/datatype.h"
 #include "prefsdk/type/datavalue.h"
+#include "prefsdk/format/formattree.h"
 #include "prefsdk/disassembler/blocks/segment.h"
 #include "prefsdk/disassembler/blocks/label.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
@@ -14,9 +16,12 @@
 
 namespace PrefSDK
 {
-    class DisassemblerListing : public QObject
+    class DisassemblerListing : public LogObject
     {
         Q_OBJECT
+
+        Q_PROPERTY(PrefSDK::FormatTree* formattree READ formatTree)
+        Q_PROPERTY(PrefSDK::SymbolTable* symboltable READ symbolTable)
 
         public:
             typedef QMap<DataValue, Segment*> SegmentMap;
@@ -28,30 +33,41 @@ namespace PrefSDK
             typedef QList<Function*> EntryPointList;
 
         public:
-            explicit DisassemblerListing(QHexEditData* hexeditdata, QObject *parent = 0);
+            explicit DisassemblerListing(QHexEditData* hexeditdata, DataType::Type addresstype, QObject *parent = 0);
+            virtual void setLogger(Logger *logger);
+            void setFormatTree(PrefSDK::FormatTree* formattree);
             bool isAddress(const DataValue& address) const;
             bool isDecoded(const DataValue& address) const;
-            qint64 pointsToString(const DataValue& address) const;
+            void createFunction(const DataValue& address, const DataValue &calleraddress, FunctionType::Type functiontype, const QString& name);
+            void createFunction(const DataValue& address, const DataValue &calleraddress, const QString& name);
+            void createFunction(const DataValue& address, const DataValue &calleraddress);
             qint64 length() const;
-            SymbolTable* symbolTable();
+            PrefSDK::FormatTree* formatTree();
+            PrefSDK::SymbolTable* symbolTable();
             ConstantTable* constantTable();
             QHexEditData* data();
             const BlockList& blocks();
             const DisassemblerListing::SegmentMap& segments() const;
             const DisassemblerListing::FunctionMap& functions() const;
             const DisassemblerListing::EntryPointList& entryPoints() const;
-            void createLabel(const DataValue& destaddress, const DataValue &calleraddress, const QString& name);
-            void createSegment(const QString &name, Segment::Type segmenttype, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset);
-            void createFunction(const QString& name, FunctionType::Type functiontype, const DataValue& address, const DataValue &calleraddress);
-            void createFunction(FunctionType::Type functiontype, const DataValue& address, const DataValue &calleraddress);
-            void createFunction(const QString &name, FunctionType::Type functiontype, const DataValue& address);
-            void addInstruction(Instruction *instruction);
             Segment* findSegment(Block* block);
             Segment* findSegment(const DataValue& address) const;
             Function* findFunction(Block* block);
             Function* findFunction(const DataValue& address);
             Instruction* findInstruction(const DataValue& address) const;
             Block* findBlock(const DataValue& address);
+
+        public:
+            Q_INVOKABLE bool isAddress(lua_Integer address);
+            Q_INVOKABLE void addInstruction(const PrefSDK::QtLua::LuaTable& instructiontable);
+            Q_INVOKABLE void setFunction(lua_Integer address, const QString& name);
+            Q_INVOKABLE void setFunction(lua_Integer address, lua_Integer functiontype, const QString& name);
+            Q_INVOKABLE void createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString& name);
+            Q_INVOKABLE void createSegment(const QString& name, lua_Integer segmenttype, lua_Integer startaddress, lua_Integer size, lua_Integer baseoffset);
+            Q_INVOKABLE void createFunction(lua_Integer address, lua_Integer calleraddress, lua_Integer functiontype, const QString& name);
+            Q_INVOKABLE void createFunction(lua_Integer address, lua_Integer calleraddress, const QString& name);
+            Q_INVOKABLE void createFunction(lua_Integer address, lua_Integer calleraddress);
+            Q_INVOKABLE void createEntryPoint(lua_Integer address, const QString& name);
 
         public: /* Modified Binary Search O(log(n) + 2k) */
             qint64 indexOf(Block* block);
@@ -65,6 +81,8 @@ namespace PrefSDK
         private:
             bool _blocksorted;
             QHexEditData* _hexeditdata;
+            FormatTree* _formattree;
+            DataType::Type _addresstype;
             SymbolTable* _symboltable;
             ConstantTable* _constanttable;
             EntryPointList _entrypoints;
