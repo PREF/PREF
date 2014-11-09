@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
 
     if(l)
     {
-        DebugDialog::createInstance(l);        
+        DebugDialog::createInstance(l);
         this->_sdkloaded = SDKManager::loadSDK();
     }
 
@@ -167,7 +167,7 @@ bool MainWindow::checkDisassembly(const QStringList &args)
 
 bool MainWindow::closeApplication()
 {
-    if(this->centralWidget())
+    if(qobject_cast<AbstractView*>(this->centralWidget()))
     {
         QMessageBox m;
         m.setWindowTitle("Closing...");
