@@ -228,7 +228,7 @@ void MainWindow::on_action_Analyze_triggered()
 
 void MainWindow::on_action_Save_As_triggered()
 {
-    AbstractView* abstractview = qobject_cast<AbstractView*>(ui->centralWidget);
+    AbstractView* abstractview = qobject_cast<AbstractView*>(this->centralWidget());
     QFileDialog fd(this, "Save as...", QString(), abstractview->saveFilter());
     fd.setAcceptMode(QFileDialog::AcceptSave);
     int res = fd.exec();
@@ -250,7 +250,7 @@ void MainWindow::on_action_Save_triggered()
     switch(ret)
     {
         case QMessageBox::Yes:
-            dynamic_cast<AbstractView*>(ui->centralWidget)->save();
+            qobject_cast<AbstractView*>(this->centralWidget())->save();
             break;
 
         case QMessageBox::No:
