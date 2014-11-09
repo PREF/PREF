@@ -135,7 +135,7 @@ namespace PrefSDK
         DataValue sizevalue = DataValue::create(size, this->_addresstype);
         DataValue baseoffsetvalue = DataValue::create(baseoffset, this->_addresstype);
 
-        Segment* s = new Segment(name, static_cast<Segment::Type>(segmenttype), startaddressvalue, sizevalue, baseoffsetvalue, this);
+        Segment* s = new Segment(name, static_cast<SegmentType::Type>(segmenttype), startaddressvalue, sizevalue, baseoffsetvalue, this);
         this->_segments[startaddressvalue] = s;
         this->_blocks.append(s);
     }

@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {    
-    Segment::Segment(const QString& name, Segment::Type type, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset, QObject *parent): Block(startaddress, size, parent)
+    Segment::Segment(const QString& name, SegmentType::Type type, const DataValue &startaddress, const DataValue &size, const DataValue &baseoffset, QObject *parent): Block(startaddress, size, parent)
     {
         this->_name = name;
         this->_type = type;
@@ -19,7 +19,7 @@ namespace PrefSDK
         return this->_name;
     }
 
-    Segment::Type Segment::type() const
+    SegmentType::Type Segment::type() const
     {
         return this->_type;
     }

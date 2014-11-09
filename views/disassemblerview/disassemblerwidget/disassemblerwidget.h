@@ -17,8 +17,6 @@ class DisassemblerWidget : public QFrame
     public:
         explicit DisassemblerWidget(QWidget *parent = 0);
         void setDisassembler(DisassemblerDefinition* disassembler);
-        void setListing(DisassemblerListing* listing);
-        void setMemoryBuffer(MemoryBuffer* memorybuffer);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);
         void setWheelScrollLines(int c);

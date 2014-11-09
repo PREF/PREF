@@ -34,7 +34,7 @@ namespace PrefSDK
             void buildDisassemblerTable(lua_State* l);
 
         private:
-            void buildSegmentTable(lua_State* l);
+            void buildSegmentTypeTable(lua_State* l);
             void buildFunctionTypeTable(lua_State* l);
             void buildBlockTypeTable(lua_State* l);
             void buildSymbolTypeTable(lua_State* l);

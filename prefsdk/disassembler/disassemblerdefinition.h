@@ -17,6 +17,9 @@ namespace PrefSDK
     {
         Q_OBJECT
 
+        Q_PROPERTY(PrefSDK::FormatTree* formattree READ formatTree)
+        Q_PROPERTY(PrefSDK::DisassemblerListing* listing READ listing)
+        Q_PROPERTY(PrefSDK::MemoryBuffer* memorybuffer READ memoryBuffer)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction baseAddress READ baseAddress WRITE setBaseAddress)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction map READ map WRITE setMap)
         Q_PROPERTY(PrefSDK::QtLua::LuaFunction disassemble READ disassemble WRITE setDisassemble)
@@ -35,6 +38,8 @@ namespace PrefSDK
             const PrefSDK::QtLua::LuaFunction& map() const;
             const PrefSDK::QtLua::LuaFunction& disassemble() const;
             const PrefSDK::QtLua::LuaFunction& output() const;
+            PrefSDK::FormatTree* formatTree() const;
+            PrefSDK::DisassemblerListing* listing() const;
             PrefSDK::MemoryBuffer* memoryBuffer() const;
             void setName(const QString& n);
             void setAuthor(const QString& a);
@@ -43,13 +48,13 @@ namespace PrefSDK
             void setMap(const PrefSDK::QtLua::LuaFunction& mf);
             void setDisassemble(const PrefSDK::QtLua::LuaFunction& df);
             void setOutput(const PrefSDK::QtLua::LuaFunction& of);
-            MemoryBuffer* callMap(DisassemblerListing *listing, QHexEditData* hexeditdata);
-            void callDisassemble(QLabel *infolabel, DisassemblerListing *listing, MemoryBuffer *memorybuffer);
-            void callOutput(ListingPrinter* printer, Instruction* instruction, DisassemblerListing *listing, MemoryBuffer *memorybuffer);
+            bool callMap(QHexEditData* hexeditdata);
+            void callDisassemble(QLabel *infolabel);
+            void callOutput(ListingPrinter* printer, Instruction* instruction);
 
         public:
             bool validate(QHexEditData* hexeditdata);
-            QString emitInstruction(Instruction* instruction, DisassemblerListing *listing, MemoryBuffer *memorybuffer);
+            QString emitInstruction(Instruction* instruction);
 
         public slots:
             lua_Integer next(const PrefSDK::QtLua::LuaTable& instructiontable);
@@ -66,6 +71,8 @@ namespace PrefSDK
             PrefSDK::QtLua::LuaFunction _disassemblefunc;
             PrefSDK::QtLua::LuaFunction _outputfunc;
             DataType::Type _addresstype;
+            DisassemblerListing* _listing;
+            FormatTree* _formattree;
             MemoryBuffer* _memorybuffer;
             FormatDefinition* _formatdefinition;
             DataValue _baseaddress;

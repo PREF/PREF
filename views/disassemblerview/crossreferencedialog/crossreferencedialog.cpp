@@ -1,13 +1,13 @@
 #include "crossreferencedialog.h"
 #include "ui_crossreferencedialog.h"
 
-CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing* listing, MemoryBuffer* memorybuffer, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), _sources(block->sources()), _listing(listing), _selectedblock(nullptr)
+CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition* disassembler, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), _sources(block->sources()), _disassembler(disassembler), _selectedblock(nullptr)
 {
     ui->setupUi(this);
 
     this->_crossreferencemodel = new CrossReferenceModel(block, this);
     ui->crossReferenceTable->setModel(this->_crossreferencemodel);
-    ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(block, disassembler, listing, memorybuffer, this));
+    ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(block, disassembler, this));
     ui->crossReferenceTable->resizeRowsToContents();
 
     this->setWindowTitle(QString("Cross References For: %1").arg(block->startAddress().toString(16).append("h")));
@@ -27,7 +27,8 @@ void CrossReferenceDialog::on_crossReferenceTable_doubleClicked(const QModelInde
 {
     if(index.isValid())
     {
-        this->_selectedblock = this->_listing->findBlock(this->_sources[index.row()]);
+        DisassemblerListing* listing = this->_disassembler->listing();
+        this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
         this->done(CrossReferenceDialog::Accepted);
     }
     else
@@ -40,5 +41,8 @@ void CrossReferenceDialog::on_buttonBox_accepted()
     QModelIndex index = model->currentIndex();
 
     if(index.isValid())
-        this->_selectedblock = this->_listing->findBlock(this->_sources[index.row()]);
+    {
+        DisassemblerListing* listing = this->_disassembler->listing();
+        this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
+    }
 }

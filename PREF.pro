@@ -45,7 +45,6 @@ SOURCES += main.cpp\
     viewmodels/luatypeviewmodel/luastackviewmodel.cpp \
     prefsdk/bytecolors.cpp \
     prefsdk/math.cpp \
-    preftabwidget/preftabwidget.cpp \
     views/hexview/formatwidget/formattreeview/copymenu.cpp \
     qnumberlineedit.cpp \
     views/hexview/bytecolorsdialog/entropywidget/entropywidget.cpp \
@@ -160,7 +159,8 @@ SOURCES += main.cpp\
     prefsdk/libs/preflib/databuffer.cpp \
     prefsdk/disassembler/memorybuffer.cpp \
     prefsdk/disassembler/listingprinter.cpp \
-    prefsdk/disassembler/blocks/label.cpp
+    prefsdk/disassembler/blocks/label.cpp \
+    prefsdk/disassembler/segmenttype.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -192,7 +192,6 @@ HEADERS  += mainwindow.h \
     viewmodels/luatypeviewmodel/luastackviewmodel.h \
     prefsdk/bytecolors.h \
     prefsdk/math.h \
-    preftabwidget/preftabwidget.h \
     views/hexview/formatwidget/formattreeview/copymenu.h \
     qnumberlineedit.h \
     views/hexview/bytecolorsdialog/entropywidget/entropywidget.h \
@@ -309,7 +308,8 @@ HEADERS  += mainwindow.h \
     prefsdk/libs/preflib/databuffer.h \
     prefsdk/disassembler/memorybuffer.h \
     prefsdk/disassembler/listingprinter.h \
-    prefsdk/disassembler/blocks/label.h
+    prefsdk/disassembler/blocks/label.h \
+    prefsdk/disassembler/segmenttype.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

@@ -15,18 +15,14 @@ class DisassemblerWorker : public QThread
     Q_OBJECT
 
     public:
-        explicit DisassemblerWorker(QHexEditData* hexeditdata, DisassemblerDefinition* disassemblerdefinition, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
-        DisassemblerListing* listing() const;
-        MemoryBuffer* memoryBuffer() const;
+        explicit DisassemblerWorker(QHexEditData* hexeditdata, DisassemblerDefinition* disassembler, LogWidget* logwidget, QLabel* infolabel, QObject *parent = 0);
 
     protected:
         virtual void run();
 
     private:
-        DisassemblerListing* _listing;
-        MemoryBuffer* _memorybuffer;
         QHexEditData* _hexeditdata;
-        DisassemblerDefinition* _disassemblerdefinition;
+        DisassemblerDefinition* _disassembler;
         LogWidget* _logwidget;
         QLabel* _infolabel;
 };

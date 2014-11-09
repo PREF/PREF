@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "block.h"
 #include "function.h"
+#include "prefsdk/disassembler/segmenttype.h"
 
 namespace PrefSDK
 {
@@ -11,23 +12,18 @@ namespace PrefSDK
     {
         Q_OBJECT
 
-        Q_ENUMS(Type)
-
         public:
-            enum Type { Code, Data }; //FIXME: Spostare in SegmentType
-
-        public:
-            explicit Segment(const QString& name, Segment::Type type, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset, QObject* parent = 0);
+            explicit Segment(const QString& name, SegmentType::Type type, const DataValue& startaddress, const DataValue& size, const DataValue& baseoffset, QObject* parent = 0);
             const DataValue& baseOffset() const;
             QString name() const;
-            Segment::Type type() const;
+            SegmentType::Type type() const;
 
         public: /* Overriden Methods */
             virtual Block::Type blockType() const;
 
         private:
             DataValue _baseoffset;
-            Segment::Type _type;
+            SegmentType::Type _type;
             QString _name;
     };
 }

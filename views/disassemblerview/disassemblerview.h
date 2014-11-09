@@ -83,7 +83,6 @@ class DisassemblerView : public AbstractView
         Ui::DisassemblerView *ui;
         DisassemblerWorker* _worker;
         DisassemblerListing* _listing;
-        MemoryBuffer* _memorybuffer;
         StringSymbolModel* _stringsymbols;
         VariablesModel* _variablesmodel;
         FunctionModel* _functionmodel;

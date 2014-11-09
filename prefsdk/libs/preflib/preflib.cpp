@@ -380,7 +380,7 @@ namespace PrefSDK
     {
         lua_newtable(l);
 
-        this->buildSegmentTable(l);
+        this->buildSegmentTypeTable(l);
         this->buildFunctionTypeTable(l);
         this->buildBlockTypeTable(l);
         this->buildSymbolTypeTable(l);
@@ -391,13 +391,13 @@ namespace PrefSDK
         lua_setfield(l, -2, "disassembler");
     }
 
-    void PrefLib::buildSegmentTable(lua_State *l)
+    void PrefLib::buildSegmentTypeTable(lua_State *l)
     {
-        const QMetaObject metaobj = Segment::staticMetaObject;
+        const QMetaObject metaobj = SegmentType::staticMetaObject;
         QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
 
         QtLua::pushEnum(l, metaenum);
-        lua_setfield(l, -2, "segment");
+        lua_setfield(l, -2, "segmenttype");
     }
 
     void PrefLib::buildFunctionTypeTable(lua_State *l)

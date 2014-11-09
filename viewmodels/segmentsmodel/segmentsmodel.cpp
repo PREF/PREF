@@ -67,7 +67,7 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
                 return segment->baseOffset().toString(16).append("h");
 
             case 4:
-                return (segment->type() == Segment::Code ? "Code" : "Data");
+                return (segment->type() == SegmentType::Code ? "Code" : "Data");
 
             default:
                 break;

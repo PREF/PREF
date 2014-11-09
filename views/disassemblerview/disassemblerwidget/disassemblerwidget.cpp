@@ -41,16 +41,6 @@ void DisassemblerWidget::setCurrentIndex(int idx)
     this->_disasmwidget_p->setCurrentIndex(idx);
 }
 
-void DisassemblerWidget::setListing(DisassemblerListing *listing)
-{
-    this->_disasmwidget_p->setListing(listing);
-}
-
-void DisassemblerWidget::setMemoryBuffer(MemoryBuffer *memorybuffer)
-{
-    this->_disasmwidget_p->setMemoryBuffer(memorybuffer);
-}
-
 void DisassemblerWidget::setAddressForeColor(const QColor &c)
 {
     this->_disasmwidget_p->setAddressForeColor(c);

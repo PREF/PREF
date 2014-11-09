@@ -21,8 +21,6 @@ class DisassemblerWidgetPrivate: public QWidget
         void setCurrentIndex(qint64 idx, bool savehistory = true);
         Block* selectedBlock() const;
         void setDisassembler(DisassemblerDefinition* disassembler);
-        void setListing(DisassemblerListing* listing);
-        void setMemoryBuffer(MemoryBuffer* memorybuffer);
         void setAddressForeColor(const QColor& c);
         void setSelectedLineColor(const QColor& c);
         void setWheelScrollLines(int c);
@@ -78,7 +76,6 @@ class DisassemblerWidgetPrivate: public QWidget
         ListingPrinter* _printer;
         DisassemblerDefinition* _disassembler;
         DisassemblerListing* _listing;
-        MemoryBuffer* _memorybuffer;
         QColor _addressforecolor;
         QColor _sellinecolor;
         Block* _selectedblock;

@@ -14,7 +14,7 @@ class CrossReferenceDelegate : public QStyledItemDelegate
     Q_OBJECT
 
     public:
-        explicit CrossReferenceDelegate(Block *block, DisassemblerDefinition* disassembler, DisassemblerListing* listing, MemoryBuffer* memorybuffer, QObject *parent = 0);
+        explicit CrossReferenceDelegate(Block *block, DisassemblerDefinition* disassembler, QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
@@ -23,8 +23,6 @@ class CrossReferenceDelegate : public QStyledItemDelegate
     private:
         const QList<DataValue>& _sources;
         DisassemblerDefinition* _disassembler;
-        DisassemblerListing* _listing;
-        MemoryBuffer* _memorybuffer;
         QFont _monospacefont;
 };
 

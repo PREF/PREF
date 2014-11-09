@@ -158,7 +158,7 @@ void DisassemblerView::showCrossReference(Block *b)
     if(!b->hasSources())
         return;
 
-    CrossReferenceDialog crd(b, this->_disassembler, this->_listing, this->_memorybuffer);
+    CrossReferenceDialog crd(b, this->_disassembler);
     int res = crd.exec();
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -172,7 +172,7 @@ void DisassemblerView::showCrossReference(const DataValue &address)
     if(!b || !b->hasSources())
         return;
 
-    CrossReferenceDialog crd(b, this->_disassembler, this->_listing, this->_memorybuffer);
+    CrossReferenceDialog crd(b, this->_disassembler);
     int res = crd.exec();
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -206,7 +206,7 @@ void DisassemblerView::onFunctionsMenuXRefsTriggered()
 
     if(index.isValid())
     {
-        CrossReferenceDialog crd(reinterpret_cast<Function*>(index.internalPointer()), this->_disassembler, this->_listing, this->_memorybuffer);
+        CrossReferenceDialog crd(reinterpret_cast<Function*>(index.internalPointer()), this->_disassembler);
         int res = crd.exec();
 
         if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
@@ -257,17 +257,11 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
 
 void DisassemblerView::displayDisassembly()
 {
-    this->_listing = this->_worker->listing();
-    this->_listing->setParent(this);
-
-    this->_memorybuffer = this->_worker->memoryBuffer();
-    this->_memorybuffer->setParent(this);
-
+    this->_listing = this->_disassembler->listing();
     this->_toolbar->setEnabled(true);
+
     ui->gotoWidget->setDisassembler(this->_disassembler);
     ui->disassemblerWidget->setDisassembler(this->_disassembler);
-    ui->disassemblerWidget->setListing(this->_listing);
-    ui->disassemblerWidget->setMemoryBuffer(this->_memorybuffer);
 
     this->_functionmodel = new FunctionModel(this->_listing, ui->functionList);
     this->_stringsymbols = new StringSymbolModel(this->_listing, this->_hexeditdata, ui->tvStrings);
@@ -323,7 +317,7 @@ void DisassemblerView::copyListing()
     Block* b = ui->disassemblerWidget->selectedBlock();
 
     if(b->blockType() == Block::InstructionBlock)
-        clipboard->setText(this->_disassembler->emitInstruction(qobject_cast<Instruction*>(b), this->_listing, this->_memorybuffer));
+        clipboard->setText(this->_disassembler->emitInstruction(qobject_cast<Instruction*>(b)));
     else if(b->blockType() == Block::FunctionBlock)
     {
         const SymbolTable* symboltable = this->_listing->symbolTable();

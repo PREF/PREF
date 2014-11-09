@@ -1,6 +1,6 @@
 #include "crossreferencedelegate.h"
 
-CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, DisassemblerListing *listing, MemoryBuffer *memorybuffer, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler), _listing(listing), _memorybuffer(memorybuffer)
+CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -23,20 +23,21 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
 
     QTextDocument document;
+    DisassemblerListing* listing = this->_disassembler->listing();
     DataValue sourceaddress = this->_sources[index.row()];
-    Block* b = this->_listing->findBlock(sourceaddress);
+    Block* b = listing->findBlock(sourceaddress);
 
     if(b->blockType() == Block::InstructionBlock)
     {
         ListingPrinter printer(this->_disassembler->addressType());
-        this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b), this->_listing, this->_memorybuffer);
+        this->_disassembler->callOutput(&printer, qobject_cast<Instruction*>(b));
         printer.draw(painter, options.fontMetrics, options.rect.left(), options.rect.top());
         return;
     }
 
     if(b->blockType() == Block::FunctionBlock)
     {
-        SymbolTable* symboltable = this->_listing->symbolTable();
+        SymbolTable* symboltable = listing->symbolTable();
         document.setPlainText(QString("function %1()").arg(symboltable->name(b->startAddress())));
     }
 

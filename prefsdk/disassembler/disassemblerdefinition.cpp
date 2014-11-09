@@ -2,13 +2,13 @@
 
 namespace PrefSDK
 {
-    DisassemblerDefinition::DisassemblerDefinition(const QString &name, const QString &author, const QString &version, DataType::Type addresstype, FormatDefinition *formatdefinition, QObject *parent): LogObject(parent), _addresstype(addresstype), _memorybuffer(nullptr), _formatdefinition(formatdefinition), _name(name), _author(author), _version(version)
+    DisassemblerDefinition::DisassemblerDefinition(const QString &name, const QString &author, const QString &version, DataType::Type addresstype, FormatDefinition *formatdefinition, QObject *parent): LogObject(parent), _addresstype(addresstype), _listing(nullptr), _formattree(nullptr), _memorybuffer(nullptr), _formatdefinition(formatdefinition), _name(name), _author(author), _version(version)
     {
         this->_formatdefinition->setParent(this);
         this->_baseaddress = DataValue(addresstype);
     }
 
-    void DisassemblerDefinition::callDisassemble(QLabel* infolabel, DisassemblerListing* listing, MemoryBuffer* memorybuffer)
+    void DisassemblerDefinition::callDisassemble(QLabel* infolabel)
     {   
         if(!this->_disassemblefunc.isValid())
             return;
@@ -21,10 +21,10 @@ namespace PrefSDK
 
             do
             {
-                if(listing->isDecoded(address))
+                if(this->_listing->isDecoded(address))
                     break;
 
-                if(!listing->isAddress(address))
+                if(!this->_listing->isAddress(address))
                 {
                     this->warning(QString("Trying to disassemble %1, this address does not belong to any Segment").arg(address.toString(16)));
                     break;
@@ -33,9 +33,7 @@ namespace PrefSDK
                 QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, QString("Disassembling: %1").arg(address.toString(16))));
 
                 lua_pushinteger(l, address.compatibleValue<lua_Integer>());
-                QtLua::pushObject(l, listing);
-                QtLua::pushObject(l, memorybuffer);
-                bool err = this->_disassemblefunc(3, 1);
+                bool err = this->_disassemblefunc(1, 1);
 
                 if(err)
                 {
@@ -57,7 +55,7 @@ namespace PrefSDK
         }
     }
 
-    void DisassemblerDefinition::callOutput(ListingPrinter *printer, Instruction *instruction, DisassemblerListing* listing, MemoryBuffer* memorybuffer)
+    void DisassemblerDefinition::callOutput(ListingPrinter *printer, Instruction *instruction)
     {
         if(!this->_outputfunc.isValid())
             return;
@@ -66,9 +64,7 @@ namespace PrefSDK
 
         QtLua::pushObject(l, printer);
         instruction->push();
-        QtLua::pushObject(l, listing);
-        QtLua::pushObject(l, memorybuffer);
-        bool err = this->_outputfunc(4);
+        bool err = this->_outputfunc(2);
 
         if(err)
         {
@@ -83,48 +79,46 @@ namespace PrefSDK
         return this->_formatdefinition->callValidate(hexeditdata, this->_logger, 0, true);
     }
 
-    QString DisassemblerDefinition::emitInstruction(Instruction *instruction, DisassemblerListing* listing, MemoryBuffer* memorybuffer)
+    QString DisassemblerDefinition::emitInstruction(Instruction *instruction)
     {
         ListingPrinter printer(this->_addresstype);
 
-        this->callOutput(&printer, instruction, listing, memorybuffer);
+        this->callOutput(&printer, instruction);
         return printer.printString();
     }
 
-    MemoryBuffer *DisassemblerDefinition::callMap(DisassemblerListing* listing, QHexEditData* hexeditdata)
+    bool DisassemblerDefinition::callMap(QHexEditData* hexeditdata)
     {
         bool b = this->validate(hexeditdata);
 
         if(!b || !this->_mapfunc.isValid())
-            return nullptr;
+            return false;
 
         lua_State* l = this->_mapfunc.state();
-        FormatTree* formattree = this->_formatdefinition->callParse(hexeditdata, this->_logger, 0);
+        this->_formattree = this->_formatdefinition->callParse(hexeditdata, this->_logger, 0);
 
-        if(formattree->isEmpty())
-            return nullptr;
+        if(this->_formattree->isEmpty())
+            return false;
 
-        listing->setFormatTree(formattree);
         this->_baseaddress = this->callBaseAddress();
-        MemoryBuffer* memorybuffer = new MemoryBuffer(hexeditdata, listing, this->_logger, this->_baseaddress, this->_addresstype, listing);
-
-        QtLua::pushObject(l, listing);
-        QtLua::pushObject(l, memorybuffer);
-        bool err = this->_mapfunc(2);
+        this->_listing = new DisassemblerListing(hexeditdata, this->_addresstype, this);
+        this->_memorybuffer = new MemoryBuffer(hexeditdata, this->_listing, this->_logger, this->_baseaddress, this->_addresstype, this);
+        bool err = this->_mapfunc(0);
 
         if(err)
         {
             throw PrefException(QString("ProcessorLoader::callMap(): %1").arg(QString::fromUtf8(lua_tostring(l, -1))));
             lua_pop(l, 1);
+            return false;
         }
 
         /* Load Entry Points */
-        const QList<Function*>& ep = listing->entryPoints();
+        const QList<Function*>& ep = this->_listing->entryPoints();
 
         for(int i = 0; i < ep.count(); i++)
             this->_addrstack.push(ep[i]->startAddress());
 
-        return memorybuffer;
+        return true;
     }
 
     void DisassemblerDefinition::enqueue(lua_Integer address)
@@ -189,6 +183,16 @@ namespace PrefSDK
     const QtLua::LuaFunction &DisassemblerDefinition::output() const
     {
         return this->_outputfunc;
+    }
+
+    FormatTree *DisassemblerDefinition::formatTree() const
+    {
+        return this->_formattree;
+    }
+
+    DisassemblerListing *DisassemblerDefinition::listing() const
+    {
+        return this->_listing;
     }
 
     MemoryBuffer *DisassemblerDefinition::memoryBuffer() const

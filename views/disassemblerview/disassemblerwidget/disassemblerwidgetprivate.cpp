@@ -1,6 +1,6 @@
 #include "disassemblerwidgetprivate.h"
 
-DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _printer(nullptr), _disassembler(nullptr), _listing(nullptr), _memorybuffer(nullptr), _selectedblock(nullptr), _selectedindex(-1), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
+DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _printer(nullptr), _disassembler(nullptr), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
 {
     this->_charwidth = this->_charheight = 0;
 
@@ -26,7 +26,17 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
 void DisassemblerWidgetPrivate::setDisassembler(DisassemblerDefinition *disassembler)
 {
     this->_disassembler = disassembler;
+    this->_listing = disassembler->listing();
     this->_printer = new ListingPrinter(disassembler->addressType(), this);
+
+    this->adjust();
+    this->update();
+
+    if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
+    {
+        qint64 idx = this->_listing->indexOf(this->_listing->entryPoints().first());
+        this->setCurrentIndex(idx, false);
+    }
 }
 
 void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
@@ -51,25 +61,6 @@ void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
         this->ensureVisible(idx);
         this->update();
     }
-}
-
-void DisassemblerWidgetPrivate::setListing(DisassemblerListing *listing)
-{
-    this->_listing = listing;
-
-    this->adjust();
-    this->update();
-
-    if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
-    {
-        qint64 idx = this->_listing->indexOf(this->_listing->entryPoints().first());
-        this->setCurrentIndex(idx, false);
-    }
-}
-
-void DisassemblerWidgetPrivate::setMemoryBuffer(MemoryBuffer *memorybuffer)
-{
-    this->_memorybuffer = memorybuffer;
 }
 
 void DisassemblerWidgetPrivate::setAddressForeColor(const QColor &c)
@@ -271,7 +262,7 @@ QString DisassemblerWidgetPrivate::emitLabel(Label *label)
 void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y)
 {
     this->_printer->reset();
-    this->_disassembler->callOutput(this->_printer, instruction, this->_listing, this->_memorybuffer); /* Call Lua in order to compile instruction */
+    this->_disassembler->callOutput(this->_printer, instruction); /* Call Lua in order to compile instruction */
     this->_printer->draw(&painter, fm, x, y);
 }
 
@@ -308,7 +299,7 @@ QString DisassemblerWidgetPrivate::emitLine(qint64 idx)
     if(block->blockType() == Block::InstructionBlock)
     {
         ListingPrinter lp(this->_disassembler->addressType());
-        this->_disassembler->callOutput(&lp, qobject_cast<Instruction*>(block), this->_listing, this->_memorybuffer);
+        this->_disassembler->callOutput(&lp, qobject_cast<Instruction*>(block));
         blockstring = QString(" ").repeated(6) + lp.printString();
     }
     else if(block->blockType() == Block::SegmentBlock)

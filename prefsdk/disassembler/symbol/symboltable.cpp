@@ -116,10 +116,7 @@ namespace PrefSDK
     QString SymbolTable::name(const DataValue &address) const
     {
         if(!this->_symboltable.contains(address))
-        {
-            //FIXME: this->warning("Trying to get a non valid symbol");
             return QString();
-        }
 
         return this->_symboltable[address]->name();
     }
