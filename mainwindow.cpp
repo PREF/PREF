@@ -4,13 +4,13 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setAcceptDrops(true);
     this->centerWindowToScreen();
 
     this->_lblinfo = new QLabel();
     this->_basetitle = this->windowTitle();
     ui->statusBar->addWidget(this->_lblinfo, 1);
 
-    //TODO: connect(this, SIGNAL(fileDragged(QString)), this, SLOT(loadFile(QString)));
     lua_State* l = SDKManager::initializeLua();
 
     if(l)
@@ -38,6 +38,44 @@ bool MainWindow::sdkLoaded()
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *e)
+{
+    if(e->mimeData()->hasUrls())
+        e->acceptProposedAction();
+}
+
+void MainWindow::dragMoveEvent(QDragMoveEvent *e)
+{
+    if(e->mimeData()->hasUrls())
+         e->acceptProposedAction();
+}
+
+void MainWindow::dropEvent(QDropEvent *e)
+{
+    bool accept = false;
+    const QMimeData* mimedata = e->mimeData();
+
+    if(mimedata->hasUrls())
+    {
+        QList<QUrl> urllist = mimedata->urls();
+
+        for(int i = 0; (i < urllist.length()) && (i < 10); i++)
+        {
+            QString locfile = urllist[i].toLocalFile();
+            QFileInfo fi(locfile);
+
+            if(fi.isFile())
+            {
+                accept = true;
+                this->loadFile(urllist[i].toLocalFile());
+            }
+        }
+
+        if(accept)
+            e->acceptProposedAction();
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)

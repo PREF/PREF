@@ -30,6 +30,9 @@ class MainWindow : public QMainWindow
         ~MainWindow();
 
     protected:
+        virtual void dragEnterEvent(QDragEnterEvent* e);
+        virtual void dragMoveEvent(QDragMoveEvent* e);
+        virtual void dropEvent(QDropEvent* e);
         virtual void closeEvent(QCloseEvent* e);
 
     private:
