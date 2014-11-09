@@ -1,19 +1,16 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow* MainWindow::_instance = nullptr;
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    MainWindow::_instance = this; /* Make this instance available outside */
-
     ui->setupUi(this);
     this->centerWindowToScreen();
 
     this->_lblinfo = new QLabel();
+    this->_basetitle = this->windowTitle();
     ui->statusBar->addWidget(this->_lblinfo, 1);
 
-    connect(ui->tabWidget, SIGNAL(fileDragged(QString)), this, SLOT(loadFile(QString)));
+    //TODO: connect(this, SIGNAL(fileDragged(QString)), this, SLOT(loadFile(QString)));
     lua_State* l = SDKManager::initializeLua();
 
     if(l)
@@ -41,11 +38,6 @@ bool MainWindow::sdkLoaded()
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-MainWindow *MainWindow::instance()
-{
-    return MainWindow::_instance;
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
@@ -89,8 +81,11 @@ void MainWindow::disassembleFile(const QString &file)
     if(res == DisassemblerDialog::Accepted && ld.selectedDisassembler())
     {
         QString viewname = QFileInfo(file).fileName();
-        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
-        ui->tabWidget->addTab(dv, viewname);
+        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), hexeditdata, viewname, this->_lblinfo);
+
+        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
+        this->setCentralWidget(dv);
+        this->setSaveVisible(dv->canSave(), dv->canSaveAs());
         dv->disassemble();
     }
 }
@@ -134,7 +129,7 @@ bool MainWindow::checkDisassembly(const QStringList &args)
 
 bool MainWindow::closeApplication()
 {
-    if(ui->tabWidget->count() > 0)
+    if(this->centralWidget())
     {
         QMessageBox m;
         m.setWindowTitle("Closing...");
@@ -178,8 +173,11 @@ void MainWindow::centerWindowToScreen()
 void MainWindow::loadFile(const QString &file, QHexEditData *hexeditdata)
 {
     QString viewname = QFileInfo(file).fileName();
-    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo, ui->tabWidget);
-    ui->tabWidget->addTab(hv, viewname);
+    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo);
+
+    this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
+    this->setCentralWidget(new HexView(hexeditdata, viewname, this->_lblinfo));
+    this->setSaveVisible(hv->canSave(), hv->canSaveAs());
 }
 
 void MainWindow::on_action_Analyze_triggered()
@@ -190,38 +188,9 @@ void MainWindow::on_action_Analyze_triggered()
         this->loadFile(file, QHexEditData::fromFile(file));
 }
 
-void MainWindow::on_tabWidget_tabCloseRequested(int index)
-{
-    QMessageBox m;
-    m.setWindowTitle("Closing Tab");
-    m.setText("Do you want to close this page (Unsaved changes will be lost)?");
-    m.setIcon(QMessageBox::Warning);
-    m.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    m.setDefaultButton(QMessageBox::No);
-    int ret = m.exec();
-
-    switch(ret)
-    {
-        case QMessageBox::Yes:
-        {
-            if(ui->tabWidget->count() == 1)
-            {
-                this->_lblinfo->clear(); /* Clear Status Bar Information */
-                this->setSaveVisible(false, false);
-            }
-
-            ui->tabWidget->removeTab(index);
-            break;
-        }
-
-        default:
-            break;
-    }
-}
-
 void MainWindow::on_action_Save_As_triggered()
 {
-    AbstractView* abstractview = qobject_cast<AbstractView*>(ui->tabWidget->currentWidget());
+    AbstractView* abstractview = qobject_cast<AbstractView*>(ui->centralWidget);
     QFileDialog fd(this, "Save as...", QString(), abstractview->saveFilter());
     fd.setAcceptMode(QFileDialog::AcceptSave);
     int res = fd.exec();
@@ -243,7 +212,7 @@ void MainWindow::on_action_Save_triggered()
     switch(ret)
     {
         case QMessageBox::Yes:
-            dynamic_cast<HexView*>(ui->tabWidget->currentWidget())->save();
+            dynamic_cast<AbstractView*>(ui->centralWidget)->save();
             break;
 
         case QMessageBox::No:
@@ -270,9 +239,11 @@ void MainWindow::on_actionCompare_triggered()
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
         QString viewname = QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName());
+        CompareView* cv = new CompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo);
 
-        CompareView* cv = new CompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo,  ui->tabWidget);
-        ui->tabWidget->addTab(cv, viewname);
+        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
+        this->setCentralWidget(cv);
+        this->setSaveVisible(cv->canSave(), cv->canSaveAs());
     }
 }
 
@@ -280,19 +251,6 @@ void MainWindow::on_actionAbout_PREF_triggered()
 {
     AboutDialog ad(this);
     ad.exec();
-}
-
-void MainWindow::on_tabWidget_currentChanged(int index)
-{
-    if(index == -1)
-    {
-        this->setSaveVisible(false, false);
-        return;
-    }
-
-    AbstractView* av = dynamic_cast<AbstractView*>(ui->tabWidget->widget(index));
-    av->updateStatusBar();
-    this->setSaveVisible(av->canSave(), av->canSaveAs());
 }
 
 void MainWindow::on_actionSignature_DB_triggered()
@@ -313,8 +271,8 @@ void MainWindow::on_actionHex_File_triggered()
         f.close();
 
         QString viewname = QFileInfo(file).fileName();
-        HexView* hv = new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo, ui->tabWidget);
-        ui->tabWidget->addTab(hv, viewname);
+        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
+        this->setCentralWidget(new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo));
     }
 }
 

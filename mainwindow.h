@@ -29,9 +29,6 @@ class MainWindow : public QMainWindow
         bool sdkLoaded();
         ~MainWindow();
 
-    public:
-        static MainWindow* instance();
-
     protected:
         virtual void closeEvent(QCloseEvent* e);
 
@@ -54,16 +51,14 @@ class MainWindow : public QMainWindow
         void on_action_Save_triggered();
         void on_actionExit_triggered();
         void on_actionAbout_PREF_triggered();
-        void on_tabWidget_tabCloseRequested(int index);
-        void on_tabWidget_currentChanged(int index);
         void on_actionSignature_DB_triggered();
         void on_actionHex_File_triggered();
 
     private:
-        static MainWindow* _instance;
         Ui::MainWindow *ui;
         QLabel* _lblinfo;
         bool _sdkloaded;
+        QString _basetitle;
 };
 
 #endif // MAINWINDOW_H
