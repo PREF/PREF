@@ -483,7 +483,7 @@ void DisassemblerView::on_tabOverview_currentChanged(int index)
 
     switch(index)
     {
-        case 0:
+        case 1:
         {
             for(int i = 0; i < this->_variablesmodel->columnCount() - 1; i++)
                 ui->tvVariables->resizeColumnToContents(i);
@@ -492,7 +492,7 @@ void DisassemblerView::on_tabOverview_currentChanged(int index)
             break;
         }
 
-        case 1:
+        case 2:
         {
             for(int i = 0; i < this->_stringsymbols->columnCount() - 1; i++)
                 ui->tvStrings->resizeColumnToContents(i);
