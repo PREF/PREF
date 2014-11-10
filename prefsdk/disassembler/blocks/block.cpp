@@ -2,17 +2,17 @@
 
 namespace PrefSDK
 {    
-    Block::Block(QObject *parent): QObject(parent)
+    Block::Block(QObject *parent): QObject(parent), _boomarked(false)
     {
 
     }
 
-    Block::Block(const DataValue &startaddress, QObject *parent): QObject(parent), _startaddress(startaddress)
+    Block::Block(const DataValue &startaddress, QObject *parent): QObject(parent), _startaddress(startaddress), _boomarked(false)
     {
         this->_size = DataValue(startaddress.dataType());
     }
 
-    Block::Block(const DataValue& startaddress, const DataValue& size, QObject *parent): QObject(parent), _startaddress(startaddress), _size(size)
+    Block::Block(const DataValue& startaddress, const DataValue& size, QObject *parent): QObject(parent), _startaddress(startaddress), _size(size), _boomarked(false)
     {
 
     }
@@ -31,6 +31,16 @@ namespace PrefSDK
     bool Block::hasSources() const
     {
         return !this->_sources.isEmpty();
+    }
+
+    bool Block::isBookmarked() const
+    {
+        return this->_boomarked;
+    }
+
+    void Block::setBookmarked(bool b)
+    {
+        this->_boomarked = b;
     }
 
     const DataValue& Block::startAddress() const

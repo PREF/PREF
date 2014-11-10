@@ -197,6 +197,12 @@ void DisassemblerWidgetPrivate::drawLineBackground(QPainter &painter, qint64 idx
         painter.fillRect(linerect, this->palette().color(QPalette::Base));
 }
 
+void DisassemblerWidgetPrivate::drawBookmark(QPainter &painter, QFontMetrics& fm, int y)
+{
+    painter.setPen(QPen(Qt::red));
+    painter.drawText(0, y, this->_charwidth, fm.height(), Qt::TextExpandTabs | Qt::AlignLeft | Qt::AlignTop, "*");
+}
+
 void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qint64 idx, int y)
 {
     Block* block = this->findBlock(idx);
@@ -204,6 +210,10 @@ void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qi
     this->drawLineBackground(painter, idx, y);
 
     QTextDocument document;
+
+    if(block->isBookmarked())
+        this->drawBookmark(painter, fm, y);
+
     int x = this->drawAddress(painter, fm, block, y);
 
     if(block->blockType() == Block::InstructionBlock)
@@ -336,9 +346,9 @@ int DisassemblerWidgetPrivate::drawAddress(QPainter &painter, QFontMetrics &fm, 
     int w = fm.width(addrstring);
 
     painter.setPen(this->_addressforecolor);
-    painter.drawText(0, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, addrstring);
+    painter.drawText(this->_charwidth, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, addrstring);
 
-    return w + this->_charwidth;
+    return w + (this->_charwidth * 2);
 }
 
 void DisassemblerWidgetPrivate::adjust()

@@ -24,13 +24,14 @@ namespace PrefSDK
         Q_PROPERTY(PrefSDK::SymbolTable* symboltable READ symbolTable)
 
         public:
+            typedef QPair<Block*, QString> BookmarkEntry;
             typedef QMap<DataValue, Segment*> SegmentMap;
             typedef QMap<DataValue, Function*> FunctionMap;
             typedef QMap<DataValue, Instruction*> InstructionMap;
             typedef QMap<DataValue, Label*> LabelMap;
             typedef QList<Block*> BlockList;
-            typedef QSet<DataValue> StringSymbolSet;
             typedef QList<Function*> EntryPointList;
+            typedef QList<BookmarkEntry> BookmarkList;
 
         public:
             explicit DisassemblerListing(QHexEditData* hexeditdata, DataType::Type addresstype, QObject *parent = 0);
@@ -47,6 +48,7 @@ namespace PrefSDK
             ConstantTable* constantTable();
             QHexEditData* data();
             const BlockList& blocks();
+            DisassemblerListing::BookmarkList& bookmarks();
             const DisassemblerListing::SegmentMap& segments() const;
             const DisassemblerListing::FunctionMap& functions() const;
             const DisassemblerListing::EntryPointList& entryPoints() const;
@@ -56,6 +58,10 @@ namespace PrefSDK
             Function* findFunction(const DataValue& address);
             Instruction* findInstruction(const DataValue& address) const;
             Block* findBlock(const DataValue& address);
+
+        public slots:
+            void toggleBookmark(Block* block);
+            void applyBookmark(Block* block, const QString& description);
 
         public:
             Q_INVOKABLE bool isAddress(lua_Integer address);
@@ -91,6 +97,7 @@ namespace PrefSDK
             InstructionMap _instructions;
             LabelMap _labels;
             BlockList _blocks;
+            BookmarkList _bookmarks;
     };
 }
 

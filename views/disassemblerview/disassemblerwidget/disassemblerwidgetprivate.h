@@ -43,6 +43,7 @@ class DisassemblerWidgetPrivate: public QWidget
         qint64 visibleEnd(QRect r = QRect()) const;
         int drawAddress(QPainter &painter, QFontMetrics &fm, Block* block, int y);
         void drawLineBackground(QPainter& painter, qint64 idx, int y);
+        void drawBookmark(QPainter& painter, QFontMetrics &fm, int y);
         void drawLine(QPainter& painter, QFontMetrics& fm, qint64 idx, int y);
         void drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y);
         void ensureVisible(qint64 idx);

@@ -25,14 +25,15 @@ Block *CrossReferenceDialog::selectedBlock()
 
 void CrossReferenceDialog::on_crossReferenceTable_doubleClicked(const QModelIndex &index)
 {
-    if(index.isValid())
+    if(!index.isValid())
     {
-        DisassemblerListing* listing = this->_disassembler->listing();
-        this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
-        this->done(CrossReferenceDialog::Accepted);
-    }
-    else
         this->done(CrossReferenceDialog::Rejected);
+        return;
+    }
+
+    DisassemblerListing* listing = this->_disassembler->listing();
+    this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
+    this->done(CrossReferenceDialog::Accepted);
 }
 
 void CrossReferenceDialog::on_buttonBox_accepted()

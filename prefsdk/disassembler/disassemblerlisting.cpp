@@ -38,6 +38,24 @@ namespace PrefSDK
         return this->findInstruction(address) != nullptr;
     }
 
+    void DisassemblerListing::toggleBookmark(Block *block)
+    {
+        for(int i = 0; i < this->_bookmarks.count(); i++)
+        {
+            if(block == this->_bookmarks[i].first)
+            {
+                this->_bookmarks.removeAt(i);
+                return;
+            }
+        }
+    }
+
+    void DisassemblerListing::applyBookmark(Block *block, const QString &description)
+    {
+        block->setBookmarked(true);
+        this->_bookmarks.append(BookmarkEntry(block, description));
+    }
+
     void DisassemblerListing::createFunction(const DataValue &address, const DataValue &calleraddress, FunctionType::Type functiontype, const QString &name)
     {
         if(!this->isAddress(address))
@@ -98,6 +116,11 @@ namespace PrefSDK
     {
         this->checkSort();
         return this->_blocks;
+    }
+
+    DisassemblerListing::BookmarkList &DisassemblerListing::bookmarks()
+    {
+        return this->_bookmarks;
     }
 
     void DisassemblerListing::createLabel(lua_Integer destaddress, lua_Integer calleraddress, const QString &name)

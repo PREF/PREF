@@ -26,7 +26,7 @@ QString FunctionModel::functionType(Function *f) const
             break;
     }
 
-    return "F";
+    return "Function";
 }
 
 int FunctionModel::columnCount(const QModelIndex &) const
@@ -41,16 +41,16 @@ QVariant FunctionModel::headerData(int section, Qt::Orientation orientation, int
         switch(section)
         {
             case 0:
-                return "Name";
-
-            case 1:
                 return "Address";
 
-            case 2:
+            case 1:
                 return "Segment";
 
-            case 3:
+            case 2:
                 return "Type";
+
+            case 3:
+                return "Name";
 
             default:
                 break;
@@ -70,18 +70,18 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
     if(role == Qt::DisplayRole)
     {   
         switch(index.column())
-        {                
+        {
             case 0:
-                return this->_listing->symbolTable()->name(f->startAddress());
-
-            case 1:
                 return f->startAddress().toString(16);
 
-            case 2:
+            case 1:
                 return this->_listing->findSegment(f)->name();
 
-            case 3:
+            case 2:
                 return this->functionType(f);
+
+            case 3:
+                return this->_listing->symbolTable()->name(f->startAddress());
 
             default:
                 break;
@@ -106,11 +106,14 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
     }
     else if(role == Qt::ForegroundRole)
     {
+        if(index.column() == 0)
+            return QColor(Qt::darkBlue);
+
         if(index.column() == 1)
-                return QColor(Qt::darkBlue);
+            return QColor(Qt::darkMagenta);
 
         if(index.column() == 2)
-            return QColor(Qt::darkGreen);
+            return QColor(Qt::darkRed);
     }
     else if(role == Qt::FontRole)
         return this->_monospacefont;

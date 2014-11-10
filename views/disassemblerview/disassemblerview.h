@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include "csvexporterdialog/csvexporter.h"
 #include "crossreferencedialog/crossreferencedialog.h"
+#include "bookmarkdialog/bookmarkdialog.h"
 #include "entrypointsdialog/entrypointsdialog.h"
 #include "segmentsdialog/segmentsdialog.h"
 #include "qhexedit/qhexeditdata.h"
@@ -60,12 +61,17 @@ class DisassemblerView : public AbstractView
         void on_tvVariables_doubleClicked(const QModelIndex &index);
         void on_tvStrings_customContextMenuRequested(const QPoint &pos);
         void on_tvVariables_customContextMenuRequested(const QPoint &pos);
+        void onSaveBookmarkRequested(Block* block, const QString& description);
         void onFunctionsMenuXRefsTriggered();
+        void onListingMenuAboutToShow();
+        void onListingMenuAddBookmarkTriggered();
+        void onListingMenuRemoveBookmarkTriggered();
         void onListingMenuCrossReferencesTriggered();
         void onListingMenuHexDumpTriggered();
         void displayDisassembly();
         void showEntryPoints();
         void showSegments();
+        void showBookmarks();
         void gotoFunction();
         void copyAddress();
         void copyListing();
@@ -96,7 +102,10 @@ class DisassemblerView : public AbstractView
         QAction* _actforward;
         QAction* _actgoto;
         QAction* _actsegments;
+        QAction* _actbookmarks;
         QAction* _actentrypoints;
+        QAction* _actaddbookmark;
+        QAction* _actremovebookmark;
         QAction* _actcrossreferences;
         QAction* _actjumptoaddress;
         QAction* _acthexdump;

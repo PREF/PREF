@@ -160,7 +160,10 @@ SOURCES += main.cpp\
     prefsdk/disassembler/memorybuffer.cpp \
     prefsdk/disassembler/listingprinter.cpp \
     prefsdk/disassembler/blocks/label.cpp \
-    prefsdk/disassembler/segmenttype.cpp
+    prefsdk/disassembler/segmenttype.cpp \
+    views/disassemblerview/bookmarkdialog/bookmarkdialog.cpp \
+    viewmodels/bookmarkmodel/bookmarkmodel.cpp \
+    views/disassemblerview/bookmarkwidget/bookmarkwidget.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -309,7 +312,10 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/memorybuffer.h \
     prefsdk/disassembler/listingprinter.h \
     prefsdk/disassembler/blocks/label.h \
-    prefsdk/disassembler/segmenttype.h
+    prefsdk/disassembler/segmenttype.h \
+    views/disassemblerview/bookmarkdialog/bookmarkdialog.h \
+    viewmodels/bookmarkmodel/bookmarkmodel.h \
+    views/disassemblerview/bookmarkwidget/bookmarkwidget.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -341,7 +347,9 @@ FORMS    += mainwindow.ui \
     views/hexview/outputwidget/outputwidget.ui \
     views/disassemblerview/gotowidget/gotowidget.ui \
     csvexporterdialog/csvexporterdialog.ui \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui
+    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui \
+    views/disassemblerview/bookmarkdialog/bookmarkdialog.ui \
+    views/disassemblerview/bookmarkwidget/bookmarkwidget.ui
 
 RESOURCES += resources.qrc
 

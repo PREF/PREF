@@ -13,7 +13,7 @@ namespace PrefSDK
         Q_ENUMS(Type)
 
         public:
-            enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, ReferenceBlock, LabelBlock, SymbolBlock };
+            enum Type { UnknownBlock, InstructionBlock, FunctionBlock, SegmentBlock, LabelBlock, SymbolBlock };
 
         public:
             explicit Block(QObject* parent = 0);
@@ -22,6 +22,8 @@ namespace PrefSDK
             void addSource(const DataValue& srcaddress);
             const QList<DataValue>& sources() const;
             bool hasSources() const;
+            bool isBookmarked() const;
+            void setBookmarked(bool b);
             void setEndAddress(const DataValue& address);
             DataValue endAddress() const;
             const DataValue& startAddress() const;
@@ -36,6 +38,7 @@ namespace PrefSDK
             DataValue _startaddress;
             DataValue _size;
             QList<DataValue> _sources;
+            bool _boomarked;
     };
 }
 #endif // PREFSDK_BLOCK_H

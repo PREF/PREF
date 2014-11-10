@@ -4,9 +4,7 @@
 DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinition, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _disassembler(disassemblerdefinition)
 {
     ui->setupUi(this);
-
     ui->hSplitter->setStretchFactor(0, 1);
-    ui->vSplitter->setStretchFactor(0, 1);
 
     ui->functionList->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->functionList->verticalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -29,28 +27,30 @@ DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinitio
     this->_toolbar->addSeparator();
     this->_actentrypoints = this->_toolbar->addAction(QIcon(":/action_icons/res/entry.png"), "Entry Points");
     this->_actsegments = this->_toolbar->addAction(QIcon(":/action_icons/res/segments.png"), "Segments");
+    this->_actbookmarks = this->_toolbar->addAction(QIcon(":/action_icons/res/bookmark.png"), "Bookmarks");
 
     this->_actback->setEnabled(false);
     this->_actforward->setEnabled(false);
+    this->_actbookmarks->setEnabled(false);
 
     this->_actback->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Left));
     this->_actforward->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Right));
     this->_actgoto->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_G));
     this->_actentrypoints->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_E));
     this->_actsegments->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
+    this->_actbookmarks->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_B));
 
     this->createListingMenu();
     this->createFunctionsMenu();
     this->createVariablesMenu();
     this->createStringsMenu();
 
-    ui->disassemblerWidget->setFocus();
-
     connect(this->_actback, SIGNAL(triggered()), ui->disassemblerWidget, SLOT(back()));
     connect(this->_actforward, SIGNAL(triggered()), ui->disassemblerWidget, SLOT(forward()));
     connect(this->_actgoto, SIGNAL(triggered()), ui->gotoWidget, SLOT(show()));
     connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
     connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
+    connect(this->_actbookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
     connect(ui->gotoWidget, SIGNAL(addressRequested(PrefSDK::DataValue)), this, SLOT(gotoAddress(PrefSDK::DataValue)));
     connect(ui->disassemblerWidget, SIGNAL(backAvailable(bool)), this->_actback, SLOT(setEnabled(bool)));
     connect(ui->disassemblerWidget, SIGNAL(forwardAvailable(bool)), this->_actforward, SLOT(setEnabled(bool)));
@@ -96,8 +96,11 @@ void DisassemblerView::updateStatusBar()
 void DisassemblerView::createListingMenu()
 {
     this->_listingmenu = new QMenu();
+    connect(this->_listingmenu, SIGNAL(aboutToShow()), this, SLOT(onListingMenuAboutToShow()));
 
     this->_actcrossreferences = this->_listingmenu->addAction(QIcon(":/misc_icons/res/crossreference.png"), "Cross Refernces");
+    this->_actaddbookmark = this->_listingmenu->addAction(QIcon(":/action_icons/res/bookmark.png"), "Add Bookmark");
+    this->_actremovebookmark = this->_listingmenu->addAction(QIcon(":/action_icons/res/bookmark.png"), "Remove Bookmark");
     this->_acthexdump = this->_listingmenu->addAction(QIcon(":/misc_icons/res/hex.png"), "Hex Dump");
     this->_listingmenu->addSeparator();
 
@@ -107,6 +110,8 @@ void DisassemblerView::createListingMenu()
 
     connect(this->_actcrossreferences, SIGNAL(triggered()), this, SLOT(onListingMenuCrossReferencesTriggered()));
     connect(this->_acthexdump, SIGNAL(triggered()), this, SLOT(onListingMenuHexDumpTriggered()));
+    connect(this->_actaddbookmark, SIGNAL(triggered()), this, SLOT(onListingMenuAddBookmarkTriggered()));
+    connect(this->_actremovebookmark, SIGNAL(triggered()), this, SLOT(onListingMenuRemoveBookmarkTriggered()));
     connect(this->_actcopyaddress, SIGNAL(triggered()), this, SLOT(copyAddress()));
     connect(this->_actcopylisting, SIGNAL(triggered()), this, SLOT(copyListing()));
 }
@@ -214,6 +219,33 @@ void DisassemblerView::onFunctionsMenuXRefsTriggered()
     }
 }
 
+void DisassemblerView::onListingMenuAboutToShow()
+{
+    Block* selectedblock = ui->disassemblerWidget->selectedBlock();
+
+    this->_actcrossreferences->setVisible(selectedblock->hasSources());
+    this->_actaddbookmark->setVisible(!selectedblock->isBookmarked());
+    this->_actremovebookmark->setVisible(selectedblock->isBookmarked());
+}
+
+void DisassemblerView::onListingMenuAddBookmarkTriggered()
+{
+    ui->bookmarkWidget->setBlock(ui->disassemblerWidget->selectedBlock());
+    ui->bookmarkWidget->show();
+
+    ui->disassemblerWidget->update();
+}
+
+void DisassemblerView::onListingMenuRemoveBookmarkTriggered()
+{
+    this->_listing->toggleBookmark(ui->disassemblerWidget->selectedBlock());
+
+    if(this->_listing->bookmarks().isEmpty())
+        this->_actbookmarks->setEnabled(false);
+
+    ui->disassemblerWidget->update();
+}
+
 void DisassemblerView::onListingMenuCrossReferencesTriggered()
 {
     this->showCrossReference(ui->disassemblerWidget->selectedBlock());
@@ -271,6 +303,8 @@ void DisassemblerView::displayDisassembly()
     ui->tvStrings->setModel(this->_stringsymbols);
     ui->tvVariables->setModel(this->_variablesmodel);
     ui->dataView->setModel(this->_variablesmodel);
+
+    connect(ui->bookmarkWidget, SIGNAL(saveBookmarkRequested(Block*,QString)), this, SLOT(onSaveBookmarkRequested(Block*,QString)));
 }
 
 void DisassemblerView::showEntryPoints()
@@ -289,6 +323,15 @@ void DisassemblerView::showSegments()
 
     if(res == SegmentsDialog::Accepted && sd.selectedSegment())
         ui->disassemblerWidget->jumpTo(sd.selectedSegment());
+}
+
+void DisassemblerView::showBookmarks()
+{
+    BookmarkDialog bd(this->_disassembler, this);
+    int res = bd.exec();
+
+    if((res == BookmarkDialog::Accepted) && bd.selectedBlock())
+        ui->disassemblerWidget->jumpTo(bd.selectedBlock());
 }
 
 void DisassemblerView::gotoFunction()
@@ -507,4 +550,10 @@ void DisassemblerView::on_tvVariables_customContextMenuRequested(const QPoint &p
         return;
 
     this->_variablesmenu->exec(ui->tvVariables->mapToGlobal(pos));
+}
+
+void DisassemblerView::onSaveBookmarkRequested(Block *block, const QString &description)
+{
+    this->_actbookmarks->setEnabled(true);
+    this->_listing->applyBookmark(block, description);
 }
