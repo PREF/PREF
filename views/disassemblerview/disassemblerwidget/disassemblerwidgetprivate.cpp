@@ -1,6 +1,6 @@
 #include "disassemblerwidgetprivate.h"
 
-DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _printer(nullptr), _disassembler(nullptr), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
+DisassemblerWidgetPrivate::DisassemblerWidgetPrivate(QScrollArea *scrollarea, QScrollBar *vscrollbar, QWidget *parent): QWidget(parent), _scrollarea(scrollarea), _vscrollbar(vscrollbar), _printer(nullptr), _disassembler(nullptr), _listing(nullptr), _selectedblock(nullptr), _selectedindex(-1), _visiblelines(0), _clicked(false), _currentsegment(nullptr), _currentfunction(nullptr)
 {
     this->_charwidth = this->_charheight = 0;
 
@@ -35,17 +35,14 @@ void DisassemblerWidgetPrivate::setDisassembler(DisassemblerDefinition *disassem
     if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
     {
         qint64 idx = this->_listing->indexOf(this->_listing->entryPoints().first());
-        this->setCurrentIndex(idx, false);
+        this->setCurrentIndex(idx);
     }
 }
 
-void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
+void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx)
 {
     if(idx == this->_selectedindex)
         return;
-
-    if(savehistory)
-        this->pushBack(this->_selectedindex); /* Save Previous Position */
 
     if(idx < 0)
         idx = 0;
@@ -57,10 +54,7 @@ void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx, bool savehistory)
     this->_selectedblock = blocks[idx];
 
     if(this->_disassembler && this->_listing)
-    {
         this->ensureVisible(idx);
-        this->update();
-    }
 }
 
 void DisassemblerWidgetPrivate::setAddressForeColor(const QColor &c)
@@ -84,7 +78,10 @@ void DisassemblerWidgetPrivate::jumpTo(Block *block)
     qint64 idx = this->_listing->indexOf(block->startAddress(), block->blockType());
 
     if(idx != -1)
+    {
+        this->pushBack(this->_selectedindex); /* Save Previous Position */
         this->setCurrentIndex(idx);
+    }
 }
 
 void DisassemblerWidgetPrivate::jumpTo(const DataValue& address)
@@ -92,7 +89,10 @@ void DisassemblerWidgetPrivate::jumpTo(const DataValue& address)
     qint64 idx = this->_listing->indexOf(address);
 
     if(idx != -1)
+    {
+        this->pushBack(this->_selectedindex); /* Save Previous Position */
         this->setCurrentIndex(idx);
+    }
 }
 
 void DisassemblerWidgetPrivate::clearNavigationHistory()
@@ -110,7 +110,7 @@ void DisassemblerWidgetPrivate::back()
         return;
 
     this->pushForward(this->_selectedindex);
-    this->setCurrentIndex(this->popBack(), false);
+    this->setCurrentIndex(this->popBack());
 }
 
 void DisassemblerWidgetPrivate::forward()
@@ -119,7 +119,7 @@ void DisassemblerWidgetPrivate::forward()
         return;
 
     this->pushBack(this->_selectedindex);
-    this->setCurrentIndex(this->popForward(), false);
+    this->setCurrentIndex(this->popForward());
 }
 
 void DisassemblerWidgetPrivate::save(const QString &filename)
@@ -350,14 +350,14 @@ void DisassemblerWidgetPrivate::adjust()
 
     if(this->_disassembler && this->_listing)
     {
-        qint64 vislines = this->height() / this->_charheight;
+        this->_visiblelines = this->height() / this->_charheight;
 
         // Setup Vertical ScrollBar
-        if(this->_listing->length() > vislines)
+        if(this->_listing->length() > this->_visiblelines)
         {
-            this->_vscrollbar->setRange(0, (this->_listing->length() - vislines) + 1);
+            this->_vscrollbar->setRange(0, (this->_listing->length() - this->_visiblelines) + 1);
             this->_vscrollbar->setSingleStep(1);
-            this->_vscrollbar->setPageStep(vislines);
+            this->_vscrollbar->setPageStep(this->_visiblelines);
             this->_vscrollbar->show();
         }
         else
@@ -422,11 +422,14 @@ void DisassemblerWidgetPrivate::ensureVisible(qint64 idx)
     else if(idx >= this->_listing->length())
         idx = this->_listing->length() - 1;
 
-    qint64 vislines = this->height() / this->_charheight;
     qint64 slidepos = static_cast<qint64>(this->_vscrollbar->sliderPosition());
 
-    if((idx < slidepos) || (idx > (slidepos + vislines)))
-        this->_vscrollbar->setValue(qMax(idx - (vislines / 2), qint64(0)));
+    if(idx < slidepos)
+        this->_vscrollbar->setValue(idx);
+    else if(idx > (slidepos + this->_visiblelines))
+        this->_vscrollbar->setValue(idx - 1);
+    else
+        this->update();
 }
 
 void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
@@ -481,9 +484,7 @@ void DisassemblerWidgetPrivate::wheelEvent(QWheelEvent *e)
             else if(pos > this->_listing->length())
                 pos = this->_listing->length() - 1;
 
-            this->_vscrollbar->setSliderPosition(pos);
-            this->update();
-
+            this->_vscrollbar->setValue(pos);
             e->accept();
         }
     }

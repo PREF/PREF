@@ -18,7 +18,7 @@ class DisassemblerWidgetPrivate: public QWidget
     public:
         explicit DisassemblerWidgetPrivate(QScrollArea* scrollarea, QScrollBar* vscrollbar, QWidget *parent = 0);
         qint64 currentIndex() const;
-        void setCurrentIndex(qint64 idx, bool savehistory = true);
+        void setCurrentIndex(qint64 idx);
         Block* selectedBlock() const;
         void setDisassembler(DisassemblerDefinition* disassembler);
         void setAddressForeColor(const QColor& c);
@@ -83,6 +83,7 @@ class DisassemblerWidgetPrivate: public QWidget
         int _charwidth;
         int _charheight;
         qint64 _selectedindex;
+        qint64 _visiblelines;
         bool _clicked;
         QStack<qint64> _backstack;
         QStack<qint64> _forwardstack;
