@@ -103,19 +103,15 @@ void DisassemblerView::createListingMenu()
     this->_actremovebookmark = this->_listingmenu->addAction(QIcon(":/action_icons/res/bookmark.png"), "Remove Bookmark");
     this->_acthexdump = this->_listingmenu->addAction(QIcon(":/misc_icons/res/hex.png"), "Hex Dump");
     this->_listingmenu->addSeparator();
-
-    QMenu* copymenu = this->_listingmenu->addMenu(QIcon(":/action_icons/res/copy.png"), "Copy");
-    this->_actcopyline = copymenu->addAction("Line");
-    this->_actcopyaddress = copymenu->addAction("Address");
-    this->_actcopylisting = copymenu->addAction("Listing");
+    this->_actcopy = this->_listingmenu->addAction("Copy");
+    this->_actcopyaddress = this->_listingmenu->addAction("Copy Address");
 
     connect(this->_actcrossreferences, SIGNAL(triggered()), this, SLOT(onListingMenuCrossReferencesTriggered()));
     connect(this->_acthexdump, SIGNAL(triggered()), this, SLOT(onListingMenuHexDumpTriggered()));
     connect(this->_actaddbookmark, SIGNAL(triggered()), this, SLOT(onListingMenuAddBookmarkTriggered()));
     connect(this->_actremovebookmark, SIGNAL(triggered()), this, SLOT(onListingMenuRemoveBookmarkTriggered()));
-    connect(this->_actcopyline, SIGNAL(triggered()), this, SLOT(copyLine()));
-    connect(this->_actcopyaddress, SIGNAL(triggered()), this, SLOT(copyAddress()));
-    connect(this->_actcopylisting, SIGNAL(triggered()), this, SLOT(copyListing()));
+    connect(this->_actcopy, SIGNAL(triggered()), ui->disassemblerWidget, SLOT(copy()));
+    connect(this->_actcopyaddress, SIGNAL(triggered()), ui->disassemblerWidget, SLOT(copyAddress()));
 }
 
 void DisassemblerView::createFunctionsMenu()
@@ -342,54 +338,6 @@ void DisassemblerView::gotoFunction()
 
     if(selectionmodel->hasSelection())
         ui->disassemblerWidget->jumpTo(reinterpret_cast<Function*>(selectionmodel->selectedIndexes()[0].internalPointer()));
-}
-
-void DisassemblerView::copyLine()
-{
-    if(!ui->disassemblerWidget->selectedBlock())
-        return;
-
-    Block* b = ui->disassemblerWidget->selectedBlock();
-    QClipboard* clipboard = qApp->clipboard();
-    QString listing;
-
-    if(b->blockType() == Block::InstructionBlock)
-        listing = this->_disassembler->emitInstruction(qobject_cast<Instruction*>(b));
-    else if(b->blockType() == Block::FunctionBlock)
-        listing = QString("function %1").arg(this->_listing->symbolTable()->name(b->startAddress()));
-    else if(b->blockType() == Block::SegmentBlock)
-        listing = QString("segment %1").arg(this->_listing->findSegment(b)->name());
-    else if(b->blockType() == Block::LabelBlock)
-        listing = QString("%1:").arg(this->_listing->symbolTable()->name(b->startAddress()));
-
-    clipboard->setText(QString("%1 %2").arg(b->startAddress().toString(16), listing));
-}
-
-void DisassemblerView::copyAddress()
-{
-    if(!ui->disassemblerWidget->selectedBlock())
-        return;
-
-    QClipboard* clipboard = qApp->clipboard();
-        clipboard->setText(ui->disassemblerWidget->selectedBlock()->startAddress().toString(16));
-}
-
-void DisassemblerView::copyListing()
-{
-    if(!ui->disassemblerWidget->selectedBlock())
-        return;
-
-    QClipboard* clipboard = qApp->clipboard();
-    Block* b = ui->disassemblerWidget->selectedBlock();
-
-    if(b->blockType() == Block::InstructionBlock)
-        clipboard->setText(this->_disassembler->emitInstruction(qobject_cast<Instruction*>(b)));
-    else if(b->blockType() == Block::FunctionBlock)
-        clipboard->setText(QString("function %1").arg(this->_listing->symbolTable()->name(b->startAddress())));
-    else if(b->blockType() == Block::SegmentBlock)
-        clipboard->setText(QString("segment %1").arg(this->_listing->findSegment(b)->name()));
-    else if(b->blockType() == Block::LabelBlock)
-        clipboard->setText(QString("%1:").arg(this->_listing->symbolTable()->name(b->startAddress())));
 }
 
 void DisassemblerView::copyVariable()

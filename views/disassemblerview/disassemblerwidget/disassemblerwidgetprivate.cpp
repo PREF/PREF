@@ -104,6 +104,35 @@ void DisassemblerWidgetPrivate::clearNavigationHistory()
     emit forwardAvailable(false);
 }
 
+void DisassemblerWidgetPrivate::copy()
+{
+    if(!this->_disassembler)
+        return;
+
+    QString listing;
+    QClipboard* clipboard = qApp->clipboard();
+
+    if(this->_selectedblock->blockType() == Block::InstructionBlock)
+        listing = this->_disassembler->emitInstruction(qobject_cast<Instruction*>(this->_selectedblock));
+    else if(this->_selectedblock->blockType() == Block::FunctionBlock)
+        listing = this->emitFunction(qobject_cast<Function*>(this->_selectedblock));
+    else if(this->_selectedblock->blockType() == Block::SegmentBlock)
+        listing = this->emitSegment(qobject_cast<Segment*>(this->_selectedblock));
+    else if(this->_selectedblock->blockType() == Block::LabelBlock)
+        listing = this->emitLabel(qobject_cast<Label*>(this->_selectedblock));
+
+    clipboard->setText(QString("%1 %2").arg(this->_selectedblock->startAddress().toString(16), listing));
+}
+
+void DisassemblerWidgetPrivate::copyAddress()
+{
+    if(!this->_disassembler)
+        return;
+
+    QClipboard* clipboard = qApp->clipboard();
+    clipboard->setText(this->_selectedblock->startAddress().toString(16));
+}
+
 void DisassemblerWidgetPrivate::back()
 {
     if(this->_backstack.isEmpty())

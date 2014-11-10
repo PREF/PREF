@@ -23,12 +23,15 @@ class DisassemblerWidget : public QFrame
         qint64 currentIndex() const;
         Block* selectedBlock() const;
 
+
     public slots:
         void setCurrentIndex(int idx);
         void jumpTo(Block* block);
         void jumpTo(const PrefSDK::DataValue &address);
         void save(const QString& filename);
         void clearNavigationHistory();
+        void copy();
+        void copyAddress();
         void back();
         void forward();
 

@@ -76,6 +76,16 @@ void DisassemblerWidget::clearNavigationHistory()
     this->_disasmwidget_p->clearNavigationHistory();
 }
 
+void DisassemblerWidget::copy()
+{
+    this->_disasmwidget_p->copy();
+}
+
+void DisassemblerWidget::copyAddress()
+{
+    this->_disasmwidget_p->copyAddress();
+}
+
 void DisassemblerWidget::back()
 {
     this->_disasmwidget_p->back();

@@ -73,9 +73,6 @@ class DisassemblerView : public AbstractView
         void showSegments();
         void showBookmarks();
         void gotoFunction();
-        void copyLine();
-        void copyAddress();
-        void copyListing();
         void copyVariable();
         void copyVariableAddress();
         void copyVariableName();
@@ -110,9 +107,8 @@ class DisassemblerView : public AbstractView
         QAction* _actcrossreferences;
         QAction* _actjumptoaddress;
         QAction* _acthexdump;
-        QAction* _actcopyline;
+        QAction* _actcopy;
         QAction* _actcopyaddress;
-        QAction* _actcopylisting;
 };
 
 #endif // DISASSEMBLERVIEW_H

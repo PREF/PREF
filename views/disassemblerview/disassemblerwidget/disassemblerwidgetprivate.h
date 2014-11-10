@@ -27,6 +27,8 @@ class DisassemblerWidgetPrivate: public QWidget
         void jumpTo(Block* block);
         void jumpTo(const DataValue &address);
         void clearNavigationHistory();
+        void copy();
+        void copyAddress();
         void back();
         void forward();
         void save(const QString& filename);
