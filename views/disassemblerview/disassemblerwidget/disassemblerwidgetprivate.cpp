@@ -497,6 +497,8 @@ void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
             this->back();
         else if(e->key() == Qt::Key_Right)
             this->forward();
+        else if(e->key() == Qt::Key_C)
+            this->copy();
         else if(e->key() == Qt::Key_G)
             emit jumpToRequested();
     }
