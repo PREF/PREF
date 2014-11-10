@@ -106,6 +106,8 @@ void DisassemblerView::createListingMenu()
     this->_actcopy = this->_listingmenu->addAction("Copy");
     this->_actcopyaddress = this->_listingmenu->addAction("Copy Address");
 
+    this->_acthexdump->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_H));
+
     connect(this->_actcrossreferences, SIGNAL(triggered()), this, SLOT(onListingMenuCrossReferencesTriggered()));
     connect(this->_acthexdump, SIGNAL(triggered()), this, SLOT(onListingMenuHexDumpTriggered()));
     connect(this->_actaddbookmark, SIGNAL(triggered()), this, SLOT(onListingMenuAddBookmarkTriggered()));
