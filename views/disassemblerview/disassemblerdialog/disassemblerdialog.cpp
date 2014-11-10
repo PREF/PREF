@@ -13,16 +13,6 @@ DisassemblerDialog::DisassemblerDialog(QHexEditData *hexeditdata, QWidget *paren
     ui->disassemblerTable->resizeColumnToContents(0);
 }
 
-bool DisassemblerDialog::elaborateInstructions() const
-{
-    return ui->cbElaborateInstructions->isChecked();
-}
-
-bool DisassemblerDialog::analyzeListing() const
-{
-    return ui->cbElaborateInstructions->isChecked() && ui->cbAnalyzeListing->isChecked();
-}
-
 bool DisassemblerDialog::hasLoaders() const
 {
     return this->_disassemblerlistmodel->rowCount() > 0;
@@ -52,9 +42,4 @@ void DisassemblerDialog::on_disassemblerTable_doubleClicked(const QModelIndex&)
 void DisassemblerDialog::on_disassemblerTable_clicked(const QModelIndex &index)
 {
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(index.isValid());
-}
-
-void DisassemblerDialog::on_cbElaborateInstructions_stateChanged(int state)
-{
-    ui->cbAnalyzeListing->setEnabled(((state == Qt::Checked) ? true : false));
 }

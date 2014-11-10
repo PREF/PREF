@@ -20,16 +20,13 @@ class DisassemblerDialog : public QDialog
 
     public:
         explicit DisassemblerDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
-        bool elaborateInstructions() const;
-        bool analyzeListing() const;
-        bool hasLoaders() const;
         DisassemblerDefinition *selectedDisassembler() const;
+        bool hasLoaders() const;
         ~DisassemblerDialog();
 
     private slots:
         void on_disassemblerTable_doubleClicked(const QModelIndex &);
         void on_disassemblerTable_clicked(const QModelIndex &index);
-        void on_cbElaborateInstructions_stateChanged(int state);
 
     private:
         Ui::DisassemblerDialog *ui;

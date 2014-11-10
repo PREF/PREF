@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>462</width>
-    <height>297</height>
+    <width>450</width>
+    <height>238</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,60 +32,6 @@
       <bool>true</bool>
      </attribute>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QGroupBox" name="gbProcessorOptions">
-       <property name="title">
-        <string>Processor Options</string>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <item>
-         <widget class="QCheckBox" name="cbElaborateInstructions">
-          <property name="text">
-           <string>Elaborate Instructions</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="gbLoaderOptions">
-       <property name="title">
-        <string>Loader Options</string>
-       </property>
-       <property name="flat">
-        <bool>false</bool>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QCheckBox" name="cbAnalyzeListing">
-          <property name="text">
-           <string>Analyze Listing</string>
-          </property>
-          <property name="checked">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
