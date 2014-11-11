@@ -18,6 +18,38 @@ namespace PrefSDK
         public:
             enum ObjectOwnership { CppOwnership, LuaOwnership };
 
+            class LuaTable; /* Forward Declaration */
+
+            class LuaFunction
+            {
+                private:
+                    union StoredFunction { int RegistryIdx; lua_CFunction CFunction; };
+                    union SelfParameter { QObject* This; const QtLua::LuaTable* Self; };
+
+                public:
+                    LuaFunction();
+                    LuaFunction(lua_State* l, int idx, QObject* __this);
+                    LuaFunction(lua_State* l, int idx, const QtLua::LuaTable* __self);
+                    LuaFunction(const QtLua::LuaFunction& lf);
+                    ~LuaFunction();
+                    bool pushSelf(lua_State *l) const;
+                    void push(lua_State *l = nullptr) const;
+                    bool operator()(int nargs, int nresults = 0, bool threaded = false) const;
+                    QtLua::LuaFunction& operator=(const QtLua::LuaFunction& lf);
+                    bool isValid() const;
+                    lua_State* state() const;
+
+                private:
+                    void saveReference(lua_State* l, int idx);
+
+                private:
+                    lua_State* _state;
+                    bool _iscfunction;
+                    bool _isselftable;
+                    StoredFunction _storedfunc;
+                    SelfParameter _selfparameter;
+            };
+
             class LuaTable
             {
                 public:
@@ -27,10 +59,11 @@ namespace PrefSDK
                     virtual ~LuaTable();
                     QtLua::LuaTable& operator=(const QtLua::LuaTable& tc);
                     void push(lua_State* l = nullptr) const;
-                    void getField(const QString& name) const;
+                    void getField(const QString& name, int expectedtype) const;
                     bool isValid() const;
 
                 public: /* Useful Interface */
+                    QtLua::LuaFunction getFunction(const QString& name);
                     QString getString(const QString& name) const;
                     lua_Integer getInteger(const QString& name) const;
                     bool getBoolean(const QString& name) const;
@@ -38,29 +71,6 @@ namespace PrefSDK
                 private:
                     lua_State* _state;
                     int _registryidx;
-            };
-
-            class LuaFunction
-            {
-                private:
-                    union StoredFunction { int RegistryIdx; lua_CFunction CFunction; };
-
-                public:
-                    LuaFunction();
-                    LuaFunction(lua_State* l, int idx, QObject* __this);
-                    LuaFunction(const QtLua::LuaFunction& lf);
-                    ~LuaFunction();
-                    void push(lua_State *l = nullptr) const;
-                    bool operator()(int nargs, int nresults = 0, bool threaded = false) const;
-                    QtLua::LuaFunction& operator=(const QtLua::LuaFunction& lf);
-                    bool isValid() const;
-                    lua_State* state() const;
-
-                private:
-                    lua_State* _state;
-                    bool _iscfunction;
-                    StoredFunction _storedfunc;
-                    QObject* __this;
             };
 
         private:

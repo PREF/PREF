@@ -2,6 +2,143 @@
 
 namespace PrefSDK
 {
+    QtLua::LuaFunction::LuaFunction(): _state(nullptr), _isselftable(false)
+    {
+        this->_storedfunc.RegistryIdx = LUA_REFNIL;
+    }
+
+    QtLua::LuaFunction::LuaFunction(lua_State *l, int idx, QObject* __this): _state(l), _isselftable(false)
+    {
+        this->_selfparameter.This = __this;
+        this->saveReference(l, idx);
+    }
+
+    QtLua::LuaFunction::LuaFunction(lua_State *l, int idx, const LuaTable *__self): _state(l), _isselftable(true)
+    {
+        this->_selfparameter.Self = __self;
+        this->saveReference(l, idx);
+    }
+
+    QtLua::LuaFunction::LuaFunction(const QtLua::LuaFunction &lf)
+    {
+        *this = lf;
+    }
+
+    QtLua::LuaFunction::~LuaFunction()
+    {
+        if(!this->_iscfunction && (this->_storedfunc.RegistryIdx != LUA_REFNIL))
+            luaL_unref(this->_state, LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
+
+        this->_storedfunc.RegistryIdx = LUA_REFNIL;
+        this->_state = nullptr;
+        this->_selfparameter.This = nullptr;
+    }
+
+    bool QtLua::LuaFunction::pushSelf(lua_State *l) const
+    {
+        if(this->_isselftable)
+        {
+            this->_selfparameter.Self->push(l);
+            return true;
+        }
+        else
+        {
+            QtLua::pushObject(l, this->_selfparameter.This);
+            return true;
+        }
+
+        return false;
+    }
+
+    void QtLua::LuaFunction::push(lua_State* l) const
+    {
+        if(this->_iscfunction)
+            lua_pushcfunction((!l ? this->_state: l), this->_storedfunc.CFunction);
+        else if(this->_storedfunc.RegistryIdx != LUA_REFNIL)
+            lua_rawgeti((!l ? this->_state : l), LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
+    }
+
+    bool QtLua::LuaFunction::operator()(int nargs, int nresults, bool threaded) const
+    {
+        bool err = false;
+        lua_State* l = (threaded ? lua_newthread(this->_state) : this->_state);
+
+        if(threaded)
+        {
+            lua_insert(this->_state, 1); /* Move Thread to Bottom of the Stack */
+            lua_xmove(this->_state, l, nargs); /* Copy Arguments */
+        }
+
+        if(this->pushSelf(l)) /* Push self, if any */
+        {
+            lua_insert(l, 1); /* Move to Bottom */
+            nargs++;
+        }
+
+        this->push(l);
+        lua_insert(l, 1); /* Move to Bottom */
+
+        if(threaded)
+        {
+            err = lua_resume(l, nargs) != 0;
+
+            if(err)
+            {
+                lua_xmove(l, this->_state, 1); /* Copy Error  */
+                lua_pop(l, nargs + nresults);  /* Clear Stack */
+            }
+
+            if(nresults)
+                lua_xmove(l, this->_state, nresults); /* Copy Results */
+
+            lua_remove(this->_state, 1); /* Pop thread from stack */
+        }
+        else
+            err = lua_pcall(this->_state, nargs, nresults, 0) != 0;
+
+        return err;
+    }
+
+    QtLua::LuaFunction &QtLua::QtLua::LuaFunction::operator=(const QtLua::QtLua::LuaFunction &lf)
+    {
+        this->_state = lf._state;
+        this->_iscfunction = lf._iscfunction;
+        this->_selfparameter = lf._selfparameter;
+
+        if(lf._iscfunction)
+            this->_storedfunc.CFunction = lf._storedfunc.CFunction;
+        else if(lf._storedfunc.RegistryIdx != LUA_REFNIL)
+        {
+            lf.push();
+            this->_storedfunc.RegistryIdx = luaL_ref(lf._state, LUA_REGISTRYINDEX);
+        }
+
+        return *this;
+    }
+
+    bool QtLua::LuaFunction::isValid() const
+    {
+        return this->_storedfunc.RegistryIdx != LUA_REFNIL;
+    }
+
+    lua_State *QtLua::LuaFunction::state() const
+    {
+        return this->_state;
+    }
+
+    void QtLua::LuaFunction::saveReference(lua_State *l, int idx)
+    {
+        this->_iscfunction = lua_iscfunction(l, idx);
+
+        if(this->_iscfunction)
+            this->_storedfunc.CFunction = lua_tocfunction(l, idx);
+        else
+        {
+            lua_pushvalue(l, idx);
+            this->_storedfunc.RegistryIdx = luaL_ref(l, LUA_REGISTRYINDEX);
+        }
+    }
+
     QtLua::LuaTable::LuaTable(): _state(nullptr), _registryidx(LUA_REFNIL)
     {
 
@@ -49,24 +186,35 @@ namespace PrefSDK
         return this->_registryidx != LUA_REFNIL;
     }
 
-    void QtLua::LuaTable::getField(const QString &name) const
+    void QtLua::LuaTable::getField(const QString &name, int expectedtype) const
     {
         this->push();
         lua_getfield(this->_state, -1, name.toUtf8().constData());
+        int fieldtype = lua_type(this->_state, -1);
 
-        if(lua_isnoneornil(this->_state, -1))
+        if(fieldtype != expectedtype)
         {
             lua_pop(this->_state, 1);
-            throw PrefException(QString("LuaTable::getField(): Cannot find %1 field").arg(name));
+            throw PrefException(QString("LuaTable::getField(): Expected '%1' type for '%2' field, '%3' given").arg(QString::fromUtf8(lua_typename(this->_state, expectedtype)),
+                                                                                                                   name,
+                                                                                                                   QString::fromUtf8(lua_typename(this->_state, fieldtype))));
             return;
         }
 
         lua_remove(this->_state, -2); /* Pop Table From Stack */
     }
 
+    QtLua::LuaFunction QtLua::LuaTable::getFunction(const QString &name)
+    {
+        this->getField(name, LUA_TFUNCTION);
+        QtLua::LuaFunction lf(this->_state, -1, this);
+        lua_pop(this->_state, 1);
+        return lf;
+    }
+
     QString QtLua::LuaTable::getString(const QString &name) const
     {
-        this->getField(name);
+        this->getField(name, LUA_TSTRING);
         QString s = QString::fromUtf8(lua_tostring(this->_state, -1));
         lua_pop(this->_state, 1);
         return s;
@@ -74,7 +222,7 @@ namespace PrefSDK
 
     lua_Integer QtLua::LuaTable::getInteger(const QString &name) const
     {
-        this->getField(name);
+        this->getField(name, LUA_TNUMBER);
         lua_Integer i = lua_tointeger(this->_state, -1);
         lua_pop(this->_state, 1);
         return i;
@@ -82,120 +230,10 @@ namespace PrefSDK
 
     bool QtLua::LuaTable::getBoolean(const QString &name) const
     {
-        this->getField(name);
+        this->getField(name, LUA_TBOOLEAN);
         bool b = lua_toboolean(this->_state, -1) == true;
         lua_pop(this->_state, 1);
         return b;
-    }
-
-    QtLua::LuaFunction::LuaFunction(): _state(nullptr), __this(nullptr)
-    {
-        this->_storedfunc.RegistryIdx = LUA_REFNIL;
-    }
-
-    QtLua::LuaFunction::LuaFunction(lua_State *l, int idx, QObject *__this): _state(l), __this(__this)
-    {
-        this->_iscfunction = lua_iscfunction(l, idx);
-
-        if(this->_iscfunction)
-            this->_storedfunc.CFunction = lua_tocfunction(l, idx);
-        else
-        {
-            lua_pushvalue(l, idx);
-            this->_storedfunc.RegistryIdx = luaL_ref(l, LUA_REGISTRYINDEX);
-        }
-    }
-
-    QtLua::LuaFunction::LuaFunction(const QtLua::LuaFunction &lf)
-    {
-        *this = lf;
-    }
-
-    QtLua::LuaFunction::~LuaFunction()
-    {
-        if(!this->_iscfunction && (this->_storedfunc.RegistryIdx != LUA_REFNIL))
-            luaL_unref(this->_state, LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
-
-        this->_storedfunc.RegistryIdx = LUA_REFNIL;
-        this->_state = nullptr;
-        this->__this = nullptr;
-    }
-
-    void QtLua::LuaFunction::push(lua_State* l) const
-    {
-        if(this->_iscfunction)
-            lua_pushcfunction((!l ? this->_state: l), this->_storedfunc.CFunction);
-        else if(this->_storedfunc.RegistryIdx != LUA_REFNIL)
-            lua_rawgeti((!l ? this->_state : l), LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
-    }
-
-    bool QtLua::LuaFunction::operator()(int nargs, int nresults, bool threaded) const
-    {
-        bool err = false;
-        lua_State* l = (threaded ? lua_newthread(this->_state) : this->_state);
-
-        if(threaded)
-        {
-            lua_insert(this->_state, 1); /* Move Thread to Bottom of the Stack */
-            lua_xmove(this->_state, l, nargs); /* Copy Arguments */
-        }
-
-        if(this->__this) /* Push self, if any */
-        {
-            QtLua::pushObject(l, this->__this);
-            lua_insert(l, 1); /* Move to Bottom */
-            nargs++;
-        }
-
-        this->push(l);
-        lua_insert(l, 1); /* Move to Bottom */
-
-        if(threaded)
-        {
-            err = lua_resume(l, nargs) != 0;
-
-            if(err)
-            {
-                lua_xmove(l, this->_state, 1); /* Copy Error  */
-                lua_pop(l, nargs + nresults);  /* Clear Stack */
-            }
-
-            if(nresults)
-                lua_xmove(l, this->_state, nresults); /* Copy Results */
-
-            lua_remove(this->_state, 1); /* Pop thread from stack */
-        }
-        else
-            err = lua_pcall(this->_state, nargs, nresults, 0) != 0;
-
-        return err;
-    }
-
-    QtLua::LuaFunction &QtLua::QtLua::LuaFunction::operator=(const QtLua::QtLua::LuaFunction &lf)
-    {
-        this->_state = lf._state;
-        this->_iscfunction = lf._iscfunction;
-        this->__this = lf.__this;
-
-        if(lf._iscfunction)
-            this->_storedfunc.CFunction = lf._storedfunc.CFunction;
-        else if(lf._storedfunc.RegistryIdx != LUA_REFNIL)
-        {
-            lf.push();
-            this->_storedfunc.RegistryIdx = luaL_ref(lf._state, LUA_REGISTRYINDEX);
-        }
-
-        return *this;
-    }
-
-    bool QtLua::LuaFunction::isValid() const
-    {
-        return this->_storedfunc.RegistryIdx != LUA_REFNIL;
-    }
-
-    lua_State *QtLua::LuaFunction::state() const
-    {
-        return this->_state;
     }
 
     lua_State* QtLua::_state = nullptr;
