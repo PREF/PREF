@@ -2,55 +2,53 @@
 
 namespace PrefSDK
 {
-    ExporterDefinition::ExporterDefinition(QObject *parent): QObject(parent)
-    {
-    }
-
-    ExporterDefinition::ExporterDefinition(const QString &name, const QString &description, const QString &author, const QString &version, QObject *parent): QObject(parent), _name(name), _description(description), _author(author), _version(version)
+    ExporterDefinition::ExporterDefinition(const QtLua::LuaTable &exportertable, QObject *parent): QObject(parent), _exportertable(exportertable)
     {
 
     }
 
     QString ExporterDefinition::id()
     {
-        return QString(QCryptographicHash::hash(this->_name.toUpper().toUtf8(), QCryptographicHash::Md5));
+        return QString(QCryptographicHash::hash(this->name().toUpper().toUtf8(), QCryptographicHash::Md5));
     }
 
-    const QString &ExporterDefinition::name() const
+    QString ExporterDefinition::name() const
     {
-        return this->_name;
+        return this->_exportertable.getString("name");
     }
 
-    const QString &ExporterDefinition::description() const
+    QString ExporterDefinition::description() const
     {
-        return this->_description;
+        return this->_exportertable.getString("description");
     }
 
-    const QString &ExporterDefinition::author() const
+    QString ExporterDefinition::author() const
     {
-        return this->_author;
+        return this->_exportertable.getString("author");
     }
 
-    const QString &ExporterDefinition::version() const
+    QString ExporterDefinition::version() const
     {
-        return this->_version;
+        return this->_exportertable.getString("version");
     }
 
     void ExporterDefinition::callDump(QHexEditData *hexeditdatain, const QString& filename, qint64 startoffset, qint64 endoffset)
     {
-        if(!this->_dumpfunction.isValid())
+        if(!this->_exportertable.fieldExists("dump"))
             return;
 
-        lua_State* l = this->_dumpfunction.state();
-        QHexEditData* hexeditdataout = QHexEditData::fromFile(filename);
-        DataBuffer* databufferin = new DataBuffer(hexeditdatain);
-        DataBuffer* databufferout = new DataBuffer(hexeditdataout);
+        lua_State* l = this->_exportertable.instance();
+        QtLua::LuaFunction dumpfunc = this->_exportertable.getFunction("dump");
 
-        QtLua::pushObject(l, databufferin);
-        QtLua::pushObject(l, databufferout);
+        QHexEditData* hexeditdataout = QHexEditData::fromFile(filename);
+        DataBuffer databufferin(hexeditdatain);
+        DataBuffer databufferout(hexeditdataout);
+
+        QtLua::pushObject(l, &databufferin);
+        QtLua::pushObject(l, &databufferout);
         lua_pushinteger(l, startoffset);
         lua_pushinteger(l, endoffset);
-        bool err = this->_dumpfunction(4);
+        bool err = dumpfunc(4);
 
         if(err)
         {
@@ -58,38 +56,5 @@ namespace PrefSDK
             lua_pop(l, 1);
         }
 
-        databufferout->deleteLater();
-        databufferin->deleteLater();
         hexeditdataout->deleteLater();
-    }
-
-    const PrefSDK::QtLua::LuaFunction& ExporterDefinition::dump() const
-    {
-        return this->_dumpfunction;
-    }
-
-    void ExporterDefinition::setName(const QString &s)
-    {
-        this->_name = s;
-    }
-
-    void ExporterDefinition::setDescription(const QString &s)
-    {
-        this->_description = s;
-    }
-
-    void ExporterDefinition::setAuthor(const QString &s)
-    {
-        this->_author = s;
-    }
-
-    void ExporterDefinition::setVersion(const QString &s)
-    {
-        this->_version = s;
-    }
-
-    void ExporterDefinition::setDump(const PrefSDK::QtLua::LuaFunction &df)
-    {
-        this->_dumpfunction = df;
-    }
-}
+    }}

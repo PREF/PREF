@@ -131,7 +131,10 @@ void ExportDialog::on_tvExporters_clicked(const QModelIndex &index)
     if(index.isValid())
         this->_selexporter = ExporterList::instance()->exporter(index.row());
     else
-        this->_selexporter = new ExporterDefinition();
+    {
+        this->_selexporter = nullptr;
+        return;
+    }
 
     this->validateFields();
 }

@@ -264,12 +264,6 @@ namespace PrefSDK
     {
         int argc = lua_gettop(l);
 
-        if(!argc)
-        {
-            QtLua::pushObject(l, new ExporterDefinition());
-            return 1;
-        }
-
         if(argc != 4)
         {
             throw PrefException(QString("pref.exporter.create(): Expected 4 arguments not %1").arg(argc));
@@ -285,11 +279,17 @@ namespace PrefSDK
             }
         }
 
-        ExporterDefinition* ed = new ExporterDefinition(QString::fromUtf8(lua_tostring(l, 1)),
-                                                        QString::fromUtf8(lua_tostring(l, 2)),
-                                                        QString::fromUtf8(lua_tostring(l, 3)),
-                                                        QString::fromUtf8(lua_tostring(l, 4)));
-        QtLua::pushObject(l, ed);
+        lua_newtable(l);
+
+        lua_pushvalue(l, 1);
+        lua_setfield(l, -2, "name");
+        lua_pushvalue(l, 2);
+        lua_setfield(l, -2, "description");
+        lua_pushvalue(l, 3);
+        lua_setfield(l, -2, "author");
+        lua_pushvalue(l, 4);
+        lua_setfield(l, -2, "version");
+
         return 1;
     }
 

@@ -52,14 +52,14 @@ namespace PrefSDK
                     lua_pop(l, 1);
                 }
 
-                if(!QtLua::isQObject(l, -1))
+                if(lua_type(l, -1) != LUA_TTABLE)
                 {
-                    throw PrefException(QString("ExporterList::load(): Got '%1'' instead of exporter type").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
+                    throw PrefException(QString("ExporterList::load(): Got '%1'' instead of exporter table").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
                     lua_pop(l, 1);
                     continue;
                 }
 
-                ExporterDefinition* exporterdefinition = qobject_cast<ExporterDefinition*>(QtLua::toQObject(l, -1));
+                ExporterDefinition* exporterdefinition = new ExporterDefinition(QtLua::LuaTable(l, -1));
                 lua_pop(l, 1);
 
                 if(this->_exportermap.contains(exporterdefinition->id()))

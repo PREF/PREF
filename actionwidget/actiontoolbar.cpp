@@ -276,7 +276,7 @@ void ActionToolBar::showExportDialog()
     ExportDialog ed(this->_hexedit, this->topLevelWidget());
     int res = ed.exec();
 
-    if(res == ExportDialog::Accepted)
+    if((res == ExportDialog::Accepted) && ed.selectedExporter())
         ed.selectedExporter()->callDump(this->_hexeditdata, ed.fileName(), ed.startOffset(), ed.endOffset());
 }
 

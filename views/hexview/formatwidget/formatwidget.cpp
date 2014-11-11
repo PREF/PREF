@@ -102,7 +102,7 @@ void FormatWidget::exportData(FormatElement *formatelement)
     ed.setFixedRange(formatelement->offset(), formatelement->endOffset());
     int res = ed.exec();
 
-    if(res == ExportDialog::Accepted)
+    if((res == ExportDialog::Accepted) && ed.selectedExporter())
         ed.selectedExporter()->callDump(this->_hexedit->data(), ed.fileName(), ed.startOffset(), ed.endOffset());
 }
 
