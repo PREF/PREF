@@ -30,14 +30,14 @@ namespace PrefSDK
                     lua_pop(l, 1);
                 }
 
-                if(!QtLua::isQObject(l, -1))
+                if(lua_type(l, -1) != LUA_TTABLE)
                 {
-                    throw PrefException(QString("DisassemblerList::load(): Got '%1'' instead of loader type").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
+                    throw PrefException(QString("DisassemblerList::load(): Got '%1'' instead of disassembler table").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
                     lua_pop(l, 1);
                     continue;
                 }
 
-                DisassemblerDefinition* disassemblerdefinition = qobject_cast<DisassemblerDefinition*>(QtLua::toQObject(l, -1));
+                DisassemblerDefinition* disassemblerdefinition = new DisassemblerDefinition(QtLua::LuaTable(l, -1));
                 lua_pop(l, 1);
 
                 if(this->_disassemblermap.contains(disassemblerdefinition->id()))

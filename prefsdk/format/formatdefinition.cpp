@@ -2,88 +2,54 @@
 
 namespace PrefSDK
 {
-    FormatDefinition::FormatDefinition(QObject *parent): LogObject(parent)
-    {
-
-    }
-
-    FormatDefinition::FormatDefinition(const QString& name, const QString& category, const QString& author, const QString& version, QObject *parent): LogObject(parent), _name(name), _category(category), _author(author), _version(version)
+    FormatDefinition::FormatDefinition(const QtLua::LuaTable &formattable, QObject *parent): LogObject(parent), _formattable(formattable)
     {
 
     }
 
     QString FormatDefinition::id() const
     {
-        return QString(QCryptographicHash::hash(QString("%1%2").arg(this->_name.toUpper(), this->_category.toUpper()).toUtf8(), QCryptographicHash::Md5));
+        return QString(QCryptographicHash::hash(QString("%1%2").arg(this->name().toUpper(), this->category().toUpper()).toUtf8(), QCryptographicHash::Md5));
     }
 
     bool FormatDefinition::hasView() const
     {
-        return this->_viewfunc.isValid();
+        return this->_formattable.fieldExists("view");
     }
 
-    const QString &FormatDefinition::name() const
+    QString FormatDefinition::name() const
     {
-        return this->_name;
+        return this->_formattable.getString("name");
     }
 
-    const QString &FormatDefinition::category() const
+    QString FormatDefinition::category() const
     {
-        return this->_category;
+        return this->_formattable.getString("category");
     }
 
-    const QString &FormatDefinition::author() const
+    QString FormatDefinition::author() const
     {
-        return this->_author;
+        return this->_formattable.getString("author");
     }
 
-    const QString &FormatDefinition::version() const
+    QString FormatDefinition::version() const
     {
-        return this->_version;
-    }
-
-    const PrefSDK::QtLua::LuaFunction &FormatDefinition::validate() const
-    {
-        return this->_validatefunc;
-    }
-
-    const PrefSDK::QtLua::LuaFunction &FormatDefinition::parse() const
-    {
-        return this->_parsefunc;
-    }
-
-    const PrefSDK::QtLua::LuaFunction &FormatDefinition::view() const
-    {
-        return this->_viewfunc;
-    }
-
-    void FormatDefinition::setValidate(const PrefSDK::QtLua::LuaFunction &vf)
-    {
-        this->_validatefunc = vf;
-    }
-
-    void FormatDefinition::setParse(const PrefSDK::QtLua::LuaFunction &pf)
-    {
-        this->_parsefunc = pf;
-    }
-
-    void FormatDefinition::setView(const PrefSDK::QtLua::LuaFunction &vf)
-    {
-        this->_viewfunc = vf;
+        return this->_formattable.getString("version");
     }
 
     bool FormatDefinition::callValidate(QHexEditData *hexeditdata, Logger* logger, qint64 baseoffset, bool ignoreerror)
     {
         this->setLogger(logger);
 
-        if(!this->_validatefunc.isValid())
+        if(!this->_formattable.fieldExists("validate"))
             return true; /* If 'validate-procedure' is not set, the format doesn't require validation */
 
-        lua_State* l = LuaState::instance();
+        lua_State* l = this->_formattable.instance();
+        QtLua::LuaFunction validatefunc = this->_formattable.getFunction("validate");
         FormatValidator fv(hexeditdata, baseoffset);
 
         QtLua::pushObject(l, &fv);
-        bool err = this->_validatefunc(1);
+        bool err = validatefunc(1);
 
         if(err)
         {
@@ -99,11 +65,12 @@ namespace PrefSDK
 
     FormatTree *FormatDefinition::callParse(QHexEditData *hexeditdata, Logger* logger, qint64 baseoffset)
     {
-        lua_State* l = LuaState::instance();
+        lua_State* l = this->_formattable.instance();
+        QtLua::LuaFunction parsefunc = this->_formattable.getFunction("parse");
         FormatTree* formattree = new FormatTree(hexeditdata, logger, baseoffset);
 
-        QtLua::pushObject(LuaState::instance(), formattree);
-        bool err = this->_parsefunc(1, 0, true);
+        QtLua::pushObject(l, formattree);
+        bool err = parsefunc(1);
 
         if(err)
         {
@@ -119,14 +86,15 @@ namespace PrefSDK
 
     QWidget *FormatDefinition::callView(FormatTree *formattree)
     {
-        if(!this->_viewfunc.isValid())
+        if(!this->_formattable.fieldExists("view"))
             return nullptr;
 
         QWidget* w = nullptr;
-        lua_State* l = LuaState::instance();
+        lua_State* l = this->_formattable.instance();
+        QtLua::LuaFunction viewfunc = this->_formattable.getFunction("view");
 
         QtLua::pushObject(l, formattree);
-        bool err = this->_viewfunc(1, 1);
+        bool err = viewfunc(1, true);
         int t = lua_type(l, -1);
 
         if(err || (t != LUA_TUSERDATA))
@@ -143,25 +111,5 @@ namespace PrefSDK
 
         lua_pop(l, 1);
         return w;
-    }
-
-    void FormatDefinition::setName(const QString &s)
-    {
-        this->_name = s;
-    }
-
-    void FormatDefinition::setCategory(const QString &s)
-    {
-        this->_category = s;
-    }
-
-    void FormatDefinition::setAuthor(const QString &s)
-    {
-        this->_author = s;
-    }
-
-    void FormatDefinition::setVersion(const QString &s)
-    {
-        this->_version = s;
     }
 }

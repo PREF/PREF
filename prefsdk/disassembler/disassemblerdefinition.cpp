@@ -2,18 +2,19 @@
 
 namespace PrefSDK
 {
-    DisassemblerDefinition::DisassemblerDefinition(const QString &name, const QString &author, const QString &version, DataType::Type addresstype, FormatDefinition *formatdefinition, QObject *parent): LogObject(parent), _addresstype(addresstype), _listing(nullptr), _formattree(nullptr), _memorybuffer(nullptr), _formatdefinition(formatdefinition), _name(name), _author(author), _version(version)
+    DisassemblerDefinition::DisassemblerDefinition(const QtLua::LuaTable &disassemblertable, QObject *parent): LogObject(parent), _disassemblertable(disassemblertable), _listing(nullptr), _formattree(nullptr), _memorybuffer(nullptr)
     {
-        this->_formatdefinition->setParent(this);
-        this->_baseaddress = DataValue(addresstype);
+        this->_formatdefinition = new FormatDefinition(this->_disassemblertable.getTable("formatdefinition"), this);
+        this->_baseaddress = DataValue(this->addressType());
     }
 
     void DisassemblerDefinition::callDisassemble(QLabel* infolabel)
     {   
-        if(!this->_disassemblefunc.isValid())
+        if(!this->_disassemblertable.fieldExists("disassemble"))
             return;
 
-        lua_State* l = this->_disassemblefunc.state();
+        lua_State* l = this->_disassemblertable.instance();
+        QtLua::LuaFunction disassemblefunc = this->_disassemblertable.getFunction("disassemble");
 
         while(!this->_addrstack.isEmpty())
         {
@@ -33,7 +34,7 @@ namespace PrefSDK
                 QMetaObject::invokeMethod(infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, QString("Disassembling: %1").arg(address.toString(16))));
 
                 lua_pushinteger(l, address.compatibleValue<lua_Integer>());
-                bool err = this->_disassemblefunc(1, 1);
+                bool err = disassemblefunc(1, true);
 
                 if(err)
                 {
@@ -48,7 +49,7 @@ namespace PrefSDK
                     break;
                 }
 
-                address = DataValue::create(lua_tointeger(l, -1), this->_addresstype);
+                address = DataValue::create(lua_tointeger(l, -1), this->addressType());
                 lua_pop(l, 1);
             }
             while(!address.isZero());
@@ -57,14 +58,15 @@ namespace PrefSDK
 
     void DisassemblerDefinition::callOutput(ListingPrinter *printer, Instruction *instruction)
     {
-        if(!this->_outputfunc.isValid())
+        if(!this->_disassemblertable.fieldExists("output"))
             return;
 
-        lua_State* l = this->_outputfunc.state();
+        lua_State* l = this->_disassemblertable.instance();
+        QtLua::LuaFunction outputfunc = this->_disassemblertable.getFunction("output");
 
         QtLua::pushObject(l, printer);
         instruction->push();
-        bool err = this->_outputfunc(2);
+        bool err = outputfunc(2);
 
         if(err)
         {
@@ -81,7 +83,7 @@ namespace PrefSDK
 
     QString DisassemblerDefinition::emitInstruction(Instruction *instruction)
     {
-        ListingPrinter printer(this->_addresstype);
+        ListingPrinter printer(this->addressType());
 
         this->callOutput(&printer, instruction);
         return printer.printString();
@@ -91,19 +93,23 @@ namespace PrefSDK
     {
         bool b = this->validate(hexeditdata);
 
-        if(!b || !this->_mapfunc.isValid())
+        if(!b || !this->_disassemblertable.fieldExists("map"))
             return false;
 
-        lua_State* l = this->_mapfunc.state();
         this->_formattree = this->_formatdefinition->callParse(hexeditdata, this->_logger, 0);
 
         if(this->_formattree->isEmpty())
             return false;
 
+        this->_disassemblertable.bind(this);
+
+        lua_State* l = this->_disassemblertable.instance();
+        QtLua::LuaFunction mapfunc = this->_disassemblertable.getFunction("map");
+
         this->_baseaddress = this->callBaseAddress();
-        this->_listing = new DisassemblerListing(hexeditdata, this->_addresstype, this);
-        this->_memorybuffer = new MemoryBuffer(hexeditdata, this->_listing, this->_logger, this->_baseaddress, this->_addresstype, this);
-        bool err = this->_mapfunc(0);
+        this->_listing = new DisassemblerListing(hexeditdata, this->addressType(), this);
+        this->_memorybuffer = new MemoryBuffer(hexeditdata, this->_listing, this->_logger, this->_baseaddress, this->addressType(), this);
+        bool err = mapfunc();
 
         if(err)
         {
@@ -123,7 +129,7 @@ namespace PrefSDK
 
     void DisassemblerDefinition::enqueue(lua_Integer address)
     {
-        this->_addrstack.push(DataValue::create(address, this->_addresstype));
+        this->_addrstack.push(DataValue::create(address, this->addressType()));
     }
 
     lua_Integer DisassemblerDefinition::next(const QtLua::LuaTable &instructiontable)
@@ -134,7 +140,7 @@ namespace PrefSDK
     QString DisassemblerDefinition::hexdump(const QtLua::LuaTable &instructiontable)
     {
         QString dump;
-        Instruction instruction(instructiontable, this->_addresstype);
+        Instruction instruction(instructiontable, this->addressType());
         DataValue address = instruction.startAddress();
 
         while(address < instruction.endAddress())
@@ -152,11 +158,12 @@ namespace PrefSDK
 
     DataValue DisassemblerDefinition::callBaseAddress()
     {
-        if(!this->_baseaddressfunc.isValid())
+        if(!this->_disassemblertable.fieldExists("baseAddress"))
             return DataValue();
 
-        lua_State* l = this->_baseaddressfunc.state();
-        bool err = this->_baseaddressfunc(0, 1);
+        lua_State* l = this->_disassemblertable.instance();
+        QtLua::LuaFunction baseaddressfunc = this->_disassemblertable.getFunction("baseAddress");
+        bool err = baseaddressfunc(0, true);
 
         if(err)
         {
@@ -165,24 +172,9 @@ namespace PrefSDK
             return DataValue();
         }
 
-        DataValue baseaddress = DataValue::create(lua_tointeger(l, -1), this->_addresstype);
+        DataValue baseaddress = DataValue::create(lua_tointeger(l, -1), this->addressType());
         lua_pop(l, 1);
         return baseaddress;
-    }
-
-    const QtLua::LuaFunction &DisassemblerDefinition::map() const
-    {
-        return this->_mapfunc;
-    }
-
-    const QtLua::LuaFunction &DisassemblerDefinition::disassemble() const
-    {
-        return this->_disassemblefunc;
-    }
-
-    const QtLua::LuaFunction &DisassemblerDefinition::output() const
-    {
-        return this->_outputfunc;
     }
 
     FormatTree *DisassemblerDefinition::formatTree() const
@@ -200,68 +192,28 @@ namespace PrefSDK
         return this->_memorybuffer;
     }
 
-    void DisassemblerDefinition::setName(const QString &n)
-    {
-        this->_name = n;
-    }
-
-    void DisassemblerDefinition::setAuthor(const QString &a)
-    {
-        this->_author = a;
-    }
-
-    void DisassemblerDefinition::setVersion(const QString &v)
-    {
-        this->_version = v;
-    }
-
-    void DisassemblerDefinition::setBaseAddress(const PrefSDK::QtLua::LuaFunction &ba)
-    {
-        this->_baseaddressfunc = ba;
-    }
-
     QString DisassemblerDefinition::id() const
     {
-        return QString(QCryptographicHash::hash(QString("%1").arg(this->_name.toUpper()).toUtf8(), QCryptographicHash::Md5));
+        return QString(QCryptographicHash::hash(QString("%1").arg(this->name().toUpper()).toUtf8(), QCryptographicHash::Md5));
     }
 
-    const QString &DisassemblerDefinition::author() const
+    QString DisassemblerDefinition::name() const
     {
-        return this->_author;
+        return this->_disassemblertable.getString("name");
     }
 
-    const QString &DisassemblerDefinition::version() const
+    QString DisassemblerDefinition::author() const
     {
-        return this->_version;
+        return this->_disassemblertable.getString("author");
+    }
+
+    QString DisassemblerDefinition::version() const
+    {
+        return this->_disassemblertable.getString("version");
     }
 
     DataType::Type DisassemblerDefinition::addressType() const
     {
-        return this->_addresstype;
-    }
-
-    const PrefSDK::QtLua::LuaFunction &DisassemblerDefinition::baseAddress() const
-    {
-        return this->_baseaddressfunc;
-    }
-
-    const QString &DisassemblerDefinition::name() const
-    {
-        return this->_name;
-    }
-
-    void DisassemblerDefinition::setMap(const PrefSDK::QtLua::LuaFunction &mf)
-    {
-        this->_mapfunc = mf;
-    }
-
-    void DisassemblerDefinition::setDisassemble(const QtLua::LuaFunction &df)
-    {
-        this->_disassemblefunc = df;
-    }
-
-    void DisassemblerDefinition::setOutput(const QtLua::LuaFunction &of)
-    {
-        this->_outputfunc = of;
+        return static_cast<DataType::Type>(this->_disassemblertable.getInteger("addresstype"));
     }
 }

@@ -69,12 +69,6 @@ namespace PrefSDK
     {
         int argc = lua_gettop(l);
 
-        if(!argc)
-        {
-            QtLua::pushObject(l, new FormatDefinition());
-            return 1;
-        }
-
         if(argc != 4)
         {
             throw PrefException(QString("pref.format.create(): Expected 4 arguments not %1").arg(argc));
@@ -90,11 +84,16 @@ namespace PrefSDK
             }
         }
 
-        FormatDefinition* fd = new FormatDefinition(QString::fromUtf8(lua_tostring(l, 1)),
-                                                    QString::fromUtf8(lua_tostring(l, 2)),
-                                                    QString::fromUtf8(lua_tostring(l, 3)),
-                                                    QString::fromUtf8(lua_tostring(l, 4)));
-        QtLua::pushObject(l, fd);
+        lua_newtable(l);
+
+        lua_pushvalue(l, 1);
+        lua_setfield(l, -2, "name");
+        lua_pushvalue(l, 2);
+        lua_setfield(l, -2, "category");
+        lua_pushvalue(l, 3);
+        lua_setfield(l, -2, "author");
+        lua_pushvalue(l, 4);
+        lua_setfield(l, -2, "version");
         return 1;
     }
 
@@ -179,18 +178,24 @@ namespace PrefSDK
             return 0;
         }
 
-        if(lua_type(l, 5) != LUA_TUSERDATA)
+        if(lua_type(l, 5) != LUA_TTABLE)
         {
-            throw PrefException("pref.disassembler.create(): Argument 5 must be an userdata");
+            throw PrefException("pref.disassembler.create(): Argument 5 must be a table");
             return 0;
         }
 
-        DisassemblerDefinition* dd = new DisassemblerDefinition(QString::fromUtf8(lua_tostring(l, 1)),
-                                                  QString::fromUtf8(lua_tostring(l, 2)),
-                                                  QString::fromUtf8(lua_tostring(l, 3)),
-                                                  static_cast<DataType::Type>(lua_tointeger(l, 4)),
-                                                  *(reinterpret_cast<FormatDefinition**>(lua_touserdata(l, 5))));
-        QtLua::pushObject(l, dd);
+        lua_newtable(l);
+
+        lua_pushvalue(l, 1);
+        lua_setfield(l, -2, "name");
+        lua_pushvalue(l, 2);
+        lua_setfield(l, -2, "author");
+        lua_pushvalue(l, 3);
+        lua_setfield(l, -2, "version");
+        lua_pushvalue(l, 4);
+        lua_setfield(l, -2, "addresstype");
+        lua_pushvalue(l, 5);
+        lua_setfield(l, -2, "formatdefinition");
         return 1;
     }
 

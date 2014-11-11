@@ -20,34 +20,19 @@ namespace PrefSDK
         Q_PROPERTY(PrefSDK::FormatTree* formattree READ formatTree)
         Q_PROPERTY(PrefSDK::DisassemblerListing* listing READ listing)
         Q_PROPERTY(PrefSDK::MemoryBuffer* memorybuffer READ memoryBuffer)
-        Q_PROPERTY(PrefSDK::QtLua::LuaFunction baseAddress READ baseAddress WRITE setBaseAddress)
-        Q_PROPERTY(PrefSDK::QtLua::LuaFunction map READ map WRITE setMap)
-        Q_PROPERTY(PrefSDK::QtLua::LuaFunction disassemble READ disassemble WRITE setDisassemble)
-        Q_PROPERTY(PrefSDK::QtLua::LuaFunction output READ output WRITE setOutput)
 
         public:
-            explicit DisassemblerDefinition(const QString& name, const QString& author, const QString& version, DataType::Type addresstype, FormatDefinition* formatdefinition, QObject *parent = 0);
+            explicit DisassemblerDefinition(const QtLua::LuaTable& disassemblertable, QObject *parent = 0);
 
         public:
             QString id() const;
             DataType::Type addressType() const;
-            const QString& name() const;
-            const QString& author() const;
-            const QString& version() const;
-            const PrefSDK::QtLua::LuaFunction& baseAddress() const;
-            const PrefSDK::QtLua::LuaFunction& map() const;
-            const PrefSDK::QtLua::LuaFunction& disassemble() const;
-            const PrefSDK::QtLua::LuaFunction& output() const;
+            QString name() const;
+            QString author() const;
+            QString version() const;
             PrefSDK::FormatTree* formatTree() const;
             PrefSDK::DisassemblerListing* listing() const;
             PrefSDK::MemoryBuffer* memoryBuffer() const;
-            void setName(const QString& n);
-            void setAuthor(const QString& a);
-            void setVersion(const QString& v);
-            void setBaseAddress(const PrefSDK::QtLua::LuaFunction& ba);
-            void setMap(const PrefSDK::QtLua::LuaFunction& mf);
-            void setDisassemble(const PrefSDK::QtLua::LuaFunction& df);
-            void setOutput(const PrefSDK::QtLua::LuaFunction& of);
             bool callMap(QHexEditData* hexeditdata);
             void callDisassemble(QLabel *infolabel);
             void callOutput(ListingPrinter* printer, Instruction* instruction);
@@ -66,19 +51,12 @@ namespace PrefSDK
 
         private:
             QStack<DataValue> _addrstack;
-            PrefSDK::QtLua::LuaFunction _baseaddressfunc;
-            PrefSDK::QtLua::LuaFunction _mapfunc;
-            PrefSDK::QtLua::LuaFunction _disassemblefunc;
-            PrefSDK::QtLua::LuaFunction _outputfunc;
-            DataType::Type _addresstype;
+            QtLua::LuaTable _disassemblertable;
             DisassemblerListing* _listing;
             FormatTree* _formattree;
             MemoryBuffer* _memorybuffer;
             FormatDefinition* _formatdefinition;
             DataValue _baseaddress;
-            QString _name;
-            QString _author;
-            QString _version;
     };
 }
 

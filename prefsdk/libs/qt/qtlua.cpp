@@ -58,45 +58,17 @@ namespace PrefSDK
             lua_rawgeti((!l ? this->_state : l), LUA_REGISTRYINDEX, this->_storedfunc.RegistryIdx);
     }
 
-    bool QtLua::LuaFunction::operator()(int nargs, int nresults, bool threaded) const
+    bool QtLua::LuaFunction::operator()(int nargs, bool hasresult) const
     {
-        bool err = false;
-        lua_State* l = (threaded ? lua_newthread(this->_state) : this->_state);
-
-        if(threaded)
+        if(this->pushSelf(this->_state)) /* Push self, if any */
         {
-            lua_insert(this->_state, 1); /* Move Thread to Bottom of the Stack */
-            lua_xmove(this->_state, l, nargs); /* Copy Arguments */
-        }
-
-        if(this->pushSelf(l)) /* Push self, if any */
-        {
-            lua_insert(l, 1); /* Move to Bottom */
+            lua_insert(this->_state, 1); /* Move to Bottom */
             nargs++;
         }
 
-        this->push(l);
-        lua_insert(l, 1); /* Move to Bottom */
-
-        if(threaded)
-        {
-            err = lua_resume(l, nargs) != 0;
-
-            if(err)
-            {
-                lua_xmove(l, this->_state, 1); /* Copy Error  */
-                lua_pop(l, nargs + nresults);  /* Clear Stack */
-            }
-
-            if(nresults)
-                lua_xmove(l, this->_state, nresults); /* Copy Results */
-
-            lua_remove(this->_state, 1); /* Pop thread from stack */
-        }
-        else
-            err = lua_pcall(this->_state, nargs, nresults, 0) != 0;
-
-        return err;
+        this->push(this->_state);
+        lua_insert(this->_state, 1); /* Move to Bottom */
+        return lua_pcall(this->_state, nargs, (hasresult ? 1 : 0), 0) != 0;
     }
 
     QtLua::LuaFunction &QtLua::QtLua::LuaFunction::operator=(const QtLua::QtLua::LuaFunction &lf)
@@ -181,9 +153,26 @@ namespace PrefSDK
         lua_rawgeti((!l ? this->_state : l), LUA_REGISTRYINDEX, this->_registryidx);
     }
 
+    void QtLua::LuaTable::bind(QObject *qobject)
+    {
+        this->push();
+
+        lua_newtable(this->_state);
+        QtLua::pushObject(this->_state, qobject);
+        lua_setfield(this->_state, -2, "__index");
+
+        lua_setmetatable(this->_state, -2); /* Set QObject as metatable */
+        lua_pop(this->_state, 1);
+    }
+
     bool QtLua::LuaTable::isValid() const
     {
         return this->_registryidx != LUA_REFNIL;
+    }
+
+    lua_State *QtLua::LuaTable::instance() const
+    {
+        return this->_state;
     }
 
     void QtLua::LuaTable::getField(const QString &name, int expectedtype) const
@@ -204,12 +193,38 @@ namespace PrefSDK
         lua_remove(this->_state, -2); /* Pop Table From Stack */
     }
 
-    QtLua::LuaFunction QtLua::LuaTable::getFunction(const QString &name)
+    void QtLua::LuaTable::setField(const QString &name, QObject *qobject)
+    {
+        this->push();
+        QtLua::pushObject(this->_state, qobject);
+        lua_setfield(this->_state, -2, name.toUtf8().constData());
+        lua_pop(this->_state, 1);
+    }
+
+    bool QtLua::LuaTable::fieldExists(const QString &name) const
+    {
+        this->push();
+        lua_getfield(this->_state, -1, name.toUtf8().constData());
+
+        bool exists = !lua_isnoneornil(this->_state, -1);
+        lua_pop(this->_state, 2);
+        return exists;
+    }
+
+    QtLua::LuaTable QtLua::LuaTable::getTable(const QString &name) const
+    {
+        this->getField(name, LUA_TTABLE);
+        QtLua::LuaTable t(this->_state, -1);
+        lua_pop(this->_state, 1);
+        return t;
+    }
+
+    QtLua::LuaFunction QtLua::LuaTable::getFunction(const QString &name) const
     {
         this->getField(name, LUA_TFUNCTION);
-        QtLua::LuaFunction lf(this->_state, -1, this);
+        QtLua::LuaFunction f(this->_state, -1, this);
         lua_pop(this->_state, 1);
-        return lf;
+        return f;
     }
 
     QString QtLua::LuaTable::getString(const QString &name) const
@@ -249,7 +264,7 @@ namespace PrefSDK
         QObject** pqobject = reinterpret_cast<QObject**>(lua_newuserdata(l, sizeof(QObject*)));
         *pqobject = obj;
 
-        QtLua::pushMetaTable(l, ownership);
+        QtLua::pushMetaTable(l, -1, ownership);
         lua_setmetatable(l, -2);
     }
 
@@ -379,12 +394,16 @@ namespace PrefSDK
         return false;
     }
 
-    void QtLua::pushMetaTable(lua_State *l, QtLua::ObjectOwnership ownership)
+    void QtLua::pushMetaTable(lua_State *l, int userdataidx, QtLua::ObjectOwnership ownership)
     {
         lua_newtable(l);
-        lua_pushcfunction(l, &QtLua::metaIndex);
+
+        lua_pushvalue(l, userdataidx - 1); /* Pass UserData as UpValue */
+        lua_pushcclosure(l, &QtLua::metaIndex, 1);
         lua_setfield(l, -2, "__index");
-        lua_pushcfunction(l, &QtLua::metaNewIndex);
+
+        lua_pushvalue(l, userdataidx - 1); /* Pass UserData as UpValue */
+        lua_pushcclosure(l, &QtLua::metaNewIndex, 1);
         lua_setfield(l, -2, "__newindex");
 
         if(ownership == QtLua::LuaOwnership)
@@ -397,7 +416,7 @@ namespace PrefSDK
     int QtLua::metaIndex(lua_State *l)
     {
         int residx = -1;
-        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, 1)));
+        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, lua_upvalueindex(1))));
         const QMetaObject* metaobj = qobject->metaObject();
 
         if(QtLua::checkMetaIndexOverride(l, qobject, metaobj))  /* Allow MetaTable override */
@@ -415,9 +434,10 @@ namespace PrefSDK
         {
             QMetaMethod metamethod = metaobj->method(residx);
 
+            lua_pushvalue(l, lua_upvalueindex(1));  /* Pass UserData as UpValue */
             lua_pushinteger(l, residx);
             lua_pushstring(l, metamethod.name().constData());
-            lua_pushcclosure(l, &QtLua::methodCall, 2);
+            lua_pushcclosure(l, &QtLua::methodCall, 3);
         }
         else if(QtLua::isProperty(metaobj, member, residx))
         {
@@ -473,7 +493,7 @@ namespace PrefSDK
 
     int QtLua::metaNewIndex(lua_State *l)
     {
-        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, 1)));
+        QObject* qobject = *(reinterpret_cast<QObject**>(lua_touserdata(l, lua_upvalueindex(1))));
         const QMetaObject* metaobj = qobject->metaObject();
 
         if(QtLua::checkMetaNewIndexOverride(l, qobject, metaobj))  /* Allow MetaTable override */
@@ -538,9 +558,9 @@ namespace PrefSDK
     int QtLua::methodCall(lua_State *l)
     {
         int argc = lua_gettop(l);
-        lua_Integer methodidx = lua_tointeger(l, lua_upvalueindex(1));
-        const char* methodname = lua_tostring(l, lua_upvalueindex(2));
-        QObject** self = reinterpret_cast<QObject**>(lua_touserdata(l, 1));
+        QObject** self = reinterpret_cast<QObject**>(lua_touserdata(l, lua_upvalueindex(1)));
+        lua_Integer methodidx = lua_tointeger(l, lua_upvalueindex(2));
+        const char* methodname = lua_tostring(l, lua_upvalueindex(3));
 
         if(!self)
         {

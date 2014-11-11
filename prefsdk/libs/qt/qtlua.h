@@ -34,7 +34,7 @@ namespace PrefSDK
                     ~LuaFunction();
                     bool pushSelf(lua_State *l) const;
                     void push(lua_State *l = nullptr) const;
-                    bool operator()(int nargs, int nresults = 0, bool threaded = false) const;
+                    bool operator()(int nargs = 0, bool hasresult = false) const;
                     QtLua::LuaFunction& operator=(const QtLua::LuaFunction& lf);
                     bool isValid() const;
                     lua_State* state() const;
@@ -59,11 +59,16 @@ namespace PrefSDK
                     virtual ~LuaTable();
                     QtLua::LuaTable& operator=(const QtLua::LuaTable& tc);
                     void push(lua_State* l = nullptr) const;
+                    void bind(QObject* qobject);
                     void getField(const QString& name, int expectedtype) const;
+                    void setField(const QString& name, QObject* qobject);
+                    bool fieldExists(const QString& name) const;
                     bool isValid() const;
+                    lua_State* instance() const;
 
                 public: /* Useful Interface */
-                    QtLua::LuaFunction getFunction(const QString& name);
+                    QtLua::LuaTable getTable(const QString& name) const;
+                    QtLua::LuaFunction getFunction(const QString& name) const;
                     QString getString(const QString& name) const;
                     lua_Integer getInteger(const QString& name) const;
                     bool getBoolean(const QString& name) const;
@@ -98,7 +103,7 @@ namespace PrefSDK
             static bool isProperty(const QMetaObject* metaobj, const QString& member, int &idx);
             static bool checkMetaIndexOverride(lua_State* l, QObject *qobject, const QMetaObject *metaobj);
             static bool checkMetaNewIndexOverride(lua_State* l, QObject *qobject, const QMetaObject *metaobj);
-            static void pushMetaTable(lua_State* l, QtLua::ObjectOwnership ownership);
+            static void pushMetaTable(lua_State* l, int userdataidx, QtLua::ObjectOwnership ownership);
 
         private:
             template<typename T> static int constructorT(lua_State* l)
@@ -128,6 +133,7 @@ namespace PrefSDK
             static int metaNewIndex(lua_State* l);
             static int metaGc(lua_State* l);
             static int methodCall(lua_State* l);
+            static int bindMetaIndex(lua_State* l);
 
         private:
             static lua_State* _state;

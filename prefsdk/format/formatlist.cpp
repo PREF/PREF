@@ -51,14 +51,14 @@ namespace PrefSDK
                     lua_pop(l, 1);
                 }
 
-                if(!QtLua::isQObject(l, -1))
+                if(lua_type(l, -1) != LUA_TTABLE)
                 {
-                    throw PrefException(QString("FormatList::load(): Got '%1'' instead of format type").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
+                    throw PrefException(QString("FormatList::load(): Got '%1'' instead of format table").arg(QString::fromUtf8(lua_typename(l, lua_type(l, -1)))));
                     lua_pop(l, 1);
                     continue;
                 }
 
-                FormatDefinition* formatdefinition = qobject_cast<FormatDefinition*>(QtLua::toQObject(l, -1));
+                FormatDefinition* formatdefinition = new FormatDefinition(QtLua::LuaTable(l, -1));
                 lua_pop(l, 1);
 
                 if(this->_formatmap.contains(formatdefinition->id()))
