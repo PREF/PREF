@@ -100,12 +100,12 @@ QString DebugDialog::stackDump()
 
         if(t == LUA_TTABLE)
         {
-            s.append(QString(": Size %1\n  Items:\n").arg(this->_stackmodel->tableLength(i)));
+            s.append(QString(": Size %1\n").arg(this->_stackmodel->tableLength(i)));
             lua_pushnil(this->_state);
 
             while(lua_next(this->_state, i))
             {
-                s.append(QString(" * %1 = %2\n").arg(this->_stackmodel->typeValue(-2), this->_stackmodel->typeValue(-1)));
+                s.append(QString("  > %1 = %2\n").arg(this->_stackmodel->typeValue(-2), this->_stackmodel->typeValue(-1)));
                 lua_pop(this->_state, 1);
             }
         }
