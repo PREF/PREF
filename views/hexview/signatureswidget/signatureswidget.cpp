@@ -5,7 +5,7 @@ SignaturesWidget::SignaturesWidget(QWidget *parent): WorkerTab(parent), ui(new U
 {
     ui->setupUi(this);
 
-    this->_signaturesmodel = new SignaturesModel();
+    this->_signaturesmodel = new SignaturesModel(ui->signaturesTree);
     ui->signaturesTree->setModel(this->_signaturesmodel);
 
     connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));

@@ -21,9 +21,14 @@ QHexEditData *FormatModel::data()
 
 void FormatModel::setFormatTree(FormatTree *formattree)
 {
+    FormatTree* oldformattree = this->_formattree;
+
     this->beginInsertRows(QModelIndex(), 0, formattree->structureCount());
     this->_formattree = formattree;
     this->endInsertRows();
+
+    if(oldformattree)
+        oldformattree->deleteLater();
 }
 
 void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType)

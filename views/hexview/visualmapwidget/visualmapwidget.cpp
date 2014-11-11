@@ -15,7 +15,7 @@ void VisualMapWidget::map(QHexEdit *hexedit)
     ui->binaryMap->setDisplayMode(BinaryMap::DotPlot);
     ui->binaryMap->setData(hexedit);
 
-    this->_visualmapmodel = new VisualMapModel(this);
+    this->_visualmapmodel = new VisualMapModel(ui->mapOptions);
     this->_visualmapdelegate = new VisualMapDelegate(hexedit->data(), this);
     ui->mapOptions->setModel(this->_visualmapmodel);
     ui->mapOptions->setItemDelegate(this->_visualmapdelegate);

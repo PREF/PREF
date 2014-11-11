@@ -17,7 +17,7 @@ void StringsWidget::scan(QHexEditData *hexeditdata)
         return;
 
     this->_hexeditdata = hexeditdata;
-    this->_stringsmodel = new StringsModel(hexeditdata);
+    this->_stringsmodel = new StringsModel(hexeditdata, ui->stringList);
     ui->stringList->setModel(this->_stringsmodel);
 
     connect(&this->_worker, SIGNAL(searchState(bool)), ui->leSearch, SLOT(setEnabled(bool)));

@@ -19,7 +19,7 @@ FormatWidget::~FormatWidget()
 void FormatWidget::setData(QHexEdit *hexedit)
 {
     this->_hexedit = hexedit;
-    this->_formatmodel = new FormatModel(this->_hexedit->data(), this);
+    this->_formatmodel = new FormatModel(this->_hexedit->data(), ui->tvFormat);
     ui->tvFormat->setModel(this->_formatmodel);
 
     connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));

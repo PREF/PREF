@@ -6,7 +6,7 @@ DataTypesWidget::DataTypesWidget(QWidget *parent): QWidget(parent), ui(new Ui::D
     ui->setupUi(this);
 
     this->_datatypesmodel = new DataTypesModel(this);
-    this->_datatypesdelegate = new DataTypesDelegate();
+    this->_datatypesdelegate = new DataTypesDelegate(this);
     this->_datatypesmenu = new DataTypesMenu(this);
 
     connect(this->_datatypesmenu, SIGNAL(endianChanged(QSysInfo::Endian)),this->_datatypesmodel, SLOT(setEndian(QSysInfo::Endian)));

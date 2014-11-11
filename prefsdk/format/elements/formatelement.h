@@ -29,7 +29,6 @@ namespace PrefSDK
         public:
             explicit FormatElement(QObject *parent = 0); /* Needed in QML */
             explicit FormatElement(quint64 offset, const QString& name, const QUuid &parentid, AbstractTree* formattree, QObject *parent = 0);
-            virtual ~FormatElement();
             virtual FormatElement::Type elementType() const;
             virtual quint64 size() const;
             virtual int indexOf(FormatElement*) const;

@@ -80,7 +80,7 @@ void ChartWidget::initNonAsciiChars()
 
 void ChartWidget::createListModel()
 {
-    QStandardItemModel* model = new QStandardItemModel(0, 3, this);
+    QStandardItemModel* model = new QStandardItemModel(0, 3, ui->lisOccurrence);
     model->setHorizontalHeaderLabels(QStringList() << "Char" << "Byte" << "Count" << "%");
     ui->lisOccurrence->setModel(model);
 

@@ -1,6 +1,6 @@
 #include "qnumberspinbox.h"
 
-QNumberSpinBox::QNumberSpinBox(QWidget *parent): QSpinBox(parent)
+QNumberSpinBox::QNumberSpinBox(QWidget *parent): QSpinBox(parent), _base(-1)
 {
     this->_binvalidator = new QRegExpValidator(this);
     this->_binvalidator->setRegExp(QRegExp(QString("[0-1]{1,255}")));

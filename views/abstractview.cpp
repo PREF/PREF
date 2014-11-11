@@ -2,7 +2,8 @@
 
 AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo), _hexeditdata(hexeditdata), _viewname(viewname)
 {
-
+    if(this->_hexeditdata)
+        this->_hexeditdata->setParent(this); /* Take Ownership */
 }
 
 AbstractView::~AbstractView()

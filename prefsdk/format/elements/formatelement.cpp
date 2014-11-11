@@ -15,11 +15,6 @@ namespace PrefSDK
         pool[this->_id] = this;
     }
 
-    FormatElement::~FormatElement()
-    {
-
-    }
-
     FormatElement::Type FormatElement::elementType() const
     {
         return FormatElement::InvalidType;
