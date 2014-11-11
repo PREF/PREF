@@ -6,6 +6,7 @@ namespace PrefSDK
     {
         this->_formatdefinition = new FormatDefinition(this->_disassemblertable.getTable("formatdefinition"), this);
         this->_baseaddress = DataValue(this->addressType());
+        this->_disassemblertable.bind(this);
     }
 
     void DisassemblerDefinition::callDisassemble(QLabel* infolabel)
@@ -100,8 +101,6 @@ namespace PrefSDK
 
         if(this->_formattree->isEmpty())
             return false;
-
-        this->_disassemblertable.bind(this);
 
         lua_State* l = this->_disassemblertable.instance();
         QtLua::LuaFunction mapfunc = this->_disassemblertable.getFunction("map");
