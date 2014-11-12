@@ -4,7 +4,7 @@ namespace PrefSDK
 {
     FormatDefinition::FormatDefinition(const QtLua::LuaTable &formattable, QObject *parent): LogObject(parent), _formattable(formattable)
     {
-
+        this->_formattable.bind(this);
     }
 
     QString FormatDefinition::id() const
