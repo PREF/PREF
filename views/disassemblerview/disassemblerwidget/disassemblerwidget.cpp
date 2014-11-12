@@ -26,6 +26,7 @@ DisassemblerWidget::DisassemblerWidget(QWidget *parent): QFrame(parent)
     /* Forward Signals */
     connect(this->_disasmwidget_p, SIGNAL(customContextMenuRequested(QPoint)), this, SIGNAL(customContextMenuRequested(QPoint)));
     connect(this->_disasmwidget_p, SIGNAL(jumpToRequested()), this, SIGNAL(jumpToRequested()));
+    connect(this->_disasmwidget_p, SIGNAL(renameRequested(Block*)), this, SIGNAL(renameRequested(Block*)));
     connect(this->_disasmwidget_p, SIGNAL(crossReferenceRequested(Block*)), this, SIGNAL(crossReferenceRequested(Block*)));
     connect(this->_disasmwidget_p, SIGNAL(backAvailable(bool)), this, SIGNAL(backAvailable(bool)));
     connect(this->_disasmwidget_p, SIGNAL(forwardAvailable(bool)), this, SIGNAL(forwardAvailable(bool)));

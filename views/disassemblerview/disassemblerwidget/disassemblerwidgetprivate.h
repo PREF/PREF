@@ -70,6 +70,7 @@ class DisassemblerWidgetPrivate: public QWidget
     signals:
         void jumpToRequested();
         void crossReferenceRequested(Block* block);
+        void renameRequested(Block* block);
         void backAvailable(bool);
         void forwardAvailable(bool);
 

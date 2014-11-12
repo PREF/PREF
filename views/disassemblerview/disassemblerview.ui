@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>960</width>
-    <height>575</height>
+    <width>956</width>
+    <height>571</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@
           <enum>Qt::Vertical</enum>
          </property>
          <widget class="QWidget" name="layoutWidget">
-          <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,0">
+          <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,0,0">
            <item>
             <widget class="DisassemblerWidget" name="disassemblerWidget" native="true">
              <property name="contextMenuPolicy">
@@ -70,6 +70,9 @@
            </item>
            <item>
             <widget class="BookmarkWidget" name="bookmarkWidget" native="true"/>
+           </item>
+           <item>
+            <widget class="RenameWidget" name="renameWidget" native="true"/>
            </item>
            <item>
             <widget class="GotoWidget" name="gotoWidget" native="true"/>
@@ -269,6 +272,12 @@
    <class>BookmarkWidget</class>
    <extends>QWidget</extends>
    <header>views/disassemblerview/bookmarkwidget/bookmarkwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>RenameWidget</class>
+   <extends>QWidget</extends>
+   <header>views/disassemblerview/renamewidget/renamewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

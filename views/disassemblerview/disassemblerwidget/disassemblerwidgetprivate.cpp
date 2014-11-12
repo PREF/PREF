@@ -502,8 +502,13 @@ void DisassemblerWidgetPrivate::keyPressEvent(QKeyEvent *e)
         else if(e->key() == Qt::Key_G)
             emit jumpToRequested();
     }
-    else if((e->modifiers() == Qt::NoModifier) && (e->key() == Qt::Key_X))
-        emit crossReferenceRequested(this->_selectedblock);
+    else if(e->modifiers() == Qt::NoModifier)
+    {
+        if(e->key() == Qt::Key_N)
+            emit renameRequested(this->_selectedblock);
+        else if(e->key() == Qt::Key_X)
+            emit crossReferenceRequested(this->_selectedblock);
+    }
 
     QWidget::keyPressEvent(e);
 }

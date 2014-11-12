@@ -52,8 +52,11 @@ DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinitio
     connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
     connect(this->_actbookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
     connect(ui->gotoWidget, SIGNAL(addressRequested(PrefSDK::DataValue)), this, SLOT(gotoAddress(PrefSDK::DataValue)));
+    connect(ui->bookmarkWidget, SIGNAL(saveBookmarkRequested(Block*,QString)), this, SLOT(onSaveBookmarkRequested(Block*,QString)));
+    connect(ui->renameWidget, SIGNAL(renameRequested(Block*,QString)), this, SLOT(onRenameSymbolRequested(Block*,QString)));
     connect(ui->disassemblerWidget, SIGNAL(backAvailable(bool)), this->_actback, SLOT(setEnabled(bool)));
     connect(ui->disassemblerWidget, SIGNAL(forwardAvailable(bool)), this->_actforward, SLOT(setEnabled(bool)));
+    connect(ui->disassemblerWidget, SIGNAL(renameRequested(Block*)), this, SLOT(renameBlock(Block*)));
     connect(ui->disassemblerWidget, SIGNAL(crossReferenceRequested(Block*)), this, SLOT(showCrossReference(Block*)));
     connect(ui->disassemblerWidget, SIGNAL(jumpToRequested()), ui->gotoWidget, SLOT(show()));
 }
@@ -99,9 +102,10 @@ void DisassemblerView::createListingMenu()
     connect(this->_listingmenu, SIGNAL(aboutToShow()), this, SLOT(onListingMenuAboutToShow()));
 
     this->_actcrossreferences = this->_listingmenu->addAction(QIcon(":/misc_icons/res/crossreference.png"), "Cross Refernces");
+    this->_actrename = this->_listingmenu->addAction(QIcon(":/action_icons/res/rename.png"), "Rename");
+    this->_acthexdump = this->_listingmenu->addAction(QIcon(":/misc_icons/res/hex.png"), "Hex Dump");
     this->_actaddbookmark = this->_listingmenu->addAction(QIcon(":/action_icons/res/bookmark.png"), "Add Bookmark");
     this->_actremovebookmark = this->_listingmenu->addAction(QIcon(":/action_icons/res/bookmark.png"), "Remove Bookmark");
-    this->_acthexdump = this->_listingmenu->addAction(QIcon(":/misc_icons/res/hex.png"), "Hex Dump");
     this->_listingmenu->addSeparator();
     this->_actcopy = this->_listingmenu->addAction("Copy");
     this->_actcopyaddress = this->_listingmenu->addAction("Copy Address");
@@ -109,6 +113,7 @@ void DisassemblerView::createListingMenu()
     this->_acthexdump->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_H));
 
     connect(this->_actcrossreferences, SIGNAL(triggered()), this, SLOT(onListingMenuCrossReferencesTriggered()));
+    connect(this->_actrename, SIGNAL(triggered()), this, SLOT(renameSelectedListingObject()));
     connect(this->_acthexdump, SIGNAL(triggered()), this, SLOT(onListingMenuHexDumpTriggered()));
     connect(this->_actaddbookmark, SIGNAL(triggered()), this, SLOT(onListingMenuAddBookmarkTriggered()));
     connect(this->_actremovebookmark, SIGNAL(triggered()), this, SLOT(onListingMenuRemoveBookmarkTriggered()));
@@ -119,9 +124,11 @@ void DisassemblerView::createListingMenu()
 void DisassemblerView::createFunctionsMenu()
 {
     this->_functionsmenu = new QMenu(this);
+    QAction* actrename = this->_functionsmenu->addAction(QIcon(":/action_icons/res/rename.png"), "Rename");
     QAction* actjump = this->_functionsmenu->addAction(QIcon(":/action_icons/res/goto.png"), "Jump To Address");
     QAction* actxrefs = this->_functionsmenu->addAction(QIcon(":/misc_icons/res/crossreference.png"), "Cross References");
 
+    connect(actrename, SIGNAL(triggered()), this, SLOT(renameSelectedFunction()));
     connect(actjump, SIGNAL(triggered()), this, SLOT(gotoFunction()));
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
 }
@@ -129,33 +136,29 @@ void DisassemblerView::createFunctionsMenu()
 void DisassemblerView::createVariablesMenu()
 {
     this->_variablesmenu = new QMenu(this);
-    QAction* copyvariable = this->_variablesmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy");
-    QMenu* copymenu = this->_variablesmenu->addMenu(QIcon(":/action_icons/res/copy.png"), "Copy Column...");
-    QAction* copyaddress = copymenu->addAction("Address");
-    QAction* copyname = copymenu->addAction("Name");
+    QAction* acycopyvariable = this->_variablesmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy");
+    QAction* actcopyname = this->_variablesmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy Name");
     this->_variablesmenu->addSeparator();
-    QAction* exportcsv = this->_variablesmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
+    QAction* actrename = this->_variablesmenu->addAction(QIcon(":/action_icons/res/rename.png"), "Rename");
+    QAction* actexportcsv = this->_variablesmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
 
-    connect(copyvariable, SIGNAL(triggered()), this, SLOT(copyVariable()));
-    connect(copyaddress, SIGNAL(triggered()), this, SLOT(copyVariableAddress()));
-    connect(copyname, SIGNAL(triggered()), this, SLOT(copyVariableName()));
-    connect(exportcsv, SIGNAL(triggered()), this, SLOT(exportVariables()));
+    connect(acycopyvariable, SIGNAL(triggered()), this, SLOT(copyVariable()));
+    connect(actcopyname, SIGNAL(triggered()), this, SLOT(copyVariableName()));
+    connect(actrename, SIGNAL(triggered()), this, SLOT(renameSelectedVariable()));
+    connect(actexportcsv, SIGNAL(triggered()), this, SLOT(exportVariables()));
 }
 
 void DisassemblerView::createStringsMenu()
 {
     this->_stringsmenu = new QMenu(this);
-    QAction* copystring = this->_stringsmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy");
-    QMenu* copymenu = this->_stringsmenu->addMenu(QIcon(":/action_icons/res/copy.png"), "Copy Column...");
-    QAction* copyaddress = copymenu->addAction("Address");
-    QAction* copystringval = copymenu->addAction("String");
+    QAction* actcopystring = this->_stringsmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy");
+    QAction* actcopystringonly = this->_stringsmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy String");
     this->_stringsmenu->addSeparator();
-    QAction* exportcsv = this->_stringsmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
+    QAction* actexportcsv = this->_stringsmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
 
-    connect(copystring, SIGNAL(triggered()), this, SLOT(copyString()));
-    connect(copyaddress, SIGNAL(triggered()), this, SLOT(copyStringAddress()));
-    connect(copystringval, SIGNAL(triggered()), this, SLOT(copyStringValue()));
-    connect(exportcsv, SIGNAL(triggered()), this, SLOT(exportStrings()));
+    connect(actcopystring, SIGNAL(triggered()), this, SLOT(copyString()));
+    connect(actcopystringonly, SIGNAL(triggered()), this, SLOT(copyStringOnly()));
+    connect(actexportcsv, SIGNAL(triggered()), this, SLOT(exportStrings()));
 }
 
 void DisassemblerView::showCrossReference(Block *b)
@@ -223,6 +226,7 @@ void DisassemblerView::onListingMenuAboutToShow()
 {
     Block* selectedblock = ui->disassemblerWidget->selectedBlock();
 
+    this->_actrename->setVisible(selectedblock->blockType() != Block::InstructionBlock);
     this->_actcrossreferences->setVisible(selectedblock->hasSources());
     this->_actaddbookmark->setVisible(!selectedblock->isBookmarked());
     this->_actremovebookmark->setVisible(selectedblock->isBookmarked());
@@ -287,6 +291,45 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
     ui->tabWidget->setCurrentIndex(1);
 }
 
+void DisassemblerView::renameBlock(Block *block)
+{
+    if(block->blockType() == Block::InstructionBlock)
+        return;
+
+    SymbolTable* symboltable = this->_listing->symbolTable();
+
+    ui->renameWidget->setBlock(block);
+    ui->renameWidget->setLabel(symboltable->name(block->startAddress()));
+    ui->renameWidget->show();
+}
+
+void DisassemblerView::renameSelectedListingObject()
+{
+    this->renameBlock(ui->disassemblerWidget->selectedBlock());
+}
+
+void DisassemblerView::renameSelectedFunction()
+{
+    QItemSelectionModel* selectionmodel = ui->functionList->selectionModel();
+
+    if(!selectionmodel->hasSelection())
+        return;
+
+    Block* block = reinterpret_cast<Block*>(selectionmodel->selectedIndexes()[0].internalPointer());
+    this->renameBlock(block);
+}
+
+void DisassemblerView::renameSelectedVariable()
+{
+    QItemSelectionModel* selectionmodel = ui->tvVariables->selectionModel();
+
+    if(!selectionmodel->hasSelection())
+        return;
+
+    Block* block = reinterpret_cast<Block*>(selectionmodel->selectedIndexes()[0].internalPointer());
+    this->renameBlock(block);
+}
+
 void DisassemblerView::displayDisassembly()
 {
     this->_listing = this->_disassembler->listing();
@@ -303,8 +346,6 @@ void DisassemblerView::displayDisassembly()
     ui->tvStrings->setModel(this->_stringsymbols);
     ui->tvVariables->setModel(this->_variablesmodel);
     ui->dataView->setModel(this->_variablesmodel);
-
-    connect(ui->bookmarkWidget, SIGNAL(saveBookmarkRequested(Block*,QString)), this, SLOT(onSaveBookmarkRequested(Block*,QString)));
 }
 
 void DisassemblerView::showEntryPoints()
@@ -356,19 +397,6 @@ void DisassemblerView::copyVariable()
     clipboard->setText(QString("%1 %2").arg(model->data(addresslist[0]).toString(), model->data(variablelist[0]).toString()));
 }
 
-void DisassemblerView::copyVariableAddress()
-{
-    QAbstractItemModel* model = ui->tvVariables->model();
-    QItemSelectionModel* selectionmodel = ui->tvVariables->selectionModel();
-    QModelIndexList indexlist = selectionmodel->selectedRows(0);
-
-    if(indexlist.isEmpty())
-        return;
-
-    QClipboard* clipboard = qApp->clipboard();
-    clipboard->setText(model->data(indexlist[0]).toString());
-}
-
 void DisassemblerView::copyVariableName()
 {
     QAbstractItemModel* model = ui->tvVariables->model();
@@ -396,20 +424,7 @@ void DisassemblerView::copyString()
     clipboard->setText(QString("%1 %2").arg(model->data(addresslist[0]).toString(), model->data(stringlist[0]).toString()));
 }
 
-void DisassemblerView::copyStringAddress()
-{
-    QAbstractItemModel* model = ui->tvStrings->model();
-    QItemSelectionModel* selectionmodel = ui->tvStrings->selectionModel();
-    QModelIndexList indexlist = selectionmodel->selectedRows(0);
-
-    if(indexlist.isEmpty())
-        return;
-
-    QClipboard* clipboard = qApp->clipboard();
-    clipboard->setText(model->data(indexlist[0]).toString());
-}
-
-void DisassemblerView::copyStringValue()
+void DisassemblerView::copyStringOnly()
 {
     QAbstractItemModel* model = ui->tvStrings->model();
     QItemSelectionModel* selectionmodel = ui->tvStrings->selectionModel();
@@ -526,4 +541,13 @@ void DisassemblerView::onSaveBookmarkRequested(Block *block, const QString &desc
 {
     this->_actbookmarks->setEnabled(true);
     this->_listing->applyBookmark(block, description);
+}
+
+void DisassemblerView::onRenameSymbolRequested(Block *block, const QString &symbolname)
+{
+    SymbolTable* symboltable = this->_listing->symbolTable();
+    Symbol* symbol = symboltable->get(block->startAddress());
+
+    symbol->setName(symbolname);
+    ui->disassemblerWidget->update();
 }

@@ -37,6 +37,7 @@ class DisassemblerWidget : public QFrame
 
     signals:
         void jumpToRequested();
+        void renameRequested(Block* block);
         void crossReferenceRequested(Block* block);
         void backAvailable(bool);
         void forwardAvailable(bool);
