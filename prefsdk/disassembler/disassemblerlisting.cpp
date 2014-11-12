@@ -40,6 +40,8 @@ namespace PrefSDK
 
     void DisassemblerListing::toggleBookmark(Block *block)
     {
+        block->setBookmarked(false);
+
         for(int i = 0; i < this->_bookmarks.count(); i++)
         {
             if(block == this->_bookmarks[i].first)
