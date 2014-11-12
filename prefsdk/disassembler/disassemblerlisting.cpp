@@ -35,7 +35,7 @@ namespace PrefSDK
 
     bool DisassemblerListing::isDecoded(const DataValue& address) const
     {        
-        return this->findInstruction(address) != nullptr;
+        return this->_instructions.contains(address);
     }
 
     void DisassemblerListing::toggleBookmark(Block *block)
