@@ -314,7 +314,7 @@ void ActionToolBar::findRequested(QByteArray value)
     qint64 idx = this->_hexedit->indexOf(value, this->_hexedit->selectionEnd());
 
     if(idx != -1)
-        this->_hexedit->setSelection(idx, idx + value.length());
+        this->_hexedit->setSelection(idx, (idx + value.length()) - 1);
     else
     {
         this->_hexedit->setCursorPos(this->_hexedit->cursorPos()); /* Reset Selection */
