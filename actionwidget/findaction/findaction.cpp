@@ -6,7 +6,7 @@ FindAction::FindAction(QWidget *parent): AbstractAction(parent), ui(new Ui::Find
     ui->setupUi(this);
 
     ui->cbBase->addItem("ASCII String", QNumberLineEdit::AsciiString);
-    ui->cbBase->addItem("Unicode String", QNumberLineEdit::UnicodeString);
+    //ui->cbBase->addItem("Unicode String", QNumberLineEdit::UnicodeString); Unicode not Supported
     ui->cbBase->addItem("Hex", QNumberLineEdit::HexString);
 
     this->setVisible(false);
