@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    DataBuffer::DataBuffer(QHexEditData* hexeditdata, QObject *parent): QObject(parent), _hexeditdata(hexeditdata)
+    DataBuffer::DataBuffer(QHexEditData* hexeditdata, lua_Integer baseoffset,QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _baseoffset(baseoffset)
     {
         this->_reader = new QHexEditDataReader(hexeditdata, this);
         this->_writer = new QHexEditDataWriter(hexeditdata, this);
@@ -39,12 +39,13 @@ namespace PrefSDK
 
     lua_Integer DataBuffer::indexOf(const QString &s, lua_Integer startpos)
     {
-        return this->_reader->indexOf(s.toUtf8(), startpos);
+        return this->_reader->indexOf(s.toUtf8(), this->_baseoffset + startpos);
     }
 
     lua_Integer DataBuffer::readType(lua_Integer pos, lua_Integer datatype)
     {
         DataType::Type dt = static_cast<DataType::Type>(datatype);
+        pos += this->_baseoffset;
 
         if(DataType::isInteger(dt))
         {
@@ -98,6 +99,7 @@ namespace PrefSDK
     void DataBuffer::writeType(lua_Integer pos, lua_Integer datatype, lua_Integer value)
     {
         DataType::Type dt = static_cast<DataType::Type>(datatype);
+        pos += this->_baseoffset;
 
         if(DataType::isInteger(dt))
         {
@@ -163,7 +165,7 @@ namespace PrefSDK
         QString s;
         char ch = '\0';
 
-        for(qint64 i = pos; i < this->_hexeditdata->length(); i++)
+        for(qint64 i = this->_baseoffset + pos; i < this->_hexeditdata->length(); i++)
         {
             ch = static_cast<char>(this->_reader->at(i));
 
@@ -178,12 +180,12 @@ namespace PrefSDK
 
     QString DataBuffer::readString(lua_Integer pos, lua_Integer maxlen)
     {
-        return this->_reader->readString(pos, maxlen);
+        return this->_reader->readString(this->_baseoffset + pos, maxlen);
     }
 
     void DataBuffer::writeString(lua_Integer pos, const QString &s)
     {
-        this->_writer->replace(pos, s.length(), s.toUtf8());
+        this->_writer->replace(this->_baseoffset + pos, s.length(), s.toUtf8());
     }
 
     int DataBuffer::metaIndex(lua_State *l, lua_Integer key)
@@ -194,7 +196,7 @@ namespace PrefSDK
             return 0;
         }
 
-        lua_pushinteger(l, this->_reader->at(key));
+        lua_pushinteger(l, this->_reader->at(this->_baseoffset + key));
         return 1;
     }
 }

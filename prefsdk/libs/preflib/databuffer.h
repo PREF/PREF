@@ -23,7 +23,7 @@ namespace PrefSDK
         Q_PROPERTY(lua_Integer length READ length)
 
         public:
-            explicit DataBuffer(QHexEditData* hexeditdata, QObject *parent = 0);
+            explicit DataBuffer(QHexEditData* hexeditdata, lua_Integer baseoffset = 0, QObject *parent = 0);
             QHexEditData* hexEditData() const;
             lua_Integer length() const;
 
@@ -43,6 +43,7 @@ namespace PrefSDK
             QHexEditData* _hexeditdata;
             QHexEditDataReader* _reader;
             QHexEditDataWriter* _writer;
+            lua_Integer _baseoffset;
     };
 }
 

@@ -4,7 +4,7 @@ namespace PrefSDK
 {
     MemoryBuffer::MemoryBuffer(QHexEditData *hexeditdata, DisassemblerListing *listing, Logger* logger, const DataValue &baseaddress, DataType::Type addresstype, QObject *parent): QObject(parent), _listing(listing), _logger(logger), _baseaddress(baseaddress), _addresstype(addresstype)
     {
-        this->_databuffer = new DataBuffer(hexeditdata, this);
+        this->_databuffer = new DataBuffer(hexeditdata, 0, this);
     }
 
     DataValue MemoryBuffer::read(const DataValue &address, DataType::Type datatype) const

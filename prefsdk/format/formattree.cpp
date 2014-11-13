@@ -4,7 +4,7 @@ namespace PrefSDK
 {
     FormatTree::FormatTree(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, QObject *parent): AbstractTree(hexeditdata, logger, parent), _baseoffset(baseoffset)
     {
-        this->_databuffer = new DataBuffer(hexeditdata, this);
+        this->_databuffer = new DataBuffer(hexeditdata, baseoffset, this);
     }
 
     bool FormatTree::isEmpty() const

@@ -5,7 +5,7 @@ namespace PrefSDK
     FormatValidator::FormatValidator(QHexEditData *hexeditdata, qint64 baseoffset, QObject *parent): QObject(parent), _hexeditdata(hexeditdata), _baseoffset(baseoffset), _validated(true)
     {
         this->_reader = new QHexEditDataReader(hexeditdata, this);
-        this->_databuffer = new DataBuffer(hexeditdata, this);
+        this->_databuffer = new DataBuffer(hexeditdata, baseoffset, this);
     }
 
     bool FormatValidator::validated() const
