@@ -82,6 +82,9 @@ void ActionToolBar::createActions(ActionWidget* actionwidget, ActionToolBar::Act
         this->_actfind = this->addAction(QIcon(":/action_icons/res/find.png"), "Find");
         this->_actgoto = this->addAction(QIcon(":/action_icons/res/goto.png"), "Goto");
 
+        this->_actfind->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_F));
+        this->_actgoto->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_G));
+
         connect(this->_actfind, SIGNAL(triggered()), this->_actionwidget, SLOT(showFind()));
         connect(this->_actgoto, SIGNAL(triggered()), this, SLOT(showGoto()));
 
@@ -96,10 +99,14 @@ void ActionToolBar::createActions(ActionWidget* actionwidget, ActionToolBar::Act
         if(this->isEditable())
         {
             this->_actbyteops = this->addAction(QIcon(":/action_icons/res/byteop.png"), "Byte Ops");
+            this->_actbyteops->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_B));
+
             connect(this->_actbyteops, SIGNAL(triggered()), this->_actionwidget, SLOT(showByteOps()));
         }
 
         this->_actexport = this->addAction(QIcon(":/action_icons/res/export.png"), "Export");
+        this->_actexport->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
+
         connect(this->_actexport, SIGNAL(triggered()), this, SLOT(showExportDialog()));
 
         connect(actionwidget->byteOpsAction(), SIGNAL(byteOperationRequested(uchar,ByteOpsAction::ByteOperations)), this, SLOT(byteOpRequested(uchar,ByteOpsAction::ByteOperations)));
