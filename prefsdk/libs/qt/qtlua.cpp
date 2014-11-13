@@ -483,10 +483,7 @@ namespace PrefSDK
             }
         }
         else
-        {
-            throw PrefException(QString("QtLua::metaIndex(): Invalid member '%1' for '%2'").arg(member, QString::fromUtf8(metaobj->className())));
-            return 0;
-        }
+            lua_pushnil(l); /* Return null */
 
         return 1;
     }
