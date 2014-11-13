@@ -17,9 +17,8 @@ class FormatModel : public FieldDataModel
     Q_OBJECT
 
     public:
-        explicit FormatModel(QHexEditData* hexeditdata, QObject *parent = 0);
+        explicit FormatModel(QHexEditData* hexeditdata, FormatTree* formattree = nullptr, QObject *parent = 0);
         QHexEditData* data();
-        void setFormatTree(FormatTree *formattree);
 
     private slots:
         void updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType);

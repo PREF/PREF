@@ -19,7 +19,7 @@ FormatWidget::~FormatWidget()
 void FormatWidget::setData(QHexEdit *hexedit)
 {
     this->_hexedit = hexedit;
-    this->_formatmodel = new FormatModel(this->_hexedit->data(), ui->tvFormat);
+    this->_formatmodel = new FormatModel(this->_hexedit->data(), nullptr, ui->tvFormat);
     ui->tvFormat->setModel(this->_formatmodel);
 
     connect(ui->tvFormat, SIGNAL(setBackColor(FormatElement*)), this, SLOT(onSetBackColor(FormatElement*)));
@@ -37,8 +37,11 @@ QWidget *FormatWidget::formatView()
 
 void FormatWidget::resetData()
 {
-    this->_formatmodel = new FormatModel(this->_hexedit->data(), this);
+    FormatModel* oldformatmodel = this->_formatmodel;
+    this->_formatmodel = new FormatModel(this->_hexedit->data(), nullptr, this);
+
     ui->tvFormat->setModel(this->_formatmodel);
+    oldformatmodel->deleteLater();
 }
 
 void FormatWidget::loadFormat()
@@ -128,9 +131,13 @@ void FormatWidget::importData(FormatElement *formatelement)
 
 void FormatWidget::onParseCompleted()
 {
+    FormatModel* oldformatmodel = this->_formatmodel;
     FormatTree* formattree = this->_worker->tree();
     formattree->setParent(this);
-    this->_formatmodel->setFormatTree(formattree);
+
+    this->_formatmodel = new FormatModel(this->_hexedit->data(), formattree, ui->tvFormat);
+    ui->tvFormat->setModel(this->_formatmodel);
+    oldformatmodel->deleteLater();
 
     for(int i = 0; i < this->_formatmodel->columnCount(); i++)
         ui->tvFormat->resizeColumnToContents(i);

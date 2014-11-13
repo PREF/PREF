@@ -1,6 +1,6 @@
 #include "formatmodel.h"
 
-FormatModel::FormatModel(QHexEditData *hexeditdata, QObject *parent): FieldDataModel(parent), _hexeditdata(hexeditdata), _formattree(nullptr)
+FormatModel::FormatModel(QHexEditData *hexeditdata, FormatTree* formattree, QObject *parent): FieldDataModel(parent), _hexeditdata(hexeditdata), _formattree(formattree)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -17,18 +17,6 @@ FormatModel::FormatModel(QHexEditData *hexeditdata, QObject *parent): FieldDataM
 QHexEditData *FormatModel::data()
 {
     return this->_hexeditdata;
-}
-
-void FormatModel::setFormatTree(FormatTree *formattree)
-{
-    FormatTree* oldformattree = this->_formattree;
-
-    this->beginInsertRows(QModelIndex(), 0, formattree->structureCount());
-    this->_formattree = formattree;
-    this->endInsertRows();
-
-    if(oldformattree)
-        oldformattree->deleteLater();
 }
 
 void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::ActionType)
