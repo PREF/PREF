@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1021</width>
-    <height>735</height>
+    <width>1019</width>
+    <height>733</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,7 +41,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1021</width>
+     <width>1019</width>
      <height>22</height>
     </rect>
    </property>
@@ -138,7 +138,7 @@
     <string>Analyze</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string>F3</string>
    </property>
   </action>
   <action name="action_Save">
@@ -150,7 +150,7 @@
     <string>&amp;Save</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>F2</string>
    </property>
    <property name="visible">
     <bool>false</bool>
@@ -186,6 +186,9 @@
    <property name="text">
     <string>Compare</string>
    </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
   </action>
   <action name="actionSignature_DB">
    <property name="icon">
@@ -220,6 +223,9 @@
    </property>
    <property name="text">
     <string>Disassemble</string>
+   </property>
+   <property name="shortcut">
+    <string>F4</string>
    </property>
   </action>
  </widget>
