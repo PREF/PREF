@@ -1,6 +1,6 @@
 #include "disassemblerworker.h"
 
-DisassemblerWorker::DisassemblerWorker(QHexEditData *hexeditdata, DisassemblerDefinition *disassembler, LogWidget *logwidget, QLabel *infolabel, QObject *parent): QThread(parent), _hexeditdata(hexeditdata), _disassembler(disassembler), _logwidget(logwidget), _infolabel(infolabel)
+DisassemblerWorker::DisassemblerWorker(QHexEditData *hexeditdata, DisassemblerDefinition *disassembler, LogWidget *logwidget, QLabel *infolabel, const QString &loadedfile, QObject *parent): QThread(parent), _hexeditdata(hexeditdata), _disassembler(disassembler), _logwidget(logwidget), _infolabel(infolabel), _loadedfile(loadedfile)
 {
     disassembler->moveToThread(this);
 }
@@ -13,6 +13,14 @@ void DisassemblerWorker::run()
     if(this->_disassembler->callMap(this->_hexeditdata))
         this->_disassembler->callDisassemble(this->_infolabel);
 
+    if(DisassemblerDatabase::exists(this->_loadedfile))
+    {
+        QMetaObject::invokeMethod(this->_infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Loading Database..."));
+
+        DisassemblerDatabase dd(this->_disassembler->listing()->symbolTable(), DisassemblerDatabase::adjustFile(this->_loadedfile));
+        dd.load();
+    }
+
     this->_disassembler->moveToThread(qApp->instance()->thread());
-    QMetaObject::invokeMethod(this->_infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Done"));
+    QMetaObject::invokeMethod(this->_infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Ready"));
 }

@@ -1,6 +1,6 @@
 #include "abstractview.h"
 
-AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo), _hexeditdata(hexeditdata), _viewname(viewname)
+AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &loadedfile, QLabel* labelinfo, QWidget *parent): QWidget(parent), _lblinfo(labelinfo), _hexeditdata(hexeditdata), _loadedfile(loadedfile)
 {
     if(this->_hexeditdata)
         this->_hexeditdata->setParent(this); /* Take Ownership */
@@ -21,9 +21,9 @@ QString AbstractView::saveFilter() const
     return "All Files| *.*";
 }
 
-const QString &AbstractView::viewName() const
+const QString &AbstractView::loadedFile() const
 {
-    return this->_viewname;
+    return this->_loadedfile;
 }
 
 void AbstractView::save(const QString &, const QString &)

@@ -1,7 +1,7 @@
 #include "hexview.h"
 #include "ui_hexview.h"
 
-HexView::HexView(QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::HexView), _toolbar(nullptr), _entropyenabled(false)
+HexView::HexView(QHexEditData* hexeditdata, const QString& loadedfile, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, loadedfile, labelinfo, parent), ui(new Ui::HexView), _toolbar(nullptr), _entropyenabled(false)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);

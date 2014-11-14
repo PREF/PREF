@@ -11,6 +11,21 @@ namespace PrefSDK
         return this->_symboltable.count();
     }
 
+    DataType::Type SymbolTable::addressType() const
+    {
+        return this->_addresstype;
+    }
+
+    SymbolTable::Iterator SymbolTable::begin()
+    {
+        return this->_symboltable.begin();
+    }
+
+    SymbolTable::Iterator SymbolTable::end()
+    {
+        return this->_symboltable.end();
+    }
+
     bool SymbolTable::contains(const DataValue &address) const
     {
         return this->_symboltable.contains(address);

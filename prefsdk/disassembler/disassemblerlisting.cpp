@@ -325,6 +325,12 @@ namespace PrefSDK
         return nullptr;
     }
 
+    void DisassemblerListing::save(const QString &filename)
+    {
+        DisassemblerDatabase db(this->_symboltable, filename);
+        db.save();
+    }
+
     bool DisassemblerListing::isAddress(lua_Integer address)
     {
         DataValue addressvalue = DataValue::create(address, this->_addresstype);

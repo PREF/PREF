@@ -1,7 +1,7 @@
 #include "compareview.h"
 #include "ui_compareview.h"
 
-CompareView::CompareView(QString leftfile, QString rightfile, const QString& viewname, QLabel *labelinfo, QWidget *parent): AbstractView(nullptr, viewname, labelinfo, parent), ui(new Ui::CompareView)
+CompareView::CompareView(QString leftfile, QString rightfile, QLabel *labelinfo, QWidget *parent): AbstractView(nullptr, QString(), labelinfo, parent), ui(new Ui::CompareView)
 {
     ui->setupUi(this);
 

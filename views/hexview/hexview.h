@@ -21,7 +21,7 @@ class HexView : public AbstractView
     Q_OBJECT
     
     public:
-        explicit HexView(QHexEditData* hexeditdata, const QString &viewname, QLabel* labelinfo, QWidget *parent = 0);
+        explicit HexView(QHexEditData* hexeditdata, const QString &loadedfile, QLabel* labelinfo, QWidget *parent = 0);
         virtual ~HexView();
         virtual void save(const QString& filename, const QString&);
         virtual void save();

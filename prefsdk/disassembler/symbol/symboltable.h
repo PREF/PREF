@@ -16,8 +16,14 @@ namespace PrefSDK
         Q_OBJECT
 
         public:
+            typedef typename QHash<DataValue, Symbol*>::Iterator Iterator;
+
+        public:
             explicit SymbolTable(DataType::Type addresstype, QObject *parent = 0);
             lua_Integer count() const;
+            DataType::Type addressType() const;
+            SymbolTable::Iterator begin();
+            SymbolTable::Iterator end();
             bool contains(const DataValue& address) const;
             bool isType(const DataValue& address, Symbol::Type symboltype) const;
             void set(Symbol::Type symboltype, const DataValue& address);

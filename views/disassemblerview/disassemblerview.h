@@ -30,16 +30,15 @@ class DisassemblerView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit DisassemblerView(DisassemblerDefinition* disassemblerdefinition, QHexEditData* hexeditdata, const QString& viewname, QLabel *labelinfo, QWidget *parent = 0);
+        explicit DisassemblerView(DisassemblerDefinition* disassemblerdefinition, QHexEditData* hexeditdata, const QString& loadedfile, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~DisassemblerView();
-        virtual void save(const QString& filename, const QString&);
+        virtual void save(const QString& filename, const QString&filter);
         virtual QString saveFilter() const;
         void disassemble();
 
     public: /* Overriden Methods */
         virtual QHexEditData* data();
         virtual bool canSave() const;
-        virtual bool canSaveAs() const;
         virtual void updateStatusBar();
 
     private:
@@ -77,6 +76,7 @@ class DisassemblerView : public AbstractView
         void showEntryPoints();
         void showSegments();
         void showBookmarks();
+        void loadDatabase();
         void gotoFunction();
         void copyVariable();
         void copyVariableName();
@@ -104,6 +104,7 @@ class DisassemblerView : public AbstractView
         QAction* _actgoto;
         QAction* _actsegments;
         QAction* _actbookmarks;
+        QAction* _actloaddatabase;
         QAction* _actentrypoints;
         QAction* _actaddbookmark;
         QAction* _actremovebookmark;

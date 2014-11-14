@@ -9,6 +9,7 @@
 #include "prefsdk/disassembler/blocks/label.h"
 #include "prefsdk/disassembler/symbol/symboltable.h"
 #include "prefsdk/disassembler/symbol/constanttable.h"
+#include "prefsdk/disassembler/disassemblerdatabase.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include <algorithm>
@@ -58,6 +59,7 @@ namespace PrefSDK
             Function* findFunction(const DataValue& address);
             Instruction* findInstruction(const DataValue& address) const;
             Block* findBlock(const DataValue& address);
+            void save(const QString& filename);
 
         public slots:
             void toggleBookmark(Block* block);

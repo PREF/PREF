@@ -118,10 +118,9 @@ void MainWindow::disassembleFile(const QString &file)
 
     if(res == DisassemblerDialog::Accepted && ld.selectedDisassembler())
     {
-        QString viewname = QFileInfo(file).fileName();
-        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), hexeditdata, viewname, this->_lblinfo);
+        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), hexeditdata, file, this->_lblinfo);
 
-        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
+        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QFileInfo(file).fileName()));
         this->setCentralWidget(dv);
         this->setSaveVisible(dv->canSave(), dv->canSaveAs());
         dv->disassemble();
@@ -210,11 +209,10 @@ void MainWindow::centerWindowToScreen()
 
 void MainWindow::loadFile(const QString &file, QHexEditData *hexeditdata)
 {
-    QString viewname = QFileInfo(file).fileName();
-    HexView* hv = new HexView(hexeditdata, viewname, this->_lblinfo);
+    HexView* hv = new HexView(hexeditdata, file, this->_lblinfo);
 
-    this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
-    this->setCentralWidget(new HexView(hexeditdata, viewname, this->_lblinfo));
+    this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QFileInfo(file).fileName()));
+    this->setCentralWidget(hv);
     this->setSaveVisible(hv->canSave(), hv->canSaveAs());
 }
 
@@ -276,10 +274,9 @@ void MainWindow::on_actionCompare_triggered()
     {
         QDir l(cd.leftCompare());
         QDir r(cd.rightCompare());
-        QString viewname = QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName());
-        CompareView* cv = new CompareView(cd.leftCompare(), cd.rightCompare(), viewname, this->_lblinfo);
+        CompareView* cv = new CompareView(cd.leftCompare(), cd.rightCompare(), this->_lblinfo);
 
-        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
+        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QString("Compare: %1 -> %2").arg(l.dirName(), r.dirName())));
         this->setCentralWidget(cv);
         this->setSaveVisible(cv->canSave(), cv->canSaveAs());
     }
@@ -308,9 +305,8 @@ void MainWindow::on_actionHex_File_triggered()
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
-        QString viewname = QFileInfo(file).fileName();
-        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, viewname));
-        this->setCentralWidget(new HexView(QHexEditData::fromMemory(ba), viewname, this->_lblinfo));
+        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QFileInfo(file).fileName()));
+        this->setCentralWidget(new HexView(QHexEditData::fromMemory(ba), file, this->_lblinfo));
     }
 }
 

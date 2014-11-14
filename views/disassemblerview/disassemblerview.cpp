@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinition, QHexEditData *hexeditdata, const QString &viewname, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, viewname, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _disassembler(disassemblerdefinition)
+DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinition, QHexEditData *hexeditdata, const QString &loadedfile, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, loadedfile, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _disassembler(disassemblerdefinition)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -28,6 +28,7 @@ DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinitio
     this->_actentrypoints = this->_toolbar->addAction(QIcon(":/action_icons/res/entry.png"), "Entry Points");
     this->_actsegments = this->_toolbar->addAction(QIcon(":/action_icons/res/segments.png"), "Segments");
     this->_actbookmarks = this->_toolbar->addAction(QIcon(":/action_icons/res/bookmark.png"), "Bookmarks");
+    this->_actloaddatabase = this->_toolbar->addAction(QIcon(":/signature_database/res/database.png"), "Load Database");
 
     this->_actback->setEnabled(false);
     this->_actforward->setEnabled(false);
@@ -51,6 +52,7 @@ DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinitio
     connect(this->_actentrypoints, SIGNAL(triggered()), this, SLOT(showEntryPoints()));
     connect(this->_actsegments, SIGNAL(triggered()), this, SLOT(showSegments()));
     connect(this->_actbookmarks, SIGNAL(triggered()), this, SLOT(showBookmarks()));
+    connect(this->_actloaddatabase, SIGNAL(triggered()), this, SLOT(loadDatabase()));
     connect(ui->gotoWidget, SIGNAL(addressRequested(PrefSDK::DataValue)), this, SLOT(gotoAddress(PrefSDK::DataValue)));
     connect(ui->bookmarkWidget, SIGNAL(saveBookmarkRequested(Block*,QString)), this, SLOT(onSaveBookmarkRequested(Block*,QString)));
     connect(ui->renameWidget, SIGNAL(renameRequested(Block*,QString)), this, SLOT(onRenameSymbolRequested(Block*,QString)));
@@ -66,14 +68,17 @@ DisassemblerView::~DisassemblerView()
     delete ui;
 }
 
-void DisassemblerView::save(const QString& filename, const QString&)
+void DisassemblerView::save(const QString& filename, const QString& filter)
 {
-    ui->disassemblerWidget->save(filename);
+    if(!QString::compare(filter, "Disassembler Database (*.db)"))
+        this->_listing->save(filename);
+    else if(!QString::compare(filter, "Text File (*.txt)"))
+        ui->disassemblerWidget->save(filename);
 }
 
 QString DisassemblerView::saveFilter() const
 {
-    return "Text File|*.txt";
+    return "Disassembler Database (*.db);;Text File (*.txt)";
 }
 
 QHexEditData *DisassemblerView::data()
@@ -82,11 +87,6 @@ QHexEditData *DisassemblerView::data()
 }
 
 bool DisassemblerView::canSave() const
-{
-    return false;
-}
-
-bool DisassemblerView::canSaveAs() const
 {
     return true;
 }
@@ -192,7 +192,7 @@ void DisassemblerView::disassemble()
     if(!this->_hexeditdata)
         return;
 
-    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, ui->logWidget, this->_lblinfo, this);
+    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, ui->logWidget, this->_lblinfo, this->loadedFile(), this);
     connect(this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
     this->_worker->start();
 }
@@ -373,6 +373,20 @@ void DisassemblerView::showBookmarks()
 
     if((res == BookmarkDialog::Accepted) && bd.selectedBlock())
         ui->disassemblerWidget->jumpTo(bd.selectedBlock());
+}
+
+void DisassemblerView::loadDatabase()
+{
+    QString s = QFileDialog::getOpenFileName(this, "Load Database", QString(), "Disassembler Database (*.db)");
+
+    if(!s.isEmpty())
+    {
+        DisassemblerDatabase dd(this->_listing->symbolTable(), s);
+
+        this->_lblinfo->setText("Loading Database...");
+        dd.load();
+        this->_lblinfo->setText("Ready");
+    }
 }
 
 void DisassemblerView::gotoFunction()
