@@ -598,7 +598,7 @@ void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
             {
                 Instruction* instruction = qobject_cast<Instruction*>(block);
 
-                if((instruction->isJump() || instruction->isCall()) && instruction->isDestinationValid())
+                if((instruction->isJump() || instruction->isCall()) && instruction->isDestinationValid() && this->_listing->isAddress(instruction->destination()))
                     this->jumpTo(instruction->destination());
             }
             else if((block->blockType() == Block::LabelBlock) && block->hasSources())
