@@ -36,11 +36,12 @@ namespace SQLite
                     int _idx;
             };
 
-            enum BlobType { Static = 0, Transient = -1 };
+            enum ValueManagement { Static = 0, Transient = -1 };
 
         public:
             SQLiteStatement(const SQLite::SQLiteDatabase& db, string query);
             ~SQLiteStatement();
+            bool reset() const;
             bool step() const;
             int execute() const;
 
@@ -50,10 +51,10 @@ namespace SQLite
             SQLiteStatement::Column column(int idx) const;
             void bind(int idx, int value) const;
             void bind(int idx, sqlite_int64 value) const;
-            void bind(int idx, const char* value) const;
+            void bind(int idx, const char* value, SQLiteStatement::ValueManagement valmgmt = SQLiteStatement::Transient) const;
             void bind(int idx, const void* value, int len) const;
-            void bind(int idx, const void* value, int len, SQLiteStatement::BlobType blobmgmt = SQLiteStatement::Static) const;
-            void bind(string param, const void* value, int len, SQLiteStatement::BlobType blobmgmt = SQLiteStatement::Static) const;
+            void bind(int idx, const void* value, int len, SQLiteStatement::ValueManagement valmgmt = SQLiteStatement::Static) const;
+            void bind(string param, const void* value, int len, SQLiteStatement::ValueManagement valmgmt = SQLiteStatement::Static) const;
 
             template<typename T> void bind(string param, T value) const
             {

@@ -14,11 +14,22 @@ namespace SQLite
             sqlite3_finalize(this->_stmt);
     }
 
+    bool SQLiteStatement::reset() const
+    {
+        SQLiteResults::SQLiteResult res = static_cast<SQLiteResults::SQLiteResult>(sqlite3_reset(this->_stmt));
+
+        if(res == SQLiteResults::Ok)
+            return true;
+
+        throw SQLiteException(this->_db);
+        return false;
+    }
+
     bool SQLiteStatement::step() const
     {
         SQLiteResults::SQLiteResult res = static_cast<SQLiteResults::SQLiteResult>(sqlite3_step(this->_stmt));
 
-        if(res != SQLiteResults::Done && res != SQLiteResults::Row)
+        if((res != SQLiteResults::Done) && (res != SQLiteResults::Row))
             throw SQLiteException(this->_db);
 
         if(res == SQLiteResults::Row)
@@ -73,21 +84,21 @@ namespace SQLite
             throw SQLiteException(this->_db);
     }
 
-    void SQLiteStatement::bind(int idx, const char *value) const
+    void SQLiteStatement::bind(int idx, const char *value, ValueManagement valmgmt) const
     {
-        if(sqlite3_bind_text(this->_stmt, idx, value, -1, nullptr) != SQLiteResults::Ok)
+        if(sqlite3_bind_text(this->_stmt, idx, value, -1, reinterpret_cast<sqlite3_destructor_type>(valmgmt)) != SQLiteResults::Ok)
             throw SQLiteException(this->_db);
     }
 
-    void SQLiteStatement::bind(int idx, const void* value, int len, SQLiteStatement::BlobType blobmgmt) const
+    void SQLiteStatement::bind(int idx, const void* value, int len, SQLiteStatement::ValueManagement valmgmt) const
     {
-        if(sqlite3_bind_blob(this->_stmt, idx, value, len, reinterpret_cast<sqlite3_destructor_type>(blobmgmt)) != SQLiteResults::Ok)
+        if(sqlite3_bind_blob(this->_stmt, idx, value, len, reinterpret_cast<sqlite3_destructor_type>(valmgmt)) != SQLiteResults::Ok)
             throw SQLiteException(this->_db);
     }
 
-    void SQLiteStatement::bind(string param, const void* value, int len, SQLiteStatement::BlobType blobmgmt) const
+    void SQLiteStatement::bind(string param, const void* value, int len, SQLiteStatement::ValueManagement valmgmt) const
     {
         int idx = sqlite3_bind_parameter_index(this->_stmt, param.c_str());
-        this->bind(idx, value, len, blobmgmt);
+        this->bind(idx, value, len, valmgmt);
     }
 }
