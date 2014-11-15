@@ -62,7 +62,9 @@ namespace PrefSDK
 
         if(!lua_isnoneornil(l, -1))
         {
-            for(int i = 1; i <= argc; i++)
+            lua_pushvalue(l, lua_upvalueindex(1)); /* Push Base Class' self */
+
+            for(int i = 2; i <= argc; i++)
                 lua_pushvalue(l, i);
 
             int err = lua_pcall(l, argc, 0, 0);
