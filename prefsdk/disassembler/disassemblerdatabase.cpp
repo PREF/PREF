@@ -109,7 +109,8 @@ namespace PrefSDK
         while(s.step())
         {
             DataValue addressvalue = DataValue::create(s.column(0).integer64(), this->_symboltable->addressType());
-            this->_symboltable->set(static_cast<Symbol::Type>(s.column(2).integer()), addressvalue, QString::fromUtf8(s.column(1).text()));
+            DataValue sizevalue = DataValue::create(s.column(3).integer64(), this->_symboltable->addressType());
+            this->_symboltable->set(static_cast<Symbol::Type>(s.column(2).integer()), addressvalue, sizevalue, DataValue(), QString::fromUtf8(s.column(1).text()));
 
             if(s.column(4).integer64())
             {
