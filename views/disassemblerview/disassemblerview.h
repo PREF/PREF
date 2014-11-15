@@ -32,7 +32,8 @@ class DisassemblerView : public AbstractView
     public:
         explicit DisassemblerView(DisassemblerDefinition* disassemblerdefinition, bool canloaddatabase, QHexEditData* hexeditdata, const QString& loadedfile, QLabel *labelinfo, QWidget *parent = 0);
         virtual ~DisassemblerView();
-        virtual void save(const QString& filename, const QString&filter);
+        virtual void saveAs();
+        virtual void save();
         virtual QString saveFilter() const;
         void disassemble();
 

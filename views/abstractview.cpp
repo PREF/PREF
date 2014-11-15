@@ -18,7 +18,7 @@ bool AbstractView::canSaveAs() const
 
 QString AbstractView::saveFilter() const
 {
-    return "All Files| *.*";
+    return "All Files (*.*)";
 }
 
 const QString &AbstractView::loadedFile() const
@@ -26,7 +26,7 @@ const QString &AbstractView::loadedFile() const
     return this->_loadedfile;
 }
 
-void AbstractView::save(const QString &, const QString &)
+void AbstractView::saveAs()
 {
 
 }

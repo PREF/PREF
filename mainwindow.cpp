@@ -226,37 +226,12 @@ void MainWindow::on_action_Analyze_triggered()
 
 void MainWindow::on_action_Save_As_triggered()
 {
-    AbstractView* abstractview = qobject_cast<AbstractView*>(this->centralWidget());
-    QFileDialog fd(this, "Save as...", QString(), abstractview->saveFilter());
-    fd.setAcceptMode(QFileDialog::AcceptSave);
-    int res = fd.exec();
-
-    if(res == QFileDialog::Accepted)
-        abstractview->save(fd.selectedFiles()[0], fd.selectedNameFilter());
+    qobject_cast<AbstractView*>(this->centralWidget())->saveAs();
 }
 
 void MainWindow::on_action_Save_triggered()
 {
-    QMessageBox m;
-    m.setWindowTitle("Overwriting file...");
-    m.setText("Do you want to overwrite the original file?");
-    m.setIcon(QMessageBox::Warning);
-    m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-    m.setDefaultButton(QMessageBox::Cancel);
-    int ret = m.exec();
-
-    switch(ret)
-    {
-        case QMessageBox::Yes:
-            qobject_cast<AbstractView*>(this->centralWidget())->save();
-            break;
-
-        case QMessageBox::No:
-            this->on_action_Save_As_triggered();
-
-        default:
-            break;
-    }
+    qobject_cast<AbstractView*>(this->centralWidget())->save();
 }
 
 void MainWindow::on_actionExit_triggered()

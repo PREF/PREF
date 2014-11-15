@@ -68,12 +68,36 @@ DisassemblerView::~DisassemblerView()
     delete ui;
 }
 
-void DisassemblerView::save(const QString& filename, const QString& filter)
+void DisassemblerView::saveAs()
 {
-    if(!QString::compare(filter, "Disassembler Database (*.db)"))
-        this->_listing->save(filename);
-    else if(!QString::compare(filter, "Text File (*.txt)"))
-        ui->disassemblerWidget->save(filename);
+    QFileDialog fd(this, "Save as...", QString(), this->saveFilter());
+    fd.setAcceptMode(QFileDialog::AcceptSave);
+    int res = fd.exec();
+
+    if((res == QFileDialog::Accepted) && (!fd.selectedFiles().isEmpty()))
+    {
+        this->_lblinfo->setText("Saving...");
+
+        QString filename = fd.selectedFiles()[0];
+        QString filter = fd.selectedNameFilter();
+
+        if(!QString::compare(filter, "Disassembler Database (*.db)"))
+            this->_listing->save(filename);
+        else if(!QString::compare(filter, "Text File (*.txt)"))
+            ui->disassemblerWidget->save(filename);
+
+        this->_lblinfo->setText("Ready");
+    }
+}
+
+void DisassemblerView::save()
+{
+    this->_lblinfo->setText("Saving Database...");
+
+    DisassemblerDatabase dd(this->_listing->symbolTable(), DisassemblerDatabase::adjustFile(this->loadedFile()));
+    dd.save();
+
+    this->_lblinfo->setText("Ready");
 }
 
 QString DisassemblerView::saveFilter() const

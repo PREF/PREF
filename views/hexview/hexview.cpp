@@ -24,14 +24,40 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& loadedfile, QLabel *l
 
 void HexView::save()
 {
-    this->_hexeditdata->save();
+    QMessageBox m;
+    m.setWindowTitle("Overwriting file...");
+    m.setText("Do you want to overwrite the original file?");
+    m.setIcon(QMessageBox::Warning);
+    m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
+    m.setDefaultButton(QMessageBox::Cancel);
+    int ret = m.exec();
+
+    switch(ret)
+    {
+        case QMessageBox::Yes:
+            this->_hexeditdata->save();
+            break;
+
+        case QMessageBox::No:
+            this->saveAs();
+
+        default:
+            break;
+    }
 }
 
-void HexView::save(const QString& filename, const QString&)
+void HexView::saveAs()
 {
-    QFile f(filename);
-    this->_hexeditdata->saveTo(&f);
-    f.close();
+    QFileDialog fd(this, "Save as...", QString(), this->saveFilter());
+    fd.setAcceptMode(QFileDialog::AcceptSave);
+    int res = fd.exec();
+
+    if((res == QFileDialog::Accepted) && !fd.selectedFiles().isEmpty())
+    {
+        QFile f(fd.selectedFiles()[0]);
+        this->_hexeditdata->saveTo(&f);
+        f.close();
+    }
 }
 
 HexView::~HexView()

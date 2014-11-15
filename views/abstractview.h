@@ -14,7 +14,7 @@ class AbstractView : public QWidget
         virtual ~AbstractView();
         virtual bool canSaveAs() const;
         virtual QString saveFilter() const;
-        virtual void save(const QString&, const QString&);
+        virtual void saveAs();
         virtual void save();
         const QString& loadedFile() const;
 
