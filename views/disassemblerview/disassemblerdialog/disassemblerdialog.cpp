@@ -29,6 +29,11 @@ DisassemblerDefinition* DisassemblerDialog::selectedDisassembler() const
     return nullptr;
 }
 
+bool DisassemblerDialog::canLoadDatabase() const
+{
+    return ui->cbLoadDatabase->isChecked();
+}
+
 DisassemblerDialog::~DisassemblerDialog()
 {
     delete ui;

@@ -1,7 +1,7 @@
 #include "disassemblerview.h"
 #include "ui_disassemblerview.h"
 
-DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinition, QHexEditData *hexeditdata, const QString &loadedfile, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, loadedfile, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _disassembler(disassemblerdefinition)
+DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinition, bool canloaddatabase, QHexEditData *hexeditdata, const QString &loadedfile, QLabel *labelinfo, QWidget *parent): AbstractView(hexeditdata, loadedfile, labelinfo, parent), ui(new Ui::DisassemblerView), _worker(nullptr), _listing(nullptr), _stringsymbols(nullptr), _disassembler(disassemblerdefinition), _canloaddatabase(canloaddatabase)
 {
     ui->setupUi(this);
     ui->hSplitter->setStretchFactor(0, 1);
@@ -192,7 +192,7 @@ void DisassemblerView::disassemble()
     if(!this->_hexeditdata)
         return;
 
-    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, ui->logWidget, this->_lblinfo, this->loadedFile(), this);
+    this->_worker = new DisassemblerWorker(this->_hexeditdata, this->_disassembler, ui->logWidget, this->_lblinfo, this->loadedFile(), this->_canloaddatabase, this);
     connect(this->_worker, SIGNAL(finished()), this, SLOT(displayDisassembly()));
     this->_worker->start();
 }

@@ -118,7 +118,7 @@ void MainWindow::disassembleFile(const QString &file)
 
     if(res == DisassemblerDialog::Accepted && ld.selectedDisassembler())
     {
-        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), hexeditdata, file, this->_lblinfo);
+        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), ld.canLoadDatabase(), hexeditdata, file, this->_lblinfo);
 
         this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QFileInfo(file).fileName()));
         this->setCentralWidget(dv);

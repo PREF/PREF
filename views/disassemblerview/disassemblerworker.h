@@ -16,7 +16,7 @@ class DisassemblerWorker : public QThread
     Q_OBJECT
 
     public:
-        explicit DisassemblerWorker(QHexEditData* hexeditdata, DisassemblerDefinition* disassembler, LogWidget* logwidget, QLabel* infolabel, const QString& loadedfile, QObject *parent = 0);
+        explicit DisassemblerWorker(QHexEditData* hexeditdata, DisassemblerDefinition* disassembler, LogWidget* logwidget, QLabel* infolabel, const QString& loadedfile, bool canloaddatabase, QObject *parent = 0);
 
     protected:
         virtual void run();
@@ -27,6 +27,7 @@ class DisassemblerWorker : public QThread
         LogWidget* _logwidget;
         QLabel* _infolabel;
         const QString& _loadedfile;
+        bool _canloaddatabase;
 };
 
 #endif // DISASSEMBLERWORKER_H

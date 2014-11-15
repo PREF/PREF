@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
-    <height>238</height>
+    <width>513</width>
+    <height>304</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Available Disassemblers</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTableView" name="disassemblerTable">
      <property name="selectionBehavior">
@@ -31,6 +31,16 @@
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cbLoadDatabase">
+     <property name="text">
+      <string>Load Saved Database (if any)</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item>

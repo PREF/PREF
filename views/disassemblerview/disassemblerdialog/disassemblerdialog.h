@@ -21,6 +21,7 @@ class DisassemblerDialog : public QDialog
     public:
         explicit DisassemblerDialog(QHexEditData* hexeditdata, QWidget *parent = 0);
         DisassemblerDefinition *selectedDisassembler() const;
+        bool canLoadDatabase() const;
         bool hasLoaders() const;
         ~DisassemblerDialog();
 
