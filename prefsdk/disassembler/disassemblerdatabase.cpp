@@ -24,13 +24,13 @@ namespace PrefSDK
     void DisassemblerDatabase::populateDatabase()
     {
         SQLiteStatement(this->_disassemblerdb, "CREATE TABLE SymbolTable (Address INTEGER PRIMARY KEY,"
-                                                                         "Name Text NOT NULL,"
+                                                                         "Name TEXT NOT NULL,"
                                                                          "Type INTEGER NOT NULL,"
                                                                          "Size INTEGER NOT NULL,"
                                                                          "ReferenceCount INTEGER NOT NULL)").execute();
 
         SQLiteStatement(this->_disassemblerdb, "CREATE TABLE ReferenceTable (Address INTEGER NOT NULL,"
-                                                                            "ReferenceAddress Text NOT NULL,"
+                                                                            "ReferenceAddress TEXT NOT NULL,"
                                                                             "FOREIGN KEY(Address) REFERENCES SymbolTable(Address))").execute();
     }
 
