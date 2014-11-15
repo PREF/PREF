@@ -54,7 +54,9 @@ namespace PrefSDK
 
     ListingPrinter *ListingPrinter::out(const QString &s, const QColor &c)
     {
-        this->_chunks.append(ListingPrinter::Chunk(s, c));
+        if(!s.trimmed().isEmpty()) /* Do not add Empty strings */
+            this->_chunks.append(ListingPrinter::Chunk(s, c));
+
         return this;
     }
 
