@@ -63,7 +63,7 @@ namespace PrefSDK
 
     void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const QString &name)
     {
-        this->set(symboltype, address, DataValue(), address.dataType(), name);
+        this->set(symboltype, address, DataValue(), name);
     }
 
     void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue &calleraddress, const QString &name)
