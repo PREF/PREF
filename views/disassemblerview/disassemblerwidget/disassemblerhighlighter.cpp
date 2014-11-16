@@ -54,7 +54,7 @@ void DisassemblerHighlighter::highlight(const QString &text, const QString& stri
 
 void DisassemblerHighlighter::highlightSegment(const QString &text)
 {
-    QRegExp regex("segment [^.]+$");
+    QRegExp regex("segment .+$");
     int idx = text.indexOf(regex);
 
     while(idx >= 0)
