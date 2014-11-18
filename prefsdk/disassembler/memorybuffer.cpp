@@ -35,6 +35,17 @@ namespace PrefSDK
         return s.length();
     }
 
+    lua_Integer MemoryBuffer::segmentBaseAddress(lua_Integer address)
+    {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        Segment* segment = this->_listing->findSegment(addressvalue);
+
+        if(segment)
+            segment->startAddress().compatibleValue<lua_Integer>();
+
+        return this->baseAddress();
+    }
+
     lua_Integer MemoryBuffer::read(lua_Integer address, lua_Integer datatype) const
     {
         return this->read(DataValue::create(address, this->_addresstype), static_cast<DataType::Type>(datatype)).compatibleValue<lua_Integer>();

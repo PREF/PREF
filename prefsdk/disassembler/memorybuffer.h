@@ -22,6 +22,7 @@ namespace PrefSDK
 
         public:
             Q_INVOKABLE lua_Integer pointsToString(lua_Integer address) const;
+            Q_INVOKABLE lua_Integer segmentBaseAddress(lua_Integer address);
             Q_INVOKABLE lua_Integer read(lua_Integer address, lua_Integer datatype) const;
             Q_INVOKABLE QString readString(lua_Integer address, lua_Integer maxlen) const;
             Q_INVOKABLE QString readString(lua_Integer address) const;
