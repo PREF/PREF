@@ -211,7 +211,7 @@ namespace PrefSDK
 
         if(lua_type(l, 1) != LUA_TNUMBER)
         {
-            throw PrefException("pref.datatype.sizeof(): Argument 1 must be an integer");
+            throw PrefException(QString("pref.datatype.sizeof(): Argument 1 must be an integer, '%1' given").arg(luaL_typename(l, 1)))  ;
             return 0;
         }
 
