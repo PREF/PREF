@@ -335,5 +335,5 @@ void ActionToolBar::findRequested(QByteArray value)
 
 void ActionToolBar::gotoAddress(qint64 address)
 {
-    this->_hexedit->setSelection(address, address + 1);
+    this->_hexedit->setSelectionRange(address, 1);
 }
