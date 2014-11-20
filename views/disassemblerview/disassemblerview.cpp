@@ -148,13 +148,16 @@ void DisassemblerView::createListingMenu()
 void DisassemblerView::createFunctionsMenu()
 {
     this->_functionsmenu = new QMenu(this);
-    QAction* actrename = this->_functionsmenu->addAction(QIcon(":/action_icons/res/rename.png"), "Rename");
     QAction* actjump = this->_functionsmenu->addAction(QIcon(":/action_icons/res/goto.png"), "Jump To Address");
     QAction* actxrefs = this->_functionsmenu->addAction(QIcon(":/misc_icons/res/crossreference.png"), "Cross References");
+    this->_functionsmenu->addSeparator();
+    QAction* actrename = this->_functionsmenu->addAction(QIcon(":/action_icons/res/rename.png"), "Rename");
+    QAction* actexportcsv = this->_functionsmenu->addAction(QIcon(":/action_icons/res/export.png"), "Export as CSV");
 
     connect(actrename, SIGNAL(triggered()), this, SLOT(renameSelectedFunction()));
     connect(actjump, SIGNAL(triggered()), this, SLOT(gotoFunction()));
     connect(actxrefs, SIGNAL(triggered()), this, SLOT(onFunctionsMenuXRefsTriggered()));
+    connect(actexportcsv, SIGNAL(triggered()), this, SLOT(exportFunctions()));
 }
 
 void DisassemblerView::createVariablesMenu()
@@ -244,6 +247,17 @@ void DisassemblerView::onFunctionsMenuXRefsTriggered()
         if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
             ui->disassemblerWidget->jumpTo(crd.selectedBlock());
     }
+}
+
+void DisassemblerView::exportFunctions()
+{
+    QString s = QFileDialog::getSaveFileName(this, "Export Functions...");
+
+    if(s.isEmpty())
+        return;
+
+    CSVExporter csvexporter;
+    csvexporter.dump(s, ui->functionList->model());
 }
 
 void DisassemblerView::onListingMenuAboutToShow()

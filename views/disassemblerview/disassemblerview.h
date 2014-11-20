@@ -83,6 +83,7 @@ class DisassemblerView : public AbstractView
         void copyVariableName();
         void copyString();
         void copyStringOnly();
+        void exportFunctions();
         void exportVariables();
         void exportStrings();
         void gotoAddress(const PrefSDK::DataValue& address);
