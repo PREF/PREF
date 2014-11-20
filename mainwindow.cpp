@@ -280,8 +280,11 @@ void MainWindow::on_actionHex_File_triggered()
         QByteArray ba = QByteArray::fromHex(f.readAll());
         f.close();
 
+        HexView* hv = new HexView(QHexEditData::fromMemory(ba), file, this->_lblinfo);
+
         this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QFileInfo(file).fileName()));
-        this->setCentralWidget(new HexView(QHexEditData::fromMemory(ba), file, this->_lblinfo));
+        this->setCentralWidget(hv);
+        this->setSaveVisible(hv->canSave(), hv->canSaveAs());
     }
 }
 
