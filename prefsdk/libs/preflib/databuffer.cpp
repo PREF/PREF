@@ -18,12 +18,12 @@ namespace PrefSDK
         return this->_hexeditdata->length();
     }
 
-    void DataBuffer::copyTo(QObject *luahexeditdata, lua_Integer start, lua_Integer end)
+    void DataBuffer::copyTo(QObject *databuffer, lua_Integer start, lua_Integer end)
     {
-        DataBuffer* luahexeditdataout = qobject_cast<DataBuffer*>(luahexeditdata);
+        DataBuffer* databufferout = qobject_cast<DataBuffer*>(databuffer);
 
         QHexEditDataDevice datain(this->_hexeditdata);
-        QHexEditDataDevice dataout(luahexeditdataout->_hexeditdata);
+        QHexEditDataDevice dataout(databufferout->_hexeditdata);
 
         datain.open(QIODevice::ReadOnly);
         dataout.open(QIODevice::WriteOnly);
@@ -34,7 +34,7 @@ namespace PrefSDK
         dataout.close();
         datain.close();
 
-        luahexeditdataout->_hexeditdata->save();
+        databufferout->_hexeditdata->save();
     }
 
     lua_Integer DataBuffer::indexOf(const QString &s, lua_Integer startpos)
@@ -92,7 +92,7 @@ namespace PrefSDK
 
         const QMetaObject metaobj = DataType::staticMetaObject;
         QMetaEnum dtenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
-        luaL_error(LuaState::instance(), "LuaHexEditData:readType(): Unsupported DataType '%s'", dtenum.valueToKey(dt));
+        luaL_error(LuaState::instance(), "DataBuffer:readType(): Unsupported DataType '%s'", dtenum.valueToKey(dt));
         return 0;
     }
 
@@ -157,7 +157,7 @@ namespace PrefSDK
 
         const QMetaObject metaobj = DataType::staticMetaObject;
         QMetaEnum dtenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
-        luaL_error(LuaState::instance(), "LuaHexEditData:writeType(): Unsupported DataType '%s'", dtenum.valueToKey(dt));
+        luaL_error(LuaState::instance(), "DataBuffer::writeType(): Unsupported DataType '%s'", dtenum.valueToKey(dt));
     }
 
     QString DataBuffer::readLine(lua_Integer pos)
@@ -192,7 +192,7 @@ namespace PrefSDK
     {
         if((key < 0) || (key >= this->_hexeditdata->length()))
         {
-            throw PrefException(QString("LuaHexEditData::metaIndex(): Index out of range (%1)").arg(key));
+            throw PrefException(QString("DataBuffer::metaIndex(): Index out of range (%1)").arg(key));
             return 0;
         }
 
