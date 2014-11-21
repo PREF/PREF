@@ -197,6 +197,7 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
         connect(this->_structuremenu, SIGNAL(gotoEndAction()), this, SLOT(onStructureGotoEnd()));
         connect(this->_structuremenu, SIGNAL(exportAction()), this, SLOT(onStructureExport()));
         connect(this->_structuremenu, SIGNAL(importAction()), this, SLOT(onStructureImport()));
+        connect(this->_formatobjectmenu, SIGNAL(aboutToShow()), this, SLOT(onFormatObjectMenuAboutToShow()));
     }
 
     this->_formatobjectmenu->addMenu(this->_copymenu);
@@ -207,6 +208,11 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 
     this->_formatobjectmenu->addMenu(this->_numericbasemenu);
     this->_formatobjectmenu->addMenu(this->_structuremenu);
+}
+
+void FormatTreeView::onFormatObjectMenuAboutToShow()
+{
+    this->_actiongoto->setVisible((this->selectedElement()->elementType() == FormatElement::FieldType));
 }
 
 void FormatTreeView::updateColor(bool set)

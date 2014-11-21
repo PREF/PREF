@@ -33,6 +33,7 @@ class FormatTreeView : public QTreeView
         void setBackColor();
         void removeBackColor();
         void onGotoOffset();
+        void onFormatObjectMenuAboutToShow();
         void onStructureGotoStart();
         void onStructureGotoEnd();
         void onStructureExport();
