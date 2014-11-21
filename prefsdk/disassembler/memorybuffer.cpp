@@ -41,7 +41,7 @@ namespace PrefSDK
         Segment* segment = this->_listing->findSegment(addressvalue);
 
         if(segment)
-            segment->startAddress().compatibleValue<lua_Integer>();
+            return segment->startAddress().compatibleValue<lua_Integer>();
 
         return this->baseAddress();
     }
