@@ -1,7 +1,7 @@
 #include "exportdialog.h"
 #include "ui_exportdialog.h"
 
-ExportDialog::ExportDialog(QHexEdit *hexedit, QWidget *parent): QDialog(parent), ui(new Ui::ExportDialog), _hexedit(hexedit), _startoffset(0), _endoffset(0)
+ExportDialog::ExportDialog(QHexEdit *hexedit, QWidget *parent): QDialog(parent), ui(new Ui::ExportDialog), _selexporter(nullptr), _hexedit(hexedit), _startoffset(0), _endoffset(0)
 {
     ui->setupUi(this);
 
@@ -69,7 +69,7 @@ ExportDialog::~ExportDialog()
 
 void ExportDialog::validateFields()
 {
-    if(this->_selexporter->id().isEmpty() || ui->leFile->text().isEmpty())
+    if(!this->_selexporter || this->_selexporter->id().isEmpty() || ui->leFile->text().isEmpty())
         ui->pbExport->setEnabled(false);
     else
         ui->pbExport->setEnabled(true);
