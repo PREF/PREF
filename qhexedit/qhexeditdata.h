@@ -254,6 +254,7 @@ class QHexEditData : public QObject
     public:
         QUndoStack* undoStack();
         qint64 length() const;
+        bool isReadOnly() const;
 
     public slots:
         bool save();
