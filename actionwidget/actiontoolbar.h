@@ -56,6 +56,8 @@ class ActionToolBar : public QToolBar
         QAction* _actgoto;
         QAction* _actbyteops;
         QAction* _actexport;
+        QAction* _actcopyhex;   /* Context Menu Only Action */
+        QAction* _actpastehex;  /* Context Menu Only Action */
 };
 
 #endif // ACTIONTOOLBAR_H

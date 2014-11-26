@@ -18,6 +18,8 @@ ActionToolBar::ActionToolBar(QHexEdit *hexedit, QWidget *parent): QToolBar(paren
     this->_actgoto = nullptr;
     this->_actbyteops = nullptr;
     this->_actexport = nullptr;
+    this->_actcopyhex = nullptr;
+    this->_actpastehex = nullptr;
 
     this->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
@@ -147,8 +149,15 @@ QMenu *ActionToolBar::actionMenu()
             if(this->isEditable())
             {
                 this->_ctxmenu->addAction(this->_actcut);
+
                 this->_ctxmenu->addAction(this->_actcopy);
+                this->_actcopyhex = this->_ctxmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Copy Hex");
+
                 this->_ctxmenu->addAction(this->_actpaste);
+                this->_actpastehex = this->_ctxmenu->addAction(QIcon(":/action_icons/res/copy.png"), "Paste Hex");
+
+                connect(this->_actcopyhex, SIGNAL(triggered()), this->_hexedit, SLOT(copyHex()));
+                connect(this->_actpastehex, SIGNAL(triggered()), this->_hexedit, SLOT(pasteHex()));
             }
             else
                 this->_ctxmenu->addAction(this->_actcopy);
