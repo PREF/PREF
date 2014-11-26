@@ -25,7 +25,7 @@ namespace PrefSDK
         {
             quint64 lastoffset = this->_structureoffsets.last();
             FormatElement* lastelement = this->_structures[lastoffset];
-            offset = lastoffset + lastelement->size();
+            offset = (lastoffset + lastelement->size()) - this->_baseoffset;
         }
 
         return this->addStructure(name, offset);
