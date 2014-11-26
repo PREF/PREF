@@ -4,6 +4,7 @@
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->mainToolBar->actions()[2]->setVisible(false); /* Hide First Separator */
     this->setAcceptDrops(true);
     this->centerWindowToScreen();
 
@@ -197,6 +198,7 @@ void MainWindow::setSaveVisible(bool cansave, bool cansaveas)
 {
     ui->action_Save->setVisible(cansave);
     ui->action_Save_As->setVisible(cansaveas);
+    ui->mainToolBar->actions()[2]->setVisible((cansave || cansaveas));
 }
 
 void MainWindow::centerWindowToScreen()

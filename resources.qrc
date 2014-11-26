@@ -31,6 +31,7 @@
         <file>res/forward.png</file>
         <file>res/bookmark.png</file>
         <file>res/rename.png</file>
+        <file>res/saveas.png</file>
     </qresource>
     <qresource prefix="/app_icons">
         <file>res/app.png</file>
