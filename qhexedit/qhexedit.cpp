@@ -110,6 +110,11 @@ void QHexEdit::paste()
     this->_hexedit_p->paste();
 }
 
+void QHexEdit::pasteHex()
+{
+    this->_hexedit_p->pasteHex();
+}
+
 void QHexEdit::selectAll()
 {
     this->_hexedit_p->setSelection(0, -1);
@@ -193,6 +198,11 @@ void QHexEdit::setReadOnly(bool b)
 void QHexEdit::copy()
 {
     this->_hexedit_p->copy();
+}
+
+void QHexEdit::copyHex()
+{
+    this->_hexedit_p->copyHex();
 }
 
 void QHexEdit::cut()
