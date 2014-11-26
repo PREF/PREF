@@ -24,19 +24,17 @@ HexView::HexView(QHexEditData* hexeditdata, const QString& loadedfile, QLabel *l
 
 void HexView::save()
 {
-    QMessageBox m;
-    m.setWindowTitle("Overwriting file...");
-    m.setText("Do you want to overwrite the original file?");
-    m.setIcon(QMessageBox::Warning);
-    m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-    m.setDefaultButton(QMessageBox::Cancel);
-    int ret = m.exec();
+    QMessageBox::StandardButton ret = QMessageBox::warning(nullptr, "Overwriting file...", "Do you want to overwrite the original file?", QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Cancel);
 
     switch(ret)
     {
         case QMessageBox::Yes:
-            this->_hexeditdata->save();
+        {
+            if(!this->_hexeditdata->save())
+                QMessageBox::warning(nullptr, "Save Error", "Cannot overwrite loaded file");
+
             break;
+        }
 
         case QMessageBox::No:
             this->saveAs();
@@ -71,6 +69,11 @@ QHexEditData *HexView::data()
 }
 
 bool HexView::canSave() const
+{
+    return !this->_hexeditdata->isReadOnly();
+}
+
+bool HexView::canSaveAs() const
 {
     return true;
 }
