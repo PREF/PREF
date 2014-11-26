@@ -23,39 +23,47 @@ bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int 
         else
             ds.setByteOrder(QDataStream::BigEndian);
 
-        switch(datatype)
+        switch(DataType::bitWidth(datatype))
         {
-            case DataType::UInt8:
-                ds << static_cast<qint8>(stringvalue.toUInt(&isok, base));
-                break;
+            case 8:
+            {
+                if(DataType::isSigned(datatype))
+                    ds << static_cast<qint8>(stringvalue.toInt(&isok, base));
+                else
+                    ds << static_cast<quint8>(stringvalue.toUInt(&isok, base));
 
-            case DataType::UInt16:
-                ds << static_cast<qint16>(stringvalue.toUShort(&isok, base));
                 break;
+            }
 
-            case DataType::UInt32:
-                ds << static_cast<qint32>(stringvalue.toUInt(&isok, base));
-                break;
+            case 16:
+            {
+                if(DataType::isSigned(datatype))
+                    ds << static_cast<qint16>(stringvalue.toShort(&isok, base));
+                else
+                    ds << static_cast<quint16>(stringvalue.toUShort(&isok, base));
 
-            case DataType::UInt64:
-                ds << static_cast<quint64>(stringvalue.toULongLong(&isok, base));
                 break;
+            }
 
-            case DataType::Int8:
-                ds << static_cast<qint8>(stringvalue.toInt(&isok, base));
-                break;
+            case 32:
+            {
+                if(DataType::isSigned(datatype))
+                    ds << static_cast<qint32>(stringvalue.toInt(&isok, base));
+                else
+                    ds << static_cast<quint32>(stringvalue.toUInt(&isok, base));
 
-            case DataType::Int16:
-                ds << static_cast<qint16>(stringvalue.toShort(&isok, base));
                 break;
+            }
 
-            case DataType::Int32:
-                ds << static_cast<qint32>(stringvalue.toInt(&isok, base));
-                break;
+            case 64:
+            {
+                if(DataType::isSigned(datatype))
+                    ds << static_cast<qint64>(stringvalue.toLongLong(&isok, base));
+                else
+                    ds << static_cast<quint64>(stringvalue.toULongLong(&isok, base));
 
-            case DataType::Int64:
-                ds << static_cast<qint64>(stringvalue.toLongLong(&isok, base));
                 break;
+            }
 
             default:
                 break;
