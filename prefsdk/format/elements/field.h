@@ -32,6 +32,7 @@ namespace PrefSDK
             virtual FormatElement::Type elementType() const;
             virtual int indexOf(FormatElement* fe) const;
             virtual bool isOverflowed() const;
+            virtual void setBase(int b);
 
         public slots:
             virtual QString displayValue() const;

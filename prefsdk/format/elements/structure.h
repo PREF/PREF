@@ -38,6 +38,7 @@ namespace PrefSDK
             virtual FormatElement::Type elementType() const;
             virtual quint64 size() const;
             virtual int indexOf(FormatElement* fe) const;
+            virtual void setBase(int b);
 
         public slots:
             virtual QString displayType() const;

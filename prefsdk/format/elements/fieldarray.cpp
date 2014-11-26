@@ -72,6 +72,17 @@ namespace PrefSDK
         return DataType::sizeOf(this->_itemtype) * this->_itemcount;
     }
 
+    void FieldArray::setBase(int b)
+    {
+        FieldElement::setBase(b);
+
+        foreach(QUuid uuid, this->_items)
+        {
+            FormatElement* element = this->_formattree->elementFromPoolByUUID(uuid);
+            element->setBase(b);
+        }
+    }
+
     bool FieldArray::isOverflowed() const
     {
         return false;

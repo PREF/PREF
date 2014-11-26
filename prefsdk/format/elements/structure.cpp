@@ -125,6 +125,18 @@ namespace PrefSDK
         return -1;
     }
 
+    void Structure::setBase(int b)
+    {
+        FormatElement::setBase(b);
+
+        for(int i = 0; i < this->_fieldoffsets.length(); i++)
+        {
+            quint64 offset = this->_fieldoffsets[i];
+            FormatElement* element = this->_formattree->elementFromPoolByUUID(this->_fieldids[offset]);
+            element->setBase(b);
+        }
+    }
+
     QString Structure::displayType() const
     {
         return "Struct";

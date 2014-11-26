@@ -200,4 +200,15 @@ namespace PrefSDK
     {
         return NumericLimits::willOverflow(this->_formattree->data(), this->offset(), this->dataType());
     }
+
+    void Field::setBase(int b)
+    {
+        FieldElement::setBase(b);
+
+        for(QHash<QString, QUuid>::Iterator it = this->_bitfieldids.begin(); it != this->_bitfieldids.end(); it++)
+        {
+            FormatElement* element = this->_formattree->elementFromPoolByUUID(it.value());
+            element->setBase(b);
+        }
+    }
 }

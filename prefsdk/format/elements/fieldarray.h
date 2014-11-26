@@ -29,6 +29,7 @@ namespace PrefSDK
             virtual bool hasChildren() const;
             virtual FormatElement::Type elementType() const;
             virtual quint64 size() const;
+            virtual void setBase(int b);
             virtual bool isOverflowed() const;
             virtual int indexOf(FormatElement* fe) const;
             virtual void parseChildren();
