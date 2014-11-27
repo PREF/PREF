@@ -172,7 +172,7 @@ namespace PrefSDK
 
     bool FormatValidator::checkUInt32(lua_Integer offset, quint32 expected, int byteorder, bool throwerr)
     {
-        quint16 dataval = this->_reader->readUInt32(this->_baseoffset + offset, static_cast<QSysInfo::Endian>(byteorder));
+        quint32 dataval = this->_reader->readUInt32(this->_baseoffset + offset, static_cast<QSysInfo::Endian>(byteorder));
         this->_validated = (dataval == expected);
 
         if(!this->_validated && throwerr)
@@ -187,7 +187,7 @@ namespace PrefSDK
 
     bool FormatValidator::checkUInt64(lua_Integer offset, quint64 expected, int byteorder, bool throwerr)
     {
-        quint16 dataval = this->_reader->readUInt64(this->_baseoffset + offset, static_cast<QSysInfo::Endian>(byteorder));
+        quint64 dataval = this->_reader->readUInt64(this->_baseoffset + offset, static_cast<QSysInfo::Endian>(byteorder));
         this->_validated = (dataval == expected);
 
         if(!this->_validated && throwerr)
