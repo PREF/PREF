@@ -71,7 +71,7 @@ namespace PrefSDK
             if(logwidget)
                 logwidget->error(s);
 
-            return QString();
+            return "Lua Error: check output";
         }
 
         return s;
@@ -141,9 +141,9 @@ namespace PrefSDK
         if(FormatElement::_mainwindow)
             return FormatElement::_mainwindow;
 
-        QWindowList windows = qApp->topLevelWindows();
+        QWidgetList widgets = QApplication::topLevelWidgets();
 
-        foreach(QWindow* w, windows)
+        foreach(QWidget* w, widgets)
         {
             if(w->objectName() == "MainWindow")
             {

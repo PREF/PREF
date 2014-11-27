@@ -9,6 +9,7 @@
 #include <QtCore>
 #include <QQmlEngine>
 #include <QMainWindow>
+#include <QApplication>
 #include <QWindow>
 
 namespace PrefSDK
