@@ -29,7 +29,7 @@ void DataMapView::setModel(VariablesModel* model)
 
 void DataMapView::selectRange(const DataValue &offset, const DataValue &length)
 {
-    ui->hexView->setSelectionRange(offset.compatibleValue<qint64>(), length.compatibleValue<qint64>());
+    ui->hexView->setSelectionLength(offset.compatibleValue<qint64>(), length.compatibleValue<qint64>());
 }
 
 DataMapView::~DataMapView()
@@ -80,5 +80,5 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
         return;
 
     qint64 offset = ((symbol->startAddress() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
-    ui->hexView->setSelectionRange(offset, symbol->size().compatibleValue<qint64>());
+    ui->hexView->setSelectionLength(offset, symbol->size().compatibleValue<qint64>());
 }

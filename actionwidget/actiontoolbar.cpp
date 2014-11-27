@@ -330,7 +330,7 @@ void ActionToolBar::findRequested(QByteArray value)
     qint64 idx = this->_hexedit->indexOf(value, this->_hexedit->selectionEnd());
 
     if(idx != -1)
-        this->_hexedit->setSelection(idx, (idx + value.length()) - 1);
+        this->_hexedit->setSelectionLength(idx, value.length());
     else
     {
         this->_hexedit->setCursorPos(this->_hexedit->cursorPos()); /* Reset Selection */
@@ -344,5 +344,5 @@ void ActionToolBar::findRequested(QByteArray value)
 
 void ActionToolBar::gotoAddress(qint64 address)
 {
-    this->_hexedit->setSelectionRange(address, 1);
+    this->_hexedit->setSelectionLength(address, 1);
 }

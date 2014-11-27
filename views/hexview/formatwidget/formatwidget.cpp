@@ -95,8 +95,7 @@ void FormatWidget::onRemoveBackColor(FormatElement *formatelement)
 
 void FormatWidget::onFormatObjectSelected(FormatElement *formatelement)
 {
-    quint64 offset = formatelement->offset();
-    this->_hexedit->setSelection(offset, (offset + formatelement->size() - 1));
+    this->_hexedit->setSelection(formatelement->offset(), formatelement->endOffset() - 1);
 }
 
 void FormatWidget::exportData(FormatElement *formatelement)

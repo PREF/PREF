@@ -146,8 +146,8 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     connect(ui->stringsWidget, SIGNAL(workFinished()), this, SLOT(onWorkFinished()));
 
     connect(ui->visualMapWidget, SIGNAL(gotoTriggered(qint64)), ui->hexEdit, SLOT(selectPos(qint64)));
-    connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
-    connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionRange(qint64,qint64)));
+    connect(ui->stringsWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionLength(qint64,qint64)));
+    connect(ui->signaturesWidget, SIGNAL(gotoTriggered(qint64,qint64)), ui->hexEdit, SLOT(setSelectionLength(qint64,qint64)));
     connect(ui->formatWidget, SIGNAL(parsingStarted()), this, SLOT(onFormatParsingStarted()));
     connect(ui->formatWidget, SIGNAL(parsingCompleted()), this, SLOT(onFormatParsingFinished()));
     connect(ui->formatWidget, SIGNAL(parsingFailed()), this, SLOT(onFormatParsingFailed()));
