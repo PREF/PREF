@@ -1,7 +1,6 @@
 #ifndef PREFSDK_DISASSEMBLERLISTING_H
 #define PREFSDK_DISASSEMBLERLISTING_H
 
-#include "logwidget/logobject.h"
 #include "prefsdk/type/datatype.h"
 #include "prefsdk/type/datavalue.h"
 #include "prefsdk/format/formattree.h"

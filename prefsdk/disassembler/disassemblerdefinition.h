@@ -1,7 +1,6 @@
 #ifndef PREFSDK_DISASSEMBLERDEFINITION_H
 #define PREFSDK_DISASSEMBLERDEFINITION_H
 
-#include "logwidget/logobject.h"
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/format/formatdefinition.h"

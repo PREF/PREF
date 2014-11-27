@@ -1,7 +1,6 @@
 #ifndef PREFSDK_FORMATDEFINITION_H
 #define PREFSDK_FORMATDEFINITION_H
 
-#include "logwidget/logobject.h"
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/format/formattree.h"
 #include "formatvalidator.h"

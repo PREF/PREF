@@ -2,7 +2,6 @@
 #define PREFSDK_ABSTRACTTREE_H
 
 #include "qhexedit/qhexeditdata.h"
-#include "logwidget/logobject.h"
 #include <QObject>
 #include <QHash>
 #include <QUuid>

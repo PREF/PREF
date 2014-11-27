@@ -151,7 +151,6 @@ SOURCES += main.cpp\
     views/disassemblerview/disassemblerworker.cpp \
     logwidget/logger.cpp \
     views/hexview/formatwidget/formatworker.cpp \
-    logwidget/logobject.cpp \
     qhexedit/sparserangemap.cpp \
     csvexporterdialog/csvexporterworker.cpp \
     csvexporterdialog/csvexporter.cpp \
@@ -306,7 +305,6 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/disassemblerworker.h \
     logwidget/logger.h \
     views/hexview/formatwidget/formatworker.h \
-    logwidget/logobject.h \
     csvexporterdialog/csvexporterworker.h \
     csvexporterdialog/csvexporter.h \
     csvexporterdialog/csvexporterdialog.h \
