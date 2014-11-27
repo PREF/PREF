@@ -42,7 +42,7 @@ void QHexEdit::setData(QHexEditData *hexeditdata)
 
 void QHexEdit::selectPos(qint64 pos)
 {
-    this->setSelectionRange(pos, 1);
+    this->setSelectionLength(pos, 1);
 }
 
 void QHexEdit::setSelection(qint64 start, qint64 end)
@@ -50,7 +50,7 @@ void QHexEdit::setSelection(qint64 start, qint64 end)
     this->_hexedit_p->setSelection(start, end);
 }
 
-void QHexEdit::setSelectionRange(qint64 start, qint64 length)
+void QHexEdit::setSelectionLength(qint64 start, qint64 length)
 {
     this->setSelection(start, (start + length) - 1);
 }
