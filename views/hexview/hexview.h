@@ -31,6 +31,7 @@ class HexView : public AbstractView
         virtual bool canSave() const;
         virtual bool canSaveAs() const;
         virtual void updateStatusBar();
+        virtual LogWidget* logWidget();
 
     private:
         void createToolBar();

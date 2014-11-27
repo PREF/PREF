@@ -2,6 +2,7 @@
 #define PREFSDK_PREFLIB_H
 
 #include "qhexedit/qhexeditdata.h"
+#include "views/abstractview.h"
 #include "prefsdk/format/formatdefinition.h"
 #include "prefsdk/exporter/exporterdefinition.h"
 #include "prefsdk/disassembler/disassemblerdefinition.h"
@@ -13,6 +14,7 @@
 #include <QtGui>
 #include <QtQuick>
 #include <QtQml>
+#include <QMainWindow>
 
 namespace PrefSDK
 {
@@ -26,6 +28,10 @@ namespace PrefSDK
         private:
             explicit PrefLib(QObject* parent = 0);
             static void registerPrefTypes();
+            static LogWidget* getLogWidget();
+            static int writeLog(lua_State* l, const QString& methodname);
+            static bool validateArgs(lua_State* l, const QString& methodname);
+            static QString buildString(lua_State* l);
             void buildByteOrder(lua_State* l);
             void buildDataType(lua_State* l);
             void buildMathTable(lua_State* l);
@@ -40,8 +46,16 @@ namespace PrefSDK
             void buildSymbolTypeTable(lua_State* l);
 
         public:
-            static void open(lua_State* l, SdkVersion* sdkversion);
+            static void open(lua_State* l, QMainWindow *mainwindow, SdkVersion* sdkversion);
             static PrefLib* instance();
+
+        /* Logger methods */
+        private:
+            static int logger_log(lua_State* l);
+            static int logger_logline(lua_State* l);
+            static int logger_notice(lua_State* l);
+            static int logger_warning(lua_State* l);
+            static int logger_error(lua_State* l);
 
         /* DataType Methods */
         private:
@@ -73,6 +87,7 @@ namespace PrefSDK
 
         private:
             SdkVersion* _sdkversion;
+            QMainWindow* _mainwindow;
 
         private:
             static PrefLib* _instance;

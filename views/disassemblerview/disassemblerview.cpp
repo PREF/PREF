@@ -120,6 +120,11 @@ void DisassemblerView::updateStatusBar()
     this->updateInfoText(QString());
 }
 
+LogWidget *DisassemblerView::logWidget()
+{
+    return ui->logWidget;
+}
+
 void DisassemblerView::createListingMenu()
 {
     this->_listingmenu = new QMenu();

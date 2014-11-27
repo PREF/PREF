@@ -85,6 +85,11 @@ void HexView::updateStatusBar()
     this->updateInfoText(QString("<b>Offset:</b> %1h&nbsp;&nbsp;&nbsp;&nbsp;<b>Size:</b> %2h").arg(offset, size));
 }
 
+LogWidget *HexView::logWidget()
+{
+    return ui->tabOutput->logWidget();
+}
+
 void HexView::createToolBar()
 {
     this->_toolbar = new ActionToolBar(ui->hexEdit, ui->tbContainer);

@@ -2,14 +2,14 @@
 
 namespace PrefSDK
 {
-    DisassemblerDefinition::DisassemblerDefinition(const QtLua::LuaTable &disassemblertable, QObject *parent): LogObject(parent), _disassemblertable(disassemblertable), _listing(nullptr), _formattree(nullptr), _memorybuffer(nullptr)
+    DisassemblerDefinition::DisassemblerDefinition(const QtLua::LuaTable &disassemblertable, QObject *parent): QObject(parent), _disassemblertable(disassemblertable), _listing(nullptr), _formattree(nullptr), _memorybuffer(nullptr)
     {
         this->_formatdefinition = new FormatDefinition(this->_disassemblertable.getTable("formatdefinition"), this);
         this->_baseaddress = DataValue(this->addressType());
         this->_disassemblertable.bind(this);
     }
 
-    void DisassemblerDefinition::callDisassemble(QLabel* infolabel)
+    void DisassemblerDefinition::callDisassemble(QLabel* infolabel, Logger* logger)
     {   
         if(!this->_disassemblertable.fieldExists("disassemble"))
             return;
@@ -28,7 +28,7 @@ namespace PrefSDK
 
                 if(!this->_listing->isAddress(address))
                 {
-                    this->warning(QString("Trying to disassemble %1, this address does not belong to any Segment").arg(address.toString(16)));
+                    logger->warning(QString("Trying to disassemble %1, this address does not belong to any Segment").arg(address.toString(16)));
                     break;
                 }
 
@@ -79,7 +79,7 @@ namespace PrefSDK
 
     bool DisassemblerDefinition::validate(QHexEditData *hexeditdata)
     {
-        return this->_formatdefinition->callValidate(hexeditdata, this->_logger, 0, true);
+        return this->_formatdefinition->callValidate(hexeditdata, nullptr, 0);
     }
 
     QString DisassemblerDefinition::emitInstruction(Instruction *instruction)
@@ -90,14 +90,14 @@ namespace PrefSDK
         return printer.printString();
     }
 
-    bool DisassemblerDefinition::callMap(QHexEditData* hexeditdata)
+    bool DisassemblerDefinition::callMap(QHexEditData* hexeditdata, Logger* logger)
     {
         bool b = this->validate(hexeditdata);
 
         if(!b || !this->_disassemblertable.fieldExists("map"))
             return false;
 
-        this->_formattree = this->_formatdefinition->callParse(hexeditdata, this->_logger, 0);
+        this->_formattree = this->_formatdefinition->callParse(hexeditdata, logger, 0);
 
         if(this->_formattree->isEmpty())
             return false;
@@ -106,8 +106,8 @@ namespace PrefSDK
         QtLua::LuaFunction mapfunc = this->_disassemblertable.getFunction("map");
 
         this->_baseaddress = this->callBaseAddress();
-        this->_listing = new DisassemblerListing(hexeditdata, this->addressType(), this);
-        this->_memorybuffer = new MemoryBuffer(hexeditdata, this->_listing, this->_logger, this->_baseaddress, this->addressType(), this);
+        this->_listing = new DisassemblerListing(hexeditdata, logger, this->addressType(), this);
+        this->_memorybuffer = new MemoryBuffer(hexeditdata, this->_listing, logger, this->_baseaddress, this->addressType(), this);
         bool err = mapfunc();
 
         if(err)

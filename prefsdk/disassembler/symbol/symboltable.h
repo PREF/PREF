@@ -2,7 +2,6 @@
 #define PREFSDK_SYMBOLTABLE_H
 
 #include "symbol.h"
-#include "logwidget/logobject.h"
 #include "prefsdk/type/datavalue.h"
 #include <QObject>
 #include <QHash>
@@ -11,7 +10,7 @@
 
 namespace PrefSDK
 {
-    class SymbolTable : public LogObject
+    class SymbolTable : public QObject
     {
         Q_OBJECT
 

@@ -9,7 +9,7 @@
 
 namespace PrefSDK
 {
-    class FormatDefinition : public LogObject
+    class FormatDefinition : public QObject
     {
         Q_OBJECT
 
@@ -23,9 +23,9 @@ namespace PrefSDK
             QString version() const;
 
         public:
-            bool callValidate(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, bool ignoreerror = false);
+            bool callValidate(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset);
             FormatTree* callParse(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset);
-            QWidget* callView(FormatTree* formattree);
+            QWidget* callView(FormatTree* formattree, Logger *logger);
 
         private:
             QtLua::LuaTable _formattable;

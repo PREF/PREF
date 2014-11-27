@@ -2,16 +2,10 @@
 
 namespace PrefSDK
 {
-    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, DataType::Type addresstype, QObject *parent): LogObject(parent), _blocksorted(false), _hexeditdata(hexeditdata), _formattree(nullptr), _addresstype(addresstype)
+    DisassemblerListing::DisassemblerListing(QHexEditData *hexeditdata, Logger *logger, DataType::Type addresstype, QObject *parent): QObject(parent), _blocksorted(false), _hexeditdata(hexeditdata), _logger(logger), _formattree(nullptr), _addresstype(addresstype)
     {
         this->_symboltable = new SymbolTable(addresstype, this);
         this->_constanttable = new ConstantTable(this);
-    }
-
-    void DisassemblerListing::setLogger(Logger *logger)
-    {
-        LogObject::setLogger(logger);
-        this->_symboltable->setLogger(logger);
     }
 
     void DisassemblerListing::setFormatTree(FormatTree *formattree)
@@ -62,7 +56,7 @@ namespace PrefSDK
     {
         if(!this->isAddress(address))
         {
-            this->warning(QString("Trying to creating an out of segment function at %1").arg(address.toString(16)));
+            this->_logger->warning(QString("Trying to creating an out of segment function at %1").arg(address.toString(16)));
             return;
         }
 

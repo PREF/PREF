@@ -41,6 +41,7 @@ class DisassemblerView : public AbstractView
         virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
+        virtual LogWidget* logWidget();
 
     private:
         void createListingMenu();

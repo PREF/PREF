@@ -8,10 +8,9 @@ DisassemblerWorker::DisassemblerWorker(QHexEditData *hexeditdata, DisassemblerDe
 void DisassemblerWorker::run()
 {
     Logger* logger = new Logger(this->_logwidget);
-    this->_disassembler->setLogger(logger);
 
-    if(this->_disassembler->callMap(this->_hexeditdata))
-        this->_disassembler->callDisassemble(this->_infolabel);
+    if(this->_disassembler->callMap(this->_hexeditdata, logger))
+        this->_disassembler->callDisassemble(this->_infolabel, logger);
 
     if(this->_canloaddatabase && DisassemblerDatabase::exists(this->_loadedfile))
     {

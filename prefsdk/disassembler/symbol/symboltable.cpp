@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    SymbolTable::SymbolTable(DataType::Type addresstype, QObject *parent): LogObject(parent), _addresstype(addresstype)
+    SymbolTable::SymbolTable(DataType::Type addresstype, QObject *parent): QObject(parent), _addresstype(addresstype)
     {
     }
 

@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->_basetitle = this->windowTitle();
     ui->statusBar->addWidget(this->_lblinfo, 1);
 
-    lua_State* l = SDKManager::initializeLua();
+    lua_State* l = SDKManager::initializeLua(this);
 
     if(l)
     {

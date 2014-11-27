@@ -16,14 +16,14 @@ class LogWidget : public QPlainTextEdit
         explicit LogWidget(QWidget *parent = 0);
 
     public slots:
-        void write(const QString& text);
-        void writeLine(const QString& text);
-        void writeNotice(const QString& text);
-        void writeWarning(const QString& text);
-        void writeError(const QString& text);
+        void log(const QString& text);
+        void logline(const QString& text);
+        void notice(const QString& text);
+        void warning(const QString& text);
+        void error(const QString& text);
 
     private:
-        void writeLine(const QString& text, LogWidget::LogLevel loglevel);
+        void logline(const QString& text, LogWidget::LogLevel loglevel);
 
     private:
         LogWidgetHightlighter* _highlighter;

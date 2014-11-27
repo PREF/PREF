@@ -4,6 +4,8 @@ AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &loadedfile,
 {
     if(this->_hexeditdata)
         this->_hexeditdata->setParent(this); /* Take Ownership */
+
+
 }
 
 AbstractView::~AbstractView()

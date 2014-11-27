@@ -143,7 +143,10 @@ void FormatWidget::onParseCompleted()
         ui->tvFormat->resizeColumnToContents(i);
 
     if(this->_formatdefinition->hasView())
-        this->_formatview = this->_formatdefinition->callView(formattree);
+    {
+        Logger logger(this->_logwidget);
+        this->_formatview = this->_formatdefinition->callView(formattree, &logger);
+    }
     else
         this->_formatview = nullptr;
 }

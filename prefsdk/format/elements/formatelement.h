@@ -4,9 +4,12 @@
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/format/abstracttree.h"
 #include "qhexedit/qhexeditdatareader.h"
+#include "views/abstractview.h"
 #include <cstdint>
 #include <QtCore>
 #include <QQmlEngine>
+#include <QMainWindow>
+#include <QWindow>
 
 namespace PrefSDK
 {
@@ -65,6 +68,10 @@ namespace PrefSDK
             virtual QString displayValue() const;
 
         private:
+            static QMainWindow* findMainWindow();
+            static LogWidget* getLogWidget();
+
+        private:
             quint64 _offset;
             int _base;
             QString _name;
@@ -76,6 +83,9 @@ namespace PrefSDK
             PrefSDK::QtLua::LuaFunction _infoprocedure;
             PrefSDK::QtLua::LuaFunction _parseprocedure;
             bool _dynamic;
+
+        protected:
+            static QMainWindow* _mainwindow;
     };
 
 }

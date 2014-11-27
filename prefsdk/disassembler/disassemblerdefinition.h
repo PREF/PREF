@@ -13,7 +13,7 @@
 
 namespace PrefSDK
 {
-    class DisassemblerDefinition: public LogObject
+    class DisassemblerDefinition: public QObject
     {
         Q_OBJECT
 
@@ -33,8 +33,8 @@ namespace PrefSDK
             PrefSDK::FormatTree* formatTree() const;
             PrefSDK::DisassemblerListing* listing() const;
             PrefSDK::MemoryBuffer* memoryBuffer() const;
-            bool callMap(QHexEditData* hexeditdata);
-            void callDisassemble(QLabel *infolabel);
+            bool callMap(QHexEditData* hexeditdata, Logger* logger);
+            void callDisassemble(QLabel *infolabel, Logger *logger);
             void callOutput(ListingPrinter* printer, Instruction* instruction);
 
         public:

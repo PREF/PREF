@@ -24,7 +24,7 @@ namespace PrefSDK
         }
     }
 
-    lua_State *SDKManager::initializeLua()
+    lua_State *SDKManager::initializeLua(QMainWindow* mainwindow)
     {
         lua_State* l = LuaState::instance();
 
@@ -33,7 +33,7 @@ namespace PrefSDK
             luaL_openlibs(l);
             LuaOOP::open(l);
             QtLua::open(l);
-            PrefLib::open(l, &SDKManager::_sdkversion);
+            PrefLib::open(l, mainwindow, &SDKManager::_sdkversion);
 
             lua_getglobal(l, "package");
             lua_getfield(l, -1, "path");

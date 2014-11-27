@@ -2,6 +2,8 @@
 
 namespace PrefSDK
 {
+    QMainWindow* FormatElement::_mainwindow = nullptr;
+
     FormatElement::FormatElement(QObject *parent): QObject(parent), _offset(0), _base(0), _dynamic(false)
     {
 
@@ -64,7 +66,11 @@ namespace PrefSDK
 
         if(res != 0)
         {
-            this->_formattree->logger()->error(s);
+            LogWidget* logwidget = FormatElement::getLogWidget();
+
+            if(logwidget)
+                logwidget->error(s);
+
             return QString();
         }
 
@@ -130,6 +136,32 @@ namespace PrefSDK
         return QString();
     }
 
+    QMainWindow *FormatElement::findMainWindow()
+    {
+        if(FormatElement::_mainwindow)
+            return FormatElement::_mainwindow;
+
+        QWindowList windows = qApp->topLevelWindows();
+
+        foreach(QWindow* w, windows)
+        {
+            if(w->objectName() == "MainWindow")
+            {
+                FormatElement::_mainwindow = qobject_cast<QMainWindow*>(w);
+                return qobject_cast<QMainWindow*>(w);
+            }
+        }
+
+        Q_ASSERT(false);
+    }
+
+    LogWidget *FormatElement::getLogWidget()
+    {
+        QMainWindow* mainwindow = FormatElement::findMainWindow();
+        AbstractView* abstractview = qobject_cast<AbstractView*>(mainwindow->centralWidget());
+        return abstractview->logWidget();
+    }
+
     void FormatElement::parseChildren()
     {
         if(!this->_dynamic || !this->_parseprocedure.isValid())
@@ -141,7 +173,11 @@ namespace PrefSDK
 
         if(res != 0)
         {
-            this->_formattree->logger()->error(QString::fromUtf8(lua_tostring(l, -1)));
+            LogWidget* logwidget = FormatElement::getLogWidget();
+
+            if(logwidget)
+                logwidget->error(QString::fromUtf8(lua_tostring(l, -1)));
+
             lua_pop(l, 1);
         }
     }

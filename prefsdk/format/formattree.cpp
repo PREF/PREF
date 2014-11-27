@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    FormatTree::FormatTree(QHexEditData* hexeditdata, Logger *logger, qint64 baseoffset, QObject *parent): AbstractTree(hexeditdata, logger, parent), _baseoffset(baseoffset)
+    FormatTree::FormatTree(QHexEditData* hexeditdata, qint64 baseoffset, QObject *parent): AbstractTree(hexeditdata, parent), _baseoffset(baseoffset)
     {
         this->_databuffer = new DataBuffer(hexeditdata, baseoffset, this);
     }

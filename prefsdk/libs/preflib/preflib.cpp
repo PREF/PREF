@@ -34,7 +34,78 @@ namespace PrefSDK
         qmlRegisterType<PrefSDK::FormatElement>("Pref.Format", 1, 0, "ElementType");
     }
 
-    void PrefLib::open(lua_State *l, SdkVersion *sdkversion)
+    LogWidget *PrefLib::getLogWidget()
+    {
+        QMainWindow* mainwindow = PrefLib::_instance->_mainwindow;
+        AbstractView* abstractview = qobject_cast<AbstractView*>(mainwindow->centralWidget());
+        return abstractview->logWidget();
+    }
+
+    int PrefLib::writeLog(lua_State *l, const QString &methodname)
+    {
+        if(!PrefLib::validateArgs(l, methodname))
+            return 0;
+
+        LogWidget* logwidget = PrefLib::getLogWidget();
+
+        if(logwidget)
+        {
+            QString s = PrefLib::buildString(l);
+
+            if(!s.isEmpty())
+                QMetaObject::invokeMethod(logwidget, methodname.toUtf8().constData(), Q_ARG(QString, s));
+        }
+
+        return 0;
+    }
+
+    bool PrefLib::validateArgs(lua_State *l, const QString &methodname)
+    {
+        int argc = lua_gettop(l);
+
+        if(argc == 0)
+        {
+            throw PrefException(QString("pref.%1: Logger functions require at least 1 'string' argument").arg(methodname));
+            return false;
+        }
+        else if(lua_type(l, 1) != LUA_TSTRING)
+        {
+            throw PrefException(QString("pref.%1: Expected 'string' type for argument 1, '%2' given").arg(methodname, QString::fromUtf8(luaL_typename(l, 1))));
+            return false;
+        }
+
+        return true;
+    }
+
+    QString PrefLib::buildString(lua_State *l)
+    {
+        int argc = lua_gettop(l);
+
+        if(argc > 1)
+        {
+            lua_getglobal(l, "string");
+            lua_getfield(l, -1, "format");
+
+            for(int i = 1; i <= argc; i++)
+                lua_pushvalue(l, i);
+
+            int res = lua_pcall(l, argc, 1, 0);
+            QString s = QString::fromUtf8(lua_tostring(l, -1));
+            lua_pop(l, 2); /* Pop Table and Result */
+
+            if(res)
+            {
+                throw PrefException(s);
+                return QString();
+            }
+
+            return s;
+        }
+
+        return QString::fromUtf8(lua_tostring(l, 1));
+    }
+
+    void PrefLib::open(lua_State *l, QMainWindow* mainwindow, SdkVersion *sdkversion)
     {
         if(PrefLib::_instance)
             return;
@@ -44,8 +115,14 @@ namespace PrefSDK
         PrefLib::_instance = new PrefLib();
         PrefLib::_instance->_state = l;
         PrefLib::_instance->_sdkversion = sdkversion;
+        PrefLib::_instance->_mainwindow = mainwindow;
 
         PrefLib::_instance->_methods.append( {"setSdkVersion", &PrefLib::setSdkVersion} );
+        PrefLib::_instance->_methods.append( {"log", &PrefLib::logger_log} );
+        PrefLib::_instance->_methods.append( {"logline", &PrefLib::logger_logline} );
+        PrefLib::_instance->_methods.append( {"notice", &PrefLib::logger_notice} );
+        PrefLib::_instance->_methods.append( {"warning", &PrefLib::logger_warning} );
+        PrefLib::_instance->_methods.append( {"error", &PrefLib::logger_error} );
         PrefLib::_instance->_methods.append( {nullptr, nullptr} );
 
         luaL_register(l, PrefLib::PREF_TABLE, PrefLib::_instance->_methods.cbegin());
@@ -63,6 +140,31 @@ namespace PrefSDK
     PrefLib *PrefLib::instance()
     {
         return PrefLib::_instance;
+    }
+
+    int PrefLib::logger_log(lua_State *l)
+    {
+        return PrefLib::writeLog(l, "log");
+    }
+
+    int PrefLib::logger_logline(lua_State *l)
+    {
+        return PrefLib::writeLog(l, "logline");
+    }
+
+    int PrefLib::logger_notice(lua_State *l)
+    {
+        return PrefLib::writeLog(l, "notice");
+    }
+
+    int PrefLib::logger_warning(lua_State *l)
+    {
+        return PrefLib::writeLog(l, "warning");
+    }
+
+    int PrefLib::logger_error(lua_State *l)
+    {
+        return PrefLib::writeLog(l, "error");
     }
 
     int PrefLib::format_create(lua_State *l)
@@ -124,7 +226,11 @@ namespace PrefSDK
 
         if(!QFileInfo(qmlmain).exists())
         {
-            formattree->warning(QString("Cannot find '%1'").arg(qmlmain));
+            LogWidget* logwidget = PrefLib::getLogWidget();
+
+            if(logwidget)
+                logwidget->warning(QString("Cannot find '%1'").arg(qmlmain));
+
             lua_pushnil(l);
         }
         else
@@ -138,11 +244,16 @@ namespace PrefSDK
 
             if(view->status() == QQuickView::Error)
             {
-                QList<QQmlError> errors = view->errors();
-                formattree->warning("Cannot load the view.");
+                LogWidget* logwidget = PrefLib::getLogWidget();
 
-                foreach(QQmlError error, errors)
-                    formattree->logline("- " + error.toString());
+                if(logwidget)
+                {
+                    QList<QQmlError> errors = view->errors();
+                    logwidget->warning("Cannot load the view.");
+
+                    foreach(QQmlError error, errors)
+                        logwidget->logline("- " + error.toString());
+                }
 
                 lua_pushnil(l);
             }

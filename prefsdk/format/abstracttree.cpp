@@ -2,9 +2,9 @@
 
 namespace PrefSDK
 {
-    AbstractTree::AbstractTree(QHexEditData* hexeditdata, Logger* logger, QObject *parent): LogObject(parent), _hexeditdata(hexeditdata)
+    AbstractTree::AbstractTree(QHexEditData* hexeditdata, QObject *parent): QObject(parent), _hexeditdata(hexeditdata)
     {
-        this->setLogger(logger);
+
     }
 
     FormatElement *AbstractTree::elementFromPoolByUUID(const QUuid &uuid)

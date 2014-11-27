@@ -28,7 +28,7 @@ namespace PrefSDK
             static int luaAtPanic(lua_State* l);
 
         public:
-            static lua_State* initializeLua();
+            static lua_State* initializeLua(QMainWindow *mainwindow);
             static bool loadSDK();
             static void unloadSDK();
             static QString sdkVersion();

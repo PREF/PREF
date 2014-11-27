@@ -2,7 +2,7 @@
 
 namespace PrefSDK
 {
-    FormatDefinition::FormatDefinition(const QtLua::LuaTable &formattable, QObject *parent): LogObject(parent), _formattable(formattable)
+    FormatDefinition::FormatDefinition(const QtLua::LuaTable &formattable, QObject *parent): QObject(parent), _formattable(formattable)
     {
         this->_formattable.bind(this);
     }
@@ -37,10 +37,8 @@ namespace PrefSDK
         return this->_formattable.getString("version");
     }
 
-    bool FormatDefinition::callValidate(QHexEditData *hexeditdata, Logger* logger, qint64 baseoffset, bool ignoreerror)
+    bool FormatDefinition::callValidate(QHexEditData *hexeditdata, Logger* logger, qint64 baseoffset)
     {
-        this->setLogger(logger);
-
         if(!this->_formattable.fieldExists("validate"))
             return true; /* If 'validate-procedure' is not set, the format doesn't require validation */
 
@@ -53,7 +51,7 @@ namespace PrefSDK
 
         if(err)
         {
-            if(logger && !ignoreerror)
+            if(logger)
                 logger->error(QString::fromUtf8(lua_tostring(l, -1)));
 
             lua_pop(l, 1);
@@ -67,14 +65,14 @@ namespace PrefSDK
     {
         lua_State* l = this->_formattable.instance();
         QtLua::LuaFunction parsefunc = this->_formattable.getFunction("parse");
-        FormatTree* formattree = new FormatTree(hexeditdata, logger, baseoffset);
+        FormatTree* formattree = new FormatTree(hexeditdata, baseoffset);
 
         QtLua::pushObject(l, formattree);
         bool err = parsefunc(1);
 
         if(err)
         {
-            this->error(QString::fromUtf8(lua_tostring(l, -1)));
+            logger->error(QString::fromUtf8(lua_tostring(l, -1)));
             lua_pop(l, 1);
 
             formattree->deleteLater();
@@ -84,7 +82,7 @@ namespace PrefSDK
         return formattree;
     }
 
-    QWidget *FormatDefinition::callView(FormatTree *formattree)
+    QWidget *FormatDefinition::callView(FormatTree *formattree, Logger* logger)
     {
         if(!this->_formattable.fieldExists("view"))
             return nullptr;
@@ -100,7 +98,7 @@ namespace PrefSDK
         if(err || (t != LUA_TUSERDATA))
         {
             if(err)
-                this->error(QString::fromUtf8(lua_tostring(l, -1)));
+                logger->error(QString::fromUtf8(lua_tostring(l, -1)));
             else if(t <= 0) /* lua_isnoneornil() */
                 lua_pop(l, 1);
 

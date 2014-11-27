@@ -17,7 +17,7 @@
 
 namespace PrefSDK
 {
-    class DisassemblerListing : public LogObject
+    class DisassemblerListing : public QObject
     {
         Q_OBJECT
 
@@ -35,8 +35,7 @@ namespace PrefSDK
             typedef QList<BookmarkEntry> BookmarkList;
 
         public:
-            explicit DisassemblerListing(QHexEditData* hexeditdata, DataType::Type addresstype, QObject *parent = 0);
-            virtual void setLogger(Logger *logger);
+            explicit DisassemblerListing(QHexEditData* hexeditdata, Logger* logger, DataType::Type addresstype, QObject *parent = 0);
             void setFormatTree(PrefSDK::FormatTree* formattree);
             bool isAddress(const DataValue& address) const;
             bool isDecoded(const DataValue& address) const;
@@ -89,6 +88,7 @@ namespace PrefSDK
         private:
             bool _blocksorted;
             QHexEditData* _hexeditdata;
+            Logger* _logger;
             FormatTree* _formattree;
             DataType::Type _addresstype;
             SymbolTable* _symboltable;

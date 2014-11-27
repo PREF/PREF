@@ -11,7 +11,7 @@ LogWidget::LogWidget(QWidget *parent): QPlainTextEdit(parent)
     this->_highlighter = new LogWidgetHightlighter(this->document());
 }
 
-void LogWidget::writeLine(const QString &text, LogWidget::LogLevel loglevel)
+void LogWidget::logline(const QString &text, LogWidget::LogLevel loglevel)
 {
     QString line = text;
 
@@ -36,27 +36,27 @@ void LogWidget::writeLine(const QString &text, LogWidget::LogLevel loglevel)
     this->insertPlainText(line);
 }
 
-void LogWidget::write(const QString &text)
+void LogWidget::log(const QString &text)
 {
     this->insertPlainText(text);
 }
 
-void LogWidget::writeLine(const QString &text)
+void LogWidget::logline(const QString &text)
 {
-    this->writeLine(QString(text).append("\n"), LogWidget::Nothing);
+    this->logline(QString(text).append("\n"), LogWidget::Nothing);
 }
 
-void LogWidget::writeNotice(const QString &text)
+void LogWidget::notice(const QString &text)
 {
-    this->writeLine(QString(text).append("\n"), LogWidget::Notice);
+    this->logline(QString(text).append("\n"), LogWidget::Notice);
 }
 
-void LogWidget::writeWarning(const QString &text)
+void LogWidget::warning(const QString &text)
 {
-    this->writeLine(QString(text).append("\n"), LogWidget::Warning);
+    this->logline(QString(text).append("\n"), LogWidget::Warning);
 }
 
-void LogWidget::writeError(const QString &text)
+void LogWidget::error(const QString &text)
 {
-    this->writeLine(QString(text).append("\n"), LogWidget::Error);
+    this->logline(QString(text).append("\n"), LogWidget::Error);
 }
