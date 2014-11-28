@@ -18,7 +18,7 @@ class Worker : public QThread
         void error(QString);
 
     protected:
-        bool _cancontinue;
+        volatile bool _cancontinue;
 };
 
 #endif // WORKER_H

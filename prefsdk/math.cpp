@@ -7,7 +7,7 @@ namespace PrefSDK
         return log(n) / log(base);
     }
 
-    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size, bool *cancontinue)
+    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size, volatile bool *cancontinue)
     {
         OccurrenceList occlist;
 
