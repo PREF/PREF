@@ -13,6 +13,12 @@ void FormatWidget::setLogWidget(LogWidget *logwidget)
 
 FormatWidget::~FormatWidget()
 {
+    if(this->_worker && this->_worker->isRunning())
+    {
+        this->_worker->terminate();
+        this->_worker->wait();
+    }
+
     delete ui;
 }
 
