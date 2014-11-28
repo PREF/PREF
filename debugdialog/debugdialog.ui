@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>742</width>
-    <height>500</height>
+    <width>759</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,9 +20,6 @@
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,0">
-   <property name="margin">
-    <number>4</number>
-   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
      <item>
@@ -63,149 +60,64 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tLuaOutput">
+     <widget class="QWidget" name="tabLog">
       <attribute name="title">
-       <string>Lua Output</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_6">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTextEdit" name="teLuaOutput">
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
-         <property name="undoRedoEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tPrefOutput">
-      <attribute name="title">
-       <string>Pref Output</string>
+       <string>Log</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="tePrefOutput">
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>8</pointsize>
-          </font>
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="undoRedoEnabled">
-          <bool>false</bool>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
+         <widget class="QPlainTextEdit" name="teOutput">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPlainTextEdit" name="teTraceback">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tTraceback">
+     <widget class="QWidget" name="tabStack">
       <attribute name="title">
-       <string>Traceback</string>
+       <string>Stack</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <item>
-        <widget class="QTextEdit" name="teTraceback">
-         <property name="font">
-          <font>
-           <family>Monospace</family>
-           <pointsize>8</pointsize>
-          </font>
-         </property>
+        <widget class="QPlainTextEdit" name="teStackdump">
          <property name="readOnly">
           <bool>true</bool>
          </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tLuaStack">
-      <attribute name="title">
-       <string>Lua Stack</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTabWidget" name="tStack">
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>Stack</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_7">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QTreeView" name="tvStackView">
-             <property name="font">
-              <font>
-               <family>Monospace</family>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="rootIsDecorated">
-              <bool>false</bool>
-             </property>
-             <property name="uniformRowHeights">
-              <bool>true</bool>
-             </property>
-             <property name="itemsExpandable">
-              <bool>false</bool>
-             </property>
-             <property name="expandsOnDoubleClick">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="tStackDump">
-          <attribute name="title">
-           <string>Stack Dump</string>
-          </attribute>
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QTextEdit" name="teStackDump">
-             <property name="font">
-              <font>
-               <family>Monospace</family>
-               <pointsize>8</pointsize>
-              </font>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
         </widget>
        </item>
       </layout>

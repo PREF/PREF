@@ -3,7 +3,8 @@
 
 #include <QDialog>
 #include <QCloseEvent>
-#include "viewmodels/luatypeviewmodel/luastackviewmodel.h"
+#include "stackdumphighlighter.h"
+#include "lua.hpp"
 
 namespace Ui {
 class DebugDialog;
@@ -22,21 +23,13 @@ class DebugDialog : public QDialog
         ~DebugDialog();
 
     public slots:
-        DebugDialog* luaOut(QString s);
         DebugDialog* out(QString s);
-        DebugDialog* outWord(QString s);
-        DebugDialog* out(lua_Integer i, int base = 10, int fieldwidth = 0);
-        DebugDialog* hexDump(QByteArray ba);
-        DebugDialog* newLine(int count = 1);
-
-    signals:
-        void outHtml(QString);
-        void outText(QString);
-        void luaOutText(QString);
 
     private:
-        QString stackDump();
+        QString stackdump();
         QString traceback();
+        QString typeValue(int idx);
+        int tableLength(int idx);
 
     private slots:
         void on_pbClose_clicked();
@@ -49,7 +42,7 @@ class DebugDialog : public QDialog
     private:
         Ui::DebugDialog *ui;
         lua_State* _state;
-        LuaStackViewModel* _stackmodel;
+        StackDumpHighlighter* _stackdumphighlighter;
         static DebugDialog* _instance;
 };
 

@@ -7,13 +7,15 @@ DebugDialog::DebugDialog(lua_State* l, QWidget *parent): QDialog(parent), ui(new
 {
     ui->setupUi(this);
 
-    this->_state = l;
-    this->_stackmodel = new LuaStackViewModel(l);
-    ui->tvStackView->setModel(this->_stackmodel);
+    QFont f("Monospace", qApp->font().pointSize());
+    f.setStyleHint(QFont::TypeWriter);
 
-    connect(this, SIGNAL(outHtml(QString)), ui->tePrefOutput, SLOT(insertHtml(QString)));
-    connect(this, SIGNAL(outText(QString)), ui->tePrefOutput, SLOT(insertPlainText(QString)));
-    connect(this, SIGNAL(luaOutText(QString)), ui->teLuaOutput, SLOT(insertPlainText(QString)));
+    ui->teOutput->setFont(f);
+    ui->teStackdump->setFont(f);
+    ui->teTraceback->setFont(f);
+
+    this->_stackdumphighlighter = new StackDumpHighlighter(ui->teStackdump->document());
+    this->_state = l;
 }
 
 void DebugDialog::createInstance(lua_State *l)
@@ -30,87 +32,39 @@ DebugDialog* DebugDialog::instance()
     return DebugDialog::_instance;
 }
 
-DebugDialog* DebugDialog::luaOut(QString s)
-{
-    emit luaOutText(s);
-    ui->tabWidget->setCurrentIndex(0);
-
-    return this;
-}
-
 DebugDialog* DebugDialog::out(QString s)
 {
-    emit outHtml(s.append("\n"));
-    ui->tabWidget->setCurrentIndex(1);
+    ui->teOutput->insertPlainText(s.append("\n"));
     return this;
 }
 
-DebugDialog* DebugDialog::outWord(QString s)
-{
-    return this->out(s.append(" "));
-}
-
-DebugDialog* DebugDialog::out(lua_Integer i, int base, int fieldwidth)
-{
-    return this->outWord(QString("%1").arg(i, fieldwidth, base, QLatin1Char('0')));
-}
-
-DebugDialog* DebugDialog::hexDump(QByteArray ba)
-{
-    QString hexdump;
-
-    for(int i = 0; i < ba.length(); i++)
-    {
-        if(!hexdump.isEmpty())
-            hexdump.append(" ");
-
-        hexdump.append(QString("%1").arg(static_cast<unsigned char>(ba.at(i)), 2, 16, QLatin1Char('0')).toUpper());
-    }
-
-    if(!hexdump.isEmpty())
-        return this->outWord(hexdump);
-
-    return this->out(" ");
-}
-
-DebugDialog *DebugDialog::newLine(int count)
-{
-    if(!count)
-        count++;
-
-    for(int i = 0; i < count; i++)
-        emit outText("\n");
-
-    return this;
-}
-
-QString DebugDialog::stackDump()
+QString DebugDialog::stackdump()
 {
     int i = lua_gettop(this->_state);
 
     if(!i)
         return "The Stack is Empty";
 
-    QString s = QString("Stack Size: %1\n").arg(QString::number(i));
+    QString s;
 
     while(i)
     {
         int t = lua_type(this->_state, i);
-        s.append(QString("%1 = (%2)").arg(QString::number(i), QString::fromUtf8(lua_typename(this->_state, t))));
+        s.append(QString("[%1]: %2 ").arg(QString::number(i), QString::fromUtf8(lua_typename(this->_state, t))));
 
         if(t == LUA_TTABLE)
         {
-            s.append(QString(": Size %1\n").arg(this->_stackmodel->tableLength(i)));
+            s.append(QString("= Size %1\n").arg(this->tableLength(i)));
             lua_pushnil(this->_state);
 
             while(lua_next(this->_state, i))
             {
-                s.append(QString("  > %1 = %2\n").arg(this->_stackmodel->typeValue(-2), this->_stackmodel->typeValue(-1)));
+                s.append(QString("  > %1 = %2\n").arg(this->typeValue(-2), this->typeValue(-1)));
                 lua_pop(this->_state, 1);
             }
         }
         else
-            s.append(QString(": %1").arg(this->_stackmodel->typeValue(i)));
+            s.append(QString("= %1").arg(this->typeValue(i)));
 
         s.append("\n");
         i--;
@@ -130,6 +84,60 @@ QString DebugDialog::traceback()
     return s;
 }
 
+QString DebugDialog::typeValue(int idx)
+{
+    QString s;
+    int t = lua_type(this->_state, idx);
+
+    switch(t)
+    {
+        case LUA_TNUMBER:
+            s = QString::number(lua_tonumber(this->_state, idx));
+            break;
+
+        case LUA_TSTRING:
+            s = QString("'%1'").arg(QString::fromUtf8(lua_tostring(this->_state, idx)));
+            break;
+
+        case LUA_TBOOLEAN:
+            s = (lua_toboolean(this->_state, idx) != 0 ? "true" : "false");
+            break;
+
+        case LUA_TUSERDATA:
+            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0'));
+            break;
+
+        case LUA_TNIL:
+            s = "nil";
+            break;
+
+        default:
+            s = QString::fromUtf8(lua_typename(this->_state, t));
+            break;
+    }
+
+    return s;
+}
+
+int DebugDialog::tableLength(int idx)
+{
+    if(lua_type(this->_state, idx) != LUA_TTABLE)
+        return 0;
+
+    int len = 0;
+    lua_pushvalue(this->_state, idx);
+    lua_pushnil(this->_state);
+
+    while(lua_next(this->_state, -2))
+    {
+        lua_pop(this->_state, 1);
+        len++;
+    }
+
+    lua_pop(this->_state, 1);
+    return len;
+}
+
 DebugDialog::~DebugDialog()
 {
     delete ui;
@@ -143,17 +151,24 @@ void DebugDialog::closeEvent(QCloseEvent *e)
 
 void DebugDialog::showEvent(QShowEvent*)
 {
-    ui->teTraceback->setText(this->traceback());
-    ui->teStackDump->setText(this->stackDump());
-    this->_stackmodel->updateTop();
+    QString tb = this->traceback();
 
-    QTextCursor tc = ui->teTraceback->textCursor();
-    tc.setPosition(0);
-    ui->teTraceback->setTextCursor(tc);
+    if(tb != "stack traceback:")
+    {
+        QTextCursor tc = ui->teTraceback->textCursor();
+        tc.setPosition(0);
 
-    tc = ui->teStackDump->textCursor();
-    tc.setPosition(0);
-    ui->teStackDump->setTextCursor(tc);
+        ui->teTraceback->setPlainText(tb);
+        ui->teTraceback->setTextCursor(tc);
+        ui->teTraceback->show();
+    }
+    else
+    {
+        ui->teTraceback->hide();
+        ui->teTraceback->clear();
+    }
+
+    ui->teStackdump->setPlainText(this->stackdump());
 }
 
 void DebugDialog::on_pbClose_clicked()

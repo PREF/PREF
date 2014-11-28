@@ -42,7 +42,6 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
     debugdialog/debugdialog.cpp \
-    viewmodels/luatypeviewmodel/luastackviewmodel.cpp \
     prefsdk/bytecolors.cpp \
     prefsdk/math.cpp \
     views/hexview/formatwidget/formattreeview/copymenu.cpp \
@@ -164,7 +163,8 @@ SOURCES += main.cpp\
     viewmodels/bookmarkmodel/bookmarkmodel.cpp \
     views/disassemblerview/bookmarkwidget/bookmarkwidget.cpp \
     views/disassemblerview/renamewidget/renamewidget.cpp \
-    prefsdk/disassembler/disassemblerdatabase.cpp
+    prefsdk/disassembler/disassemblerdatabase.cpp \
+    debugdialog/stackdumphighlighter.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -193,7 +193,6 @@ HEADERS  += mainwindow.h \
     views/hexview/formatwidget/formattreeview/structuremenu.h \
     numericbasemenu.h \
     debugdialog/debugdialog.h \
-    viewmodels/luatypeviewmodel/luastackviewmodel.h \
     prefsdk/bytecolors.h \
     prefsdk/math.h \
     views/hexview/formatwidget/formattreeview/copymenu.h \
@@ -317,7 +316,8 @@ HEADERS  += mainwindow.h \
     viewmodels/bookmarkmodel/bookmarkmodel.h \
     views/disassemblerview/bookmarkwidget/bookmarkwidget.h \
     views/disassemblerview/renamewidget/renamewidget.h \
-    prefsdk/disassembler/disassemblerdatabase.h
+    prefsdk/disassembler/disassemblerdatabase.h \
+    debugdialog/stackdumphighlighter.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
