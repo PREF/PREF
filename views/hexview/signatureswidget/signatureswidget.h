@@ -23,9 +23,16 @@ class SignaturesWidget : public WorkerTab
         void scan(QHexEditData* hexeditdata);
         ~SignaturesWidget();
 
+    private:
+        void createSignatureListMenu();
+
     private slots:
         void onSignaturesWorkerFinished();
+        void onCopyTriggered();
+        void onCopyStringTriggered();
+        void onCopyOffsetTriggered();
         void on_signaturesTree_doubleClicked(const QModelIndex &index);
+        void on_signaturesTree_customContextMenuRequested(const QPoint &pos);
 
     signals:
         void gotoTriggered(qint64 offset, qint64 length);
@@ -35,6 +42,12 @@ class SignaturesWidget : public WorkerTab
         QHexEditData* _hexeditdata;
         SignaturesWorker _worker;
         SignaturesModel* _signaturesmodel;
+        QMenu* _slmenu;
+        QAction* _actgoto;
+        QAction* _actcopy;
+        QAction* _actcopyoffset;
+        QAction* _actcopystring;
+        QAction* _actexportcsv;
 };
 
 #endif // SIGNATURESWIDGET_H
