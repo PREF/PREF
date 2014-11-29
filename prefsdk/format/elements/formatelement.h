@@ -40,7 +40,6 @@ namespace PrefSDK
             quint64 endOffset() const;
             int base() const;
             const QString& name() const;
-            const QString& info() const;
             QString info();
             FormatElement* parentElement() const;
             const QUuid& id() const;

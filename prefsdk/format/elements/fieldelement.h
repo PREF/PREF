@@ -11,9 +11,9 @@ namespace PrefSDK
         Q_OBJECT
 
         Q_PROPERTY(PrefSDK::DataType::Type dataType READ dataType)
-        Q_PROPERTY(bool issigned READ isSigned)
-        Q_PROPERTY(bool isinteger READ isInteger)
-        Q_PROPERTY(bool isarray READ isArray)
+        Q_PROPERTY(bool isSigned READ isSigned)
+        Q_PROPERTY(bool isInteger READ isInteger)
+        Q_PROPERTY(bool isArray READ isArray)
 
         public:
             explicit FieldElement(DataType::Type datatype, quint64 offset, const QString& name, const QUuid& parentid, AbstractTree* formattree, QObject *parent = 0);
