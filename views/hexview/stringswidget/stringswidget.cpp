@@ -1,10 +1,9 @@
 #include "stringswidget.h"
 #include "ui_stringswidget.h"
 
-StringsWidget::StringsWidget(QWidget *parent) : WorkerTab(parent), ui(new Ui::StringsWidget), _hexeditdata(nullptr), _stringsmodel(nullptr)
+StringsWidget::StringsWidget(QWidget *parent) : WorkerTab(parent), ui(new Ui::StringsWidget), _hexeditdata(nullptr), _stringsmodel(nullptr), _slmenu(nullptr)
 {
     ui->setupUi(this);
-    this->createStringListActions();
 
     connect(ui->leSearch, SIGNAL(returnPressed()), this, SLOT(on_tbSearchDown_clicked()));
     connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
@@ -76,6 +75,7 @@ QModelIndex StringsWidget::search(StringsModel::SearchDirection direction)
 
 void StringsWidget::onStringsWorkerFinished()
 {
+    this->createStringListActions();
     this->_stringsmodel->setData(this->_worker.offsetList(), this->_worker.strings());
 }
 
@@ -95,7 +95,7 @@ void StringsWidget::onCopyOffsetTriggered()
 {
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
-    if(selmodel && selmodel->selectedRows().length() == 1)
+    if(selmodel && selmodel->selectedRows().length() >= 1)
     {
         QModelIndex mi = selmodel->selectedRows()[0];
         qApp->clipboard()->setText(QString("%1").arg(this->_stringsmodel->offset(mi.row()), 8, 16, QLatin1Char('0')).toUpper());
@@ -106,7 +106,7 @@ void StringsWidget::onCopyStringTriggered()
 {
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
-    if(selmodel && selmodel->selectedRows().length() == 1)
+    if(selmodel && selmodel->selectedRows().length() >= 1)
     {
         QModelIndex mi = selmodel->selectedRows()[0];
         qApp->clipboard()->setText(this->_stringsmodel->string(mi.row()));
@@ -115,6 +115,9 @@ void StringsWidget::onCopyStringTriggered()
 
 void StringsWidget::on_stringList_customContextMenuRequested(const QPoint &pos)
 {
+    if(!this->_slmenu)
+        return;
+
     QItemSelectionModel* selmodel = ui->stringList->selectionModel();
 
     if(selmodel && selmodel->selectedRows().length() == 1)
