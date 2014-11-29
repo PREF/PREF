@@ -238,4 +238,3 @@ void HexView::onWorkFinished()
     if(idx != -1)
         ui->tabWidget->setTabIcon(idx, QIcon());
 }
-
