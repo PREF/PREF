@@ -6,17 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>839</width>
-    <height>252</height>
+    <width>837</width>
+    <height>250</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-   <property name="spacing">
-    <number>6</number>
-   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -34,23 +31,13 @@
    </item>
    <item>
     <widget class="QTableView" name="mapOptions">
-     <property name="styleSheet">
-      <string notr="true">background-color: white;
-alternate-background-color: whitesmoke;</string>
-     </property>
      <property name="editTriggers">
-      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::CurrentChanged|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="selectionBehavior">
-      <enum>QAbstractItemView::SelectRows</enum>
+      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
      </attribute>
-     <attribute name="verticalHeaderStretchLastSection">
+     <attribute name="verticalHeaderVisible">
       <bool>false</bool>
      </attribute>
     </widget>
