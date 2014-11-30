@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>766</width>
-    <height>264</height>
+    <width>764</width>
+    <height>262</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
    <item>
     <widget class="FormatTreeView" name="tvFormat">
      <property name="editTriggers">
-      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+      <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
      </property>
     </widget>
    </item>
