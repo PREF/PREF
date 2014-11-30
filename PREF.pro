@@ -166,7 +166,8 @@ SOURCES += main.cpp\
     prefsdk/disassembler/disassemblerdatabase.cpp \
     debugdialog/stackdumphighlighter.cpp \
     views/hexview/chartwidget/chartcontainer.cpp \
-    qxychart/qxychart.cpp
+    qxychart/qxychart.cpp \
+    viewmodels/histogrammodel/histogrammodel.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -321,7 +322,8 @@ HEADERS  += mainwindow.h \
     prefsdk/disassembler/disassemblerdatabase.h \
     debugdialog/stackdumphighlighter.h \
     views/hexview/chartwidget/chartcontainer.h \
-    qxychart/qxychart.h
+    qxychart/qxychart.h \
+    viewmodels/histogrammodel/histogrammodel.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

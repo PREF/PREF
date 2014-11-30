@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "viewmodels/histogrammodel/histogrammodel.h"
 #include "views/hexview/bytecolorsdialog/bytecolorsdialog.h"
 #include "views/hexview/workertab.h"
 #include "qhexedit/qhexeditdata.h"
@@ -27,9 +28,6 @@ class ChartWidget : public WorkerTab
         ~ChartWidget();
 
     private:
-        static void initNonAsciiChars();
-        void createListModel();
-        void updateModel(const QList<qint64>& occurrences);
         void updateEntropy(const QList<qint64>& occurrences);
         void updateEntropyText(const QString& text, const QColor& forecolor);
 
@@ -40,8 +38,8 @@ class ChartWidget : public WorkerTab
         void on_tbSwitchChart_clicked();
 
     private:
-        static QMap<uchar, QString> _nonasciichars;
         Ui::ChartWidget *ui;
+        HistogramModel* _histogrammodel;
         QHexEditData* _hexeditdata;
         ChartWorker _worker;
         QIcon _xycharticon;
