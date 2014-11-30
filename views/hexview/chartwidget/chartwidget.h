@@ -34,14 +34,18 @@ class ChartWidget : public WorkerTab
         void updateEntropyText(const QString& text, const QColor& forecolor);
 
     private slots:
-        void onElaborationCompleted();
+        void onOccurrencesListCompleted();
+        void onDataEntropyCompleted();
         void on_tbHelp_clicked();
+        void on_tbSwitchChart_clicked();
 
     private:
         static QMap<uchar, QString> _nonasciichars;
         Ui::ChartWidget *ui;
         QHexEditData* _hexeditdata;
         ChartWorker _worker;
+        QIcon _xycharticon;
+        QIcon _histogramicon;
 };
 
 #endif // CHARTWIDGET_H

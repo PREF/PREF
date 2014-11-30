@@ -164,7 +164,9 @@ SOURCES += main.cpp\
     views/disassemblerview/bookmarkwidget/bookmarkwidget.cpp \
     views/disassemblerview/renamewidget/renamewidget.cpp \
     prefsdk/disassembler/disassemblerdatabase.cpp \
-    debugdialog/stackdumphighlighter.cpp
+    debugdialog/stackdumphighlighter.cpp \
+    views/hexview/chartwidget/chartcontainer.cpp \
+    qxychart/qxychart.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -317,7 +319,9 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/bookmarkwidget/bookmarkwidget.h \
     views/disassemblerview/renamewidget/renamewidget.h \
     prefsdk/disassembler/disassemblerdatabase.h \
-    debugdialog/stackdumphighlighter.h
+    debugdialog/stackdumphighlighter.h \
+    views/hexview/chartwidget/chartcontainer.h \
+    qxychart/qxychart.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \

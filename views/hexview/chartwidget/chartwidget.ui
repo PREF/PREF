@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>694</width>
-    <height>192</height>
+    <width>688</width>
+    <height>186</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -67,6 +67,17 @@
           </widget>
          </item>
          <item>
+          <widget class="QToolButton" name="tbSwitchChart">
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../../resources.qrc">
+             <normaloff>:/misc_icons/res/xychart.png</normaloff>:/misc_icons/res/xychart.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -82,7 +93,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QHistogram" name="histogram" native="true"/>
+        <widget class="ChartContainer" name="chartcontainer" native="true"/>
        </item>
       </layout>
      </widget>
@@ -143,9 +154,9 @@ alternate-background-color: whitesmoke;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QHistogram</class>
+   <class>ChartContainer</class>
    <extends>QWidget</extends>
-   <header>qhistogram/qhistogram.h</header>
+   <header>views/hexview/chartwidget/chartcontainer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

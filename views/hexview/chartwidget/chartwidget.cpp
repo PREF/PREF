@@ -8,12 +8,17 @@ ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWi
     if(ChartWidget::_nonasciichars.isEmpty())
         ChartWidget::initNonAsciiChars();
 
+    this->_xycharticon = QIcon(":/misc_icons/res/xychart.png");
+    this->_histogramicon = QIcon(":/misc_icons/res/histogram.png");
+
     ui->setupUi(this);
     ui->splitter->setStretchFactor(1, 1);
+    ui->tbSwitchChart->setIcon(this->_xycharticon);
     this->createListModel();
 
     connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
-    connect(&this->_worker, SIGNAL(finished()), this, SLOT(onElaborationCompleted()));
+    connect(&this->_worker, SIGNAL(occurrencesListCompleted()), this, SLOT(onOccurrencesListCompleted()));
+    connect(&this->_worker, SIGNAL(dataEntropyCompleted()), this, SLOT(onDataEntropyCompleted()));
     connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
 }
 
@@ -102,12 +107,22 @@ void ChartWidget::createListModel()
     ui->lisOccurrence->resizeRowsToContents();
 }
 
-void ChartWidget::onElaborationCompleted()
+void ChartWidget::onOccurrencesListCompleted()
 {
     QList<qint64> occurrences = this->_worker.occurrences();
-    ui->histogram->setData(occurrences);
+    ui->chartcontainer->histogram()->setData(occurrences);
     this->updateModel(occurrences);
     this->updateEntropy(occurrences);
+}
+
+void ChartWidget::onDataEntropyCompleted()
+{
+    QList<QPointF> dataentropy = this->_worker.dataEntropy();
+
+    ui->chartcontainer->xyChart()->setXBase(16);
+    ui->chartcontainer->xyChart()->setXRange(0, this->_hexeditdata->length());
+    ui->chartcontainer->xyChart()->setYRange(0, 1);
+    ui->chartcontainer->xyChart()->setPoints(dataentropy);
 }
 
 void ChartWidget::updateModel(const QList<qint64>& occurrences)
@@ -169,4 +184,14 @@ void ChartWidget::on_tbHelp_clicked()
 {
     ByteColorsDialog bcd(this);
     bcd.exec();
+}
+
+void ChartWidget::on_tbSwitchChart_clicked()
+{
+    ui->chartcontainer->switchChart();
+
+    if(ui->chartcontainer->histogram()->isVisible())
+        ui->tbSwitchChart->setIcon(this->_xycharticon);
+    else
+        ui->tbSwitchChart->setIcon(this->_histogramicon);
 }
