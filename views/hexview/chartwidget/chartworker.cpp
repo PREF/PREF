@@ -54,7 +54,8 @@ void ChartWorker::run()
     if(!this->_hexeditdata)
         return;
 
-    this->_occurrences = generateOccList(this->_hexeditdata, 0, this->_hexeditdata->length(), &this->_cancontinue);
+    QHexEditDataReader reader(this->_hexeditdata);
+    this->_occurrences = generateOccList(&reader, 0, this->_hexeditdata->length(), &this->_cancontinue);
 
     if(!this->_cancontinue)
         return;
@@ -69,7 +70,7 @@ void ChartWorker::run()
 
     for(quint64 i = 0; this->_cancontinue && (i < static_cast<quint64>(this->_hexeditdata->length())); i += blocksize)
     {
-        OccurrenceList occlist = generateOccList(this->_hexeditdata, i, blocksize, &this->_cancontinue);
+        OccurrenceList occlist = generateOccList(&reader, i, blocksize, &this->_cancontinue);
 
         if(!this->_cancontinue)
             return;

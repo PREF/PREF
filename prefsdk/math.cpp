@@ -7,31 +7,30 @@ namespace PrefSDK
         return log(n) / log(base);
     }
 
-    OccurrenceList generateOccList(QHexEditData *hexeditdata, qint64 start, qint64 size, volatile bool *cancontinue)
+    OccurrenceList generateOccList(QHexEditDataReader *reader, qint64 start, qint64 size, volatile bool *cancontinue)
     {
         OccurrenceList occlist;
+        qint64 len = reader->hexEditData()->length();
 
         for(int i = 0; i <= 0xFF; i++)
             occlist.append(0);
 
         if(start < (size / 2))
             start = 0;
-        else if(start > hexeditdata->length() - (size / 2))
-            start = hexeditdata->length() - (size / 2);
+        else if(start > len - (size / 2))
+            start = len - (size / 2);
         else
             start -= size / 2;
-
-        QHexEditDataReader reader(hexeditdata);
 
         for(qint64 i = start; i < start + size; i++)
         {
             if(cancontinue && ((*cancontinue) == false))
                 return OccurrenceList();
 
-            if(i >= static_cast<uint>(hexeditdata->length()))
+            if(i >= static_cast<uint>(len))
                 break;
 
-            uchar b = reader.at(i);
+            uchar b = reader->at(i);
             occlist[b] += 1;
         }
 
@@ -45,7 +44,8 @@ namespace PrefSDK
 
     qreal entropy(QHexEditData *hexeditdata, qint64 start, qint64 size)
     {
-        OccurrenceList occurences = generateOccList(hexeditdata, start, size);
+        QHexEditDataReader reader(hexeditdata);
+        OccurrenceList occurences = generateOccList(&reader, start, size);
         return entropy(occurences, size);
     }
 
