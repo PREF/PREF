@@ -32,7 +32,7 @@ void StackDumpHighlighter::highlight(const QString &text, const QString &stringr
 
 void StackDumpHighlighter::highlightBlock(const QString &text)
 {
-    this->highlight(text, "[0-9]+", this->_digitsformat);
+    this->highlight(text, "\\b[0-9a-fA-F]+[h]*\\b", this->_digitsformat);
     this->highlight(text, "\\[[0-9]+\\]", this->_stackidxformat);
     this->highlight(text, "\\bstring|number|userdata|table|function|boolean|nil\\b", this->_keywordformat);
     this->highlight(text, "'.+'", this->_stringformat);

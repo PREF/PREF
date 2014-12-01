@@ -92,7 +92,7 @@ QString DebugDialog::typeValue(int idx)
     switch(t)
     {
         case LUA_TNUMBER:
-            s = QString::number(lua_tonumber(this->_state, idx));
+            s = QString("%1h (%2)").arg(QString::number(lua_tointeger(this->_state, idx), 16).toUpper(), QString::number(lua_tointeger(this->_state, idx)));
             break;
 
         case LUA_TSTRING:
@@ -104,7 +104,7 @@ QString DebugDialog::typeValue(int idx)
             break;
 
         case LUA_TUSERDATA:
-            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0'));
+            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0')).toUpper().append("h");
             break;
 
         case LUA_TNIL:
