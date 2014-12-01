@@ -22,7 +22,7 @@ CategoryManager::CategoryPtr FormatListModel::selectedCategory() const
 
 int FormatListModel::columnCount(const QModelIndex &) const
 {
-    return 3;
+    return 4;
 }
 
 QVariant FormatListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -35,9 +35,12 @@ QVariant FormatListModel::headerData(int section, Qt::Orientation orientation, i
                 return "Name";
 
             case 1:
-                return "Author";
+                return "Category";
 
             case 2:
+                return "Author";
+
+            case 3:
                 return "Version";
 
             default:
@@ -63,9 +66,12 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
                 return f->name();
 
             case 1:
-                return f->author();
+                return f->category();
 
             case 2:
+                return f->author();
+
+            case 3:
                 return f->version();
 
             default:
