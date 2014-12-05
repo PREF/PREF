@@ -103,7 +103,7 @@ void BinaryNavigator::mousePressEvent(QMouseEvent *event)
         qint64 idx = this->indexFromPoint(event->pos());
 
         if(idx != -1)
-            this->_hexedit->setSelection(idx, idx + 1);
+            this->_hexedit->selectPos(idx);
     }
     else
         event->ignore();
