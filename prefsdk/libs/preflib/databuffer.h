@@ -30,6 +30,7 @@ namespace PrefSDK
         public slots:
             void copyTo(QObject *luahexeditdata, lua_Integer start, lua_Integer end);
             lua_Integer indexOf(const QString& s, lua_Integer startpos = 0);
+            QByteArray read(lua_Integer pos, lua_Integer len);
             lua_Integer readType(lua_Integer pos, lua_Integer datatype);
             void writeType(lua_Integer pos, lua_Integer datatype, lua_Integer value);
             QString readLine(lua_Integer pos);

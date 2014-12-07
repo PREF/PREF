@@ -42,6 +42,11 @@ namespace PrefSDK
         return this->_reader->indexOf(s.toUtf8(), this->_baseoffset + startpos);
     }
 
+    QByteArray DataBuffer::read(lua_Integer pos, lua_Integer len)
+    {
+        return this->_reader->read(this->_baseoffset + pos, len);
+    }
+
     lua_Integer DataBuffer::readType(lua_Integer pos, lua_Integer datatype)
     {
         DataType::Type dt = static_cast<DataType::Type>(datatype);

@@ -282,16 +282,6 @@ namespace PrefSDK
         }
     }
 
-    bool QtLua::isQObject(lua_State *l, int idx)
-    {
-        return lua_isuserdata(l, idx) && (QtLua::toQObject(l, idx) != nullptr);
-    }
-
-    QObject *QtLua::toQObject(lua_State *l, int idx)
-    {
-        return (*reinterpret_cast<QObject**>(lua_touserdata(l, idx)));
-    }
-
     void QtLua::registerObjectOwnership(lua_State *l)
     {
         lua_newtable(l);
@@ -406,6 +396,9 @@ namespace PrefSDK
         lua_pushcclosure(l, &QtLua::metaNewIndex, 1);
         lua_setfield(l, -2, "__newindex");
 
+        lua_pushinteger(l, QMetaType::QObjectStar);
+        lua_setfield(l, -2, "__type");
+
         if(ownership == QtLua::LuaOwnership)
         {
             lua_pushcfunction(l, &QtLua::metaGc);
@@ -470,10 +463,13 @@ namespace PrefSDK
                 lua_pushnumber(l, v.toDouble());
             else if(v.userType() == QMetaType::QString)
                 lua_pushstring(l, v.toString().toUtf8().constData());
+            else if(v.userType() == QMetaType::QByteArray)
+                ByteArray::push(l, v.toByteArray());
             else if(v.userType() == QMetaType::type("PrefSDK::QtLua::LuaTable"))
                 v.value<QtLua::LuaTable>().push();
             else if(v.userType() == QMetaType::type("PrefSDK::QtLua::LuaFunction"))
                 v.value<QtLua::LuaFunction>().push();
+
             else if(v.canConvert(QMetaType::QObjectStar))
                 QtLua::pushObject(l, v.value<QObject*>());
             else
@@ -584,12 +580,21 @@ namespace PrefSDK
                 args[n] = QVariant::fromValue(static_cast<lua_Integer>(lua_tointeger(l, i)));
             else if(type == LUA_TSTRING)
                 args[n] = QVariant(QString::fromUtf8(lua_tostring(l, i)));
-            else if(type == LUA_TUSERDATA)
-                args[n] = QVariant::fromValue(*(reinterpret_cast<QObject**>(lua_touserdata(l, i))));
             else if(type == LUA_TTABLE)
                 args[n] = QVariant::fromValue(QtLua::LuaTable(l, i));
             else if(type == LUA_TFUNCTION)
                 args[n] = QVariant::fromValue(QtLua::LuaFunction(l, i, qobject));
+            else if(type == LUA_TUSERDATA)
+            {
+                lua_getfield(l, i, "__type");
+                QMetaType::Type metatype = static_cast<QMetaType::Type>(lua_tointeger(l, -1));
+                lua_pop(l, 1);
+
+                if(metatype == QMetaType::QByteArray)
+                    args[n] = QVariant::fromValue(*(reinterpret_cast<QByteArray*>(lua_touserdata(l, i))));
+                else
+                    args[n] = QVariant::fromValue(*(reinterpret_cast<QObject**>(lua_touserdata(l, i))));
+            }
             else
                 throw PrefException(QString("QtLua::methodCall(): Unsupported Parameter Lua Type: '%1' for '%2'").arg(QString::fromUtf8(lua_typename(l, type)), QString::fromUtf8(methodname)));
         }
@@ -646,6 +651,8 @@ namespace PrefSDK
             lua_pushnumber(l, retvar.toDouble());
         else if(returntype == QMetaType::QString)
             lua_pushstring(l, retvar.toString().toUtf8().constData());
+        else if(returntype == QMetaType::QByteArray)
+            ByteArray::push(l, retvar.toByteArray());
         else if(returntype == QMetaType::type("lua_Integer"))
             lua_pushinteger(l, retvar.value<lua_Integer>());
         else

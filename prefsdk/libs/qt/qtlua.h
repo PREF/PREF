@@ -3,6 +3,7 @@
 
 #include "lua.hpp"
 #include "prefsdk/prefexception.h"
+#include "bytearray.h"
 
 #include <QObject>
 #include <QMetaObject>
@@ -85,8 +86,6 @@ namespace PrefSDK
             static void open(lua_State* l);
             static void pushObject(lua_State* l, QObject* obj,  QtLua::ObjectOwnership ownership = QtLua::CppOwnership);
             static void pushEnum(lua_State* l, const QMetaEnum& metaenum);
-            static bool isQObject(lua_State* l, int idx);
-            static QObject* toQObject(lua_State* l, int idx);
 
             template<typename T> static void registerClass(const QString& customname = QString())
             {
@@ -133,7 +132,6 @@ namespace PrefSDK
             static int metaNewIndex(lua_State* l);
             static int metaGc(lua_State* l);
             static int methodCall(lua_State* l);
-            static int bindMetaIndex(lua_State* l);
 
         private:
             static lua_State* _state;
