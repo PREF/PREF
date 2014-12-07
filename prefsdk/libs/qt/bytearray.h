@@ -21,7 +21,7 @@ namespace PrefSDK
             static int bytearray_length(lua_State* l);
 
         private:
-            static void pushMetaTable(lua_State* l);
+            static void pushMetaTable(lua_State* l, int userdataidx);
 
         public:
             static void push(lua_State* l, const QByteArray &bytearray);
