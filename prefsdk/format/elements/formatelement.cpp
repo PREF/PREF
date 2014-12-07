@@ -136,6 +136,16 @@ namespace PrefSDK
         return QString();
     }
 
+    void FormatElement::dump(const QString &filename) const
+    {
+        QHexEditDataReader reader(this->_formattree->data());
+
+        QFile f(filename);
+        f.open(QFile::WriteOnly);
+        f.write(reader.read(this->offset(), this->size()));
+        f.close();
+    }
+
     QMainWindow *FormatElement::findMainWindow()
     {
         if(FormatElement::_mainwindow)

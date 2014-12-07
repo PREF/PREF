@@ -66,6 +66,7 @@ namespace PrefSDK
             virtual QString displayName() const;
             virtual QString displayType() const;
             virtual QString displayValue() const;
+            virtual void dump(const QString& filename) const;
 
         private:
             static QMainWindow* findMainWindow();
