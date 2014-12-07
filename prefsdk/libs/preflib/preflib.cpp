@@ -130,6 +130,7 @@ namespace PrefSDK
         PrefLib::_instance->buildByteOrder(l);
         PrefLib::_instance->buildDataType(l);
         PrefLib::_instance->buildMathTable(l);
+        PrefLib::_instance->buildIOTable(l);
         PrefLib::_instance->buildMessageBoxTable(l);
         PrefLib::_instance->buildExporterTable(l);
         PrefLib::_instance->buildFormatTable(l);
@@ -372,6 +373,34 @@ namespace PrefSDK
         return 1;
     }
 
+    int PrefLib::io_open(lua_State *l)
+    {
+        int argc = lua_gettop(l);
+
+        if(argc == 2)
+        {
+            if(lua_type(l, 1) != LUA_TSTRING)
+            {
+                throw PrefException("pref.io.open(): Argument 1 must be a string");
+                return 0;
+            }
+
+            if(lua_type(l, 2) != LUA_TNUMBER)
+            {
+                throw PrefException("pref.io.open(): Argument 2 must be an integer");
+                return 0;
+            }
+
+            IOFile* f = new IOFile(QString::fromUtf8(lua_tostring(l, 1)), static_cast<IOFile::OpenMode>(lua_tointeger(l, 2)));
+            QtLua::pushObject(l, f, QtLua::LuaOwnership);
+            return 1;
+        }
+        else
+            throw PrefException(QString("pref.io.open(): Expected 2 arguments, %1 given").arg(argc));
+
+        return 0;
+    }
+
     int PrefLib::messageBox_show(lua_State *l)
     {
         int argc = lua_gettop(l);
@@ -548,6 +577,22 @@ namespace PrefSDK
         lua_setfield(l, -2, "create");
 
         lua_setfield(l, -2, "disassembler");
+    }
+
+    void PrefLib::buildIOTable(lua_State *l)
+    {
+        const QMetaObject metaobj = IOFile::staticMetaObject;
+        QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("OpenMode"));
+
+        lua_newtable(l);
+
+        QtLua::pushEnum(l, metaenum);
+        lua_setfield(l, -2, "openmode");
+
+        lua_pushcfunction(l, &PrefLib::io_open);
+        lua_setfield(l, -2, "open");
+
+        lua_setfield(l, -2, "io");
     }
 
     void PrefLib::buildSegmentTypeTable(lua_State *l)

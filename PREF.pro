@@ -168,7 +168,8 @@ SOURCES += main.cpp\
     views/hexview/chartwidget/chartcontainer.cpp \
     qxychart/qxychart.cpp \
     viewmodels/histogrammodel/histogrammodel.cpp \
-    prefsdk/libs/qt/bytearray.cpp
+    prefsdk/libs/qt/bytearray.cpp \
+    prefsdk/libs/preflib/iofile.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -325,7 +326,8 @@ HEADERS  += mainwindow.h \
     views/hexview/chartwidget/chartcontainer.h \
     qxychart/qxychart.h \
     viewmodels/histogrammodel/histogrammodel.h \
-    prefsdk/libs/qt/bytearray.h
+    prefsdk/libs/qt/bytearray.h \
+    prefsdk/libs/preflib/iofile.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
