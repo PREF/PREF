@@ -13,7 +13,7 @@ namespace PrefSDK
 
         if(lua_type(l, 2) == LUA_TNUMBER)
         {
-            lua_pushinteger(l, self->at(lua_tointeger(l, 2) - 1));
+            lua_pushinteger(l, static_cast<unsigned char>(self->at(lua_tointeger(l, 2) - 1)));
             return 1;
         }
         else if(lua_type(l, 2) == LUA_TSTRING)
@@ -49,9 +49,9 @@ namespace PrefSDK
         if(lua_type(l, 2) == LUA_TNUMBER)
         {
             if(lua_type(l, 3) == LUA_TNUMBER)
-                self->data()[lua_tointeger(l, 2) - 1] = lua_tointeger(l, 3);
+                self->data()[lua_tointeger(l, 2) - 1] = static_cast<unsigned char>(lua_tointeger(l, 3));
             else if(lua_type(l, 3) == LUA_TSTRING)
-                self->data()[lua_tointeger(l, 2) - 1] = lua_tostring(l, 3)[0];
+                self->data()[lua_tointeger(l, 2) - 1] = static_cast<unsigned char>(lua_tostring(l, 3)[0]);
             else
                 throw PrefException(QString("ByteArray.__newindex: Unsupported Type '%1'").arg(QString::fromUtf8(luaL_typename(l, 3))));
         }
