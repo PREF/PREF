@@ -51,15 +51,15 @@ DataTypesModel::DataTypesModel(QObject *parent): QAbstractItemModel(parent)
         DataTypesModel::_types.append(DataType::Array);
 
         DataTypesModel::_typenames.append("Char");
-        DataTypesModel::_typenames.append("Signed Byte");
-        DataTypesModel::_typenames.append("Unsigned Byte");
-        DataTypesModel::_typenames.append("Signed Short");
-        DataTypesModel::_typenames.append("Unsigned Short");
-        DataTypesModel::_typenames.append("Signed Int");
-        DataTypesModel::_typenames.append("Unsigned Int");
-        DataTypesModel::_typenames.append("Signed Int64");
-        DataTypesModel::_typenames.append("Unsigned Int64");
-        DataTypesModel::_typenames.append("String");
+        DataTypesModel::_typenames.append("Int8");
+        DataTypesModel::_typenames.append("UInt8");
+        DataTypesModel::_typenames.append("Int16");
+        DataTypesModel::_typenames.append("UInt16");
+        DataTypesModel::_typenames.append("Int32");
+        DataTypesModel::_typenames.append("UInt32");
+        DataTypesModel::_typenames.append("Int64");
+        DataTypesModel::_typenames.append("UInt64");
+        DataTypesModel::_typenames.append("Ascii String");
     }
 }
 

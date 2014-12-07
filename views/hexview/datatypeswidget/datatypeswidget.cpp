@@ -26,6 +26,7 @@ DataTypesModel *DataTypesWidget::model()
 void DataTypesWidget::setData(QHexEditData* hexeditdata)
 {
     this->_datatypesmodel->setData(hexeditdata);
+    ui->dataTypesTable->resizeColumnsToContents();
     ui->dataTypesTable->resizeRowsToContents();
 }
 
