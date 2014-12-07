@@ -15,6 +15,7 @@
 #include <QtQuick>
 #include <QtQml>
 #include <QMainWindow>
+#include <QMessageBox>
 
 namespace PrefSDK
 {
@@ -35,6 +36,7 @@ namespace PrefSDK
             void buildByteOrder(lua_State* l);
             void buildDataType(lua_State* l);
             void buildMathTable(lua_State* l);
+            void buildMessageBoxTable(lua_State* l);
             void buildExporterTable(lua_State* l);
             void buildFormatTable(lua_State* l);
             void buildDisassemblerTable(lua_State* l);
@@ -64,6 +66,10 @@ namespace PrefSDK
         /* Math Methods */
         private:
             static int math_entropy(lua_State* l);
+
+        /* MessageBox Methods */
+        private:
+            static int messageBox_show(lua_State* l);
 
         /* Exporter Methods */
         private:

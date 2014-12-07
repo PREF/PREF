@@ -130,6 +130,7 @@ namespace PrefSDK
         PrefLib::_instance->buildByteOrder(l);
         PrefLib::_instance->buildDataType(l);
         PrefLib::_instance->buildMathTable(l);
+        PrefLib::_instance->buildMessageBoxTable(l);
         PrefLib::_instance->buildExporterTable(l);
         PrefLib::_instance->buildFormatTable(l);
         PrefLib::_instance->buildDisassemblerTable(l);
@@ -371,6 +372,27 @@ namespace PrefSDK
         return 1;
     }
 
+    int PrefLib::messageBox_show(lua_State *l)
+    {
+        int argc = lua_gettop(l);
+
+        QMessageBox mb;
+
+        if(argc >= 1)
+            mb.setWindowTitle(lua_tostring(l, 1));
+
+        if(argc >= 2)
+            mb.setText(lua_tostring(l, 2));
+
+        if(argc >= 3)
+            mb.setStandardButtons(static_cast<QMessageBox::StandardButton>(lua_tointeger(l, 3)));
+
+        if(argc == 4)
+            mb.setIcon(static_cast<QMessageBox::Icon>(lua_tointeger(l, 4)));
+
+        return mb.exec();
+    }
+
     int PrefLib::exporter_create(lua_State *l)
     {
         int argc = lua_gettop(l);
@@ -467,6 +489,26 @@ namespace PrefSDK
         lua_setfield(l, -2, "entropy");
 
         lua_setfield(l, -2, "math");
+    }
+
+    void PrefLib::buildMessageBoxTable(lua_State *l)
+    {
+        const QMetaObject metaobj = QMessageBox::staticMetaObject;
+        QMetaEnum metaenumbuttons = metaobj.enumerator(metaobj.indexOfEnumerator("StandardButtons"));
+        QMetaEnum metaenumicons = metaobj.enumerator(metaobj.indexOfEnumerator("Icon"));
+
+        lua_newtable(l);
+
+        QtLua::pushEnum(l, metaenumbuttons);
+        lua_setfield(l, -2, "buttons");
+
+        QtLua::pushEnum(l, metaenumicons);
+        lua_setfield(l, -2, "icons");
+
+        lua_pushcfunction(l, &PrefLib::messageBox_show);
+        lua_setfield(l, -2, "show");
+
+        lua_setfield(l, -2, "messagebox");
     }
 
     void PrefLib::buildExporterTable(lua_State *l)
