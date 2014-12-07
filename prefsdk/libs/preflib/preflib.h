@@ -47,6 +47,24 @@ namespace PrefSDK
             void buildBlockTypeTable(lua_State* l);
             void buildSymbolTypeTable(lua_State* l);
 
+        private:
+            template<lua_CFunction FUNC> static int blockingCall(lua_State* l)
+            {
+                if(qApp->thread() != QThread::currentThread())
+                {
+                    int r = 0;
+                    QMetaObject::invokeMethod(PrefLib::_instance, "executeCall", Qt::BlockingQueuedConnection, Q_RETURN_ARG(int, r),
+                                              Q_ARG(lua_State*, l), Q_ARG(lua_CFunction, FUNC));
+
+                    return r;
+                }
+
+                return FUNC(l);
+            }
+
+        private:
+            Q_INVOKABLE int executeCall(lua_State* l, lua_CFunction func);
+
         public:
             static void open(lua_State* l, QMainWindow *mainwindow, SdkVersion* sdkversion);
             static PrefLib* instance();

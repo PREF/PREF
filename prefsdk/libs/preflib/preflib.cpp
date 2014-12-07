@@ -506,7 +506,7 @@ namespace PrefSDK
         QtLua::pushEnum(l, metaenumicons);
         lua_setfield(l, -2, "icons");
 
-        lua_pushcfunction(l, &PrefLib::messageBox_show);
+        lua_pushcfunction(l, &PrefLib::blockingCall<&PrefLib::messageBox_show>);
         lua_setfield(l, -2, "show");
 
         lua_setfield(l, -2, "messagebox");
@@ -584,5 +584,10 @@ namespace PrefSDK
 
         QtLua::pushEnum(l, metaenum);
         lua_setfield(l, -2, "symboltype");
+    }
+
+    int PrefLib::executeCall(lua_State *l, lua_CFunction func)
+    {
+        return func(l);
     }
 }
