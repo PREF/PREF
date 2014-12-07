@@ -390,7 +390,8 @@ namespace PrefSDK
         if(argc == 4)
             mb.setIcon(static_cast<QMessageBox::Icon>(lua_tointeger(l, 4)));
 
-        return mb.exec();
+        lua_pushinteger(l, mb.exec());
+        return 1;
     }
 
     int PrefLib::exporter_create(lua_State *l)
