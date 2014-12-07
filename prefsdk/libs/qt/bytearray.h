@@ -5,6 +5,7 @@
 #include "prefsdk/prefexception.h"
 #include <QHash>
 #include <QByteArray>
+#include <QDebug>
 
 namespace PrefSDK
 {

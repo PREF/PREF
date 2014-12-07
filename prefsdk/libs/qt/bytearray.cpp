@@ -104,9 +104,7 @@ namespace PrefSDK
 
     void ByteArray::push(lua_State *l, const QByteArray& bytearray)
     {
-        QByteArray* pbytearray = reinterpret_cast<QByteArray*>(lua_newuserdata(l, sizeof(QByteArray*)));
-        *pbytearray = bytearray;
-
+        new (lua_newuserdata(l, sizeof(QByteArray*))) QByteArray(bytearray);
         ByteArray::pushMetaTable(l);
         lua_setmetatable(l, -2);
     }
