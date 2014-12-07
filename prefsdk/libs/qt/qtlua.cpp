@@ -396,9 +396,6 @@ namespace PrefSDK
         lua_pushcclosure(l, &QtLua::metaNewIndex, 1);
         lua_setfield(l, -2, "__newindex");
 
-        lua_pushinteger(l, QMetaType::QObjectStar);
-        lua_setfield(l, -2, "__type");
-
         if(ownership == QtLua::LuaOwnership)
         {
             lua_pushcfunction(l, &QtLua::metaGc);
