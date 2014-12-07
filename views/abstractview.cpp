@@ -5,7 +5,11 @@ AbstractView::AbstractView(QHexEditData* hexeditdata, const QString &loadedfile,
     if(this->_hexeditdata)
         this->_hexeditdata->setParent(this); /* Take Ownership */
 
-
+    if(!loadedfile.isEmpty())
+    {
+        QFileInfo fi(loadedfile);
+        QDir::setCurrent(fi.absolutePath());
+    }
 }
 
 AbstractView::~AbstractView()
