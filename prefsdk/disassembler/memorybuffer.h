@@ -28,6 +28,7 @@ namespace PrefSDK
             Q_INVOKABLE QString readString(lua_Integer address) const;
             Q_INVOKABLE QString readDisplayString(lua_Integer address, lua_Integer maxlen) const;
             Q_INVOKABLE QString readDisplayString(lua_Integer address) const;
+            Q_INVOKABLE QByteArray readBuffer(lua_Integer address, lua_Integer len);
 
         private:
             DataBuffer* _databuffer;

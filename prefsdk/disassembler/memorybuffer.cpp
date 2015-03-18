@@ -73,6 +73,18 @@ namespace PrefSDK
         return this->readDisplayString(address, -1);
     }
 
+    QByteArray MemoryBuffer::readBuffer(lua_Integer address, lua_Integer len)
+    {
+        DataValue addressvalue = DataValue::create(address, this->_addresstype);
+        Segment* segment = this->_listing->findSegment(addressvalue);
+
+        if(!segment)
+            return QByteArray(); /* Return 0, it's an invalid segment */
+
+        DataValue offsetvalue = (addressvalue - segment->startAddress()) + segment->baseOffset();
+        return this->_databuffer->read(offsetvalue.compatibleValue<lua_Integer>(), len);
+    }
+
     QString MemoryBuffer::readDisplayString(lua_Integer address, lua_Integer maxlen) const
     {
         return this->readString(address, maxlen).replace(QRegExp("[\\n\\r]"), " ");

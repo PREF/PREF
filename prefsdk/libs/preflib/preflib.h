@@ -15,6 +15,7 @@
 #include <QtGui>
 #include <QtQuick>
 #include <QtQml>
+#include <QSysInfo>
 #include <QMainWindow>
 #include <QMessageBox>
 
@@ -71,6 +72,9 @@ namespace PrefSDK
             static void open(lua_State* l, QMainWindow *mainwindow, SdkVersion* sdkversion);
             static PrefLib* instance();
 
+        /* Module methods */
+            static int module_modulePath(lua_State* l);
+
         /* Logger methods */
         private:
             static int logger_log(lua_State* l);
@@ -82,6 +86,7 @@ namespace PrefSDK
         /* DataType Methods */
         private:
             static int dataType_sizeOf(lua_State* l);
+            static int dataType_bestType(lua_State* l);
 
         /* Math Methods */
         private:

@@ -129,6 +129,45 @@ namespace PrefSDK
         return type;
     }
 
+    DataType::Type DataType::bestType(int bytewidth, bool signedtype)
+    {
+        int bitwidth = bytewidth * 8;
+
+        if(bitwidth <= 8)
+        {
+            if(signedtype)
+                return DataType::Int8;
+
+            return DataType::UInt8;
+        }
+
+        if(bitwidth <= 16)
+        {
+            if(signedtype)
+                return DataType::Int16;
+
+            return DataType::UInt16;
+        }
+
+        if(bitwidth <= 32)
+        {
+            if(signedtype)
+                return DataType::Int32;
+
+            return DataType::UInt32;
+        }
+
+        if(bitwidth <= 64)
+        {
+            if(signedtype)
+                return DataType::Int64;
+
+            return DataType::UInt64;
+        }
+
+        return DataType::Invalid;
+    }
+
     QString DataType::stringValue(DataType::Type type)
     {
         switch(type)

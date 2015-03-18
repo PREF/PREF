@@ -31,6 +31,11 @@ namespace PrefSDK
                 lua_pushinteger(l, self->length());
                 return 1;
             }
+            else if(name == "pointer")
+            {
+                lua_pushinteger(l, reinterpret_cast<lua_Integer>(self->data()));
+                return 1;
+            }
             else if(name == "__type")
             {
                 lua_pushinteger(l, static_cast<lua_Integer>(QMetaType::QByteArray));

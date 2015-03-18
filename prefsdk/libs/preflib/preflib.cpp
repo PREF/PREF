@@ -123,6 +123,7 @@ namespace PrefSDK
         PrefLib::_instance->_methods.append( {"notice", &PrefLib::logger_notice} );
         PrefLib::_instance->_methods.append( {"warning", &PrefLib::logger_warning} );
         PrefLib::_instance->_methods.append( {"error", &PrefLib::logger_error} );
+        PrefLib::_instance->_methods.append( {"modulePath", &PrefLib::module_modulePath } );
         PrefLib::_instance->_methods.append( {nullptr, nullptr} );
 
         luaL_register(l, PrefLib::PREF_TABLE, PrefLib::_instance->_methods.cbegin());
@@ -167,6 +168,30 @@ namespace PrefSDK
     int PrefLib::logger_error(lua_State *l)
     {
         return PrefLib::writeLog(l, "error");
+    }
+
+    int PrefLib::module_modulePath(lua_State *l)
+    {
+        int argc = lua_gettop(l);
+
+        if(!argc)
+        {
+            throw PrefException("pref.modulePath(): Expected at least 1 argument");
+            return 0;
+        }
+
+        if(lua_type(l, 1) != LUA_TSTRING)
+        {
+            throw PrefException("pref.modulePath(): Argument 1 must be a string");
+            return 0;
+        }
+
+        QString libspath = QString("%1%2%3%4%5%6%7%8").arg(qApp->applicationDirPath(), QDir::separator(), "sdk", QDir::separator(), "modules", QDir::separator(), "libs", QDir::separator());
+        QString archospath = QString("%1%2%3%4").arg(QSysInfo::currentCpuArchitecture(), QDir::separator(), QSysInfo::kernelType(), QDir::separator());
+        QString path = QString("%1%2%3").arg(libspath, archospath, QString::fromUtf8(lua_tostring(l, 1)));
+
+        lua_pushstring(l, path.toUtf8().constData());
+        return 1;
     }
 
     int PrefLib::format_create(lua_State *l)
@@ -330,6 +355,39 @@ namespace PrefSDK
 
         DataType::Type datatype = static_cast<DataType::Type>(lua_tointeger(l, 1));
         lua_pushinteger(l, DataType::sizeOf(datatype));
+        return 1;
+    }
+
+    int PrefLib::dataType_bestType(lua_State *l)
+    {
+        int argc = lua_gettop(l);
+
+        if(argc < 1)
+        {
+            throw PrefException(QString("pref.datatype.besttype(): Expected at least 1 argument not %1").arg(argc));
+            return 0;
+        }
+
+        if(lua_type(l, 1) != LUA_TNUMBER)
+        {
+            throw PrefException(QString("pref.datatype.besttype(): Argument 1 must be an integer, '%1' given").arg(luaL_typename(l, 1)));
+            return 0;
+        }
+
+        bool signedtype = true;
+
+        if(argc >= 2)
+        {
+            if(lua_type(l, 2) != LUA_TNUMBER)
+            {
+                throw PrefException(QString("pref.datatype.besttype(): Argument 2 must be an integer, '%1' given").arg(luaL_typename(l, 1)));
+                return 0;
+            }
+
+            signedtype = lua_toboolean(l, 2) == true;
+        }
+
+        lua_pushinteger(l, static_cast<lua_Integer>(DataType::bestType(lua_tointeger(l, 1), signedtype)));
         return 1;
     }
 
@@ -505,8 +563,12 @@ namespace PrefSDK
         QMetaEnum metaenum = metaobj.enumerator(metaobj.indexOfEnumerator("Type"));
 
         QtLua::pushEnum(l, metaenum);
+
         lua_pushcfunction(l, &PrefLib::dataType_sizeOf);
         lua_setfield(l, -2, "sizeof");
+
+        lua_pushcfunction(l, &PrefLib::dataType_bestType);
+        lua_setfield(l, -2, "besttype");
 
         lua_setfield(l, -2, "datatype");
     }

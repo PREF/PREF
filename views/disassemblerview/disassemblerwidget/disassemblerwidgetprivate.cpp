@@ -32,6 +32,7 @@ void DisassemblerWidgetPrivate::setDisassembler(DisassemblerDefinition *disassem
     this->adjust();
     this->update();
 
+    /* FIXME: Check Numero Istruzioni */
     if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
     {
         qint64 idx = this->_listing->indexOf(this->_listing->entryPoints().first());
@@ -549,7 +550,7 @@ void DisassemblerWidgetPrivate::paintEvent(QPaintEvent *pe)
     qint64 slidepos = this->_vscrollbar->isVisible() ? this->_vscrollbar->sliderPosition() : 0;
     qint64 start = this->visibleStart(r), end = this->visibleEnd(r);
 
-    for(qint64 i = start; i <= end; i++)
+    for(qint64 i = start; ((i <= end) && (i < this->_listing->length())); i++)
     {
         int y = (i - slidepos) * this->_charheight;
         this->drawLine(painter, fm, i, y);
