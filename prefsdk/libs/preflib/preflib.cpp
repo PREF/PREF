@@ -123,7 +123,6 @@ namespace PrefSDK
         PrefLib::_instance->_methods.append( {"notice", &PrefLib::logger_notice} );
         PrefLib::_instance->_methods.append( {"warning", &PrefLib::logger_warning} );
         PrefLib::_instance->_methods.append( {"error", &PrefLib::logger_error} );
-        PrefLib::_instance->_methods.append( {"modulePath", &PrefLib::module_modulePath } );
         PrefLib::_instance->_methods.append( {nullptr, nullptr} );
 
         luaL_register(l, PrefLib::PREF_TABLE, PrefLib::_instance->_methods.cbegin());
@@ -168,30 +167,6 @@ namespace PrefSDK
     int PrefLib::logger_error(lua_State *l)
     {
         return PrefLib::writeLog(l, "error");
-    }
-
-    int PrefLib::module_modulePath(lua_State *l)
-    {
-        int argc = lua_gettop(l);
-
-        if(!argc)
-        {
-            throw PrefException("pref.modulePath(): Expected at least 1 argument");
-            return 0;
-        }
-
-        if(lua_type(l, 1) != LUA_TSTRING)
-        {
-            throw PrefException("pref.modulePath(): Argument 1 must be a string");
-            return 0;
-        }
-
-        QString libspath = QString("%1%2%3%4%5%6%7%8").arg(qApp->applicationDirPath(), QDir::separator(), "sdk", QDir::separator(), "modules", QDir::separator(), "libs", QDir::separator());
-        QString archospath = QString("%1%2%3%4").arg(QSysInfo::currentCpuArchitecture(), QDir::separator(), QSysInfo::kernelType(), QDir::separator());
-        QString path = QString("%1%2%3").arg(libspath, archospath, QString::fromUtf8(lua_tostring(l, 1)));
-
-        lua_pushstring(l, path.toUtf8().constData());
-        return 1;
     }
 
     int PrefLib::format_create(lua_State *l)

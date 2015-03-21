@@ -9,6 +9,7 @@
 #include "prefsdk/libs/oop/oop.h"
 #include "prefsdk/libs/qt/qtlua.h"
 #include "prefsdk/libs/preflib/preflib.h"
+#include "prefsdk/libs/capstone/luacapstone.h"
 #include "prefsdk/sqlitewrapper/sqlite.h"
 #include "prefsdk/format/formatlist.h"
 #include "prefsdk/format/formattree.h"

@@ -61,10 +61,13 @@ DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinitio
     connect(ui->disassemblerWidget, SIGNAL(renameRequested(Block*)), this, SLOT(renameBlock(Block*)));
     connect(ui->disassemblerWidget, SIGNAL(crossReferenceRequested(Block*)), this, SLOT(showCrossReference(Block*)));
     connect(ui->disassemblerWidget, SIGNAL(jumpToRequested()), ui->gotoWidget, SLOT(show()));
+
+    this->_disassembler->callInitialize();
 }
 
 DisassemblerView::~DisassemblerView()
 {
+    this->_disassembler->callFinalize();
     delete ui;
 }
 

@@ -33,7 +33,7 @@ namespace PrefSDK
             }
             else if(name == "pointer")
             {
-                lua_pushinteger(l, reinterpret_cast<lua_Integer>(self->data()));
+                lua_pushlightuserdata(l, self->data());
                 return 1;
             }
             else if(name == "__type")

@@ -72,9 +72,6 @@ namespace PrefSDK
             static void open(lua_State* l, QMainWindow *mainwindow, SdkVersion* sdkversion);
             static PrefLib* instance();
 
-        /* Module methods */
-            static int module_modulePath(lua_State* l);
-
         /* Logger methods */
         private:
             static int logger_log(lua_State* l);

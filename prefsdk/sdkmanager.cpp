@@ -59,6 +59,7 @@ namespace PrefSDK
             return false;
 
         lua_State* l = LuaState::instance();
+        luaopen_capstone(l);
         SDKManager::loadMain(l, d.absoluteFilePath(SDKManager::_sdkpath), SDKManager::MAIN_SCRIPT);
 
         FormatList::load();

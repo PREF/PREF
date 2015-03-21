@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PREF
 TEMPLATE = app
-QMAKE_CXXFLAGS += -I$$PWD/include/luajit-2.0 -I$$PWD/include/sqlite -std=c++11
+QMAKE_CXXFLAGS += -I$$PWD/include/luajit-2.0 -I$$PWD/include/sqlite -I$$PWD/include/capstone -std=c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -169,7 +169,26 @@ SOURCES += main.cpp\
     qxychart/qxychart.cpp \
     viewmodels/histogrammodel/histogrammodel.cpp \
     prefsdk/libs/qt/bytearray.cpp \
-    prefsdk/libs/preflib/iofile.cpp
+    prefsdk/libs/preflib/iofile.cpp \
+    prefsdk/libs/capstone/arch/arm.cpp \
+    prefsdk/libs/capstone/arch/arm64.cpp \
+    prefsdk/libs/capstone/arch/mips.cpp \
+    prefsdk/libs/capstone/arch/ppc.cpp \
+    prefsdk/libs/capstone/arch/sparc.cpp \
+    prefsdk/libs/capstone/arch/sysz.cpp \
+    prefsdk/libs/capstone/arch/x86.cpp \
+    prefsdk/libs/capstone/arch/xcore.cpp \
+    prefsdk/libs/capstone/tables/arm_const.cpp \
+    prefsdk/libs/capstone/tables/arm64_const.cpp \
+    prefsdk/libs/capstone/tables/capstone_const.cpp \
+    prefsdk/libs/capstone/tables/mips_const.cpp \
+    prefsdk/libs/capstone/tables/ppc_const.cpp \
+    prefsdk/libs/capstone/tables/sparc_const.cpp \
+    prefsdk/libs/capstone/tables/sysz_const.cpp \
+    prefsdk/libs/capstone/tables/x86_const.cpp \
+    prefsdk/libs/capstone/tables/xcore_const.cpp \
+    prefsdk/libs/capstone/luacapstone.cpp \
+    prefsdk/libs/capstone/metadata.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -327,7 +346,29 @@ HEADERS  += mainwindow.h \
     qxychart/qxychart.h \
     viewmodels/histogrammodel/histogrammodel.h \
     prefsdk/libs/qt/bytearray.h \
-    prefsdk/libs/preflib/iofile.h
+    prefsdk/libs/preflib/iofile.h \
+    prefsdk/libs/capstone/arch/arm.h \
+    prefsdk/libs/capstone/arch/arm64.h \
+    prefsdk/libs/capstone/arch/mips.h \
+    prefsdk/libs/capstone/arch/ppc.h \
+    prefsdk/libs/capstone/arch/sparc.h \
+    prefsdk/libs/capstone/arch/sysz.h \
+    prefsdk/libs/capstone/arch/x86.h \
+    prefsdk/libs/capstone/arch/xcore.h \
+    prefsdk/libs/capstone/tables/arm_const.h \
+    prefsdk/libs/capstone/tables/arm64_const.h \
+    prefsdk/libs/capstone/tables/capstone_const.h \
+    prefsdk/libs/capstone/tables/mips_const.h \
+    prefsdk/libs/capstone/tables/ppc_const.h \
+    prefsdk/libs/capstone/tables/sparc_const.h \
+    prefsdk/libs/capstone/tables/sysz_const.h \
+    prefsdk/libs/capstone/tables/x86_const.h \
+    prefsdk/libs/capstone/tables/xcore_const.h \
+    prefsdk/libs/capstone/luacapstone.h \
+    prefsdk/libs/capstone/luacapstoneinstruction.h \
+    prefsdk/libs/capstone/luacapstonemacros.h \
+    prefsdk/libs/capstone/metadata.h \
+    prefsdk/libs/capstone/reflection.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -369,11 +410,11 @@ RESOURCES += resources.qrc
 OTHER_FILES +=
 
 # *** START *** LINUX External Libraries *** START ***
-unix:!macx: LIBS += -L$$PWD/lib/linux/ -lluajit-5.1 -lsqlite3 -ldl
+unix:!macx: LIBS += -L$$PWD/lib/linux/ -lluajit-5.1 -lsqlite3 -lcapstone -ldl
 QMAKE_LFLAGS += -Wl,--export-dynamic
 # *** END *** LINUX External Libraries *** END ***
 
 # *** START *** WINDOWS External Libraries *** START ***
-win32: LIBS += -L$$PWD/lib/windows/ -lluajit -lsqlite3
+win32: LIBS += -L$$PWD/lib/windows/ -lluajit -lsqlite3 -lcapstone
 RC_FILE = resources.rc
 # *** END *** WINDOWS External Libraries *** END ***

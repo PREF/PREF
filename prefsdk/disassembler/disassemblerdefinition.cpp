@@ -77,6 +77,42 @@ namespace PrefSDK
         }
     }
 
+    void DisassemblerDefinition::callInitialize()
+    {
+        if(!this->_disassemblertable.fieldExists("initialize"))
+            return;
+
+        lua_State* l = this->_disassemblertable.instance();
+        QtLua::LuaFunction initializefunc = this->_disassemblertable.getFunction("initialize");
+
+        bool err = initializefunc();
+
+        if(err)
+        {
+            throw PrefException(QString::fromUtf8(lua_tostring(l, -1)));
+            lua_pop(l, 1);
+            return;
+        }
+    }
+
+    void DisassemblerDefinition::callFinalize()
+    {
+        if(!this->_disassemblertable.fieldExists("finalize"))
+            return;
+
+        lua_State* l = this->_disassemblertable.instance();
+        QtLua::LuaFunction finalizefunc = this->_disassemblertable.getFunction("finalize");
+
+        bool err = finalizefunc();
+
+        if(err)
+        {
+            throw PrefException(QString::fromUtf8(lua_tostring(l, -1)));
+            lua_pop(l, 1);
+            return;
+        }
+    }
+
     bool DisassemblerDefinition::validate(QHexEditData *hexeditdata)
     {
         return this->_formatdefinition->callValidate(hexeditdata, nullptr, 0);

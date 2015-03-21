@@ -35,6 +35,8 @@ namespace PrefSDK
             bool callMap(QHexEditData* hexeditdata, Logger* logger);
             void callDisassemble(QLabel *infolabel, Logger *logger);
             void callOutput(ListingPrinter* printer, Instruction* instruction);
+            void callInitialize();
+            void callFinalize();
 
         public:
             bool validate(QHexEditData* hexeditdata);
