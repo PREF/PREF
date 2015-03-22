@@ -15,7 +15,7 @@ namespace PrefSDK
         public:
             explicit Field(DataType::Type datatype, quint64 offset, const QString& name, const QUuid& parentid, AbstractTree* formattree, QObject *parent = 0);
             uint bitFieldCount() const;
-            const BitField *bitField(qint64 i) const;
+            const BitField *bitField(lua_Integer i) const;
             const BitField *bitField(const QString &name) const;
 
         public slots:

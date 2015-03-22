@@ -45,7 +45,7 @@ namespace PrefSDK
         return fe;
     }
 
-    PrefSDK::FormatElement* Structure::field(qint64 i) const
+    PrefSDK::FormatElement* Structure::field(lua_Integer i) const
     {
         const QUuid& id = this->_fieldids[this->_fieldoffsets[i]];
         return this->_formattree->elementFromPoolByUUID(id);

@@ -19,7 +19,7 @@ namespace PrefSDK
             quint64 itemCount() const;
 
         public slots:
-            PrefSDK::Field* item(int i);
+            PrefSDK::Field* item(lua_Integer i);
             virtual QString displayName() const;
             virtual QString displayType() const;
             virtual QString displayValue() const;
