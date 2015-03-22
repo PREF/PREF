@@ -315,7 +315,7 @@ static int luacapstone_operandindex(lua_State* l)
     EXPECT_TYPE(LUA_TNUMBER, 4);
 
     int idx = cs_op_index((csh)lua_tointeger(l, 1), *((cs_insn**)lua_touserdata(l, 2)), lua_tointeger(l, 3), lua_tointeger(l, 4));
-    lua_pushinteger(l, idx);
+    lua_pushinteger(l, idx + 1);
     return 1;
 }
 
