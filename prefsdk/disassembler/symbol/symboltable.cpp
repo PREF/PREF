@@ -42,28 +42,28 @@ namespace PrefSDK
         return false;
     }
 
-    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address)
+    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const QString& symbolname)
     {
         if(symboltype == Symbol::Unknown)
             return;
 
-        QString symbolname;
+        QString symname = symbolname;
 
-        if(symboltype == Symbol::Function)
-            symbolname = "sub_";
-        else if(symboltype == Symbol::Label)
-            symbolname = "label_";
-        else if(symboltype == Symbol::String)
-            symbolname = "string_";
-        else
-            symbolname = "data_";
+        if(symname.isEmpty())
+        {
+            if(symboltype == Symbol::Function)
+                symname = "sub_";
+            else if(symboltype == Symbol::Label)
+                symname = "label_";
+            else if(symboltype == Symbol::String)
+                symname = "string_";
+            else
+                symname = "data_";
 
-        this->set(symboltype, address, DataValue(), symbolname + address.toString(16));
-    }
+            symname += address.toString(16);
+        }
 
-    void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const QString &name)
-    {
-        this->set(symboltype, address, DataValue(), name);
+        this->set(symboltype, address, DataValue(), symname);
     }
 
     void SymbolTable::set(Symbol::Type symboltype, const DataValue &address, const DataValue &calleraddress, const QString &name)
@@ -197,10 +197,15 @@ namespace PrefSDK
         this->set(static_cast<Symbol::Type>(symboltype), addressvalue, calleraddressvalue, QString());
     }
 
-    void SymbolTable::set(lua_Integer address, lua_Integer symboltype)
+    void SymbolTable::set(lua_Integer address, lua_Integer symboltype, const QString &name)
     {
         DataValue addressvalue = DataValue::create(address, this->_addresstype);
-        this->set(static_cast<Symbol::Type>(symboltype), addressvalue);
+        this->set(static_cast<Symbol::Type>(symboltype), addressvalue, name);
+    }
+
+    void SymbolTable::set(lua_Integer address, lua_Integer symboltype)
+    {
+        this->set(address, symboltype, QString());
     }
 
     QString SymbolTable::name(lua_Integer address)

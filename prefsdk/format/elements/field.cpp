@@ -12,7 +12,7 @@ namespace PrefSDK
         return this->_bitfieldids.count();
     }
 
-    const BitField *Field::bitField(qint64 i) const
+    const BitField *Field::bitField(lua_Integer i) const
     {
         QList<QString> keys = this->_bitfieldids.keys();
         return this->bitField(keys[i]);

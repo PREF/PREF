@@ -29,7 +29,7 @@ namespace PrefSDK
         public slots:
             PrefSDK::Structure* addStructure(const QString& name);
             PrefSDK::FieldElement* addField(lua_Integer datatype, const QString& name, lua_Integer count = 1);
-            PrefSDK::FormatElement* field(qint64 i) const;
+            PrefSDK::FormatElement* field(lua_Integer i) const;
             PrefSDK::FormatElement* field(const QString& s) const;
 
         public: /* Overriden Methods */

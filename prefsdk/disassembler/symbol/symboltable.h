@@ -25,8 +25,7 @@ namespace PrefSDK
             SymbolTable::Iterator end();
             bool contains(const DataValue& address) const;
             bool isType(const DataValue& address, Symbol::Type symboltype) const;
-            void set(Symbol::Type symboltype, const DataValue& address);
-            void set(Symbol::Type symboltype, const DataValue& address, const QString& name);
+            void set(Symbol::Type symboltype, const DataValue& address, const QString &symbolname);
             void set(Symbol::Type symboltype, const DataValue& address, const DataValue &calleraddress, const QString& name);
             void set(Symbol::Type symboltype, const DataValue& address, const DataValue &size, const DataValue &calleraddress);
             void set(Symbol::Type symboltype, const DataValue& address, const DataValue &size, const DataValue &calleraddress, const QString& name);
@@ -43,6 +42,7 @@ namespace PrefSDK
             Q_INVOKABLE void set(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype, const QString& name);
             Q_INVOKABLE void set(lua_Integer address, lua_Integer size, lua_Integer calleraddress, lua_Integer symboltype);
             Q_INVOKABLE void set(lua_Integer address, lua_Integer calleraddress, lua_Integer symboltype);
+            Q_INVOKABLE void set(lua_Integer address, lua_Integer symboltype, const QString& name);
             Q_INVOKABLE void set(lua_Integer address, lua_Integer symboltype);
             Q_INVOKABLE QString name(lua_Integer address);
             Q_INVOKABLE lua_Integer type(lua_Integer address);

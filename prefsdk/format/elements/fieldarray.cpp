@@ -7,7 +7,7 @@ namespace PrefSDK
         this->_dynamic = true; /* Set Always dynamic for FieldArray! */
     }
 
-    PrefSDK::Field *FieldArray::item(int i)
+    PrefSDK::Field *FieldArray::item(lua_Integer i)
     {
         if(this->_items.isEmpty() && (this->_datatype != DataType::Blob))
             this->parseChildren();

@@ -36,7 +36,7 @@ namespace PrefSDK
         public:
             explicit DisassemblerListing(QHexEditData* hexeditdata, Logger* logger, DataType::Type addresstype, QObject *parent = 0);
             void setFormatTree(PrefSDK::FormatTree* formattree);
-            bool isAddress(const DataValue& address) const;
+            bool isAddress(const DataValue& address, Segment **outsegment = nullptr) const;
             bool isDecoded(const DataValue& address) const;
             void createFunction(const DataValue& address, const DataValue &calleraddress, FunctionType::Type functiontype, const QString& name);
             void createFunction(const DataValue& address, const DataValue &calleraddress, const QString& name);

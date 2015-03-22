@@ -19,6 +19,7 @@ namespace PrefSDK
 
         while(!this->_addrstack.isEmpty())
         {
+            Segment* segment = nullptr;
             DataValue address = this->_addrstack.pop();
 
             do
@@ -26,9 +27,14 @@ namespace PrefSDK
                 if(this->_listing->isDecoded(address))
                     break;
 
-                if(!this->_listing->isAddress(address))
+                if(!this->_listing->isAddress(address, &segment))
                 {
                     logger->warning(QString("Trying to disassemble %1, this address does not belong to any Segment").arg(address.toString(16)));
+                    break;
+                }
+                else if(segment->type() != SegmentType::Code)
+                {
+                    logger->warning("Trying to disassemble non-code Segment");
                     break;
                 }
 

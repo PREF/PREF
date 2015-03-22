@@ -14,15 +14,23 @@ namespace PrefSDK
         this->_formattree->setParent(this);
     }
 
-    bool DisassemblerListing::isAddress(const DataValue &address) const
+    bool DisassemblerListing::isAddress(const DataValue &address, Segment** outsegment) const
     {
         for(SegmentMap::ConstIterator it = this->_segments.cbegin(); it != this->_segments.cend(); it++)
         {
             Segment* segment = it.value();
 
             if(segment->contains(address))
+            {
+                if(outsegment)
+                    *outsegment = segment;
+
                 return true;
+            }
         }
+
+        if(outsegment)
+            *outsegment = nullptr;
 
         return false;
     }
@@ -125,7 +133,10 @@ namespace PrefSDK
         Segment* segment = this->findSegment(destaddressvalue);
 
         if(!segment)
-            throw PrefException(QString("No segment for: %1").arg(destaddressvalue.toString(16)));
+        {
+            this->_logger->warning(QString("No segment for: %1").arg(destaddressvalue.toString(16)));
+            return;
+        }
 
         Label* label = nullptr;
         DataValue calleraddressvalue = DataValue::create(calleraddress, this->_addresstype);

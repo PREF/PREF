@@ -159,7 +159,7 @@ BeginStructureInfo(x86_op_mem)
     StructureField(x86_op_mem, unsigned int, base),
     StructureField(x86_op_mem, unsigned int, index),
     StructureField(x86_op_mem, int, scale),
-    StructureField(x86_op_mem, int, disp)
+    StructureField(x86_op_mem, int64_t, disp)
 EndStructureInfo(x86_op_mem)
 
 BeginStructureInfo(cs_x86_op)
