@@ -138,6 +138,8 @@ namespace PrefSDK
         if(this->_formattree->isEmpty())
             return false;
 
+        this->callInitialize(); /* Initialize disassembler */
+
         lua_State* l = this->_disassemblertable.instance();
         QtLua::LuaFunction mapfunc = this->_disassemblertable.getFunction("map");
 
