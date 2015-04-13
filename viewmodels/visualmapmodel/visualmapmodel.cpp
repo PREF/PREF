@@ -1,13 +1,13 @@
 #include "visualmapmodel.h"
 
-VisualMapModel::VisualMapModel(QObject *parent): QAbstractItemModel(parent), _mode(BinaryMap::DotPlot), _startoffset(0), _currentoffset(0), _width(256)
+VisualMapModel::VisualMapModel(QObject *parent): QAbstractItemModel(parent), _mode(BinaryMapWidget::DotPlot), _startoffset(0), _currentoffset(0), _width(256)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
-    this->_modenames[BinaryMap::DotPlot] = "Dot Plot";
-    this->_modenames[BinaryMap::BytesAsPixel] = "Bytes as Pixel";
+    this->_modenames[BinaryMapWidget::DotPlot] = "Dot Plot";
+    this->_modenames[BinaryMapWidget::BytesAsPixel] = "Bytes as Pixel";
 }
 
 void VisualMapModel::setStartOffset(qint64 offset)
@@ -129,7 +129,7 @@ bool VisualMapModel::setData(const QModelIndex &index, const QVariant &value, in
     {
         if((index.row() == 0) && (value.toInt() != this->_mode))
         {
-            this->_mode = static_cast<BinaryMap::DisplayMode>(value.toInt());
+            this->_mode = static_cast<BinaryMapWidget::DisplayMode>(value.toInt());
             emit displayModeChanged(this->_mode);
             return true;
         }

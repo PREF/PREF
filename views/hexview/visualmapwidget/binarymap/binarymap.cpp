@@ -1,8 +1,8 @@
 #include "binarymap.h"
 
-const QString BinaryMap::NO_DATA_AVAILABLE = "No Data Available";
+const QString BinaryMapWidget::NO_DATA_AVAILABLE = "No Data Available";
 
-BinaryMap::BinaryMap(QWidget *parent): QGLWidget(parent), _viewmode(BinaryMap::DotPlot), _hexedit(nullptr), _step(0), _width(256)
+BinaryMapWidget::BinaryMapWidget(QWidget *parent): QGLWidget(parent), _viewmode(BinaryMapWidget::DotPlot), _hexedit(nullptr), _step(0), _width(256)
 {
     QFont f("Monospace", qApp->font().pointSize());
     f.setStyleHint(QFont::TypeWriter);
@@ -18,7 +18,7 @@ BinaryMap::BinaryMap(QWidget *parent): QGLWidget(parent), _viewmode(BinaryMap::D
     this->setPalette(p);
 }
 
-void BinaryMap::setWidth(qint64 w)
+void BinaryMapWidget::setWidth(qint64 w)
 {
     if(w < 0)
         w = 0;
@@ -29,7 +29,7 @@ void BinaryMap::setWidth(qint64 w)
         this->update();
 }
 
-void BinaryMap::setDisplayMode(BinaryMap::DisplayMode mode)
+void BinaryMapWidget::setDisplayMode(BinaryMapWidget::DisplayMode mode)
 {
     this->_viewmode = mode;
 
@@ -37,7 +37,7 @@ void BinaryMap::setDisplayMode(BinaryMap::DisplayMode mode)
         this->update();
 }
 
-void BinaryMap::setData(QHexEdit* hexedit)
+void BinaryMapWidget::setData(QHexEdit* hexedit)
 {
     this->_hexedit = hexedit;
     this->populateViewModes();
@@ -46,37 +46,37 @@ void BinaryMap::setData(QHexEdit* hexedit)
     connect(this->_hexedit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateMap(qint64)));
 }
 
-qint64 BinaryMap::calcOffset(const QPoint &cursorpos)
+qint64 BinaryMapWidget::calcOffset(const QPoint &cursorpos)
 {
     return this->_viewmodes[this->_viewmode]->offset(QVector2D(cursorpos));
 }
 
-void BinaryMap::populateViewModes()
+void BinaryMapWidget::populateViewModes()
 {
     this->_viewmodes.clear();
-    this->_viewmodes[BinaryMap::DotPlot] = new DotPlotViewMode(this->_hexedit, this);
-    this->_viewmodes[BinaryMap::BytesAsPixel] = new PixelViewMode(this->_hexedit, this);
+    this->_viewmodes[BinaryMapWidget::DotPlot] = new DotPlotViewMode(this->_hexedit, this);
+    this->_viewmodes[BinaryMapWidget::BytesAsPixel] = new PixelViewMode(this->_hexedit, this);
 }
 
-void BinaryMap::drawNoDataAvailable(QPainter &p)
+void BinaryMapWidget::drawNoDataAvailable(QPainter &p)
 {
     QFontMetrics fm = this->fontMetrics();
 
     p.setPen(QColor(Qt::white));
-    p.drawText(10, 10, fm.width(BinaryMap::NO_DATA_AVAILABLE), fm.height(), Qt::AlignLeft | Qt::AlignTop, BinaryMap::NO_DATA_AVAILABLE);
+    p.drawText(10, 10, fm.width(BinaryMapWidget::NO_DATA_AVAILABLE), fm.height(), Qt::AlignLeft | Qt::AlignTop, BinaryMapWidget::NO_DATA_AVAILABLE);
 }
 
-void BinaryMap::updateMap(int)
+void BinaryMapWidget::updateMap(int)
 {
     this->update();
 }
 
-void BinaryMap::updateMap(qint64)
+void BinaryMapWidget::updateMap(qint64)
 {
     this->update();
 }
 
-void BinaryMap::mousePressEvent(QMouseEvent *event)
+void BinaryMapWidget::mousePressEvent(QMouseEvent *event)
 {
     if(event->buttons() == Qt::LeftButton)
     {
@@ -92,7 +92,7 @@ void BinaryMap::mousePressEvent(QMouseEvent *event)
     QGLWidget::mousePressEvent(event);
 }
 
-void BinaryMap::mouseMoveEvent(QMouseEvent *event)
+void BinaryMapWidget::mouseMoveEvent(QMouseEvent *event)
 {
     qint64 offset = this->calcOffset(event->pos());
 
@@ -102,13 +102,13 @@ void BinaryMap::mouseMoveEvent(QMouseEvent *event)
     QGLWidget::mouseMoveEvent(event);
 }
 
-void BinaryMap::wheelEvent(QWheelEvent *event)
+void BinaryMapWidget::wheelEvent(QWheelEvent *event)
 {
     this->_hexedit->scroll(event);
     QGLWidget::wheelEvent(event);
 }
 
-void BinaryMap::paintEvent(QPaintEvent *)
+void BinaryMapWidget::paintEvent(QPaintEvent *)
 {
     if(!this->_viewmodes.contains(this->_viewmode) || this->_width == -1)
         return;

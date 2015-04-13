@@ -10,8 +10,8 @@ QWidget* VisualMapDelegate::createEditor(QWidget *parent, const QStyleOptionView
     if(!index.row())
     {
         QComboBox* cbx = new QComboBox(parent);
-        cbx->addItem("Dot Plot", BinaryMap::DotPlot);
-        cbx->addItem("Bytes as Pixel", BinaryMap::BytesAsPixel);
+        cbx->addItem("Dot Plot", BinaryMapWidget::DotPlot);
+        cbx->addItem("Bytes as Pixel", BinaryMapWidget::BytesAsPixel);
         return cbx;
     }
 

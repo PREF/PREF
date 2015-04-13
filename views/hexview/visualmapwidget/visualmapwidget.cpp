@@ -12,7 +12,7 @@ void VisualMapWidget::map(QHexEdit *hexedit)
 {
     this->_hexedit = hexedit;
 
-    ui->binaryMap->setDisplayMode(BinaryMap::DotPlot);
+    ui->binaryMap->setDisplayMode(BinaryMapWidget::DotPlot);
     ui->binaryMap->setData(hexedit);
 
     this->_visualmapmodel = new VisualMapModel(ui->mapOptions);
@@ -24,7 +24,7 @@ void VisualMapWidget::map(QHexEdit *hexedit)
     connect(ui->binaryMap, SIGNAL(offsetChanged(qint64)), this->_visualmapmodel, SLOT(setCurrentOffset(qint64)));
 
     connect(this->_visualmapmodel, SIGNAL(widthChanged(qint64)), ui->binaryMap, SLOT(setWidth(qint64)));
-    connect(this->_visualmapmodel, SIGNAL(displayModeChanged(BinaryMap::DisplayMode)), ui->binaryMap, SLOT(setDisplayMode(BinaryMap::DisplayMode)));
+    connect(this->_visualmapmodel, SIGNAL(displayModeChanged(BinaryMapWidget::DisplayMode)), ui->binaryMap, SLOT(setDisplayMode(BinaryMapWidget::DisplayMode)));
 
     ui->mapOptions->resizeRowsToContents();
 }

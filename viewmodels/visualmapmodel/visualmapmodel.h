@@ -28,14 +28,14 @@ class VisualMapModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     signals:
-        void displayModeChanged(BinaryMap::DisplayMode displaymode);
+        void displayModeChanged(BinaryMapWidget::DisplayMode displaymode);
         void currentOffsetChanged(qint64 offset);
         void widthChanged(qint64 width);
 
     private:
-        QHash<BinaryMap::DisplayMode, QString> _modenames;
+        QHash<BinaryMapWidget::DisplayMode, QString> _modenames;
         QFont _monospacefont;
-        BinaryMap::DisplayMode _mode;
+        BinaryMapWidget::DisplayMode _mode;
         qint64 _startoffset;
         qint64 _currentoffset;
         qint64 _width;

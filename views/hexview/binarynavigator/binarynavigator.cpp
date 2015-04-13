@@ -2,21 +2,21 @@
 
 const qreal BinaryNavigator::BYTES_PER_LINE = 0x10;
 
-BinaryNavigator::BinaryNavigator(QWidget *parent): QGLWidget(parent), _hexeditdata(nullptr), _hexedit(nullptr), _size(-1), _maxwidth(-1), _maxheight(-1), _offset(-1)
+BinaryNavigator::BinaryNavigator(QWidget *parent): QGLWidget(parent), _hexeditdata(nullptr), _hexedit(nullptr), _size(0), _offset(0)
 {
-    this->_displaymode = BinaryNavigator::Default;
+    this->_binarymap.setMode(BinaryMap::Class);
 }
 
 void BinaryNavigator::displayDefault()
 {
-    this->_displaymode = BinaryNavigator::Default;
-    this->update();
+    this->_binarymap.setMode(BinaryMap::Class);
+    this->renderMap();
 }
 
 void BinaryNavigator::displayEntropy()
 {
-    this->_displaymode = BinaryNavigator::Entropy;
-    this->update();
+    this->_binarymap.setMode(BinaryMap::Entropy);
+    this->renderMap();
 }
 
 void BinaryNavigator::setData(QHexEdit *hexedit)
@@ -30,41 +30,11 @@ void BinaryNavigator::setData(QHexEdit *hexedit)
 
 void BinaryNavigator::renderMap(int)
 {
+    QDataBuffer databuffer(this->_hexeditdata);
+
     this->adjust();
+    this->_binarymap.elaborate(&databuffer, this->_offset, this->_endoffset, BinaryNavigator::BYTES_PER_LINE);
     this->update();
-}
-
-void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
-{
-    /* FIXME:
-    qreal e = entropy(this->_hexeditdata, this->_offset);
-    QColor c = ByteColors::entropyColor(e);
-    QRectF r = QRectF(x, y, this->_size, this->_size);
-    p.fillRect(r, c);
-
-    if(this->_offset == this->_hexedit->cursorPos())
-    {
-        cursorrect = r;
-        cursorcolor = QColor(0xFF, 0xFF, 0x00);
-    }
-    */
-}
-
-void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
-{
-    /* FIXME:
-    QHexEditDataReader reader(this->_hexeditdata);
-    uchar b = reader.at(this->_offset);
-    QColor c = ByteColors::byteClassColor(b);
-    QRectF r = QRectF(x, y, this->_size, this->_size);
-    p.fillRect(r, c);
-
-    if(this->_offset == this->_hexedit->cursorPos())
-    {
-        cursorrect = r;
-        cursorcolor = QColor(0xFF, 0x00, 0xFF);
-    }
-    */
 }
 
 qint64 BinaryNavigator::indexFromPoint(const QPoint &pt)
@@ -80,10 +50,11 @@ void BinaryNavigator::adjust()
     if(!this->_hexedit)
         return;
 
+    uint64_t w = static_cast<uint64_t>(BinaryNavigator::BYTES_PER_LINE);
+
     this->_size = qFloor(static_cast<qreal>(this->width()) / BinaryNavigator::BYTES_PER_LINE);
-    this->_maxwidth = this->width();
-    this->_maxheight = this->height();
     this->_offset = this->_hexedit->visibleStartOffset();
+    this->_endoffset = std::min(static_cast<uint64_t>(this->_hexeditdata->length()), this->_offset + ((this->height() / this->_size) * w));
 }
 
 void BinaryNavigator::updateSquare(qint64)
@@ -120,38 +91,36 @@ void BinaryNavigator::paintEvent(QPaintEvent *)
     if(!this->_hexeditdata || ! this->_hexedit || !this->isVisible())
         return;
 
-    this->adjust();
-
-    QColor cursorcolor;
-    QRectF cursorrect;
+    QRectF r(0, 0, this->_size, this->_size);
     QPainter p(this);
 
-    for(qreal x = 0, y = 0; (this->_offset < this->_hexeditdata->length()) && (y <= this->_maxheight); x += this->_size, this->_offset++)
+    const BinaryMap::ByteDataList& bdl = this->_binarymap.data();
+
+    for(qreal i = 0; i < bdl.size(); i++, this->_offset++)
     {
-        if(x >= this->_maxwidth)
+        if(r.left() >= this->width())
+            r.moveTo(0, r.top() + this->_size);
+
+        QColor c;
+        const BinaryMap::ByteData& bd = bdl.at(i);
+
+        if(this->_binarymap.mode() == BinaryMap::Entropy)
+            c = QColor::fromRgb(ByteColors::entropyColor(bd.Entropy));
+        else
+            c = QColor::fromRgb(ByteColors::categoryColor(bd.Category));
+
+        p.fillRect(r, c);
+
+        if(this->_offset == static_cast<uint64_t>(this->_hexedit->cursorPos()))
         {
-            y += this->_size;
-            x = 0;
+            if(this->_binarymap.mode() == BinaryMap::Entropy)
+                p.setPen(QColor(0xFF, 0xFF, 0x00));
+            else
+                p.setPen(QColor(0xFF, 0x00, 0xFF));
+
+            p.drawRect(r);
         }
 
-        switch(this->_displaymode)
-        {
-            case BinaryNavigator::ByteClass:
-                this->renderByteClass(p, x, y, cursorrect, cursorcolor);
-                break;
-
-            case BinaryNavigator::Entropy:
-                this->renderEntropy(p, x, y, cursorrect, cursorcolor);
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    if(!cursorrect.isEmpty())
-    {
-        p.setPen(cursorcolor);
-        p.drawRect(cursorrect);
+        r.moveLeft(r.left() + this->_size);
     }
 }

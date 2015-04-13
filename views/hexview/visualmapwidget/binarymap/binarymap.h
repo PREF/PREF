@@ -12,7 +12,7 @@
 #include "viewmodes/dotplotviewmode.h"
 #include "viewmodes/pixelviewmode.h"
 
-class BinaryMap : public QGLWidget
+class BinaryMapWidget : public QGLWidget
 {
     Q_OBJECT
 
@@ -20,14 +20,14 @@ class BinaryMap : public QGLWidget
         enum DisplayMode { DotPlot, BytesAsPixel };
 
     private:
-        typedef QHash<BinaryMap::DisplayMode, AbstractViewMode*> ViewMode;
+        typedef QHash<BinaryMapWidget::DisplayMode, AbstractViewMode*> ViewMode;
 
     public:
-        explicit BinaryMap(QWidget *parent = 0);
+        explicit BinaryMapWidget(QWidget *parent = 0);
 
     public slots:
         void setWidth(qint64 w);
-        void setDisplayMode(BinaryMap::DisplayMode mode);
+        void setDisplayMode(BinaryMapWidget::DisplayMode mode);
         void setData(QHexEdit *hexedit);
 
     private:

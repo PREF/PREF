@@ -5,17 +5,18 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QtOpenGL>
-#include "qhexedit/qhexedit.h"
+#include <QDebug>
+#include <map/binarymap.h>
 #include <support/bytecolors.h>
+#include "prefsdk/qdatabuffer.h"
+#include "qhexedit/qhexedit.h"
 
+using namespace PrefLib::Map;
 using namespace PrefLib::Support;
 
 class BinaryNavigator : public QGLWidget
 {
     Q_OBJECT
-
-    private:
-        enum DisplayMode { ByteClass = 0, Entropy = 1, Default = ByteClass };
 
     public:
         explicit BinaryNavigator(QWidget *parent = 0);
@@ -25,12 +26,9 @@ class BinaryNavigator : public QGLWidget
 
     public slots:
         void renderMap(int = 0);
-        void renderEntropy(QPainter& p, qint64 x, qint64 y, QRectF &cursorrect, QColor& cursorcolor);
-        void renderByteClass(QPainter& p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor);
 
     private:
         qint64 indexFromPoint(const QPoint &pt);
-
         void adjust();
 
     private slots:
@@ -43,13 +41,12 @@ class BinaryNavigator : public QGLWidget
 
     private:
         static const qreal BYTES_PER_LINE;
-        BinaryNavigator::DisplayMode _displaymode;
+        BinaryMap _binarymap;
         QHexEditData* _hexeditdata;
         QHexEdit* _hexedit;
-        qint64 _size;
-        qint64 _maxwidth;
-        qint64 _maxheight;
-        qint64 _offset;
+        uint64_t _size;
+        uint64_t _offset;
+        uint64_t _endoffset;
 };
 
 #endif // BINARYNAVIGATOR_H
