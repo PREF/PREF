@@ -2,11 +2,11 @@
 #define CHARTWORKER_H
 
 #include <QtCore>
+#include <chart/histogramchart.h>
+#include <chart/entropychart.h>
 #include "qhexedit/qhexeditdata.h"
 #include "views/hexview/worker.h"
 #include "prefsdk/qdatabuffer.h"
-#include <chart/histogramchart.h>
-#include <chart/entropychart.h>
 
 using namespace PrefLib;
 using namespace PrefLib::Chart;
@@ -27,8 +27,8 @@ class ChartWorker: public Worker
         virtual void run();
 
     signals:
-        void histogramChartCompleted();
-        void dataEntropyCompleted();
+        void histogramChartCompleted(quint64 size);
+        void entropyChartCompleted(quint64 size);
 
     private:
         HistogramChart* _histogramchart;

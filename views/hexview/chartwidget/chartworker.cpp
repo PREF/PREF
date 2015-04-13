@@ -29,12 +29,12 @@ void ChartWorker::run()
     if(this->_histogramchart)
     {
         dynamic_cast<AbstractChart*>(this->_histogramchart)->elaborate(&databuffer); //NOTE: Manage _cancontinue
-        emit histogramChartCompleted();
+        emit histogramChartCompleted(this->_hexeditdata->length());
     }
 
     if(this->_entropychart)
     {
         dynamic_cast<AbstractChart*>(this->_entropychart)->elaborate(&databuffer);  //NOTE: Manage _cancontinue
-        emit dataEntropyCompleted();
+        emit entropyChartCompleted(this->_hexeditdata->length());
     }
 }

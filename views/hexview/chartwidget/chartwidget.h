@@ -29,12 +29,12 @@ class ChartWidget : public WorkerTab
         ~ChartWidget();
 
     private:
-        void updateEntropy(const QList<qint64>& occurrences);
-        void updateEntropyText(const QString& text, const QColor& forecolor);
+        void displayEntropy(const ByteElaborator::CountResult &cr, uint64_t size);
+        void setEntropy(const QString& text, const QColor& forecolor);
 
     private slots:
-        void onHistogramChartCompleted();
-        void onEntropyChartCompleted();
+        void onHistogramChartCompleted(quint64 size);
+        void onEntropyChartCompleted(quint64 size);
         void on_tbHelp_clicked();
         void on_tbSwitchChart_clicked();
 
