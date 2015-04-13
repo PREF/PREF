@@ -4,25 +4,25 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <support/byteelaborator.h>
 #include "qhexedit/qhexeditdatareader.h"
+
+using namespace PrefLib::Support;
 
 class StringsModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        typedef QList<qint64> OffsetList;
-        typedef QPair<qint64, qint64> StringRange;
-        typedef QHash<qint64, StringRange> StringMap;
         enum SearchDirection { Up, Down };
 
     public:
         explicit StringsModel(QHexEditData *hexeditdata, QObject *parent = 0);
-        void setData(const StringsModel::OffsetList& offsetlist, const StringsModel::StringMap& strings);
+        void setData(const ByteElaborator::StringList &strings);
         QModelIndex indexOf(const QString& searchstring, StringsModel::SearchDirection direction, const QModelIndex& startindex = QModelIndex());
-        qint64 offset(int i) const;
-        StringsModel::StringRange range(int i) const;
-        QString string(int i) const;
+        const ByteElaborator::StringRange& range(size_t i) const;
+        uint64_t offset(size_t i) const;
+        QString string(size_t i) const;
 
     private:
         QModelIndex searchUp(const QString& searchstring, const QModelIndex& startindex);
@@ -41,8 +41,7 @@ class StringsModel : public QAbstractItemModel
         void filterChanged();
 
     private:
-        OffsetList _offsetlist;
-        StringMap _strings;
+        ByteElaborator::StringList _strings;
         QHexEditDataReader* _reader;
         QFont _monospacefont;
 };

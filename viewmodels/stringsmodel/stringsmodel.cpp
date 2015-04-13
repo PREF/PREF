@@ -7,10 +7,9 @@ StringsModel::StringsModel(QHexEditData* hexeditdata, QObject *parent): QAbstrac
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
-void StringsModel::setData(const StringsModel::OffsetList &offsetlist, const StringsModel::StringMap &strings)
+void StringsModel::setData(const ByteElaborator::StringList &strings)
 {
-    this->beginInsertRows(QModelIndex(), offsetlist.length(), offsetlist.length());
-    this->_offsetlist = offsetlist;
+    this->beginInsertRows(QModelIndex(), strings.size(), strings.size());
     this->_strings = strings;
     this->endInsertRows();
 }
@@ -32,26 +31,25 @@ QModelIndex StringsModel::indexOf(const QString &searchstring, StringsModel::Sea
     return QModelIndex();
 }
 
-qint64 StringsModel::offset(int i) const
+const ByteElaborator::StringRange &StringsModel::range(size_t i) const
 {
-    return this->_offsetlist[i];
+    return this->_strings.at(i);
 }
 
-StringsModel::StringRange StringsModel::range(int i) const
+uint64_t StringsModel::offset(size_t i) const
 {
-    qint64 offset = this->_offsetlist[i];
-    return this->_strings[offset];
+    return this->_strings.at(i).Start;
 }
 
-QString StringsModel::string(int i) const
+QString StringsModel::string(size_t i) const
 {
-    const StringsModel::StringRange& range = this->range(i);
-    return this->_reader->read(range.first, range.second).simplified();
+    const ByteElaborator::StringRange& range = this->_strings.at(i);
+    return this->_reader->read(range.Start, range.End - range.Start).simplified();
 }
 
 QModelIndex StringsModel::searchUp(const QString &searchstring, const QModelIndex &startindex)
 {
-    for(int i = (startindex.isValid() ? startindex.row() - 1 : this->_offsetlist.length() - 1); i >= 0; i--)
+    for(int64_t i = (startindex.isValid() ? startindex.row() - 1 : this->_strings.size() - 1); i >= 0; i--)
     {
         QString s = this->string(i);
 
@@ -71,7 +69,7 @@ QModelIndex StringsModel::searchUp(const QString &searchstring, const QModelInde
 
 QModelIndex StringsModel::searchDown(const QString &searchstring, const QModelIndex &startindex)
 {
-    for(int i = (startindex.isValid() ? startindex.row() + 1 : 0); i < this->_offsetlist.length(); i++)
+    for(uint64_t i = (startindex.isValid() ? startindex.row() + 1 : 0); i < this->_strings.size(); i++)
     {
         QString s = this->string(i);
 
@@ -121,8 +119,10 @@ QVariant StringsModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
+        const ByteElaborator::StringRange& range = this->_strings.at(index.row());
+
         if(index.column() == 0)
-            return QString("%1").arg(this->_offsetlist[index.row()], 8, 16, QLatin1Char('0')).toUpper().append("h");
+            return QString("%1").arg(range.Start, 8, 16, QLatin1Char('0')).toUpper().append("h");
         else if(index.column() == 1)
             return this->string(index.row());
     }
@@ -154,7 +154,7 @@ QModelIndex StringsModel::parent(const QModelIndex &) const
 
 int StringsModel::rowCount(const QModelIndex &) const
 {
-    return this->_offsetlist.length();
+    return this->_strings.size();
 }
 
 Qt::ItemFlags StringsModel::flags(const QModelIndex &index) const

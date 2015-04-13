@@ -2,24 +2,21 @@
 #define STRINGSWORKER_H
 
 #include <QtCore>
-#include "qhexedit/qhexeditdata.h"
-#include "qhexedit/qhexeditdatareader.h"
+#include <support/byteelaborator.h>
 #include "views/hexview/worker.h"
+#include "qhexedit/qhexeditdata.h"
+#include "prefsdk/qdatabuffer.h"
+
+using namespace PrefLib::Support;
 
 class StringsWorker : public Worker
 {
     Q_OBJECT
 
     public:
-        typedef QList<qint64> OffsetList;
-        typedef QPair<qint64, qint64> StringRange;
-        typedef QHash<qint64, StringRange> StringMap;
-
-    public:
         explicit StringsWorker(QObject *parent = 0);
         void setData(QHexEditData* databuffer);
-        const StringsWorker::OffsetList& offsetList() const;
-        const StringsWorker::StringMap& strings() const;
+        const ByteElaborator::StringList& stringList() const;
 
     protected:
         virtual void run();
@@ -28,11 +25,8 @@ class StringsWorker : public Worker
         void searchState(bool b);
 
     private:
-        static const qint64 MIN_LENGTH;
-        static const qint64 MAX_LENGTH;
         QHexEditData* _hexeditdata;
-        OffsetList _offsetlist;
-        StringMap _strings;
+        ByteElaborator::StringList _stringlist;
 };
 
 #endif // STRINGSWORKER_H

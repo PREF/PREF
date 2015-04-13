@@ -75,7 +75,7 @@ QModelIndex StringsWidget::search(StringsModel::SearchDirection direction)
 void StringsWidget::onStringsWorkerFinished()
 {
     this->createStringListActions();
-    this->_stringsmodel->setData(this->_worker.offsetList(), this->_worker.strings());
+    this->_stringsmodel->setData(this->_worker.stringList());
 }
 
 void StringsWidget::onCopyTriggered()
@@ -128,8 +128,8 @@ void StringsWidget::on_stringList_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    StringsModel::StringRange range = this->_stringsmodel->range(index.row());
-    emit gotoTriggered(range.first, range.second);
+    const ByteElaborator::StringRange& range = this->_stringsmodel->range(index.row());
+    emit gotoTriggered(range.Start, range.End - range.Start);
 }
 
 void StringsWidget::on_tbSearchUp_clicked()
