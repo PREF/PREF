@@ -8,11 +8,14 @@
 
 using namespace PrefLib;
 
-class QDataBuffer: public QObject, public IO::DataBuffer
+class QDataBuffer: public IO::DataBuffer
 {
     public:
-        QDataBuffer(QHexEditData* hexeditdata, QObject* parent = 0);
+        QDataBuffer(QHexEditData* hexeditdata);
         ~QDataBuffer();
+        QHexEditData* hexeditdata();
+        QHexEditDataReader* reader();
+        QHexEditDataWriter* writer();
 
     public: /* Overriden Methods */
         virtual uint64_t length() const;

@@ -3,8 +3,8 @@
 
 #include <QAbstractItemModel>
 #include <qhistogram/qhistogram.h>
-#include <io/databuffer.h>
 #include <chart/histogramchart.h>
+#include "qhexedit/qhexeditdata.h"
 
 using namespace PrefLib;
 using namespace PrefLib::Chart;
@@ -14,7 +14,7 @@ class HistogramModel : public QAbstractItemModel
     Q_OBJECT
 
     public:
-        explicit HistogramModel(const HistogramChart& histogramchart, IO::DataBuffer* databuffer, QObject *parent = 0);
+        explicit HistogramModel(const HistogramChart& histogramchart, QHexEditData* hexeditdata, QObject *parent = 0);
         void updateStats();
 
     private:
@@ -32,7 +32,7 @@ class HistogramModel : public QAbstractItemModel
     private:
         static QMap<uchar, QString> _nonasciichars;
         const HistogramChart& _histogramchart;
-        IO::DataBuffer* _databuffer;
+        QHexEditData* _hexeditdata;
         QFont _monospacefont;
 
 };

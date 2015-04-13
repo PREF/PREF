@@ -153,11 +153,6 @@ void CompareView::highlightSameBytes(qint64 &offset)
     ui->hexEditLeft->highlightBackground(diffstartoffset, offset - 1, this->_samecolor);
 }
 
-QHexEditData *CompareView::data()
-{
-    return this->_lefthexeditdata;
-}
-
 bool CompareView::canSave() const
 {
     return false;

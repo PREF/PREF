@@ -2,7 +2,7 @@
 
 QMap<uchar, QString>  HistogramModel::_nonasciichars;
 
-HistogramModel::HistogramModel(const HistogramChart &histogramchart, IO::DataBuffer *databuffer, QObject *parent): QAbstractItemModel(parent), _histogramchart(histogramchart), _databuffer(databuffer)
+HistogramModel::HistogramModel(const HistogramChart &histogramchart, QHexEditData *hexeditdata, QObject *parent): QAbstractItemModel(parent), _histogramchart(histogramchart), _hexeditdata(hexeditdata)
 {
     if(HistogramModel::_nonasciichars.isEmpty())
         HistogramModel::initNonAsciiChars();
@@ -108,7 +108,7 @@ QVariant HistogramModel::data(const QModelIndex &index, int role) const
         else if(index.column() == 2)
             return QString::number(cr.Counts.at(index.row()));
         else if(index.column() == 3)
-            return QString("%1%").arg((static_cast<qreal>(cr.Counts.at(index.row())) / static_cast<qreal>(this->_databuffer->length())) * 100);
+            return QString("%1%").arg((static_cast<qreal>(cr.Counts.at(index.row())) / static_cast<qreal>(this->_hexeditdata->length())) * 100);
     }
     else if((role == Qt::ForegroundRole) && (index.row() != cr.MaxByte))  /* NOTE: Testing needed */
     {

@@ -11,14 +11,14 @@
 using namespace PrefLib;
 using namespace PrefLib::Chart;
 
-class ChartWorker : public Worker
+class ChartWorker: public Worker
 {
     Q_OBJECT
 
     public:
         explicit ChartWorker(QObject *parent = 0);
         ~ChartWorker();
-        void setData(HistogramChart *histogramchart, EntropyChart *entropychart, IO::DataBuffer *databuffer);
+        void setData(HistogramChart *histogramchart, EntropyChart *entropychart, QHexEditData *hexeditdata);
 
     private:
         quint64 calculateBlockSize();
@@ -33,7 +33,7 @@ class ChartWorker : public Worker
     private:
         HistogramChart* _histogramchart;
         EntropyChart* _entropychart;
-        IO::DataBuffer* _databuffer;
+        QHexEditData* _hexeditdata;
 };
 
 #endif // CHARTWORKER_H

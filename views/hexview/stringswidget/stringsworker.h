@@ -17,7 +17,7 @@ class StringsWorker : public Worker
 
     public:
         explicit StringsWorker(QObject *parent = 0);
-        void setData(QHexEditData* hexeditdata);
+        void setData(QHexEditData* databuffer);
         const StringsWorker::OffsetList& offsetList() const;
         const StringsWorker::StringMap& strings() const;
 

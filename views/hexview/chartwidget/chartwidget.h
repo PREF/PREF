@@ -25,7 +25,7 @@ class ChartWidget : public WorkerTab
 
     public:
         explicit ChartWidget(QWidget *parent = 0);
-        void plot(IO::DataBuffer *databuffer);
+        void plot(QHexEditData *hexeditdata);
         ~ChartWidget();
 
     private:
@@ -43,7 +43,6 @@ class ChartWidget : public WorkerTab
         HistogramModel* _histogrammodel;
         HistogramChart _histogramchart;
         EntropyChart _entropychart;
-        IO::DataBuffer* _databuffer;
         ChartWorker _worker;
         QIcon _xycharticon;
         QIcon _histogramicon;

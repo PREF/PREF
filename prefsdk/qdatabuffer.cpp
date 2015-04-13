@@ -1,14 +1,41 @@
 #include "qdatabuffer.h"
 
-QDataBuffer::QDataBuffer(QHexEditData* hexeditdata, QObject* parent): QObject(parent), IO::DataBuffer(IO::DataBuffer::ReadWrite), _hexeditdata(hexeditdata)
+QDataBuffer::QDataBuffer(QHexEditData* hexeditdata): IO::DataBuffer(IO::DataBuffer::ReadWrite), _hexeditdata(hexeditdata)
 {
-    this->_reader = new QHexEditDataReader(hexeditdata, this);
-    this->_writer = new QHexEditDataWriter(hexeditdata, this);
+    //TODO: Fine Tuning R/W
+
+    this->_reader = new QHexEditDataReader(hexeditdata);
+    this->_writer = new QHexEditDataWriter(hexeditdata);
 }
 
 QDataBuffer::~QDataBuffer()
 {
+    if(this->_reader)
+    {
+        this->_reader->deleteLater();
+        this->_reader = nullptr;
+    }
 
+    if(this->_writer)
+    {
+        this->_writer->deleteLater();
+        this->_writer = nullptr;
+    }
+}
+
+QHexEditData *QDataBuffer::hexeditdata()
+{
+    return this->_hexeditdata;
+}
+
+QHexEditDataReader *QDataBuffer::reader()
+{
+    return this->_reader;
+}
+
+QHexEditDataWriter *QDataBuffer::writer()
+{
+    return this->_writer;
 }
 
 uint64_t QDataBuffer::length() const

@@ -35,7 +35,6 @@ class CompareView : public AbstractView
         void highlightSameBytes(qint64& offset);
 
     public: /* Overriden Methods */
-        virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
         virtual LogWidget* logWidget();

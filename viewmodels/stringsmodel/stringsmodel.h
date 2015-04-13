@@ -4,7 +4,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 
 class StringsModel : public QAbstractItemModel
@@ -18,7 +17,7 @@ class StringsModel : public QAbstractItemModel
         enum SearchDirection { Up, Down };
 
     public:
-        explicit StringsModel(QHexEditData* hexeditdata, QObject *parent = 0);
+        explicit StringsModel(QHexEditData *hexeditdata, QObject *parent = 0);
         void setData(const StringsModel::OffsetList& offsetlist, const StringsModel::StringMap& strings);
         QModelIndex indexOf(const QString& searchstring, StringsModel::SearchDirection direction, const QModelIndex& startindex = QModelIndex());
         qint64 offset(int i) const;

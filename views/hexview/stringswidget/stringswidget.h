@@ -18,7 +18,7 @@ class StringsWidget : public WorkerTab
 
     public:
         explicit StringsWidget(QWidget *parent = 0);
-        void scan(QHexEditData* hexeditdata);
+        void scan(QHexEditData *hexeditdata);
         ~StringsWidget();
 
     private:
@@ -42,7 +42,6 @@ class StringsWidget : public WorkerTab
     private:
         Ui::StringsWidget *ui;
         StringsWorker _worker;
-        QHexEditData* _hexeditdata;
         StringsModel* _stringsmodel;
         QMenu* _slmenu;
         QAction* _actgoto;

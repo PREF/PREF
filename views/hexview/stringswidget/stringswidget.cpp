@@ -1,7 +1,7 @@
 #include "stringswidget.h"
 #include "ui_stringswidget.h"
 
-StringsWidget::StringsWidget(QWidget *parent) : WorkerTab(parent), ui(new Ui::StringsWidget), _hexeditdata(nullptr), _stringsmodel(nullptr), _slmenu(nullptr)
+StringsWidget::StringsWidget(QWidget *parent) : WorkerTab(parent), ui(new Ui::StringsWidget), _stringsmodel(nullptr), _slmenu(nullptr)
 {
     ui->setupUi(this);
 
@@ -15,7 +15,6 @@ void StringsWidget::scan(QHexEditData *hexeditdata)
     if(!hexeditdata || !hexeditdata->length())
         return;
 
-    this->_hexeditdata = hexeditdata;
     this->_stringsmodel = new StringsModel(hexeditdata, ui->stringList);
     ui->stringList->setModel(this->_stringsmodel);
 

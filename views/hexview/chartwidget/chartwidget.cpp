@@ -1,7 +1,7 @@
 #include "chartwidget.h"
 #include "ui_chartwidget.h"
 
-ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWidget), _histogrammodel(nullptr), _databuffer(nullptr)
+ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWidget), _histogrammodel(nullptr)
 {
     this->_xycharticon = QIcon(":/misc_icons/res/xychart.png");
     this->_histogramicon = QIcon(":/misc_icons/res/histogram.png");
@@ -16,18 +16,17 @@ ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWi
     connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
 }
 
-void ChartWidget::plot(IO::DataBuffer* databuffer)
+void ChartWidget::plot(QHexEditData* hexeditdata)
 {
-    if(!databuffer || !databuffer->length())
+    if(!hexeditdata || !hexeditdata->length())
         return;
 
-    this->_databuffer = databuffer;
-    this->_histogrammodel = new HistogramModel(this->_histogramchart, databuffer, ui->lisOccurrence);
+    this->_histogrammodel = new HistogramModel(this->_histogramchart, hexeditdata, ui->lisOccurrence);
 
     ui->lisOccurrence->setModel(this->_histogrammodel);
     this->updateEntropyText("Calculating...", qApp->palette().text().color());
 
-    this->_worker.setData(&this->_histogramchart, &this->_entropychart, databuffer);
+    this->_worker.setData(&this->_histogramchart, &this->_entropychart, hexeditdata);
     this->_worker.start(QThread::LowPriority);
 }
 

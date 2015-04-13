@@ -1,10 +1,10 @@
 #ifndef ABSTRACTVIEW_H
 #define ABSTRACTVIEW_H
 
-#include "qhexedit/qhexeditdata.h"
-#include "logwidget/logwidget.h"
 #include <QWidget>
 #include <QLabel>
+#include "qhexedit/qhexeditdata.h"
+#include "logwidget/logwidget.h"
 
 class AbstractView : public QWidget
 {
@@ -23,14 +23,13 @@ class AbstractView : public QWidget
         void updateInfoText(const QString& s);
 
     public: /* Abstract Methods */
-        virtual QHexEditData* data() = 0;
         virtual bool canSave() const = 0;
         virtual void updateStatusBar() = 0;
         virtual LogWidget* logWidget() = 0;
 
     protected:
-        QLabel* _lblinfo;
         QHexEditData* _hexeditdata;
+        QLabel* _lblinfo;
 
     private:
         QString _loadedfile;

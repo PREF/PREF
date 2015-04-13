@@ -1,12 +1,10 @@
 #include "stringsmodel.h"
 
-StringsModel::StringsModel(QHexEditData *hexeditdata, QObject *parent): QAbstractItemModel(parent)
+StringsModel::StringsModel(QHexEditData* hexeditdata, QObject *parent): QAbstractItemModel(parent), _reader(new QHexEditDataReader(hexeditdata, this))
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
-
-    this->_reader = new QHexEditDataReader(hexeditdata, this);
 }
 
 void StringsModel::setData(const StringsModel::OffsetList &offsetlist, const StringsModel::StringMap &strings)

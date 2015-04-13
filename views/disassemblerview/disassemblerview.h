@@ -33,7 +33,6 @@ class DisassemblerView : public AbstractView
         void disassemble();
 
     public: /* Overriden Methods */
-        virtual QHexEditData* data();
         virtual bool canSave() const;
         virtual void updateStatusBar();
         virtual LogWidget* logWidget();

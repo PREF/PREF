@@ -63,11 +63,6 @@ HexView::~HexView()
     delete ui;
 }
 
-QHexEditData *HexView::data()
-{
-    return this->_hexeditdata;
-}
-
 bool HexView::canSave() const
 {
     return !this->_hexeditdata->isReadOnly();
@@ -128,12 +123,14 @@ void HexView::hideFormatView()
 void HexView::inspectData(QHexEditData *hexeditdata)
 {
     ui->dataTypesWidget->setData(hexeditdata);
-    ui->visualMapWidget->map(ui->hexEdit);
     ui->binaryNavigator->setData(ui->hexEdit);
-    //FIXME: ui->chartWidget->plot(hexeditdata);
-    ui->signaturesWidget->scan(hexeditdata);
     ui->formatWidget->setData(ui->hexEdit);
+
+    ui->signaturesWidget->scan(hexeditdata);
     ui->stringsWidget->scan(hexeditdata);
+
+    ui->visualMapWidget->map(ui->hexEdit);
+    ui->chartWidget->plot(this->_hexeditdata);
 
     connect(ui->chartWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));
     connect(ui->signaturesWidget, SIGNAL(workStarted()), this, SLOT(onWorkStarted()));

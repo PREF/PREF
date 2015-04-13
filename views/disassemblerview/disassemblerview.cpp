@@ -108,11 +108,6 @@ QString DisassemblerView::saveFilter() const
     return "Disassembler Database (*.db);;Text File (*.txt)";
 }
 
-QHexEditData *DisassemblerView::data()
-{
-    return this->_hexeditdata;
-}
-
 bool DisassemblerView::canSave() const
 {
     return true;
