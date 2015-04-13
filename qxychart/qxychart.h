@@ -3,8 +3,10 @@
 
 #include <QWidget>
 #include <QPainter>
-#include "support/bytecolors.h"
+#include <chart/entropychart.h>
+#include <support/bytecolors.h>
 
+using namespace PrefLib::Chart;
 using namespace PrefLib::Support;
 
 class QXYChart : public QWidget
@@ -17,7 +19,7 @@ class QXYChart : public QWidget
         void setYBase(int base);
         void setXRange(qreal min, qreal max);
         void setYRange(qreal min, qreal max);
-        void setPoints(QList<QPointF>& points);
+        void setPoints(const EntropyChart::EntropyPoints& points);
 
     private:
         static bool sortPoints(const QPointF& p1, const QPointF& p2);
@@ -26,7 +28,7 @@ class QXYChart : public QWidget
         void interpolate(QPainterPath &path, const QPointF& start, const QPointF &end);
         void drawAxis(QPainter &p);
         void drawPoints(QPainter& p);
-        QPointF convertPoint(const QPointF &p);
+        QPointF convertPoint(const EntropyChart::EntropyPoint &p);
 
     protected:
         virtual void resizeEvent(QResizeEvent* e);
@@ -43,7 +45,7 @@ class QXYChart : public QWidget
         qreal _originY;
         qreal _endaxisX;
         qreal _endaxisY;
-        QList<QPointF> _points;
+        EntropyChart::EntropyPoints _points;
 
     private:
         static const qint64 MARGIN;

@@ -11,8 +11,8 @@ ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWi
     ui->tbSwitchChart->setIcon(this->_xycharticon);
 
     connect(&this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
-    connect(&this->_worker, SIGNAL(occurrencesListCompleted()), this, SLOT(onOccurrencesListCompleted()));
-    connect(&this->_worker, SIGNAL(dataEntropyCompleted()), this, SLOT(onDataEntropyCompleted()));
+    connect(&this->_worker, SIGNAL(histogramChartCompleted()), this, SLOT(onHistogramChartCompleted()));
+    connect(&this->_worker, SIGNAL(dataEntropyCompleted()), this, SLOT(onEntropyChartCompleted()));
     connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
 }
 
@@ -21,9 +21,14 @@ void ChartWidget::plot(QHexEditData* hexeditdata)
     if(!hexeditdata || !hexeditdata->length())
         return;
 
-    this->_histogrammodel = new HistogramModel(this->_histogramchart, hexeditdata, ui->lisOccurrence);
+    // Setup XY Coordinates
+    ui->chartcontainer->xyChart()->setXBase(16);
+    ui->chartcontainer->xyChart()->setXRange(0, hexeditdata->length());
+    ui->chartcontainer->xyChart()->setYRange(0, 1);
 
+    this->_histogrammodel = new HistogramModel(this->_histogramchart, hexeditdata, ui->lisOccurrence);
     ui->lisOccurrence->setModel(this->_histogrammodel);
+
     this->updateEntropyText("Calculating...", qApp->palette().text().color());
 
     this->_worker.setData(&this->_histogramchart, &this->_entropychart, hexeditdata);
@@ -41,7 +46,7 @@ ChartWidget::~ChartWidget()
     delete ui;
 }
 
-void ChartWidget::onOccurrencesListCompleted()
+void ChartWidget::onHistogramChartCompleted()
 {
     this->_histogrammodel->updateStats();
     ui->chartcontainer->histogram()->setData(this->_histogramchart.result());
@@ -53,16 +58,9 @@ void ChartWidget::onOccurrencesListCompleted()
     //FIXME: this->updateEntropy(occurrences);
 }
 
-void ChartWidget::onDataEntropyCompleted()
+void ChartWidget::onEntropyChartCompleted()
 {
-    /* FIXME:
-    QList<QPointF> dataentropy = this->_worker.entropyChart();
-
-    ui->chartcontainer->xyChart()->setXBase(16);
-    ui->chartcontainer->xyChart()->setXRange(0, this->_databuffer->length());
-    ui->chartcontainer->xyChart()->setYRange(0, 1);
-    ui->chartcontainer->xyChart()->setPoints(dataentropy);
-    */
+    ui->chartcontainer->xyChart()->setPoints(this->_entropychart.points());
 }
 
 void ChartWidget::updateEntropy(const QList<qint64> &occurrences)

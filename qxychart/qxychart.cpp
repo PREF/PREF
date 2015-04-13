@@ -38,11 +38,9 @@ void QXYChart::setYRange(qreal min, qreal max)
     this->update();
 }
 
-void QXYChart::setPoints(QList<QPointF> &points)
+void QXYChart::setPoints(const EntropyChart::EntropyPoints &points)
 {
     this->_points = points;
-
-    std::sort(this->_points.begin(), this->_points.end(), &QXYChart::sortPoints);
     this->update();
 }
 
@@ -80,9 +78,9 @@ void QXYChart::drawPoints(QPainter &p)
 {
     QPointF lastptc;
 
-    for(int i = 0; i < this->_points.length(); i++)
+    for(size_t i = 0; i < this->_points.size(); i++)
     {        
-        const QPointF& pt = this->_points[i];
+        const EntropyChart::EntropyPoint& pt = this->_points.at(i);
         QPointF ptc = this->convertPoint(pt);
 
         if(!i)
@@ -91,18 +89,18 @@ void QXYChart::drawPoints(QPainter &p)
             continue;
         }
 
-        p.setPen(ByteColors::entropyColor(pt.y()));
+        p.setPen(ByteColors::entropyColor(pt.y));
         p.drawLine(lastptc, ptc);
         lastptc = ptc;
     }
 }
 
-QPointF QXYChart::convertPoint(const QPointF &p)
+QPointF QXYChart::convertPoint(const EntropyChart::EntropyPoint& p)
 {
     qreal xrange = this->_xmax - this->_xmin;
     qreal yrange = this->_ymax - this->_ymin;
-    qreal scaledx = this->_originX + (((p.x() - this->_xmin) / xrange) * (this->_endaxisX - this->_originX));
-    qreal scaledy = this->_originY - (((p.y() - this->_ymin) / yrange) * (this->_originY - this->_endaxisY));
+    qreal scaledx = this->_originX + (((p.x - this->_xmin) / xrange) * (this->_endaxisX - this->_originX));
+    qreal scaledy = this->_originY - (((p.y - this->_ymin) / yrange) * (this->_originY - this->_endaxisY));
 
     return QPointF(scaledx, scaledy);
 }
@@ -122,6 +120,6 @@ void QXYChart::paintEvent(QPaintEvent*)
 
     this->drawAxis(p);
 
-    if(!this->_points.isEmpty())
+    if(!this->_points.empty())
         this->drawPoints(p);
 }

@@ -33,8 +33,8 @@ class ChartWidget : public WorkerTab
         void updateEntropyText(const QString& text, const QColor& forecolor);
 
     private slots:
-        void onOccurrencesListCompleted();
-        void onDataEntropyCompleted();
+        void onHistogramChartCompleted();
+        void onEntropyChartCompleted();
         void on_tbHelp_clicked();
         void on_tbSwitchChart_clicked();
 

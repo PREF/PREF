@@ -27,7 +27,7 @@ class ChartWorker: public Worker
         virtual void run();
 
     signals:
-        void occurrencesListCompleted();
+        void histogramChartCompleted();
         void dataEntropyCompleted();
 
     private:

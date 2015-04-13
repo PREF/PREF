@@ -20,13 +20,21 @@ void ChartWorker::setData(HistogramChart* histogramchart, EntropyChart* entropyc
 
 void ChartWorker::run()
 {
-    if(!this->_histogramchart || !this->_entropychart || !this->_hexeditdata)
+    if(!this->_hexeditdata)
         return;
 
     // NOTE: do not count bytes twice (PrefLib Issue?)
     QDataBuffer databuffer(this->_hexeditdata);
-    dynamic_cast<AbstractChart*>(this->_histogramchart)->elaborate(&databuffer); //NOTE: Manage _cancontinue
-    dynamic_cast<AbstractChart*>(this->_entropychart)->elaborate(&databuffer);  //NOTE: Manage _cancontinue
 
-    emit dataEntropyCompleted();
+    if(this->_histogramchart)
+    {
+        dynamic_cast<AbstractChart*>(this->_histogramchart)->elaborate(&databuffer); //NOTE: Manage _cancontinue
+        emit histogramChartCompleted();
+    }
+
+    if(this->_entropychart)
+    {
+        dynamic_cast<AbstractChart*>(this->_entropychart)->elaborate(&databuffer);  //NOTE: Manage _cancontinue
+        emit dataEntropyCompleted();
+    }
 }
