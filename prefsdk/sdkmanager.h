@@ -1,39 +1,30 @@
 #ifndef SDKMANAGER_H
 #define SDKMANAGER_H
 
-#include <QtCore>
-#include <QtWidgets>
-#include <cstdint>
-#include "qhexedit/qhexeditdata.h"
-#include "prefsdk/signatures/signaturedatabase.h"
 #include <preflib.h>
+#include "prefsdk/signatures/signaturedatabase.h"
 
-namespace PrefSDK
+namespace PrefSDK {
+
+using namespace PrefLib;
+
+class SDKManager
 {
-    using namespace PrefLib;
+    private:
+        SDKManager();
+        static void executeFile(PrefContext *prefctx, QString filename);
+        static void loadScripts(PrefContext *prefctx, QString foldername);
 
-    class SDKManager
-    {
-        private:
-            SDKManager();
-            static void loadMain(lua_State *l, QString sdkpath, QString filename);
+    public:
+        static bool loadSDK();
+        static void unloadSDK();
+        static QString sdkVersion();
+        static const QString& sdkPath();
 
-        private:
-            static int luaAtPanic(lua_State* l);
+    private:
+        static QString _sdkpath;
+};
 
-        public:
-            static bool loadSDK();
-            static void unloadSDK();
-            static QString sdkVersion();
-            static QString sdkPath();
-
-        private:
-            static const char* SDK_TABLE;
-            static const QString SDK_DIR;
-            static const QString MAIN_SCRIPT;
-            static QString _sdkpath;
-            //static PrefLib::SdkVersion _sdkversion;
-    };
-}
+} // namespace PrefSDK;
 
 #endif // SDKMANAGER_H

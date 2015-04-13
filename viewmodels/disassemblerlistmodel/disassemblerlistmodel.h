@@ -2,6 +2,7 @@
 #define DISASSEMBLERLISTMODEL_H
 
 #include <QtCore>
+#include <qhexedit/qhexeditdata.h>
 #include <disassembler/disassemblercontext.h>
 #include "prefsdk/sdkmanager.h"
 
