@@ -1,11 +1,11 @@
 #include "bookmarkdialog.h"
 #include "ui_bookmarkdialog.h"
 
-BookmarkDialog::BookmarkDialog(DisassemblerDefinition *disassembler, QWidget *parent): QDialog(parent), ui(new Ui::BookmarkDialog), _bookmarklist(disassembler->listing()->bookmarks()), _selectedblock(nullptr)
+BookmarkDialog::BookmarkDialog(DisassemblerDefinition *disassembler, QWidget *parent): QDialog(parent), ui(new Ui::BookmarkDialog), /* FIXME: _bookmarklist(disassembler->listing()->bookmarks()), */ _selectedblock(nullptr)
 {
     ui->setupUi(this);
 
-    this->_bookmarkmodel = new BookmarkModel(disassembler->listing()->bookmarks(), this);
+    //this->_bookmarkmodel = new BookmarkModel(disassembler->listing()->bookmarks(), this);
     ui->bookmarkView->setModel(this->_bookmarkmodel);
     ui->bookmarkView->resizeRowsToContents();
 }
@@ -28,7 +28,7 @@ void BookmarkDialog::on_bookmarkView_doubleClicked(const QModelIndex &index)
         return;
     }
 
-    this->_selectedblock = this->_bookmarklist[index.row()].first;
+    //this->_selectedblock = this->_bookmarklist[index.row()].first;
     this->done(BookmarkDialog::Accepted);
 }
 
@@ -39,7 +39,7 @@ void BookmarkDialog::on_buttonBox_accepted()
 
     if(index.isValid())
     {
-        this->_selectedblock = this->_bookmarklist[index.row()].first;
+        //this->_selectedblock = this->_bookmarklist[index.row()].first;
         this->done(BookmarkDialog::Accepted);
     }
 }

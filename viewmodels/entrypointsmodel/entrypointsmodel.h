@@ -5,9 +5,10 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <disassembler/disassemblerlisting.h>
 
-using namespace PrefSDK;
+using namespace PrefLib;
+using namespace PrefLib::Disassembler;
 
 class EntryPointsModel : public QAbstractItemModel
 {
@@ -26,7 +27,7 @@ class EntryPointsModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        const DisassemblerListing::EntryPointList& _entrypoints;
+        //const DisassemblerListing::EntryPointList& _entrypoints;
         DisassemblerListing* _listing;
         QFont _monospacefont;
 };

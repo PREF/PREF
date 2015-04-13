@@ -14,6 +14,7 @@ DisassemblerDefinition* DisassemblerListModel::disassembler(int idx) const
 
 void DisassemblerListModel::validateDisassemblers(QHexEditData *hexeditdata)
 {
+    /* FIXME:
     DisassemblerList* disassemblerlist = DisassemblerList::instance();
 
     for(int i = 0; i < disassemblerlist->length(); i++)
@@ -23,6 +24,7 @@ void DisassemblerListModel::validateDisassemblers(QHexEditData *hexeditdata)
         if(dd->validate(hexeditdata))
             this->_disassemblers.append(dd);
     }
+    */
 }
 
 int DisassemblerListModel::columnCount(const QModelIndex &) const

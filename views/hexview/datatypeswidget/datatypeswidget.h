@@ -8,8 +8,6 @@
 #include "viewmodels/datatypesmodel/datatypesmodel.h"
 #include "datatypesmenu.h"
 
-using namespace PrefSDK;
-
 namespace Ui {
 class DataTypesWidget;
 }

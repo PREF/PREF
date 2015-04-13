@@ -2,9 +2,9 @@
 #define FIELDDATAMODEL_H
 
 #include <QtCore>
-#include "prefsdk/type/datatype.h"
+#include <prefcontext.h>
 
-using namespace PrefSDK;
+using namespace PrefLib;
 
 class FieldDataModel : public QAbstractItemModel
 {
@@ -14,7 +14,7 @@ class FieldDataModel : public QAbstractItemModel
         explicit FieldDataModel(QObject *parent = 0);
 
     protected:
-        static bool validateValue(QVariant value, DataType::Type datatype, int base, QSysInfo::Endian endian, QByteArray& ba);
+        static bool validateValue(QVariant value, DataType::Type datatype, int base, Endianness::Type endian, QByteArray& ba);
 };
 
 #endif // FIELDDATAMODEL_H

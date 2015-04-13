@@ -2,11 +2,10 @@
 #define BOOKMARKDIALOG_H
 
 #include <QDialog>
+#include <disassembler/disassemblerdefinition.h>
 #include "viewmodels/bookmarkmodel/bookmarkmodel.h"
-#include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 namespace Ui {
 class BookmarkDialog;
@@ -27,7 +26,7 @@ class BookmarkDialog : public QDialog
 
     private:
         Ui::BookmarkDialog *ui;
-        const DisassemblerListing::BookmarkList& _bookmarklist;
+        //FIXME: const DisassemblerListing::BookmarkList& _bookmarklist;
         BookmarkModel* _bookmarkmodel;
         Block* _selectedblock;
 };

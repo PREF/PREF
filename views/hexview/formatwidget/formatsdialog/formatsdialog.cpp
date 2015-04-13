@@ -28,7 +28,7 @@ FormatDefinition* FormatsDialog::selectedFormat()
     CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
     QItemSelectionModel* model = ui->tvFormats->selectionModel();
 
-    return FormatList::instance()->format(c->globalFormatIndex(model->currentIndex().row()));
+    return nullptr; //FIXME: FormatList::instance()->format(c->globalFormatIndex(model->currentIndex().row()));
 }
 
 qint64 FormatsDialog::offset()

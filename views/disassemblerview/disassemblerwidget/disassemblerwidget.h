@@ -4,11 +4,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <disassembler/disassemblercontext.h>
 #include "disassemblerwidgetprivate.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class DisassemblerWidget : public QFrame
 {
@@ -27,7 +26,7 @@ class DisassemblerWidget : public QFrame
     public slots:
         void setCurrentIndex(int idx);
         void jumpTo(Block* block);
-        void jumpTo(const PrefSDK::DataValue &address);
+        void jumpTo(const uint64_t &address);
         void save(const QString& filename);
         void clearNavigationHistory();
         void copy();

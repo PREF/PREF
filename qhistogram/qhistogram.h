@@ -3,9 +3,11 @@
 
 #include <QtCore>
 #include <QtWidgets>
-#include "prefsdk/bytecolors.h"
+#include <chart/histogramchart.h>
+#include <support/bytecolors.h>
 
-using namespace PrefSDK;
+using namespace PrefLib;
+using namespace PrefLib::Support;
 
 class QHistogram : public QWidget
 {
@@ -13,10 +15,9 @@ class QHistogram : public QWidget
 
     public:
         explicit QHistogram(QWidget *parent = 0);
-        qint64 maxValue();
 
     public slots:
-        void setData(const QList<qint64> &data);
+        void setData(const ByteElaborator::CountResult& cr);
 
     private:
         void drawAxis(QPainter &p);
@@ -34,7 +35,7 @@ class QHistogram : public QWidget
         qreal _barwidth;
         qreal _barheight;
         quint64 _margin;
-        QList<qint64> _data;
+        ByteElaborator::CountResult _countresult;
 
     private: /* Constants */
         static const int BAR_COUNT;

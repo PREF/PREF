@@ -6,9 +6,9 @@
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <disassembler/disassemblerlisting.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class StringSymbolModel : public QAbstractItemModel
 {
@@ -31,7 +31,7 @@ class StringSymbolModel : public QAbstractItemModel
         DisassemblerListing* _listing;
         QHexEditData* _hexeditdata;
         QHexEditDataReader* _reader;
-        QList<Symbol*> _strings;
+        //FIXME: QList<Symbol*> _strings;
 
     private:
         static const qint64 STRING_MAX_LENGTH;

@@ -6,7 +6,6 @@
 #include <QGuiApplication>
 #include <exception>
 #include "debugdialog/debugdialog.h"
-#include "prefsdk/luastate.h"
 
 namespace PrefSDK
 {

@@ -2,7 +2,7 @@
 
 VariablesModel::VariablesModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
-    this->_variables = listing->symbolTable()->variables();
+    //this->_variables = listing->symbolTable()->variables();
 
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -52,6 +52,7 @@ QVariant VariablesModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
+        /* FIXME:
         Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
         const DataValue& address = symbol->startAddress();
 
@@ -79,18 +80,21 @@ QVariant VariablesModel::data(const QModelIndex &index, int role) const
             default:
                 break;
         }
+        */
     }
     else if(role == Qt::ForegroundRole)
     {
         if(index.column() == 0 || index.column() == 1 || index.column() == 2)
             return QColor(Qt::darkBlue);
 
+        /* FIXME:
         Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
 
         if(symbol->type() == Symbol::Address)
             return QColor(Qt::blue);
         else
             return QColor(Qt::darkGreen);
+            */
     }
     else if(role == Qt::FontRole)
         return this->_monospacefont;
@@ -103,7 +107,7 @@ QModelIndex VariablesModel::index(int row, int column, const QModelIndex &parent
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column, this->_variables[row]);
+    //FIXME: return this->createIndex(row, column, this->_variables[row]);
 }
 
 QModelIndex VariablesModel::parent(const QModelIndex &) const
@@ -113,7 +117,7 @@ QModelIndex VariablesModel::parent(const QModelIndex &) const
 
 int VariablesModel::rowCount(const QModelIndex &) const
 {
-    return this->_variables.length();
+    //FIXME: return this->_variables.length();
 }
 
 Qt::ItemFlags VariablesModel::flags(const QModelIndex &index) const

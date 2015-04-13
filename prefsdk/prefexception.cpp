@@ -4,6 +4,7 @@ namespace PrefSDK
 {
     PrefException::PrefException(const QString& msg) throw(): std::exception(), _msg(msg)
     {
+        /* FIXME:
         if(!DebugDialog::instance())
             DebugDialog::createInstance(LuaState::instance());
 
@@ -13,6 +14,7 @@ namespace PrefSDK
             DebugDialog::instance()->exec();
         else
             QMetaObject::invokeMethod(DebugDialog::instance(), "exec", Qt::BlockingQueuedConnection);
+            */
     }
 
     const char *PrefException::what() const throw()

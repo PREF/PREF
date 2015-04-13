@@ -3,10 +3,9 @@
 
 #include <QWidget>
 #include <QPainter>
-#include <QDebug>
-#include "prefsdk/bytecolors.h"
+#include "support/bytecolors.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Support;
 
 class QXYChart : public QWidget
 {

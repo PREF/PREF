@@ -4,21 +4,23 @@
 #include <QDialog>
 #include <QCloseEvent>
 #include "stackdumphighlighter.h"
-#include "lua.hpp"
+#include <prefcontext.h>
 
 namespace Ui {
 class DebugDialog;
 }
+
+using namespace PrefLib;
 
 class DebugDialog : public QDialog
 {
     Q_OBJECT
 
     private:
-        explicit DebugDialog(lua_State *l, QWidget *parent = 0);
+        explicit DebugDialog(QWidget *parent = 0);
 
     public:
-        static void createInstance(lua_State* l);
+        static void createInstance();
         static DebugDialog* instance();
         ~DebugDialog();
 
@@ -41,7 +43,6 @@ class DebugDialog : public QDialog
 
     private:
         Ui::DebugDialog *ui;
-        lua_State* _state;
         StackDumpHighlighter* _stackdumphighlighter;
         static DebugDialog* _instance;
 };

@@ -6,7 +6,7 @@ namespace PrefSDK
     const QString SDKManager::SDK_DIR = "sdk";
     const QString SDKManager::MAIN_SCRIPT = "main.lua";
     QString SDKManager::_sdkpath;
-    PrefLib::SdkVersion SDKManager::_sdkversion = { false, 0, 0, 0, QString() };
+    //PrefLib::SdkVersion SDKManager::_sdkversion = { false, 0, 0, 0, QString() };
 
     SDKManager::SDKManager()
     {
@@ -19,45 +19,24 @@ namespace PrefSDK
 
         if(res != 0)
         {
-            throw PrefException(QString::fromUtf8(lua_tostring(l, -1)));
+            throw std::runtime_error(lua_tostring(l, -1));
             lua_pop(l, 1);
         }
     }
 
-    lua_State *SDKManager::initializeLua(QMainWindow* mainwindow)
-    {
-        lua_State* l = LuaState::instance();
-
-        if(l)
-        {
-            luaL_openlibs(l);
-            LuaOOP::open(l);
-            QtLua::open(l);
-            PrefLib::open(l, mainwindow, &SDKManager::_sdkversion);
-
-            lua_getglobal(l, "package");
-            lua_getfield(l, -1, "path");
-
-            const char* origpath = lua_tostring(l, -1);
-            lua_pop(l, 1); /* Pop 'path' */
-
-            QString newpath = QString("%1;%2/?.lua").arg(QString::fromUtf8(origpath), qApp->applicationDirPath());
-            lua_pushstring(l, newpath.toUtf8().constData());
-            lua_setfield(l, -2, "path");
-            lua_pop(l, 1); /* Pop 'package' */
-        }
-
-        return l;
-    }
-
     bool SDKManager::loadSDK()
     {
-        QDir d(qApp->applicationDirPath());
+        QString appdir = qApp->applicationDirPath();
+        PrefContext* prefctx = PrefContext::instance();
+        prefctx->addSearchPath(appdir.toUtf8().constData());
+
+        QDir d(appdir);
         SDKManager::_sdkpath = d.absoluteFilePath(SDKManager::SDK_DIR);
 
         if(!QDir(SDKManager::_sdkpath).exists())
             return false;
 
+        /*
         lua_State* l = LuaState::instance();
         luaopen_capstone(l);
         SDKManager::loadMain(l, d.absoluteFilePath(SDKManager::_sdkpath), SDKManager::MAIN_SCRIPT);
@@ -68,11 +47,14 @@ namespace PrefSDK
 
         SQLite::SQLiteDatabase::initialize();
         SignatureDatabase::load();
+        */
+
         return true;
     }
 
     QString SDKManager::sdkVersion()
     {
+        /*
         if(SDKManager::_sdkversion.IsLoaded)
         {
             QString s = QString("%1.%2").arg(QString::number(SDKManager::_sdkversion.Major), QString::number(SDKManager::_sdkversion.Minor));
@@ -85,6 +67,9 @@ namespace PrefSDK
 
             return s;
         }
+        */
+
+        //FIXME: sdkVersion
 
         return "Missing SDK or Invalid Version";
     }

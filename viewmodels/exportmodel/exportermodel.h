@@ -4,9 +4,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/exporter/exporterlist.h"
-
-using namespace PrefSDK;
 
 class ExporterModel : public QAbstractItemModel
 {

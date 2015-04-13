@@ -4,9 +4,9 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <disassembler/disassemblerlisting.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class FunctionModel : public QAbstractItemModel
 {

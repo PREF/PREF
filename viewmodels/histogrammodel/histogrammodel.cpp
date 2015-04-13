@@ -2,7 +2,7 @@
 
 QMap<uchar, QString>  HistogramModel::_nonasciichars;
 
-HistogramModel::HistogramModel(QHexEditData* hexeditdata, QObject *parent): QAbstractItemModel(parent), _hexeditdata(hexeditdata), _maxoccidx(-1)
+HistogramModel::HistogramModel(const HistogramChart &histogramchart, IO::DataBuffer *databuffer, QObject *parent): QAbstractItemModel(parent), _histogramchart(histogramchart), _databuffer(databuffer)
 {
     if(HistogramModel::_nonasciichars.isEmpty())
         HistogramModel::initNonAsciiChars();
@@ -12,11 +12,9 @@ HistogramModel::HistogramModel(QHexEditData* hexeditdata, QObject *parent): QAbs
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
 }
 
-void HistogramModel::setOccurrenceList(const QList<qint64> occlist)
+void HistogramModel::updateStats()
 {
-    this->beginInsertRows(QModelIndex(), 0, occlist.length() - 1);
-    this->_occurenceslist = occlist;
-    this->findMaxOccurence();
+    this->beginInsertRows(QModelIndex(), 0, this->_histogramchart.result().Counts.size());
     this->endInsertRows();
 }
 
@@ -58,23 +56,6 @@ void HistogramModel::initNonAsciiChars()
     HistogramModel::_nonasciichars.insert(0x7F, "DEL");
 }
 
-void HistogramModel::findMaxOccurence()
-{
-    qint64 maxval = -1;
-    this->_maxoccidx = -1;
-
-    for(uint i = 0; i < 0xFF; i++)
-    {
-        qint64 count = this->_occurenceslist[i];
-
-        if(count > maxval)
-        {
-            this->_maxoccidx = i;
-            maxval = count;
-        }
-    }
-}
-
 int HistogramModel::columnCount(const QModelIndex &) const
 {
     return 4;
@@ -111,6 +92,8 @@ QVariant HistogramModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
+    const ByteElaborator::CountResult& cr = this->_histogramchart.result();
+
     if(role == Qt::DisplayRole)
     {
         if(index.column() == 0)
@@ -123,18 +106,18 @@ QVariant HistogramModel::data(const QModelIndex &index, int role) const
         else if(index.column() == 1)
             return QString("%1").arg(index.row(), 2, 16, QLatin1Char('0')).toUpper().append("h");
         else if(index.column() == 2)
-            return QString::number(this->_occurenceslist[index.row()]);
+            return QString::number(cr.Counts.at(index.row()));
         else if(index.column() == 3)
-            return QString("%1%").arg((static_cast<qreal>(this->_occurenceslist[index.row()]) / static_cast<qreal>(this->_hexeditdata->length())) * 100);
+            return QString("%1%").arg((static_cast<qreal>(cr.Counts.at(index.row())) / static_cast<qreal>(this->_databuffer->length())) * 100);
     }
-    else if((role == Qt::ForegroundRole) && (index.row() != this->_maxoccidx))
+    else if((role == Qt::ForegroundRole) && (index.row() != cr.MaxByte))  /* NOTE: Testing needed */
     {
         if(index.column() == 0)
             return QColor(Qt::darkGreen);
 
         return QColor(Qt::darkBlue);
     }
-    else if((role == Qt::BackgroundRole) && (index.row() == this->_maxoccidx))
+    else if((role == Qt::BackgroundRole) && (index.row() == cr.MaxByte)) /* NOTE: Testing needed */
         return QColor(Qt::yellow);
     else if(role == Qt::FontRole)
         return this->_monospacefont;
@@ -157,7 +140,7 @@ QModelIndex HistogramModel::parent(const QModelIndex &) const
 
 int HistogramModel::rowCount(const QModelIndex &) const
 {
-    return this->_occurenceslist.length();
+    return this->_histogramchart.result().Counts.size();
 }
 
 Qt::ItemFlags HistogramModel::flags(const QModelIndex &index) const

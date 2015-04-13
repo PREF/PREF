@@ -1,6 +1,6 @@
 #include "crossreferencemodel.h"
 
-CrossReferenceModel::CrossReferenceModel(Block *block, QObject *parent): QAbstractItemModel(parent), _sources(block->sources()), _address(block->startAddress())
+CrossReferenceModel::CrossReferenceModel(Block *block, QObject *parent): QAbstractItemModel(parent), /* FIXME: _sources(block->sources()), */ _address(block->startAddress())
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -42,6 +42,7 @@ QVariant CrossReferenceModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
+        /* FIXME:
         DataValue sourceaddress = this->_sources[index.row()];
 
         if(index.column() == 0)
@@ -55,6 +56,7 @@ QVariant CrossReferenceModel::data(const QModelIndex &index, int role) const
         }
         else if(index.column() == 1)
             return sourceaddress.toString(16).append("h");
+            */
     }
     else if(role == Qt::FontRole && index.column() > 0)
         return this->_monospacefont;
@@ -79,7 +81,7 @@ QModelIndex CrossReferenceModel::parent(const QModelIndex &) const
 
 int CrossReferenceModel::rowCount(const QModelIndex&) const
 {
-    return this->_sources.length();
+    //return this->_sources.length();
 }
 
 Qt::ItemFlags CrossReferenceModel::flags(const QModelIndex &index) const

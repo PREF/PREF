@@ -3,7 +3,7 @@
 
 DebugDialog* DebugDialog::_instance = nullptr;
 
-DebugDialog::DebugDialog(lua_State* l, QWidget *parent): QDialog(parent), ui(new Ui::DebugDialog)
+DebugDialog::DebugDialog(QWidget *parent): QDialog(parent), ui(new Ui::DebugDialog)
 {
     ui->setupUi(this);
 
@@ -15,15 +15,14 @@ DebugDialog::DebugDialog(lua_State* l, QWidget *parent): QDialog(parent), ui(new
     ui->teTraceback->setFont(f);
 
     this->_stackdumphighlighter = new StackDumpHighlighter(ui->teStackdump->document());
-    this->_state = l;
 }
 
-void DebugDialog::createInstance(lua_State *l)
+void DebugDialog::createInstance()
 {
     if(DebugDialog::_instance)
         return;
 
-    DebugDialog::_instance = new DebugDialog(l);
+    DebugDialog::_instance = new DebugDialog();
     DebugDialog::_instance->moveToThread(qApp->thread());
 }
 
@@ -40,7 +39,8 @@ DebugDialog* DebugDialog::out(QString s)
 
 QString DebugDialog::stackdump()
 {
-    int i = lua_gettop(this->_state);
+    lua_State* l = PrefContext::instance()->state();
+    int i = lua_gettop(l);
 
     if(!i)
         return "The Stack is Empty";
@@ -49,18 +49,18 @@ QString DebugDialog::stackdump()
 
     while(i)
     {
-        int t = lua_type(this->_state, i);
-        s.append(QString("[%1]: %2 ").arg(QString::number(i), QString::fromUtf8(lua_typename(this->_state, t))));
+        int t = lua_type(l, i);
+        s.append(QString("[%1]: %2 ").arg(QString::number(i), QString::fromUtf8(lua_typename(l, t))));
 
         if(t == LUA_TTABLE)
         {
             s.append(QString("= Size %1\n").arg(this->tableLength(i)));
-            lua_pushnil(this->_state);
+            lua_pushnil(l);
 
-            while(lua_next(this->_state, i))
+            while(lua_next(l, i))
             {
                 s.append(QString("  > %1 = %2\n").arg(this->typeValue(-2), this->typeValue(-1)));
-                lua_pop(this->_state, 1);
+                lua_pop(l, 1);
             }
         }
         else
@@ -75,36 +75,40 @@ QString DebugDialog::stackdump()
 
 QString DebugDialog::traceback()
 {
-    lua_getglobal(this->_state, "debug");
-    lua_getfield(this->_state, -1, "traceback");
-    lua_pcall(this->_state, 0, 1, 0);
+    lua_State* l = PrefContext::instance()->state();
 
-    QString s = QString::fromUtf8(lua_tostring(this->_state, -1));
-    lua_pop(this->_state, 2);
+    lua_getglobal(l, "debug");
+    lua_getfield(l, -1, "traceback");
+    lua_pcall(l, 0, 1, 0);
+
+    QString s = QString::fromUtf8(lua_tostring(l, -1));
+    lua_pop(l, 2);
     return s;
 }
 
 QString DebugDialog::typeValue(int idx)
 {
+    lua_State* l = PrefContext::instance()->state();
+
     QString s;
-    int t = lua_type(this->_state, idx);
+    int t = lua_type(l, idx);
 
     switch(t)
     {
         case LUA_TNUMBER:
-            s = QString("%1h (%2)").arg(QString::number(lua_tointeger(this->_state, idx), 16).toUpper(), QString::number(lua_tointeger(this->_state, idx)));
+            s = QString("%1h (%2)").arg(QString::number(lua_tointeger(l, idx), 16).toUpper(), QString::number(lua_tointeger(l, idx)));
             break;
 
         case LUA_TSTRING:
-            s = QString("'%1'").arg(QString::fromUtf8(lua_tostring(this->_state, idx)));
+            s = QString("'%1'").arg(QString::fromUtf8(lua_tostring(l, idx)));
             break;
 
         case LUA_TBOOLEAN:
-            s = (lua_toboolean(this->_state, idx) != 0 ? "true" : "false");
+            s = (lua_toboolean(l, idx) != 0 ? "true" : "false");
             break;
 
         case LUA_TUSERDATA:
-            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(this->_state, idx)), sizeof(size_t), 16, QLatin1Char('0')).toUpper().append("h");
+            s = QString("%1").arg(reinterpret_cast<size_t>(lua_touserdata(l, idx)), sizeof(size_t), 16, QLatin1Char('0')).toUpper().append("h");
             break;
 
         case LUA_TNIL:
@@ -112,7 +116,7 @@ QString DebugDialog::typeValue(int idx)
             break;
 
         default:
-            s = QString::fromUtf8(lua_typename(this->_state, t));
+            s = QString::fromUtf8(lua_typename(l, t));
             break;
     }
 
@@ -121,20 +125,22 @@ QString DebugDialog::typeValue(int idx)
 
 int DebugDialog::tableLength(int idx)
 {
-    if(lua_type(this->_state, idx) != LUA_TTABLE)
+    lua_State* l = PrefContext::instance()->state();
+
+    if(lua_type(l, idx) != LUA_TTABLE)
         return 0;
 
     int len = 0;
-    lua_pushvalue(this->_state, idx);
-    lua_pushnil(this->_state);
+    lua_pushvalue(l, idx);
+    lua_pushnil(l);
 
-    while(lua_next(this->_state, -2))
+    while(lua_next(l, -2))
     {
-        lua_pop(this->_state, 1);
+        lua_pop(l, 1);
         len++;
     }
 
-    lua_pop(this->_state, 1);
+    lua_pop(l, 1);
     return len;
 }
 
@@ -178,6 +184,6 @@ void DebugDialog::on_pbClose_clicked()
 
 void DebugDialog::on_pbTerminate_clicked()
 {
-    lua_close(this->_state);
+    lua_close(PrefContext::instance()->state());
     qApp->exit(-1);
 }

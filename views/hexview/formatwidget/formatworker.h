@@ -3,11 +3,11 @@
 
 #include "logwidget/logger.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/format/formatdefinition.h"
-#include "prefsdk/format/formattree.h"
 #include <QThread>
+#include <format/formattree.h>
+#include <format/formatdefinition.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Format;
 
 class FormatWorker : public QThread
 {

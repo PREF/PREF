@@ -7,14 +7,12 @@ AboutDialog::AboutDialog(QWidget *parent): QDialog(parent), ui(new Ui::AboutDial
     this->setFixedSize(520, 330);
 
     ui->twComponents->setColumnCount(2);
-    ui->twComponents->setRowCount(3);
+    ui->twComponents->setRowCount(2);
 
     ui->twComponents->setItem(0, 0, new QTableWidgetItem("SDK Version"));
     ui->twComponents->setItem(0, 1, new QTableWidgetItem(SDKManager::sdkVersion()));
     ui->twComponents->setItem(1, 0, new QTableWidgetItem("Lua Version"));
     ui->twComponents->setItem(1, 1, new QTableWidgetItem(QString(LUA_RELEASE)));
-    ui->twComponents->setItem(2, 0, new QTableWidgetItem("LuaJIT Version"));
-    ui->twComponents->setItem(2, 1, new QTableWidgetItem(QString(LUAJIT_VERSION)));
 
     ui->twComponents->resizeRowsToContents();
     ui->twComponents->resizeColumnsToContents();

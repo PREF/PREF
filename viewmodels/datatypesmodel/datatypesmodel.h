@@ -3,13 +3,12 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "prefsdk/type/datatype.h"
+#include <types/datatype.h>
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "qhexedit/qhexeditdatawriter.h"
-#include "prefsdk/numericlimits.h"
 
-using namespace PrefSDK;
+using namespace PrefLib;
 
 class DataTypesModel : public QAbstractItemModel
 {

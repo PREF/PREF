@@ -26,18 +26,19 @@ Block *DisassemblerWidgetPrivate::selectedBlock() const
 void DisassemblerWidgetPrivate::setDisassembler(DisassemblerDefinition *disassembler)
 {
     this->_disassembler = disassembler;
-    this->_listing = disassembler->listing();
-    this->_printer = new ListingPrinter(disassembler->addressType(), this);
+    //FIXME: this->_listing = disassembler->listing();
+    //FIXME: this->_printer = new ListingPrinter(disassembler->addressType(), this);
 
     this->adjust();
     this->update();
 
     /* FIXME: Check Numero Istruzioni */
-    if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
+    /* FIXME: if(!this->_listing->entryPoints().isEmpty()) // Select the first entry point, if any
     {
         qint64 idx = this->_listing->indexOf(this->_listing->entryPoints().first());
         this->setCurrentIndex(idx);
     }
+    */
 }
 
 void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx)
@@ -50,10 +51,11 @@ void DisassemblerWidgetPrivate::setCurrentIndex(qint64 idx)
     else if(idx >= this->_listing->length())
         idx = this->_listing->length() - 1;
 
+    /* FIXME:
     const DisassemblerListing::BlockList& blocks = this->_listing->blocks();
     this->_selectedindex = idx;
     this->_selectedblock = blocks[idx];
-
+ */
     if(this->_disassembler && this->_listing)
         this->ensureVisible(idx);
 }
@@ -76,24 +78,28 @@ void DisassemblerWidgetPrivate::setWheelScrollLines(int c)
 
 void DisassemblerWidgetPrivate::jumpTo(Block *block)
 {
+    /* FIXME:
     qint64 idx = this->_listing->indexOf(block->startAddress(), block->blockType());
 
     if(idx != -1)
     {
-        this->pushBack(this->_selectedindex); /* Save Previous Position */
+        this->pushBack(this->_selectedindex); // Save Previous Position
         this->setCurrentIndex(idx);
     }
+    */
 }
 
-void DisassemblerWidgetPrivate::jumpTo(const DataValue& address)
+void DisassemblerWidgetPrivate::jumpTo(const uint64_t& address)
 {
+    /* FIXME:
     qint64 idx = this->_listing->indexOf(address);
 
     if(idx != -1)
     {
-        this->pushBack(this->_selectedindex); /* Save Previous Position */
+        this->pushBack(this->_selectedindex); // Save Previous Position
         this->setCurrentIndex(idx);
     }
+*/
 }
 
 void DisassemblerWidgetPrivate::clearNavigationHistory()
@@ -113,6 +119,7 @@ void DisassemblerWidgetPrivate::copy()
     QString listing;
     QClipboard* clipboard = qApp->clipboard();
 
+    /* FIXME:
     if(this->_selectedblock->blockType() == Block::InstructionBlock)
         listing = this->_disassembler->emitInstruction(qobject_cast<Instruction*>(this->_selectedblock));
     else if(this->_selectedblock->blockType() == Block::FunctionBlock)
@@ -121,8 +128,9 @@ void DisassemblerWidgetPrivate::copy()
         listing = this->emitSegment(qobject_cast<Segment*>(this->_selectedblock));
     else if(this->_selectedblock->blockType() == Block::LabelBlock)
         listing = this->emitLabel(qobject_cast<Label*>(this->_selectedblock));
+        */
 
-    clipboard->setText(QString("%1 %2").arg(this->_selectedblock->startAddress().toString(16), listing));
+    //FIXME: clipboard->setText(QString("%1 %2").arg(this->_selectedblock->startAddress().toString(16), listing));
 }
 
 void DisassemblerWidgetPrivate::copyAddress()
@@ -130,8 +138,8 @@ void DisassemblerWidgetPrivate::copyAddress()
     if(!this->_disassembler)
         return;
 
-    QClipboard* clipboard = qApp->clipboard();
-    clipboard->setText(this->_selectedblock->startAddress().toString(16));
+    //FIXME: QClipboard* clipboard = qApp->clipboard();
+    //clipboard->setText(this->_selectedblock->startAddress().toString(16));
 }
 
 void DisassemblerWidgetPrivate::back()
@@ -173,6 +181,7 @@ qint64 DisassemblerWidgetPrivate::currentIndex() const
 
 Block *DisassemblerWidgetPrivate::findBlock(qint64 idx)
 {
+    /* FIXME:
     const DisassemblerListing::BlockList& blocks = this->_listing->blocks();
 
     if(idx < 0 || idx >= blocks.count())
@@ -195,10 +204,12 @@ Block *DisassemblerWidgetPrivate::findBlock(qint64 idx)
         this->_currentfunction = this->_listing->findFunction(block);
 
     return block;
+    */
 }
 
 QString DisassemblerWidgetPrivate::functionType(Function *f) const
 {
+    /* FIXME:
     switch(f->type())
     {
         case FunctionType::EntryPointFunction:
@@ -215,6 +226,7 @@ QString DisassemblerWidgetPrivate::functionType(Function *f) const
     }
 
     return QString();
+    */
 }
 
 void DisassemblerWidgetPrivate::drawLineBackground(QPainter &painter, qint64 idx, int y)
@@ -246,6 +258,7 @@ void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qi
 
     int x = this->drawAddress(painter, fm, block, y);
 
+    /* FIXME:
     if(block->blockType() == Block::InstructionBlock)
     {
         this->drawInstruction(qobject_cast<Instruction*>(block), painter, fm, x + (this->_charwidth * 5), y);
@@ -274,40 +287,44 @@ void DisassemblerWidgetPrivate::drawLine(QPainter &painter, QFontMetrics &fm, qi
     }
 
     DisassemblerHighlighter highlighter(&document, block);
-    highlighter.rehighlight();  /* Apply Syntax Highlighting */
+    highlighter.rehighlight();  // Apply Syntax Highlighting
 
     painter.save();
         painter.translate(x, y - (this->_charheight - fm.ascent()));
         document.drawContents(&painter);
     painter.restore();
+    */
 }
 
 QString DisassemblerWidgetPrivate::emitSegment(Segment *segment)
 {
-    return QString("segment '%1' (Start Address: %2h, End Address: %3h)").arg(segment->name(), segment->startAddress().toString(16), segment->endAddress().toString(16));
+    //FIXME: return QString("segment '%1' (Start Address: %2h, End Address: %3h)").arg(segment->name(), segment->startAddress().toString(16), segment->endAddress().toString(16));
 }
 
 QString DisassemblerWidgetPrivate::emitFunction(Function* func)
 {
+    /* FIXME:
     SymbolTable* symboltable = this->_listing->symbolTable();
-    return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), this->displayReferences("Called by: ", func));
+    return QString("%1 function %2()\t %3").arg(this->functionType(func), symboltable->name(func->startAddress()), this->displayReferences("Called by: ", func)); */
 }
 
-QString DisassemblerWidgetPrivate::emitLabel(Label *label)
+QString DisassemblerWidgetPrivate::emitLabel(Block* label) //FIXME: Label *label)
 {
-    SymbolTable* symboltable = this->_listing->symbolTable();
-    return QString("%1:\t\t%2").arg(symboltable->name(label->startAddress()), this->displayReferences("XREF: ", label));
+    //SymbolTable* symboltable = this->_listing->symbolTable();
+    //return QString("%1:\t\t%2").arg(symboltable->name(label->startAddress()), this->displayReferences("XREF: ", label));
 }
 
 void DisassemblerWidgetPrivate::drawInstruction(Instruction *instruction, QPainter &painter, const QFontMetrics &fm, int x, int y)
 {
+    /* FIXME:
     this->_printer->reset();
-    this->_disassembler->callOutput(this->_printer, instruction); /* Call Lua in order to compile instruction */
-    this->_printer->draw(&painter, fm, x, y);
+    this->_disassembler->callOutput(this->_printer, instruction); // Call Lua in order to compile instruction
+    this->_printer->draw(&painter, fm, x, y); */
 }
 
 QString DisassemblerWidgetPrivate::displayReferences(const QString& prefix, Block* block)
 {
+    /* FIXME:
     if(!block->hasSources())
         return QString();
 
@@ -328,11 +345,12 @@ QString DisassemblerWidgetPrivate::displayReferences(const QString& prefix, Bloc
     }
 
     return s;
+    */
 }
-
 
 QString DisassemblerWidgetPrivate::emitLine(qint64 idx)
 {
+    /* FIXME:
     QString blockstring;
     Block* block = this->findBlock(idx);
 
@@ -350,6 +368,7 @@ QString DisassemblerWidgetPrivate::emitLine(qint64 idx)
         blockstring = QString(" ").repeated(4) + this->emitLabel(qobject_cast<Label*>(block));
 
     return QString("%1:%2 %3").arg(this->_currentsegment->name(), block->startAddress().toString(16), blockstring);
+    */
 }
 
 qint64 DisassemblerWidgetPrivate::visibleStart(QRect r) const
@@ -366,12 +385,13 @@ qint64 DisassemblerWidgetPrivate::visibleEnd(QRect r) const
     if(r.isEmpty())
         r = this->rect();
 
-    qint64 slidepos = this->_vscrollbar->isVisible() ? this->_vscrollbar->sliderPosition() : 0;
-    return qMin(this->_listing->length() - 1, static_cast<qint64>(slidepos + (r.bottom() / this->_charheight) + 1)); /* end + 1 Removes the scroll bug */
+    //FIXME: qint64 slidepos = this->_vscrollbar->isVisible() ? this->_vscrollbar->sliderPosition() : 0;
+    //FIXME: return qMin(this->_listing->length() - 1, static_cast<qint64>(slidepos + (r.bottom() / this->_charheight) + 1)); /* end + 1 Removes the scroll bug */
 }
 
 int DisassemblerWidgetPrivate::drawAddress(QPainter &painter, QFontMetrics &fm, Block *block, int y)
 {
+    /* FIXME:
     QString addrstring = QString("%1:%2").arg(this->_currentsegment->name(), block->startAddress().toString(16));
     int w = fm.width(addrstring);
 
@@ -379,6 +399,7 @@ int DisassemblerWidgetPrivate::drawAddress(QPainter &painter, QFontMetrics &fm, 
     painter.drawText(this->_charwidth, y, w, this->_charheight, Qt::AlignLeft | Qt::AlignTop, addrstring);
 
     return w + (this->_charwidth * 2);
+    */
 }
 
 void DisassemblerWidgetPrivate::adjust()
@@ -591,6 +612,7 @@ void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
 
         if(pos.y())
         {
+            /* FIXME:
             const DisassemblerListing::BlockList& blocks = this->_listing->blocks();
             qint64 idx = this->_vscrollbar->sliderPosition() + (pos.y() / this->_charheight);
             Block* block = blocks[idx];
@@ -609,6 +631,7 @@ void DisassemblerWidgetPrivate::mouseDoubleClickEvent(QMouseEvent *e)
                 else
                     emit crossReferenceRequested(block);
             }
+            */
         }
     }
 

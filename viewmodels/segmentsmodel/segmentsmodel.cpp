@@ -2,7 +2,7 @@
 
 SegmentsModel::SegmentsModel(DisassemblerListing* listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
-    this->_segments = listing->segments().values();
+    //FIXME: this->_segments = listing->segments().values();
 
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -48,6 +48,7 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
+    /* FIXME:
     if(role == Qt::DisplayRole)
     {
         Segment* segment = reinterpret_cast<Segment*>(index.internalPointer());
@@ -84,6 +85,7 @@ QVariant SegmentsModel::data(const QModelIndex &index, int role) const
         return this->_monospacefont;
     else if(role == Qt::TextAlignmentRole)
         return Qt::AlignCenter;
+        */
 
     return QVariant();
 }

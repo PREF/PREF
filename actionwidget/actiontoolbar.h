@@ -8,8 +8,6 @@
 #include "actionwidget.h"
 #include "exportdialog.h"
 
-using namespace PrefSDK;
-
 class ActionToolBar : public QToolBar
 {
     Q_OBJECT

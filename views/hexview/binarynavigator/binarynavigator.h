@@ -6,10 +6,9 @@
 #include <QtWidgets>
 #include <QtOpenGL>
 #include "qhexedit/qhexedit.h"
-#include "prefsdk/math.h"
-#include "prefsdk/bytecolors.h"
+#include <support/bytecolors.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Support;
 
 class BinaryNavigator : public QGLWidget
 {

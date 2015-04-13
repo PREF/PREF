@@ -2,20 +2,23 @@
 #define HISTOGRAMMODEL_H
 
 #include <QAbstractItemModel>
-#include <qhexedit/qhexeditdata.h>
 #include <qhistogram/qhistogram.h>
+#include <io/databuffer.h>
+#include <chart/histogramchart.h>
+
+using namespace PrefLib;
+using namespace PrefLib::Chart;
 
 class HistogramModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit HistogramModel(QHexEditData *hexeditdata, QObject *parent = 0);
-        void setOccurrenceList(const QList<qint64> occlist);
+        explicit HistogramModel(const HistogramChart& histogramchart, IO::DataBuffer* databuffer, QObject *parent = 0);
+        void updateStats();
 
     private:
         static void initNonAsciiChars();
-        void findMaxOccurence();
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -28,10 +31,10 @@ class HistogramModel : public QAbstractItemModel
 
     private:
         static QMap<uchar, QString> _nonasciichars;
+        const HistogramChart& _histogramchart;
+        IO::DataBuffer* _databuffer;
         QFont _monospacefont;
-        QHexEditData* _hexeditdata;
-        qint64 _maxoccidx;
-        QList<qint64> _occurenceslist;
+
 };
 
 #endif // HISTOGRAMMODEL_H

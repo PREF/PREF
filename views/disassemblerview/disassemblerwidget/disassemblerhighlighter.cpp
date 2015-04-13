@@ -115,6 +115,7 @@ void DisassemblerHighlighter::highlightLabel(const QString &text)
 
 void DisassemblerHighlighter::highlightBlock(const QString &text)
 {
+    /* FIXME:
     if(this->_block->blockType() == Block::SegmentBlock)
         this->highlightSegment(text);
     else if(this->_block->blockType() == Block::FunctionBlock)
@@ -123,5 +124,5 @@ void DisassemblerHighlighter::highlightBlock(const QString &text)
         this->highlightLabel(text);
 
     this->highlightComment(text);
-    this->highlight(text, "\\b[0-9a-fA-F]+h\\b", this->_hexdigitsformat);
+    this->highlight(text, "\\b[0-9a-fA-F]+h\\b", this->_hexdigitsformat); */
 }

@@ -3,10 +3,7 @@
 
 #include "viewmodels/crossreferencemodel/crossreferencemodel.h"
 #include "viewmodels/crossreferencemodel/crossreferencedelegate.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
 #include <QDialog>
-
-using namespace PrefSDK;
 
 namespace Ui {
 class CrossReferenceDialog;
@@ -27,7 +24,7 @@ class CrossReferenceDialog : public QDialog
 
     private:
         Ui::CrossReferenceDialog *ui;
-        const QList<DataValue>& _sources;
+        QList<uint64_t> _sources;
         DisassemblerDefinition* _disassembler;
         CrossReferenceModel* _crossreferencemodel;
         Block* _selectedblock;

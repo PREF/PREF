@@ -5,11 +5,9 @@
 #include <QLabel>
 #include "logwidget/logger.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
-#include "prefsdk/disassembler/disassemblerdatabase.h"
+#include <disassembler/disassemblerdefinition.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class DisassemblerWorker : public QThread
 {

@@ -1,86 +1,31 @@
 #include "chartworker.h"
 
-const quint64 ChartWorker::NUM_POINTS = 2048u;
-const quint64 ChartWorker::MIN_BLOCK_SIZE = 32u;
-
-ChartWorker::ChartWorker(QObject *parent): Worker(parent), _hexeditdata(nullptr)
+ChartWorker::ChartWorker(QObject *parent): Worker(parent), _histogramchart(nullptr), _entropychart(nullptr), _databuffer(nullptr)
 {
 
 }
 
-const OccurrenceList &ChartWorker::occurrences() const
+ChartWorker::~ChartWorker()
 {
-    return this->_occurrences;
+
 }
 
-const QList<QPointF> &ChartWorker::dataEntropy() const
+void ChartWorker::setData(HistogramChart* histogramchart, EntropyChart* entropychart, IO::DataBuffer *databuffer)
 {
-    return this->_dataentropy;
-}
-
-void ChartWorker::setData(QHexEditData *hexeditdata)
-{
-    this->_hexeditdata = hexeditdata;
-}
-
-quint64 ChartWorker::calculateBlockSize()
-{
-    if(static_cast<quint64>(this->_hexeditdata->length()) < ChartWorker::MIN_BLOCK_SIZE)
-        return 0;
-
-    quint64 blocksize = 0, numpoints = ChartWorker::NUM_POINTS, size = this->_hexeditdata->length() / numpoints;
-
-    while(size < ChartWorker::MIN_BLOCK_SIZE)
-    {
-        numpoints = numpoints / 2u;
-        size = this->_hexeditdata->length() / numpoints;
-    }
-
-    for(quint64 i = 0; blocksize < size; i++)
-    {
-        quint64 b = (1u << i);
-
-        if(b > size)
-            break;
-
-        blocksize = b;
-    }
-
-    return blocksize;
+    //NOTE: Move To Thread?
+    this->_histogramchart = histogramchart;
+    this->_entropychart = entropychart;
+    this->_databuffer = databuffer;
 }
 
 void ChartWorker::run()
 {
-    if(!this->_hexeditdata)
+    if(!this->_histogramchart || !this->_entropychart || !this->_databuffer)
         return;
 
-    QHexEditDataReader reader(this->_hexeditdata);
-    this->_occurrences = generateOccList(&reader, 0, this->_hexeditdata->length(), &this->_cancontinue);
-
-    if(!this->_cancontinue)
-        return;
-
-    emit occurrencesListCompleted();
-
-    quint64 blocksize = this->calculateBlockSize();
-    this->_dataentropy.clear();
-
-    if(!blocksize)
-        return;
-
-    for(quint64 i = 0; this->_cancontinue && (i < static_cast<quint64>(this->_hexeditdata->length())); i += blocksize)
-    {
-        OccurrenceList occlist = generateOccList(&reader, i, blocksize, &this->_cancontinue);
-
-        if(!this->_cancontinue)
-            return;
-
-        qreal e = entropy(occlist, blocksize);
-        this->_dataentropy.append(QPointF(i, e));
-    }
-
-    if(!this->_cancontinue)
-        return;
+    // NOTE: PrefLib Issue: do not count bytes twice
+    dynamic_cast<AbstractChart*>(this->_histogramchart)->elaborate(this->_databuffer); //NOTE: Manage _cancontinue
+    dynamic_cast<AbstractChart*>(this->_entropychart)->elaborate(this->_databuffer);  //NOTE: Manage _cancontinue
 
     emit dataEntropyCompleted();
 }

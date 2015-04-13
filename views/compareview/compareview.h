@@ -10,8 +10,6 @@
 #include "viewmodels/comparemodel/comparemodel.h"
 #include "compareworker.h"
 
-using namespace PrefSDK;
-
 namespace Ui {
 class CompareView;
 }

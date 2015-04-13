@@ -4,13 +4,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/luastate.h"
 #include "actionwidget/actiontoolbar.h"
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "datatypeswidget/datatypeswidget.h"
 #include "views/abstractview.h"
-
-using namespace PrefSDK;
 
 namespace Ui {
     class HexView;

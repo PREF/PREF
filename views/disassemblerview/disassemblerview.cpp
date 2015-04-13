@@ -65,7 +65,7 @@ DisassemblerView::DisassemblerView(DisassemblerDefinition *disassemblerdefinitio
 
 DisassemblerView::~DisassemblerView()
 {
-    this->_disassembler->callFinalize();
+    //FIXME: this->_disassembler->callFinalize();
     delete ui;
 }
 
@@ -82,10 +82,11 @@ void DisassemblerView::saveAs()
         QString filename = fd.selectedFiles()[0];
         QString filter = fd.selectedNameFilter();
 
+        /* FIXME:
         if(!QString::compare(filter, "Disassembler Database (*.db)"))
             this->_listing->save(filename);
         else if(!QString::compare(filter, "Text File (*.txt)"))
-            ui->disassemblerWidget->save(filename);
+            ui->disassemblerWidget->save(filename); */
 
         this->_lblinfo->setText("Ready");
     }
@@ -95,8 +96,9 @@ void DisassemblerView::save()
 {
     this->_lblinfo->setText("Saving Database...");
 
+    /* FIXME:
     DisassemblerDatabase dd(this->_listing->symbolTable(), DisassemblerDatabase::adjustFile(this->loadedFile()));
-    dd.save();
+    dd.save(); */
 
     this->_lblinfo->setText("Ready");
 }
@@ -196,6 +198,7 @@ void DisassemblerView::createStringsMenu()
 
 void DisassemblerView::showCrossReference(Block *b)
 {
+    /* FIXME:
     if(!b->hasSources())
         return;
 
@@ -204,10 +207,12 @@ void DisassemblerView::showCrossReference(Block *b)
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
         ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+        */
 }
 
 void DisassemblerView::showCrossReference(const DataValue &address)
 {
+    /* FIXME:
     Block* b = this->_listing->findBlock(address);
 
     if(!b || !b->hasSources())
@@ -218,6 +223,7 @@ void DisassemblerView::showCrossReference(const DataValue &address)
 
     if(res == CrossReferenceDialog::Accepted && crd.selectedBlock())
         ui->disassemblerWidget->jumpTo(crd.selectedBlock());
+        */
 }
 
 void DisassemblerView::disassemble()
@@ -268,12 +274,14 @@ void DisassemblerView::exportFunctions()
 
 void DisassemblerView::onListingMenuAboutToShow()
 {
+    /* FIXME:
     Block* selectedblock = ui->disassemblerWidget->selectedBlock();
 
     this->_actrename->setVisible(selectedblock->blockType() != Block::InstructionBlock);
     this->_actcrossreferences->setVisible(selectedblock->hasSources());
     this->_actaddbookmark->setVisible(!selectedblock->isBookmarked());
     this->_actremovebookmark->setVisible(selectedblock->isBookmarked());
+    */
 }
 
 void DisassemblerView::onListingMenuAddBookmarkTriggered()
@@ -286,12 +294,13 @@ void DisassemblerView::onListingMenuAddBookmarkTriggered()
 
 void DisassemblerView::onListingMenuRemoveBookmarkTriggered()
 {
+    /* FIXME:
     this->_listing->toggleBookmark(ui->disassemblerWidget->selectedBlock());
 
     if(this->_listing->bookmarks().isEmpty())
         this->_actbookmarks->setEnabled(false);
 
-    ui->disassemblerWidget->update();
+    ui->disassemblerWidget->update(); */
 }
 
 void DisassemblerView::onListingMenuCrossReferencesTriggered()
@@ -300,7 +309,8 @@ void DisassemblerView::onListingMenuCrossReferencesTriggered()
 }
 
 void DisassemblerView::onListingMenuHexDumpTriggered()
-{    
+{
+    /* FIXME:
     Block* b = ui->disassemblerWidget->selectedBlock();
 
     switch(b->blockType())
@@ -331,12 +341,14 @@ void DisassemblerView::onListingMenuHexDumpTriggered()
         default:
             return;
     }
+    */
 
     ui->tabWidget->setCurrentIndex(1);
 }
 
 void DisassemblerView::renameBlock(Block *block)
 {
+    /* FIXME:
     if(block->blockType() == Block::InstructionBlock)
         return;
 
@@ -344,7 +356,7 @@ void DisassemblerView::renameBlock(Block *block)
 
     ui->renameWidget->setBlock(block);
     ui->renameWidget->setLabel(symboltable->name(block->startAddress()));
-    ui->renameWidget->show();
+    ui->renameWidget->show(); */
 }
 
 void DisassemblerView::renameSelectedListingObject()
@@ -376,6 +388,7 @@ void DisassemblerView::renameSelectedVariable()
 
 void DisassemblerView::displayDisassembly()
 {
+    /* FIXME:
     this->_listing = this->_disassembler->listing();
     this->_toolbar->setEnabled(true);
 
@@ -390,6 +403,7 @@ void DisassemblerView::displayDisassembly()
     ui->tvStrings->setModel(this->_stringsymbols);
     ui->tvVariables->setModel(this->_variablesmodel);
     ui->dataView->setModel(this->_variablesmodel);
+    */
 }
 
 void DisassemblerView::showEntryPoints()
@@ -421,6 +435,7 @@ void DisassemblerView::showBookmarks()
 
 void DisassemblerView::loadDatabase()
 {
+    /* FIXME:
     QString s = QFileDialog::getOpenFileName(this, "Load Database", QString(), "Disassembler Database (*.db)");
 
     if(!s.isEmpty())
@@ -431,6 +446,7 @@ void DisassemblerView::loadDatabase()
         dd.load();
         this->_lblinfo->setText("Ready");
     }
+    */
 }
 
 void DisassemblerView::gotoFunction()
@@ -517,12 +533,13 @@ void DisassemblerView::exportStrings()
     csvexporter.dump(s, ui->tvStrings->model());
 }
 
-void DisassemblerView::gotoAddress(const DataValue &address)
+void DisassemblerView::gotoAddress(uint64_t address)
 {
+    /* FIXME:
     Block* b = this->_listing->findBlock(address);
 
     if(b)
-        ui->disassemblerWidget->jumpTo(b);
+        ui->disassemblerWidget->jumpTo(b); */
 }
 
 void DisassemblerView::on_functionList_doubleClicked(const QModelIndex &index)
@@ -538,15 +555,17 @@ void DisassemblerView::on_tvStrings_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
-    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer()));
+    /* FIXME:
+    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer())); */
 }
 
 void DisassemblerView::on_tvVariables_doubleClicked(const QModelIndex &index)
 {
+    /* FIXME:
     if(!index.isValid())
         return;
 
-    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer()));
+    this->showCrossReference(reinterpret_cast<Symbol*>(index.internalPointer())); */
 }
 
 void DisassemblerView::on_tabOverview_currentChanged(int index)
@@ -597,15 +616,18 @@ void DisassemblerView::on_tvVariables_customContextMenuRequested(const QPoint &p
 
 void DisassemblerView::onSaveBookmarkRequested(Block *block, const QString &description)
 {
+    /* FIXME:
     this->_actbookmarks->setEnabled(true);
     this->_listing->applyBookmark(block, description);
+    */
 }
 
 void DisassemblerView::onRenameSymbolRequested(Block *block, const QString &symbolname)
 {
+    /* FIXME:
     SymbolTable* symboltable = this->_listing->symbolTable();
     Symbol* symbol = symboltable->get(block->startAddress());
 
     symbol->setName(symbolname);
-    ui->disassemblerWidget->update();
+    ui->disassemblerWidget->update(); */
 }

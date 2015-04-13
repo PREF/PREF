@@ -36,6 +36,7 @@ void BinaryNavigator::renderMap(int)
 
 void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
+    /* FIXME:
     qreal e = entropy(this->_hexeditdata, this->_offset);
     QColor c = ByteColors::entropyColor(e);
     QRectF r = QRectF(x, y, this->_size, this->_size);
@@ -46,10 +47,12 @@ void BinaryNavigator::renderEntropy(QPainter &p, qint64 x, qint64 y, QRectF& cur
         cursorrect = r;
         cursorcolor = QColor(0xFF, 0xFF, 0x00);
     }
+    */
 }
 
 void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y, QRectF& cursorrect, QColor& cursorcolor)
 {
+    /* FIXME:
     QHexEditDataReader reader(this->_hexeditdata);
     uchar b = reader.at(this->_offset);
     QColor c = ByteColors::byteClassColor(b);
@@ -61,6 +64,7 @@ void BinaryNavigator::renderByteClass(QPainter &p, qint64 x, qint64 y, QRectF& c
         cursorrect = r;
         cursorcolor = QColor(0xFF, 0x00, 0xFF);
     }
+    */
 }
 
 qint64 BinaryNavigator::indexFromPoint(const QPoint &pt)

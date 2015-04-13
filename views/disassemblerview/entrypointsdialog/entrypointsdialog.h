@@ -5,7 +5,6 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "viewmodels/entrypointsmodel/entrypointsmodel.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
 
 namespace Ui {
 class EntryPointsDialog;

@@ -62,7 +62,7 @@ void DisassemblerWidget::jumpTo(Block *block)
     this->_disasmwidget_p->jumpTo(block);
 }
 
-void DisassemblerWidget::jumpTo(const PrefSDK::DataValue& address)
+void DisassemblerWidget::jumpTo(const uint64_t &address)
 {
     this->_disasmwidget_p->jumpTo(address);
 }

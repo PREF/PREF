@@ -4,10 +4,12 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <prefcontext.h>
 #include "qhexedit/qhexedit.h"
 #include "viewmodels/exportmodel/exportermodel.h"
 
-using namespace PrefSDK;
+using namespace PrefLib;
+using namespace PrefLib::Exporter;
 
 namespace Ui {
 class ExportDialog;

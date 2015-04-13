@@ -3,10 +3,13 @@
 
 #include <QtCore>
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/math.h"
 #include "views/hexview/worker.h"
+#include "prefsdk/qdatabuffer.h"
+#include <chart/histogramchart.h>
+#include <chart/entropychart.h>
 
-using namespace PrefSDK;
+using namespace PrefLib;
+using namespace PrefLib::Chart;
 
 class ChartWorker : public Worker
 {
@@ -14,9 +17,8 @@ class ChartWorker : public Worker
 
     public:
         explicit ChartWorker(QObject *parent = 0);
-        const OccurrenceList& occurrences() const;
-        const QList<QPointF>& dataEntropy() const;
-        void setData(QHexEditData *hexeditdata);
+        ~ChartWorker();
+        void setData(HistogramChart *histogramchart, EntropyChart *entropychart, IO::DataBuffer *databuffer);
 
     private:
         quint64 calculateBlockSize();
@@ -29,13 +31,9 @@ class ChartWorker : public Worker
         void dataEntropyCompleted();
 
     private:
-        static const quint64 NUM_POINTS;
-        static const quint64 MIN_BLOCK_SIZE;
-
-    private:
-        OccurrenceList _occurrences;
-        QList<QPointF> _dataentropy;
-        QHexEditData* _hexeditdata;
+        HistogramChart* _histogramchart;
+        EntropyChart* _entropychart;
+        IO::DataBuffer* _databuffer;
 };
 
 #endif // CHARTWORKER_H

@@ -4,7 +4,7 @@ const qint64 StringSymbolModel::STRING_MAX_LENGTH = 50;
 
 StringSymbolModel::StringSymbolModel(DisassemblerListing* listing, QHexEditData *hexeditdata, QObject *parent): QAbstractItemModel(parent), _listing(listing), _hexeditdata(hexeditdata)
 {
-    this->_strings = listing->symbolTable()->strings();
+    //this->_strings = listing->symbolTable()->strings();
     this->_reader = new QHexEditDataReader(hexeditdata, this);
 
     this->_monospacefont.setFamily("Monospace");
@@ -44,6 +44,7 @@ QVariant StringSymbolModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
+        /* FIXME:
         Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
         const DataValue& address = symbol->startAddress();
 
@@ -62,6 +63,7 @@ QVariant StringSymbolModel::data(const QModelIndex &index, int role) const
             default:
                 break;
         }
+        */
     }
     else if(role == Qt::ForegroundRole)
     {
@@ -81,7 +83,7 @@ QModelIndex StringSymbolModel::index(int row, int column, const QModelIndex &par
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column, this->_strings[row]);
+    //return this->createIndex(row, column, this->_strings[row]);
 }
 
 QModelIndex StringSymbolModel::parent(const QModelIndex &) const
@@ -91,7 +93,7 @@ QModelIndex StringSymbolModel::parent(const QModelIndex &) const
 
 int StringSymbolModel::rowCount(const QModelIndex &) const
 {
-    return this->_strings.length();
+    //return this->_strings.length();
 }
 
 Qt::ItemFlags StringSymbolModel::flags(const QModelIndex &index) const

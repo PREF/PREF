@@ -1,10 +1,11 @@
 #include "bookmarkmodel.h"
 
-BookmarkModel::BookmarkModel(DisassemblerListing::BookmarkList& bookmarklist, QObject *parent): QAbstractItemModel(parent), _bookmarklist(bookmarklist)
+BookmarkModel::BookmarkModel(QObject *parent): QAbstractItemModel(parent) //FIXME:, _bookmarklist(bookmarklist)
 {
+    /* FIXME:
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
-    this->_monospacefont.setStyleHint(QFont::TypeWriter);
+    this->_monospacefont.setStyleHint(QFont::TypeWriter); */
 }
 
 int BookmarkModel::columnCount(const QModelIndex &) const
@@ -37,6 +38,7 @@ QVariant BookmarkModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
+    /* FIXME:
     if(role == Qt::DisplayRole)
     {
         const DisassemblerListing::BookmarkEntry& be = this->_bookmarklist[index.row()];
@@ -65,18 +67,21 @@ QVariant BookmarkModel::data(const QModelIndex &index, int role) const
     }
     else if(role == Qt::FontRole)
         return this->_monospacefont;
+        */
 
     return QVariant();
 }
 
 bool BookmarkModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    /* FIXME:
     if((role == Qt::EditRole) && index.isValid() && (index.column() == 1))
     {
         DisassemblerListing::BookmarkEntry& be = this->_bookmarklist[index.row()];
         be.second = value.toString();
         return true;
     }
+    */
 
     return QAbstractItemModel::setData(index, value, role);
 }
@@ -96,7 +101,8 @@ QModelIndex BookmarkModel::parent(const QModelIndex &) const
 
 int BookmarkModel::rowCount(const QModelIndex &) const
 {
-    return this->_bookmarklist.count();
+    /* FIXME:
+    return this->_bookmarklist.count(); */
 }
 
 Qt::ItemFlags BookmarkModel::flags(const QModelIndex &index) const

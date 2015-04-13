@@ -6,19 +6,12 @@
 #include <cstdint>
 #include "qhexedit/qhexeditdata.h"
 #include "prefsdk/signatures/signaturedatabase.h"
-#include "prefsdk/libs/oop/oop.h"
-#include "prefsdk/libs/qt/qtlua.h"
-#include "prefsdk/libs/preflib/preflib.h"
-#include "prefsdk/libs/capstone/luacapstone.h"
-#include "prefsdk/sqlitewrapper/sqlite.h"
-#include "prefsdk/format/formatlist.h"
-#include "prefsdk/format/formattree.h"
-#include "prefsdk/exporter/exporterlist.h"
-#include "prefsdk/disassembler/disassemblerlist.h"
-#include "prefsdk/luastate.h"
+#include <preflib.h>
 
 namespace PrefSDK
 {
+    using namespace PrefLib;
+
     class SDKManager
     {
         private:
@@ -29,7 +22,6 @@ namespace PrefSDK
             static int luaAtPanic(lua_State* l);
 
         public:
-            static lua_State* initializeLua(QMainWindow *mainwindow);
             static bool loadSDK();
             static void unloadSDK();
             static QString sdkVersion();
@@ -40,7 +32,7 @@ namespace PrefSDK
             static const QString SDK_DIR;
             static const QString MAIN_SCRIPT;
             static QString _sdkpath;
-            static PrefLib::SdkVersion _sdkversion;
+            //static PrefLib::SdkVersion _sdkversion;
     };
 }
 

@@ -6,11 +6,12 @@ FunctionModel::FunctionModel(DisassemblerListing* listing, QObject *parent): QAb
     this->_monospacefont.setPointSize(qApp->font().pointSize());
     this->_monospacefont.setStyleHint(QFont::TypeWriter);
 
-    this->_functions = listing->functions().values();
+    //FIXME: this->_functions = listing->functions().values();
 }
 
 QString FunctionModel::functionType(Function *f) const
 {
+    /* FIXME:
     switch(f->type())
     {
         case FunctionType::EntryPointFunction:
@@ -25,6 +26,7 @@ QString FunctionModel::functionType(Function *f) const
         default:
             break;
     }
+    */
 
     return "Function";
 }
@@ -65,6 +67,7 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
+    /* FIXME:
     Function* f = reinterpret_cast<Function*>(index.internalPointer());
 
     if(role == Qt::DisplayRole)
@@ -117,6 +120,7 @@ QVariant FunctionModel::data(const QModelIndex &index, int role) const
     }
     else if(role == Qt::FontRole)
         return this->_monospacefont;
+        */
 
     return QVariant();
 }

@@ -4,12 +4,12 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
-#include "prefsdk/disassembler/listingprinter.h"
+#include "disassembler/disassemblerdefinition.h"
+#include "disassembler/disassemblerlisting.h"
+#include "disassembler/listingprinter.h"
 #include "disassemblerhighlighter.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class DisassemblerWidgetPrivate: public QWidget
 {
@@ -25,7 +25,7 @@ class DisassemblerWidgetPrivate: public QWidget
         void setSelectedLineColor(const QColor& c);
         void setWheelScrollLines(int c);
         void jumpTo(Block* block);
-        void jumpTo(const DataValue &address);
+        void jumpTo(const uint64_t &address);
         void clearNavigationHistory();
         void copy();
         void copyAddress();
@@ -38,7 +38,7 @@ class DisassemblerWidgetPrivate: public QWidget
         QString functionType(Function *f) const;
         QString emitSegment(Segment* segment);
         QString emitFunction(Function *func);
-        QString emitLabel(Label* label);
+        QString emitLabel(Block* label); //FIXME: Label* label);
         QString displayReferences(const QString &prefix, Block *block);
         QString emitLine(qint64 idx);
         qint64 visibleStart(QRect r = QRect()) const;

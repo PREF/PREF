@@ -4,10 +4,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <disassembler/disassemblerlisting.h>
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class SegmentsModel : public QAbstractItemModel
 {

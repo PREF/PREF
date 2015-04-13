@@ -14,6 +14,7 @@ DataMapView::DataMapView(QWidget *parent): QWidget(parent), ui(new Ui::DataMapVi
 
 void DataMapView::setModel(VariablesModel* model)
 {
+    /* FIXME:
     this->_variablesmodel = model;
     this->_listing = model->listing();
 
@@ -25,11 +26,12 @@ void DataMapView::setModel(VariablesModel* model)
 
     ui->dataView->resizeRowsToContents();
     this->highlightData();
+    */
 }
 
-void DataMapView::selectRange(const DataValue &offset, const DataValue &length)
+void DataMapView::selectRange(uint64_t offset, uint64_t length)
 {
-    ui->hexView->setSelectionLength(offset.compatibleValue<qint64>(), length.compatibleValue<qint64>());
+    ui->hexView->setSelectionLength(offset, length);
 }
 
 DataMapView::~DataMapView()
@@ -40,10 +42,11 @@ DataMapView::~DataMapView()
 void DataMapView::highlightData()
 {
     QColor color;
-    Symbol* lastsymbol = nullptr;
+    //Symbol* lastsymbol = nullptr;
 
     for(int i = 0; i < this->_variablesmodel->rowCount(); i++)
     {
+        /* FIXME:
         Symbol* symbol = reinterpret_cast<Symbol*>(this->_variablesmodel->index(i, 0).internalPointer());
         Segment* segment = this->_listing->findSegment(symbol->startAddress());
 
@@ -57,7 +60,7 @@ void DataMapView::highlightData()
             else
                 color = this->_addresscolor;
         }
-        else /* if(symbol->type() == Symbol::String) */
+        else // if(symbol->type() == Symbol::String)
             color = this->_stringcolor;
 
         qint64 offset = ((symbol->startAddress() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
@@ -65,6 +68,7 @@ void DataMapView::highlightData()
         ui->hexView->highlightBackground(offset, endoffset, color);
         ui->hexView->commentRange(offset, endoffset, symbol->name());
         lastsymbol = symbol;
+        */
     }
 }
 
@@ -73,6 +77,7 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
     if(!index.isValid())
         return;
 
+    /* FIXME:
     Symbol* symbol = reinterpret_cast<Symbol*>(index.internalPointer());
     Segment* segment = this->_listing->findSegment(symbol->startAddress());
 
@@ -81,4 +86,5 @@ void DataMapView::on_dataView_doubleClicked(const QModelIndex &index)
 
     qint64 offset = ((symbol->startAddress() - segment->startAddress()) + segment->baseOffset()).compatibleValue<qint64>();
     ui->hexView->setSelectionLength(offset, symbol->size().compatibleValue<qint64>());
+    */
 }

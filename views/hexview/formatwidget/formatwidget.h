@@ -4,8 +4,6 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/format/formatlist.h"
-#include "prefsdk/exporter/exporterlist.h"
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/hexview/workertab.h"
 #include "logwidget/logwidget.h"

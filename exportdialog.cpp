@@ -69,7 +69,7 @@ ExportDialog::~ExportDialog()
 
 void ExportDialog::validateFields()
 {
-    if(!this->_selexporter || this->_selexporter->id().isEmpty() || ui->leFile->text().isEmpty())
+    if(!this->_selexporter || ui->leFile->text().isEmpty())
         ui->pbExport->setEnabled(false);
     else
         ui->pbExport->setEnabled(true);
@@ -129,7 +129,7 @@ void ExportDialog::on_tbBrowse_clicked()
 void ExportDialog::on_tvExporters_clicked(const QModelIndex &index)
 {
     if(index.isValid())
-        this->_selexporter = ExporterList::instance()->exporter(index.row());
+        this->_selexporter = PrefContext::instance()->exporters()->get(index.row());
     else
     {
         this->_selexporter = nullptr;

@@ -4,15 +4,16 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <chart/histogramchart.h>
+#include <chart/entropychart.h>
 #include "viewmodels/histogrammodel/histogrammodel.h"
 #include "views/hexview/bytecolorsdialog/bytecolorsdialog.h"
 #include "views/hexview/workertab.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/bytecolors.h"
-#include "prefsdk/math.h"
 #include "chartworker.h"
 
-using namespace PrefSDK;
+using namespace PrefLib;
+using namespace PrefLib::Chart;
 
 namespace Ui {
 class ChartWidget;
@@ -24,7 +25,7 @@ class ChartWidget : public WorkerTab
 
     public:
         explicit ChartWidget(QWidget *parent = 0);
-        void plot(QHexEditData* hexeditdata);
+        void plot(IO::DataBuffer *databuffer);
         ~ChartWidget();
 
     private:
@@ -40,7 +41,9 @@ class ChartWidget : public WorkerTab
     private:
         Ui::ChartWidget *ui;
         HistogramModel* _histogrammodel;
-        QHexEditData* _hexeditdata;
+        HistogramChart _histogramchart;
+        EntropyChart _entropychart;
+        IO::DataBuffer* _databuffer;
         ChartWorker _worker;
         QIcon _xycharticon;
         QIcon _histogramicon;

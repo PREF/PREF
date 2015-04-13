@@ -53,25 +53,24 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
 
         this->_structuremenu->setGotoVisible(this->_gotovisible);
 
-        if(formatelement->elementType() == FormatElement::StructureType)
+        if(formatelement->isStructure())
         {
-            this->_structuremenu->setTitle(QString("'%1'").arg(formatelement->displayName()));
+            this->_structuremenu->setTitle(QString("'%1'").arg(formatelement->name())); //NOTE: Was displayName()
             this->_structuremenu->menuAction()->setVisible(true);
         }
         else
             this->_structuremenu->menuAction()->setVisible(false);
 
-        if(formatelement->elementType() == FormatElement::FieldType)
+        if(formatelement->isField())
         {
-            FieldElement* fieldelement = qobject_cast<FieldElement*>(formatelement);
+            Field* field = dynamic_cast<Field*>(formatelement);
 
-            if(fieldelement->isInteger() && !fieldelement->isSigned() && !fieldelement->isOverflowed() && (DataType::bitWidth(fieldelement->dataType()) > 16))
+            if(DataType::isIntegral(field->dataType()) && DataType::isSigned(field->dataType()) && (DataType::bitWidth(field->dataType()) > 16))
             {
-                QHexEditData* hexeditdata = qobject_cast<FormatModel*>(this->model())->data();
-                DataBuffer databuffer(hexeditdata);
-                DataValue value = DataValue::create(databuffer.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
+                QHexEditData* hexeditdata = dynamic_cast<FormatModel*>(this->model())->data(); // TODO: promote FormatElement::dataBuffer() to public
+                DataValue value = field->value();
 
-                if(!value.compatibleValue<qint64>() || (value.compatibleValue<qint64>() >= hexeditdata->length()))
+                if(!value.isZero() || value.isOverflowed() || (value >= hexeditdata->length()))
                     this->_actiongoto->setVisible(false);
                 else
                     this->_actiongoto->setVisible(true);
@@ -93,8 +92,8 @@ void FormatTreeView::onTreeClicked(const QModelIndex &index)
 {
     FormatElement* formatelement = reinterpret_cast<FormatElement*>(index.internalPointer());
 
-    if(formatelement->elementType() == FormatElement::BitFieldType)
-        formatelement = formatelement->parentElement(); /* Set index = BitField's Parent */
+    if(formatelement->isBitField())
+        formatelement = formatelement->parent(); /* Set index = BitField's Parent */
 
     if(formatelement->size())
         emit formatObjectSelected(formatelement);
@@ -112,13 +111,9 @@ void FormatTreeView::removeBackColor()
 
 void FormatTreeView::onGotoOffset()
 {
-    FieldElement* fieldelement = qobject_cast<FieldElement*>(this->selectedElement());
-    QHexEditData* hexeditdata = qobject_cast<FormatModel*>(this->model())->data();
+    FieldElement* fieldelement = dynamic_cast<FieldElement*>(this->selectedElement());
 
-    DataBuffer hed(hexeditdata);
-    DataValue value = DataValue::create(hed.readType(fieldelement->offset(), fieldelement->dataType()), fieldelement->dataType());
-
-    emit gotoOffset(value.compatibleValue<qint64>());
+    emit gotoOffset(fieldelement->offset());
 }
 
 void FormatTreeView::onStructureGotoStart()
@@ -154,13 +149,13 @@ void FormatTreeView::onCopyOffset()
 void FormatTreeView::onCopyName()
 {
     FormatElement* formatelement = this->selectedElement();
-    qApp->clipboard()->setText(formatelement->displayName());
+    qApp->clipboard()->setText(formatelement->name()); //NOTE: Was displayName()
 }
 
 void FormatTreeView::onCopyValue()
 {
-    FormatElement* formatelement = this->selectedElement();
-    qApp->clipboard()->setText(formatelement->displayValue());
+    //FIXME: FormatElement* formatelement = this->selectedElement();
+    //FIXME: qApp->clipboard()->setText(formatelement->displayValue());
 }
 
 FormatElement *FormatTreeView::selectedElement() const
@@ -212,15 +207,15 @@ void FormatTreeView::configureContextMenu(bool highlightvisible)
 
 void FormatTreeView::onFormatObjectMenuAboutToShow()
 {
-    this->_actiongoto->setVisible((this->selectedElement()->elementType() == FormatElement::FieldType));
+    this->_actiongoto->setVisible(this->selectedElement()->isField());
 }
 
 void FormatTreeView::updateColor(bool set)
 {
     FormatElement* formatelement = this->selectedElement();
 
-    if(formatelement->elementType() == FormatElement::BitFieldType)
-        formatelement = formatelement->parentElement(); /* Change Object to BitField's parent */
+    if(formatelement->isBitField())
+        formatelement = formatelement->parent(); /* Change Object to BitField's parent */
 
     if(formatelement->size())
     {

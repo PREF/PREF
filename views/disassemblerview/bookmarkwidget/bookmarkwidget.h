@@ -3,9 +3,9 @@
 
 #include <QWidget>
 #include <QKeyEvent>
-#include "prefsdk/disassembler/blocks/block.h"
+#include <disassembler/blocks/block.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 namespace Ui {
 class BookmarkWidget;

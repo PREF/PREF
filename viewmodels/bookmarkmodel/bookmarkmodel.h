@@ -2,16 +2,16 @@
 #define BOOKMARKMODEL_H
 
 #include <QAbstractItemModel>
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <disassembler/disassemblerlisting.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class BookmarkModel : public QAbstractItemModel
 {
     Q_OBJECT
 
     public:
-        explicit BookmarkModel(DisassemblerListing::BookmarkList& bookmarklist, QObject *parent = 0);
+        explicit BookmarkModel(/* FIXME: DisassemblerListing::BookmarkList& bookmarklist, */ QObject *parent = 0);
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -24,8 +24,8 @@ class BookmarkModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        DisassemblerListing::BookmarkList& _bookmarklist;
-        QFont _monospacefont;
+        //FIXME: DisassemblerListing::BookmarkList& _bookmarklist;
+        //QFont _monospacefont;
 };
 
 #endif // BOOKMARKMODEL_H

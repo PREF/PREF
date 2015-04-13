@@ -9,26 +9,10 @@ QHistogram::QHistogram(QWidget *parent): QWidget(parent)
     this->_endaxisY = this->_margin;
 }
 
-void QHistogram::setData(const QList<qint64>& data)
+void QHistogram::setData(const ByteElaborator::CountResult& cr)
 {
-    this->_data = data;
+    this->_countresult = cr;
     this->update();
-}
-
-qint64 QHistogram::maxValue()
-{
-    qint64 max = 0;
-
-    if(!this->_data.isEmpty())
-    {
-        for(int i = 0; i < QHistogram::BAR_COUNT; i++)
-        {
-            if(this->_data[i] > max)
-                max = this->_data[i];
-        }
-    }
-
-    return max;
 }
 
 void QHistogram::drawAxis(QPainter& p)
@@ -46,38 +30,32 @@ void QHistogram::drawAxis(QPainter& p)
     p.drawText(QPointF(((this->_endaxisX - this->_originX) / 2) + (fm.width(nummid) / 2), this->_originY + fm.height()), nummid);
     p.drawText(QPointF(this->_endaxisX - (fm.width(numend) / 2), this->_originY + fm.height()), numend);
 
-    if(!this->_data.isEmpty())
+    if(!this->_countresult.Counts.empty() && this->_countresult.MaxCount)  /* Draw Y Axis Labels */
     {
-        quint64 maxvalue = this->maxValue();
+        QString smaxval = QString::number(this->_countresult.MaxCount);
+        QString smidval = QString::number(this->_countresult.MaxCount / 2);
 
-        if(maxvalue) /* Draw Y Axis Labels */
-        {
-            QString smaxval = QString::number(maxvalue);
-            QString smidval = QString::number(maxvalue / 2);
-
-            p.drawText(QPointF(this->_originX - fm.width(smaxval), this->_endaxisY + fm.height() / 2), smaxval);
-            p.drawText(QPointF(this->_originX - fm.width(smidval), (this->_originY - this->_endaxisY) / 2  + fm.height() / 2), smidval);
-        }
+        p.drawText(QPointF(this->_originX - fm.width(smaxval), this->_endaxisY + fm.height() / 2), smaxval);
+        p.drawText(QPointF(this->_originX - fm.width(smidval), (this->_originY - this->_endaxisY) / 2  + fm.height() / 2), smidval);
     }
 }
 
 void QHistogram::drawBars(QPainter &p)
 {
     qreal xpos = this->_originX;
+    ByteElaborator::CountList& cl = this->_countresult.Counts;
 
     if(this->_barwidth < 2.0)
         xpos++;
 
-    quint64 maxval = this->maxValue();
-
     for(int i = 0; i <= QHistogram::BAR_COUNT; i++)
     {
-        quint64 val = this->_data[i];
+        uintmax_t val = cl.at(i);
 
         if(val)
         {
-            qreal barheight = (static_cast<qreal>(val) / static_cast<qreal>(maxval) * this->_barheight);
-            p.fillRect(QRectF(xpos, this->_originY - barheight, this->_barwidth, barheight), ByteColors::byteClassColor(i));
+            qreal barheight = (static_cast<qreal>(val) / static_cast<qreal>(this->_countresult.MaxCount) * this->_barheight);
+            p.fillRect(QRectF(xpos, this->_originY - barheight, this->_barwidth, barheight), ByteColors::info(i).Color);
 
             if(this->_barwidth >= 2.0)
                 p.drawRect(QRectF(xpos, this->_originY - barheight, this->_barwidth, barheight));
@@ -95,7 +73,7 @@ void QHistogram::paintEvent(QPaintEvent*)
 
     this->drawAxis(p);
 
-    if(!this->_data.isEmpty())
+    if(!this->_countresult.Counts.empty())
         this->drawBars(p);
 }
 

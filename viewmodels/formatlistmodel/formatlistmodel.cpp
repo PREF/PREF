@@ -6,6 +6,7 @@ FormatListModel::FormatListModel(QObject *parent): QAbstractItemModel(parent)
     img.load(":/misc_icons/res/format.png");
 
     this->_icoformat = img.scaled(16, 16, Qt::KeepAspectRatio);
+    this->_formatctx = PrefContext::instance()->formats();
     this->_category = CategoryManager::globalCategory();
 }
 
@@ -58,7 +59,7 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const FormatDefinition* f = FormatList::instance()->format(this->_category->globalFormatIndex(index.row()));
+        const FormatDefinition* f = this->_formatctx->get(this->_category->globalFormatIndex(index.row()));
 
         switch(index.column())
         {
@@ -99,7 +100,7 @@ QModelIndex FormatListModel::parent(const QModelIndex &) const
 
 int FormatListModel::rowCount(const QModelIndex &) const
 {
-    return this->_category->formatsCount();
+    return this->_formatctx->length();
 }
 
 Qt::ItemFlags FormatListModel::flags(const QModelIndex &index) const

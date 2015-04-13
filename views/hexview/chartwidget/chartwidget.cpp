@@ -1,7 +1,7 @@
 #include "chartwidget.h"
 #include "ui_chartwidget.h"
 
-ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWidget), _histogrammodel(nullptr), _hexeditdata(nullptr)
+ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWidget), _histogrammodel(nullptr), _databuffer(nullptr)
 {
     this->_xycharticon = QIcon(":/misc_icons/res/xychart.png");
     this->_histogramicon = QIcon(":/misc_icons/res/histogram.png");
@@ -16,18 +16,18 @@ ChartWidget::ChartWidget(QWidget *parent): WorkerTab(parent), ui(new Ui::ChartWi
     connect(&this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
 }
 
-void ChartWidget::plot(QHexEditData *hexeditdata)
+void ChartWidget::plot(IO::DataBuffer* databuffer)
 {
-    if(!hexeditdata || !hexeditdata->length())
+    if(!databuffer || !databuffer->length())
         return;
 
-    this->_hexeditdata = hexeditdata;
-    this->_histogrammodel = new HistogramModel(hexeditdata, ui->lisOccurrence);
+    this->_databuffer = databuffer;
+    this->_histogrammodel = new HistogramModel(this->_histogramchart, databuffer, ui->lisOccurrence);
 
     ui->lisOccurrence->setModel(this->_histogrammodel);
     this->updateEntropyText("Calculating...", qApp->palette().text().color());
 
-    this->_worker.setData(hexeditdata);
+    this->_worker.setData(&this->_histogramchart, &this->_entropychart, databuffer);
     this->_worker.start(QThread::LowPriority);
 }
 
@@ -44,40 +44,41 @@ ChartWidget::~ChartWidget()
 
 void ChartWidget::onOccurrencesListCompleted()
 {
-    QList<qint64> occurrences = this->_worker.occurrences();
-    this->_histogrammodel->setOccurrenceList(occurrences);
-    ui->chartcontainer->histogram()->setData(occurrences);
+    this->_histogrammodel->updateStats();
+    ui->chartcontainer->histogram()->setData(this->_histogramchart.result());
 
     for(int i = 0; i < this->_histogrammodel->columnCount(); i++)
         ui->lisOccurrence->resizeColumnToContents(i);
 
     ui->lisOccurrence->resizeRowsToContents();
-    this->updateEntropy(occurrences);
+    //FIXME: this->updateEntropy(occurrences);
 }
 
 void ChartWidget::onDataEntropyCompleted()
 {
-    QList<QPointF> dataentropy = this->_worker.dataEntropy();
+    /* FIXME:
+    QList<QPointF> dataentropy = this->_worker.entropyChart();
 
     ui->chartcontainer->xyChart()->setXBase(16);
-    ui->chartcontainer->xyChart()->setXRange(0, this->_hexeditdata->length());
+    ui->chartcontainer->xyChart()->setXRange(0, this->_databuffer->length());
     ui->chartcontainer->xyChart()->setYRange(0, 1);
     ui->chartcontainer->xyChart()->setPoints(dataentropy);
+    */
 }
 
 void ChartWidget::updateEntropy(const QList<qint64> &occurrences)
 {
-    qreal e = entropy(occurrences, this->_hexeditdata->length());
-    this->updateEntropyText(QString::number(e), ByteColors::entropyColor(e));
+    //FIXME: qreal e = entropy(occurrences, this->_hexeditdata->length());
+    //FIXME: this->updateEntropyText(QString::number(e), ByteColors::entropyColor(e));
 }
 
 void ChartWidget::updateEntropyText(const QString &text, const QColor &forecolor)
 {
-    ui->lblEntropy->setText(text);
+    //FIXME: ui->lblEntropy->setText(text);
 
-    QPalette p = ui->lblEntropy->palette();
-    p.setColor(ui->lblEntropy->foregroundRole(), forecolor);
-    ui->lblEntropy->setPalette(p);
+    //FIXME: QPalette p = ui->lblEntropy->palette();
+    //FIXME: p.setColor(ui->lblEntropy->foregroundRole(), forecolor);
+    //FIXME: ui->lblEntropy->setPalette(p);
 }
 
 void ChartWidget::on_tbHelp_clicked()

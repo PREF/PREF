@@ -130,7 +130,7 @@ void HexView::inspectData(QHexEditData *hexeditdata)
     ui->dataTypesWidget->setData(hexeditdata);
     ui->visualMapWidget->map(ui->hexEdit);
     ui->binaryNavigator->setData(ui->hexEdit);
-    ui->chartWidget->plot(hexeditdata);
+    //FIXME: ui->chartWidget->plot(hexeditdata);
     ui->signaturesWidget->scan(hexeditdata);
     ui->formatWidget->setData(ui->hexEdit);
     ui->stringsWidget->scan(hexeditdata);

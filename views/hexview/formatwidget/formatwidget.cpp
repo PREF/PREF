@@ -57,6 +57,7 @@ void FormatWidget::loadFormat()
 
     if(res == FormatsDialog::Accepted)
     {
+        /* FIXME:
         this->_formatview = nullptr;
         this->_logwidget->clear();
         this->_formatdefinition = fd.selectedFormat();
@@ -79,6 +80,7 @@ void FormatWidget::loadFormat()
         connect(this->_worker, SIGNAL(parsingFailed()), this, SIGNAL(parsingFailed()));
         connect(this->_worker, SIGNAL(parsingCompleted()), this, SLOT(onParseCompleted()));
         this->_worker->start();
+        */
     }
 }
 
@@ -106,16 +108,19 @@ void FormatWidget::onFormatObjectSelected(FormatElement *formatelement)
 
 void FormatWidget::exportData(FormatElement *formatelement)
 {
+    /* FIXME:
     ExportDialog ed(this->_hexedit, this);
     ed.setFixedRange(formatelement->offset(), formatelement->endOffset());
     int res = ed.exec();
 
     if((res == ExportDialog::Accepted) && ed.selectedExporter())
         ed.selectedExporter()->callDump(this->_hexedit->data(), ed.fileName(), ed.startOffset(), ed.endOffset());
+        */
 }
 
 void FormatWidget::importData(FormatElement *formatelement)
 {
+    /* FIXME:
     QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
 
     if(!s.isEmpty())
@@ -132,10 +137,12 @@ void FormatWidget::importData(FormatElement *formatelement)
             writer.replace(formatelement->offset(), size, ba);
         }
     }
+    */
 }
 
 void FormatWidget::onParseCompleted()
 {
+    /* FIXME:
     FormatModel* oldformatmodel = this->_formatmodel;
     FormatTree* formattree = this->_worker->tree();
     formattree->setParent(this);
@@ -154,4 +161,5 @@ void FormatWidget::onParseCompleted()
     }
     else
         this->_formatview = nullptr;
+    */
 }

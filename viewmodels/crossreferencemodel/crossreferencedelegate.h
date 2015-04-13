@@ -1,13 +1,11 @@
 #ifndef CROSSREFERENCEDELEGATE_H
 #define CROSSREFERENCEDELEGATE_H
 
-#include "prefsdk/disassembler/blocks/instruction.h"
-#include "prefsdk/disassembler/listingprinter.h"
-#include "prefsdk/disassembler/disassemblerdefinition.h"
-#include "views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h"
 #include <QStyledItemDelegate>
+#include <disassembler/disassemblerdefinition.h>
+#include "views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class CrossReferenceDelegate : public QStyledItemDelegate
 {
@@ -21,7 +19,6 @@ class CrossReferenceDelegate : public QStyledItemDelegate
         virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
     private:
-        const QList<DataValue>& _sources;
         DisassemblerDefinition* _disassembler;
         QFont _monospacefont;
 };

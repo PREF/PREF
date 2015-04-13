@@ -5,7 +5,6 @@
 #include <QtGui>
 #include <QtWidgets>
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/disassembler/disassemblerlist.h"
 #include "viewmodels/disassemblerlistmodel/disassemblerlistmodel.h"
 
 using namespace PrefSDK;

@@ -14,7 +14,7 @@ BookmarkWidget::BookmarkWidget(QWidget *parent): QWidget(parent), ui(new Ui::Boo
 void BookmarkWidget::setBlock(Block *block)
 {
     this->_block = block;
-    ui->lblBookmark->setText(QString("Bookmark at %1:").arg(block->startAddress().toString(16)));
+    //FIXME: ui->lblBookmark->setText(QString("Bookmark at %1:").arg(block->startAddress().toString(16)));
 }
 
 BookmarkWidget::~BookmarkWidget()

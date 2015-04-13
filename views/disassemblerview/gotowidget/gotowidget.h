@@ -5,9 +5,9 @@
 #include <QTableView>
 #include <QListView>
 #include <QCompleter>
-#include "prefsdk/disassembler/disassemblerdefinition.h"
+#include "disassembler/disassemblerdefinition.h"
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 namespace Ui {
 class GotoWidget;
@@ -31,8 +31,8 @@ class GotoWidget : public QWidget
         virtual void showEvent(QShowEvent* e);
         virtual void keyPressEvent(QKeyEvent* e);
 
-    signals:
-        void addressRequested(const PrefSDK::DataValue& dv);
+    //FIXME: signals:
+        //FIXME: void addressRequested(const PrefSDK::DataValue& dv);
 
     private:
         Ui::GotoWidget *ui;

@@ -1,11 +1,13 @@
 #ifndef CROSSREFERENCEMODEL_H
 #define CROSSREFERENCEMODEL_H
 
-#include "prefsdk/disassembler/disassemblerlisting.h"
 #include <QGuiApplication>
 #include <QAbstractItemModel>
+#include <QFont>
+#include <QColor>
+#include <disassembler/blocks/block.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class CrossReferenceModel : public QAbstractItemModel
 {
@@ -25,9 +27,9 @@ class CrossReferenceModel : public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        const QList<DataValue>& _sources;
+        //const QList<uint64_t>& _sources;
         QFont _monospacefont;
-        DataValue _address;
+        uint64_t _address;
 };
 
 #endif // CROSSREFERENCEMODEL_H

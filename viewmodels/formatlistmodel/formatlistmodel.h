@@ -3,9 +3,11 @@
 
 #include <QtCore>
 #include <QtGui>
+#include <prefcontext.h>
 #include "prefsdk/categorymanager.h"
-#include "prefsdk/format/formatlist.h"
 
+using namespace PrefLib;
+using namespace PrefLib::Format;
 using namespace PrefSDK;
 
 class FormatListModel: public QAbstractItemModel
@@ -28,6 +30,7 @@ class FormatListModel: public QAbstractItemModel
 
     private:
         CategoryManager::CategoryPtr _category;
+        FormatContext* _formatctx;
         QImage _icoformat;
 };
 

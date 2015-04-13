@@ -96,6 +96,7 @@ void DataTypesModel::setBase(int base)
 
 QString DataTypesModel::readValue(int row, bool* overflow) const
 {
+    /* FIXME:
     DataType::Type type = this->_types.at(row);
     int bytewidth = DataType::byteWidth(type);
 
@@ -152,6 +153,7 @@ QString DataTypesModel::readValue(int row, bool* overflow) const
         QHexEditDataReader reader(this->_hexeditdata);
         return reader.readString(this->_offset, DataTypesModel::STRING_LENGTH);
     }
+    */
 
     return QString();
 }
@@ -247,6 +249,7 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
+        /* FIXME:
         if(index.column() == 0 && role == Qt::DisplayRole)
             return DataTypesModel::_typenames.at(index.row());
         else if(index.column() == 1)
@@ -262,6 +265,7 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
 
             return s;
         }
+        */
     }
     else if((role == Qt::EditRole) && (index.column() == 1))
         return this->readType(index.row());

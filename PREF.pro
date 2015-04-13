@@ -12,7 +12,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = PREF
 TEMPLATE = app
-QMAKE_CXXFLAGS += -I$$PWD/include/luajit-2.0 -I$$PWD/include/sqlite -I$$PWD/include/capstone -std=c++11
+CONFIG += c++11
+
+INCLUDEPATH += $$PWD/include/lua \
+               $$PWD/include/capstone \
+               $$PWD/include/sqlite \
+               $$PWD/include/preflib \
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -26,7 +31,6 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formattreeview/formattreeview.cpp \
     prefsdk/sdkmanager.cpp \
     viewmodels/fielddatamodel/fielddatamodel.cpp \
-    prefsdk/type/datatype.cpp \
     aboutdialog.cpp \
     exportdialog.cpp \
     viewmodels/datatypesmodel/datatypesmodel.cpp \
@@ -34,7 +38,6 @@ SOURCES += main.cpp\
     views/disassemblerview/crossreferencedialog/crossreferencedialog.cpp \
     viewmodels/crossreferencemodel/crossreferencemodel.cpp \
     views/disassemblerview/datamapview/datamapview.cpp \
-    prefsdk/format/formatlist.cpp \
     views/hexview/formatwidget/formatsdialog/formatsdialog.cpp \
     prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
@@ -42,8 +45,6 @@ SOURCES += main.cpp\
     views/hexview/formatwidget/formattreeview/structuremenu.cpp \
     numericbasemenu.cpp \
     debugdialog/debugdialog.cpp \
-    prefsdk/bytecolors.cpp \
-    prefsdk/math.cpp \
     views/hexview/formatwidget/formattreeview/copymenu.cpp \
     qnumberlineedit.cpp \
     views/hexview/bytecolorsdialog/entropywidget/entropywidget.cpp \
@@ -71,15 +72,6 @@ SOURCES += main.cpp\
     prefsdk/sqlitewrapper/sqlitestatement.cpp \
     prefsdk/sqlitewrapper/sqlitetransaction.cpp \
     qhexedit/qhexeditcomments.cpp \
-    prefsdk/format/formattree.cpp \
-    prefsdk/format/elements/formatelement.cpp \
-    prefsdk/format/elements/fieldelement.cpp \
-    prefsdk/format/elements/bitfield.cpp \
-    prefsdk/format/elements/field.cpp \
-    prefsdk/format/elements/fieldarray.cpp \
-    prefsdk/format/elements/structure.cpp \
-    prefsdk/numericlimits.cpp \
-    prefsdk/exporter/exporterlist.cpp \
     viewmodels/exportmodel/exportermodel.cpp \
     qhexedit/qhexeditdatadevice.cpp \
     qhexedit/qhexeditdatareader.cpp \
@@ -107,46 +99,25 @@ SOURCES += main.cpp\
     viewmodels/visualmapmodel/visualmapdelegate.cpp \
     viewmodels/datatypesmodel/datatypesdelegate.cpp \
     views/disassemblerview/disassemblerview.cpp \
-    prefsdk/disassembler/disassemblerlist.cpp \
     viewmodels/disassemblerlistmodel/disassemblerlistmodel.cpp \
-    prefsdk/disassembler/blocks/block.cpp \
-    prefsdk/disassembler/blocks/segment.cpp \
     views/disassemblerview/segmentsdialog/segmentsdialog.cpp \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.cpp \
     viewmodels/segmentsmodel/segmentsmodel.cpp \
     viewmodels/entrypointsmodel/entrypointsmodel.cpp \
-    prefsdk/disassembler/blocks/instruction.cpp \
-    prefsdk/disassembler/blocks/function.cpp \
-    prefsdk/disassembler/disassemblerlisting.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
     viewmodels/functionmodel/functionmodel.cpp \
-    prefsdk/disassembler/symbol/symbol.cpp \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
     logwidget/logwidget.cpp \
     views/hexview/outputwidget/outputwidget.cpp \
     logwidget/logwidgethightlighter.cpp \
-    prefsdk/libs/qt/qtlua.cpp \
-    prefsdk/libs/preflib/preflib.cpp \
-    prefsdk/luastate.cpp \
-    prefsdk/format/formatdefinition.cpp \
-    prefsdk/format/formatvalidator.cpp \
     prefsdk/prefexception.cpp \
-    prefsdk/libs/oop/oop.cpp \
-    prefsdk/exporter/exporterdefinition.cpp \
-    prefsdk/disassembler/disassemblerdefinition.cpp \
-    prefsdk/disassembler/symbol/symboltable.cpp \
-    prefsdk/type/datavalue.cpp \
-    prefsdk/format/abstracttree.cpp \
     viewmodels/crossreferencemodel/crossreferencedelegate.cpp \
     actionwidget/abstractaction.cpp \
     views/disassemblerview/gotowidget/gotowidget.cpp \
     viewmodels/stringsymbolmodel/stringsymbolmodel.cpp \
     viewmodels/variablesmodel/variablesmodel.cpp \
     views/disassemblerview/disassemblerdialog/disassemblerdialog.cpp \
-    prefsdk/disassembler/functiontype.cpp \
-    prefsdk/disassembler/symbol/constanttable.cpp \
-    prefsdk/disassembler/symbol/constant.cpp \
     views/disassemblerview/disassemblerworker.cpp \
     logwidget/logger.cpp \
     views/hexview/formatwidget/formatworker.cpp \
@@ -154,41 +125,15 @@ SOURCES += main.cpp\
     csvexporterdialog/csvexporterworker.cpp \
     csvexporterdialog/csvexporter.cpp \
     csvexporterdialog/csvexporterdialog.cpp \
-    prefsdk/libs/preflib/databuffer.cpp \
-    prefsdk/disassembler/memorybuffer.cpp \
-    prefsdk/disassembler/listingprinter.cpp \
-    prefsdk/disassembler/blocks/label.cpp \
-    prefsdk/disassembler/segmenttype.cpp \
     views/disassemblerview/bookmarkdialog/bookmarkdialog.cpp \
     viewmodels/bookmarkmodel/bookmarkmodel.cpp \
     views/disassemblerview/bookmarkwidget/bookmarkwidget.cpp \
     views/disassemblerview/renamewidget/renamewidget.cpp \
-    prefsdk/disassembler/disassemblerdatabase.cpp \
     debugdialog/stackdumphighlighter.cpp \
     views/hexview/chartwidget/chartcontainer.cpp \
     qxychart/qxychart.cpp \
     viewmodels/histogrammodel/histogrammodel.cpp \
-    prefsdk/libs/qt/bytearray.cpp \
-    prefsdk/libs/preflib/iofile.cpp \
-    prefsdk/libs/capstone/arch/arm.cpp \
-    prefsdk/libs/capstone/arch/arm64.cpp \
-    prefsdk/libs/capstone/arch/mips.cpp \
-    prefsdk/libs/capstone/arch/ppc.cpp \
-    prefsdk/libs/capstone/arch/sparc.cpp \
-    prefsdk/libs/capstone/arch/sysz.cpp \
-    prefsdk/libs/capstone/arch/x86.cpp \
-    prefsdk/libs/capstone/arch/xcore.cpp \
-    prefsdk/libs/capstone/tables/arm_const.cpp \
-    prefsdk/libs/capstone/tables/arm64_const.cpp \
-    prefsdk/libs/capstone/tables/capstone_const.cpp \
-    prefsdk/libs/capstone/tables/mips_const.cpp \
-    prefsdk/libs/capstone/tables/ppc_const.cpp \
-    prefsdk/libs/capstone/tables/sparc_const.cpp \
-    prefsdk/libs/capstone/tables/sysz_const.cpp \
-    prefsdk/libs/capstone/tables/x86_const.cpp \
-    prefsdk/libs/capstone/tables/xcore_const.cpp \
-    prefsdk/libs/capstone/luacapstone.cpp \
-    prefsdk/libs/capstone/metadata.cpp
+    prefsdk/qdatabuffer.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -201,7 +146,6 @@ HEADERS  += mainwindow.h \
     views/hexview/formatwidget/formattreeview/formattreeview.h \
     prefsdk/sdkmanager.h \
     viewmodels/fielddatamodel/fielddatamodel.h \
-    prefsdk/type/datatype.h \
     aboutdialog.h \
     exportdialog.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
@@ -209,7 +153,6 @@ HEADERS  += mainwindow.h \
     views/disassemblerview/crossreferencedialog/crossreferencedialog.h \
     viewmodels/crossreferencemodel/crossreferencemodel.h \
     views/disassemblerview/datamapview/datamapview.h \
-    prefsdk/format/formatlist.h \
     views/hexview/formatwidget/formatsdialog/formatsdialog.h \
     prefsdk/categorymanager.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
@@ -217,8 +160,6 @@ HEADERS  += mainwindow.h \
     views/hexview/formatwidget/formattreeview/structuremenu.h \
     numericbasemenu.h \
     debugdialog/debugdialog.h \
-    prefsdk/bytecolors.h \
-    prefsdk/math.h \
     views/hexview/formatwidget/formattreeview/copymenu.h \
     qnumberlineedit.h \
     views/hexview/bytecolorsdialog/entropywidget/entropywidget.h \
@@ -248,16 +189,7 @@ HEADERS  += mainwindow.h \
     prefsdk/sqlitewrapper/sqlitestatement.h \
     prefsdk/sqlitewrapper/sqlitetransaction.h \
     qhexedit/qhexeditcomments.h \
-    prefsdk/format/formattree.h \
-    prefsdk/format/elements/formatelement.h \
-    prefsdk/format/elements/fieldelement.h \
-    prefsdk/format/elements/bitfield.h \
-    prefsdk/format/elements/field.h \
-    prefsdk/format/elements/fieldarray.h \
-    prefsdk/format/elements/structure.h \
-    prefsdk/numericlimits.h \
     viewmodels/exportmodel/exportermodel.h \
-    prefsdk/exporter/exporterlist.h \
     qhexedit/qhexeditdatadevice.h \
     qhexedit/qhexeditdatareader.h \
     qhexedit/qhexeditdatawriter.h \
@@ -284,91 +216,41 @@ HEADERS  += mainwindow.h \
     viewmodels/visualmapmodel/visualmapdelegate.h \
     viewmodels/datatypesmodel/datatypesdelegate.h \
     views/disassemblerview/disassemblerview.h \
-    prefsdk/disassembler/disassemblerlist.h \
     viewmodels/disassemblerlistmodel/disassemblerlistmodel.h \
-    prefsdk/disassembler/blocks/block.h \
-    prefsdk/disassembler/blocks/segment.h \
     views/disassemblerview/segmentsdialog/segmentsdialog.h \
     views/disassemblerview/entrypointsdialog/entrypointsdialog.h \
     viewmodels/segmentsmodel/segmentsmodel.h \
     viewmodels/entrypointsmodel/entrypointsmodel.h \
-    prefsdk/disassembler/blocks/instruction.h \
-    prefsdk/disassembler/blocks/function.h \
-    prefsdk/disassembler/disassemblerlisting.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
     views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
     viewmodels/functionmodel/functionmodel.h \
-    prefsdk/disassembler/symbol/symbol.h \
     views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     qhexedit/sparserangemap.h \
     logwidget/logwidget.h \
     views/hexview/outputwidget/outputwidget.h \
     logwidget/logwidgethightlighter.h \
-    prefsdk/libs/qt/qtlua.h \
-    prefsdk/libs/preflib/preflib.h \
-    prefsdk/luastate.h \
-    prefsdk/format/formatdefinition.h \
-    prefsdk/format/formatvalidator.h \
     prefsdk/prefexception.h \
-    prefsdk/libs/oop/oop.h \
-    prefsdk/exporter/exporterdefinition.h \
-    prefsdk/disassembler/disassemblerdefinition.h \
-    prefsdk/disassembler/symbol/symboltable.h \
-    prefsdk/type/datavalue.h \
-    prefsdk/format/abstracttree.h \
     viewmodels/crossreferencemodel/crossreferencedelegate.h \
     actionwidget/abstractaction.h \
     views/disassemblerview/gotowidget/gotowidget.h \
     viewmodels/stringsymbolmodel/stringsymbolmodel.h \
     viewmodels/variablesmodel/variablesmodel.h \
     views/disassemblerview/disassemblerdialog/disassemblerdialog.h \
-    prefsdk/disassembler/functiontype.h \
-    prefsdk/disassembler/symbol/constanttable.h \
-    prefsdk/disassembler/symbol/constant.h \
     views/disassemblerview/disassemblerworker.h \
     logwidget/logger.h \
     views/hexview/formatwidget/formatworker.h \
     csvexporterdialog/csvexporterworker.h \
     csvexporterdialog/csvexporter.h \
     csvexporterdialog/csvexporterdialog.h \
-    prefsdk/libs/preflib/databuffer.h \
-    prefsdk/disassembler/memorybuffer.h \
-    prefsdk/disassembler/listingprinter.h \
-    prefsdk/disassembler/blocks/label.h \
-    prefsdk/disassembler/segmenttype.h \
     views/disassemblerview/bookmarkdialog/bookmarkdialog.h \
     viewmodels/bookmarkmodel/bookmarkmodel.h \
     views/disassemblerview/bookmarkwidget/bookmarkwidget.h \
     views/disassemblerview/renamewidget/renamewidget.h \
-    prefsdk/disassembler/disassemblerdatabase.h \
     debugdialog/stackdumphighlighter.h \
     views/hexview/chartwidget/chartcontainer.h \
     qxychart/qxychart.h \
     viewmodels/histogrammodel/histogrammodel.h \
-    prefsdk/libs/qt/bytearray.h \
-    prefsdk/libs/preflib/iofile.h \
-    prefsdk/libs/capstone/arch/arm.h \
-    prefsdk/libs/capstone/arch/arm64.h \
-    prefsdk/libs/capstone/arch/mips.h \
-    prefsdk/libs/capstone/arch/ppc.h \
-    prefsdk/libs/capstone/arch/sparc.h \
-    prefsdk/libs/capstone/arch/sysz.h \
-    prefsdk/libs/capstone/arch/x86.h \
-    prefsdk/libs/capstone/arch/xcore.h \
-    prefsdk/libs/capstone/tables/arm_const.h \
-    prefsdk/libs/capstone/tables/arm64_const.h \
-    prefsdk/libs/capstone/tables/capstone_const.h \
-    prefsdk/libs/capstone/tables/mips_const.h \
-    prefsdk/libs/capstone/tables/ppc_const.h \
-    prefsdk/libs/capstone/tables/sparc_const.h \
-    prefsdk/libs/capstone/tables/sysz_const.h \
-    prefsdk/libs/capstone/tables/x86_const.h \
-    prefsdk/libs/capstone/tables/xcore_const.h \
-    prefsdk/libs/capstone/luacapstone.h \
-    prefsdk/libs/capstone/luacapstoneinstruction.h \
-    prefsdk/libs/capstone/luacapstonemacros.h \
-    prefsdk/libs/capstone/metadata.h \
-    prefsdk/libs/capstone/reflection.h
+    prefsdk/qdatabuffer.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
@@ -410,11 +292,11 @@ RESOURCES += resources.qrc
 OTHER_FILES +=
 
 # *** START *** LINUX External Libraries *** START ***
-unix:!macx: LIBS += -L$$PWD/lib/linux/ -lluajit-5.1 -lsqlite3 -lcapstone -ldl
+unix:!macx: LIBS += -L$$PWD/lib/linux/ -lPrefLib -lsqlite3 -llua -lcapstone -ldl
 QMAKE_LFLAGS += -Wl,--export-dynamic
 # *** END *** LINUX External Libraries *** END ***
 
 # *** START *** WINDOWS External Libraries *** START ***
-win32: LIBS += -L$$PWD/lib/windows/ -lluajit -lsqlite3 -lcapstone
+win32: LIBS += -L$$PWD/lib/windows/ -lPrefLib -lsqlite3 -llua -lcapstone
 RC_FILE = resources.rc
 # *** END *** WINDOWS External Libraries *** END ***

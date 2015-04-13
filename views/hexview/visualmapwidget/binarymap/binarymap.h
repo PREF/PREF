@@ -8,13 +8,9 @@
 #include <lua.hpp>
 #include "qhexedit/qhexedit.h"
 #include "qhexedit/qhexeditdatareader.h"
-#include "prefsdk/math.h"
-#include "prefsdk/bytecolors.h"
 #include "viewmodes/abstractviewmode.h"
 #include "viewmodes/dotplotviewmode.h"
 #include "viewmodes/pixelviewmode.h"
-
-using namespace PrefSDK;
 
 class BinaryMap : public QGLWidget
 {

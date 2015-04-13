@@ -2,11 +2,12 @@
 
 DisassemblerWorker::DisassemblerWorker(QHexEditData *hexeditdata, DisassemblerDefinition *disassembler, LogWidget *logwidget, QLabel *infolabel, const QString &loadedfile, bool canloaddatabase, QObject *parent): QThread(parent), _hexeditdata(hexeditdata), _disassembler(disassembler), _logwidget(logwidget), _infolabel(infolabel), _loadedfile(loadedfile), _canloaddatabase(canloaddatabase)
 {
-    disassembler->moveToThread(this);
+    //FIXME: disassembler->moveToThread(this);
 }
 
 void DisassemblerWorker::run()
 {
+    /* FIXME:
     Logger* logger = new Logger(this->_logwidget);
 
     if(this->_disassembler->callMap(this->_hexeditdata, logger))
@@ -22,4 +23,5 @@ void DisassemblerWorker::run()
 
     this->_disassembler->moveToThread(qApp->instance()->thread());
     QMetaObject::invokeMethod(this->_infolabel, "setText", Qt::QueuedConnection, Q_ARG(QString, "Ready"));
+    */
 }

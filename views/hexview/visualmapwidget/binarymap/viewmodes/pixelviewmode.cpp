@@ -33,6 +33,6 @@ void PixelViewMode::render(QPainter& painter, qint64 width)
     this->_bits = reader.read(s, e - s);
 
     QImage img(reinterpret_cast<const uchar*>(this->_bits.constData()), this->_width, h, this->_width, QImage::Format_Indexed8);
-    img.setColorTable(ByteColors::byteClassColorTable());
+    //FIXME: img.setColorTable(ByteColors::colorTable());
     painter.drawImage(0, 0, img);
 }

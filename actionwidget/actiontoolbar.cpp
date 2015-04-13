@@ -292,8 +292,8 @@ void ActionToolBar::showExportDialog()
     ExportDialog ed(this->_hexedit, this->topLevelWidget());
     int res = ed.exec();
 
-    if((res == ExportDialog::Accepted) && ed.selectedExporter())
-        ed.selectedExporter()->callDump(this->_hexeditdata, ed.fileName(), ed.startOffset(), ed.endOffset());
+    //FIXME: if((res == ExportDialog::Accepted) && ed.selectedExporter())
+        //FIXME: ed.selectedExporter()->callDump(this->_hexeditdata, ed.fileName(), ed.startOffset(), ed.endOffset());
 }
 
 void ActionToolBar::byteOpRequested(uchar value, ByteOpsAction::ByteOperations bo)

@@ -3,9 +3,9 @@
 
 #include "abstractviewmode.h"
 #include "qhexedit/qhexeditdatareader.h"
-#include "prefsdk/bytecolors.h"
+#include <support/bytecolors.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Support;
 
 class PixelViewMode : public AbstractViewMode
 {

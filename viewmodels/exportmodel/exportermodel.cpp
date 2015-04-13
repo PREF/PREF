@@ -46,6 +46,7 @@ QVariant ExporterModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
+        /* FIXME:
         const ExporterDefinition* e = ExporterList::instance()->exporter(index.row());
 
         switch(index.column())
@@ -65,6 +66,7 @@ QVariant ExporterModel::data(const QModelIndex &index, int role) const
             default:
                 break;
         }
+        */
     }
     else if((role == Qt::DecorationRole) && (index.column() == 0))
         return this->_icoexport;
@@ -87,7 +89,7 @@ QModelIndex ExporterModel::parent(const QModelIndex &) const
 
 int ExporterModel::rowCount(const QModelIndex &) const
 {
-    return ExporterList::instance()->length();
+    //FIXME: return ExporterList::instance()->length();
 }
 
 Qt::ItemFlags ExporterModel::flags(const QModelIndex &index) const

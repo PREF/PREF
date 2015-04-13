@@ -3,12 +3,11 @@
 
 #include <QtCore>
 #include <QtGui>
-#include "prefsdk/disassembler/disassemblerlisting.h"
-#include "prefsdk/disassembler/blocks/block.h"
+#include <disassembler/blocks/block.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
-class DisassemblerHighlighter : public QSyntaxHighlighter
+class DisassemblerHighlighter: public QSyntaxHighlighter
 {
     Q_OBJECT
 

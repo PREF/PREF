@@ -6,7 +6,7 @@
 #include <QtWidgets>
 #include "viewmodels/categorymodel/categorymodel.h"
 #include "viewmodels/formatlistmodel/formatlistmodel.h"
-#include "prefsdk/format/formatlist.h"
+#include <prefcontext.h>
 
 namespace Ui {
 class FormatsDialog;

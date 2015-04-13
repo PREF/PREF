@@ -1,7 +1,7 @@
 #include "crossreferencedialog.h"
 #include "ui_crossreferencedialog.h"
 
-CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition* disassembler, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), _sources(block->sources()), _disassembler(disassembler), _selectedblock(nullptr)
+CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition* disassembler, QWidget *parent): QDialog(parent), ui(new Ui::CrossReferenceDialog), /* FIXME: _sources(block->sources()), */ _disassembler(disassembler), _selectedblock(nullptr)
 {
     ui->setupUi(this);
 
@@ -10,7 +10,7 @@ CrossReferenceDialog::CrossReferenceDialog(Block* block, DisassemblerDefinition*
     ui->crossReferenceTable->setItemDelegate(new CrossReferenceDelegate(block, disassembler, this));
     ui->crossReferenceTable->resizeRowsToContents();
 
-    this->setWindowTitle(QString("Cross References For: %1").arg(block->startAddress().toString(16).append("h")));
+    //FIXME: this->setWindowTitle(QString("Cross References For: %1").arg(block->startAddress().toString(16).append("h")));
 }
 
 CrossReferenceDialog::~CrossReferenceDialog()
@@ -31,8 +31,8 @@ void CrossReferenceDialog::on_crossReferenceTable_doubleClicked(const QModelInde
         return;
     }
 
-    DisassemblerListing* listing = this->_disassembler->listing();
-    this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
+    //FIXME: DisassemblerListing* listing = this->_disassembler->listing();
+    //FIXME: this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
     this->done(CrossReferenceDialog::Accepted);
 }
 
@@ -43,7 +43,7 @@ void CrossReferenceDialog::on_buttonBox_accepted()
 
     if(index.isValid())
     {
-        DisassemblerListing* listing = this->_disassembler->listing();
-        this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
+        //FIXME: DisassemblerListing* listing = this->_disassembler->listing();
+        //FIXME: this->_selectedblock = listing->findBlock(this->_sources[index.row()]);
     }
 }

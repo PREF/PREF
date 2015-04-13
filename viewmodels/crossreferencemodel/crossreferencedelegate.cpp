@@ -1,6 +1,6 @@
 #include "crossreferencedelegate.h"
 
-CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, QObject *parent): QStyledItemDelegate(parent), _sources(block->sources()), _disassembler(disassembler)
+CrossReferenceDelegate::CrossReferenceDelegate(Block* block, DisassemblerDefinition* disassembler, QObject *parent): QStyledItemDelegate(parent), _disassembler(disassembler)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -22,6 +22,7 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
     options.font = this->_monospacefont;
     options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
 
+    /* FIXME:
     QTextDocument document;
     DisassemblerListing* listing = this->_disassembler->listing();
     DataValue sourceaddress = this->_sources[index.row()];
@@ -40,14 +41,16 @@ void CrossReferenceDelegate::paint(QPainter *painter, const QStyleOptionViewItem
         SymbolTable* symboltable = listing->symbolTable();
         document.setPlainText(QString("function %1()").arg(symboltable->name(b->startAddress())));
     }
+    */
 
+    /* FIXME:
     DisassemblerHighlighter highlighter(&document, b);
-    highlighter.rehighlight();  /* Apply Syntax Highlighting */
+    highlighter.rehighlight();  // Apply Syntax Highlighting
 
     painter->save();
         painter->translate(options.rect.left(), options.rect.top());
         document.drawContents(painter, QRect(0, 0, options.rect.width(), options.rect.height()));
-    painter->restore();
+    painter->restore(); */
 }
 
 QSize CrossReferenceDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

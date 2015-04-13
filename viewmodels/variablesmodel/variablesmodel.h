@@ -3,9 +3,11 @@
 
 #include <QAbstractItemModel>
 #include <QGuiApplication>
-#include "prefsdk/disassembler/disassemblerlisting.h"
+#include <QFont>
+#include <QColor>
+#include <disassembler/disassemblerlisting.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Disassembler;
 
 class VariablesModel : public QAbstractItemModel
 {
@@ -27,7 +29,7 @@ class VariablesModel : public QAbstractItemModel
     private:
         DisassemblerListing* _listing;
         QFont _monospacefont;
-        QList<Symbol*> _variables;
+        //QList<Symbol*> _variables;
 };
 
 #endif // VARIABLESMODEL_H

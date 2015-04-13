@@ -14,12 +14,7 @@
 #include "viewmodels/stringsymbolmodel/stringsymbolmodel.h"
 #include "viewmodels/variablesmodel/variablesmodel.h"
 #include "views/abstractview.h"
-#include "prefsdk/disassembler/disassemblerlisting.h"
-#include "prefsdk/disassembler/disassemblerlist.h"
-#include "prefsdk/luastate.h"
 #include "disassemblerworker.h"
-
-using namespace PrefSDK;
 
 namespace Ui {
 class DisassemblerView;
@@ -87,7 +82,7 @@ class DisassemblerView : public AbstractView
         void exportFunctions();
         void exportVariables();
         void exportStrings();
-        void gotoAddress(const PrefSDK::DataValue& address);
+        void gotoAddress(uint64_t address);
 
     private:
         Ui::DisassemblerView *ui;

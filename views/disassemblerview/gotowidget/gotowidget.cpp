@@ -19,8 +19,9 @@ GotoWidget::~GotoWidget()
 
 void GotoWidget::setDisassembler(DisassemblerDefinition* disassembler)
 {
+    /* FIXME:
     this->_disassembler = disassembler;
-    ui->leAddress->setMaxLength(DataType::byteWidth(disassembler->addressType()));
+    ui->leAddress->setMaxLength(DataType::byteWidth(disassembler->addressType())); */
 }
 
 QLineEdit *GotoWidget::addressWidget()
@@ -30,6 +31,7 @@ QLineEdit *GotoWidget::addressWidget()
 
 void GotoWidget::gotoBlock()
 {
+    /* FIXME:
     DataType::Type addresstype = this->_disassembler->addressType();
 
     if(static_cast<uint>(ui->leAddress->text().length()) != DataType::byteWidth(addresstype))
@@ -42,6 +44,7 @@ void GotoWidget::gotoBlock()
         return;
 
     emit addressRequested(DataValue::create(addr, addresstype));
+    */
 }
 
 void GotoWidget::hideEvent(QHideEvent* e)

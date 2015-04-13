@@ -1,6 +1,6 @@
 #include "entrypointsmodel.h"
 
-EntryPointsModel::EntryPointsModel(DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _entrypoints(listing->entryPoints()), _listing(listing)
+EntryPointsModel::EntryPointsModel(DisassemblerListing *listing, QObject *parent): QAbstractItemModel(parent), _listing(listing)
 {
     this->_monospacefont.setFamily("Monospace");
     this->_monospacefont.setPointSize(qApp->font().pointSize());
@@ -44,18 +44,23 @@ QVariant EntryPointsModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        Function* f = reinterpret_cast<Function*>(index.internalPointer());
+        const DisassemblerDatabase& db = this->_listing->database();
+        const LuaContainer& entrypoints = this->_listing->entryPoints();
+
+        //FIXME: Function* f = dynamic_cast<Function*>(entrypoints.getI<LuaTable*>(index.row());
 
         switch(index.column())
         {
+                /* FIXME:
             case 0:
-                return f->startAddress().toString(16).append("h");
+                return f->address().toString(16).append("h");
 
             case 1:
                 return this->_listing->symbolTable()->name(f->startAddress());
 
             case 2:
                 return this->_listing->findSegment(f)->name();
+                        */
 
             default:
                 break;
@@ -81,7 +86,7 @@ QModelIndex EntryPointsModel::index(int row, int column, const QModelIndex &pare
     if(!this->hasIndex(row, column, parent))
         return QModelIndex();
 
-    return this->createIndex(row, column, this->_entrypoints[row]);
+    //FIXME: return this->createIndex(row, column, this->_entrypoints[row]);
 }
 
 QModelIndex EntryPointsModel::parent(const QModelIndex &) const
@@ -91,7 +96,7 @@ QModelIndex EntryPointsModel::parent(const QModelIndex &) const
 
 int EntryPointsModel::rowCount(const QModelIndex &) const
 {
-    return this->_entrypoints.count();
+    //FIXME: return this->_entrypoints.count();
 }
 
 Qt::ItemFlags EntryPointsModel::flags(const QModelIndex &index) const

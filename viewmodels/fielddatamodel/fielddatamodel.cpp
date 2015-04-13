@@ -4,11 +4,14 @@ FieldDataModel::FieldDataModel(QObject *parent): QAbstractItemModel(parent)
 {
 }
 
-bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int base, QSysInfo::Endian endian, QByteArray &ba)
+bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int base, Endianness::Type endian, QByteArray &ba)
 {
+    return false;
+
+    /* FIXME:
     QString stringvalue = value.toString();
 
-    if(datatype == DataType::Character || datatype == DataType::isString(datatype)) /* (Single Char) OR (Char Array (aka String)) */
+    if(datatype == DataType::Character || datatype == DataType::isString(datatype)) // (Single Char) OR (Char Array (aka String))
     {
         ba = stringvalue.toLatin1();
         return true;
@@ -73,4 +76,5 @@ bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int 
     }
 
     return false;
+    */
 }

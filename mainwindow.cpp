@@ -12,15 +12,10 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     this->_basetitle = this->windowTitle();
     ui->statusBar->addWidget(this->_lblinfo, 1);
 
-    lua_State* l = SDKManager::initializeLua(this);
+    DebugDialog::createInstance();
+    this->_sdkloaded = SDKManager::loadSDK();
 
-    if(l)
-    {
-        DebugDialog::createInstance(l);
-        this->_sdkloaded = SDKManager::loadSDK();
-    }
-
-    if(!l || !this->_sdkloaded)
+    if(!this->_sdkloaded)
     {
         QMessageBox m;
         m.setWindowTitle("Lua Initialization Failed");

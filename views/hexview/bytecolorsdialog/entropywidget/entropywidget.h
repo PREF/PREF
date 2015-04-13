@@ -4,9 +4,9 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/bytecolors.h"
+#include <support/bytecolors.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Support;
 
 class EntropyWidget : public QWidget
 {

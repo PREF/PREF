@@ -7,12 +7,12 @@
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "qhexedit/qhexeditdata.h"
 #include "exportdialog.h"
-#include "prefsdk/type/datavalue.h"
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <format/elements/formatelement.h>
 
-using namespace PrefSDK;
+using namespace PrefLib::Format;
 
 class FormatTreeView : public QTreeView
 {
