@@ -9,11 +9,11 @@ DataTypesWidget::DataTypesWidget(QWidget *parent): QWidget(parent), ui(new Ui::D
     this->_datatypesdelegate = new DataTypesDelegate(this);
     this->_datatypesmenu = new DataTypesMenu(this);
 
-    connect(this->_datatypesmenu, SIGNAL(endianChanged(QSysInfo::Endian)),this->_datatypesmodel, SLOT(setEndian(QSysInfo::Endian)));
+    connect(this->_datatypesmenu, SIGNAL(endianChanged(int)),this->_datatypesmodel, SLOT(setEndian(int)));
     connect(this->_datatypesmenu, SIGNAL(baseChanged(int)), this->_datatypesmodel, SLOT(setBase(int)));
 
     this->_datatypesmenu->setBase(16); /* Hex By Default */
-    this->_datatypesmenu->setEndian(QSysInfo::ByteOrder);
+    this->_datatypesmenu->setEndian(Endianness::platformEndian());
     ui->dataTypesTable->setModel(this->_datatypesmodel);
     ui->dataTypesTable->setItemDelegate(this->_datatypesdelegate);
 }

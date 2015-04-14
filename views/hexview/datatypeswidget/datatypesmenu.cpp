@@ -29,9 +29,9 @@ void DataTypesMenu::setBase(int b)
     emit baseChanged(b);
 }
 
-void DataTypesMenu::setEndian(QSysInfo::Endian endian)
+void DataTypesMenu::setEndian(Endianness::Type endian)
 {
-    if(endian == QSysInfo::LittleEndian)
+    if(endian == Endianness::LittleEndian)
         this->_actlittleendian->setChecked(true);
     else
         this->_actbigendian->setChecked(true);
@@ -41,10 +41,10 @@ void DataTypesMenu::setEndian(QSysInfo::Endian endian)
 
 void DataTypesMenu::onLittleEndianTriggered()
 {
-    emit endianChanged(QSysInfo::LittleEndian);
+    emit endianChanged(Endianness::LittleEndian);
 }
 
 void DataTypesMenu::onBigEndianTriggered()
 {
-    emit endianChanged(QSysInfo::BigEndian);
+    emit endianChanged(Endianness::BigEndian);
 }

@@ -4,7 +4,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <types/endianness.h>
 #include "numericbasemenu.h"
+
+using namespace PrefLib;
 
 class DataTypesMenu : public QMenu
 {
@@ -13,10 +16,10 @@ class DataTypesMenu : public QMenu
     public:
         explicit DataTypesMenu(QWidget *parent = 0);
         void setBase(int b);
-        void setEndian(QSysInfo::Endian endian);
+        void setEndian(Endianness::Type endian);
 
     signals:
-        void endianChanged(QSysInfo::Endian endian);
+        void endianChanged(int endian);
         void baseChanged(int base);
 
     public slots:

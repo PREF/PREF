@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <types/datatype.h>
+#include <types/datavalue.h>
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "qhexedit/qhexeditdatawriter.h"
@@ -16,22 +17,21 @@ class DataTypesModel : public QAbstractItemModel
 
     public:
         explicit DataTypesModel(QObject *parent = 0);
-        QSysInfo::Endian endian();
+        Endianness::Type endian();
         int base();
 
     public slots:
         void setOffset(qint64 pos);
         void setData(QHexEditData *hexeditdata);
-        void setEndian(QSysInfo::Endian endian);
+        void setEndian(int endian);
         void setBase(int base);
 
     private:
-        QString readValue(int row, bool *overflow = nullptr) const;
-        QVariant readType(int row) const;
+        DataValue readValue(int row) const;
         void updateData();
 
     private:
-        static QHash<QSysInfo::Endian, QHash<DataType::Type, DataType::Type> > _botypes;
+        static QHash<Endianness::Type, QHash<DataType::Type, DataType::Type> > _botypes;
         static QList<DataType::Type> _types;
         static QList<QString> _typenames;
 
@@ -39,7 +39,8 @@ class DataTypesModel : public QAbstractItemModel
         static const int STRING_LENGTH;
         QFont _monospacefont;
         QHexEditData* _hexeditdata;
-        QSysInfo::Endian _endian;
+        QHexEditDataReader* _reader;
+        Endianness::Type _endian;
         qint64 _offset;
         int _base;
 
