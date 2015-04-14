@@ -179,10 +179,9 @@ QVariant DataTypesModel::data(const QModelIndex &index, int role) const
     }
     else if((role == Qt::EditRole) && (index.column() == 1))
     {
-        DataType::Type dt = this->_types.at(index.row());
         DataValue dv = this->readValue(index.row());
 
-        if(DataType::isSigned(dt)) // FIXME: Use DataValue::isSigned()
+        if(dv.isSigned())
             return static_cast<qint64>(static_cast<int64_t>(dv));
 
         return static_cast<quint64>(static_cast<uint64_t>(dv));
