@@ -23,18 +23,17 @@ void ChartWorker::run()
     if(!this->_hexeditdata)
         return;
 
-    // NOTE: do not count bytes twice (PrefLib Issue?)
     QDataBuffer databuffer(this->_hexeditdata);
 
     if(this->_histogramchart)
     {
-        dynamic_cast<AbstractChart*>(this->_histogramchart)->elaborate(&databuffer); //NOTE: Manage _cancontinue
+        dynamic_cast<AbstractChart*>(this->_histogramchart)->elaborate(&databuffer, this->_cancontinue);
         emit histogramChartCompleted(this->_hexeditdata->length());
     }
 
     if(this->_entropychart)
     {
-        dynamic_cast<AbstractChart*>(this->_entropychart)->elaborate(&databuffer);  //NOTE: Manage _cancontinue
+        dynamic_cast<AbstractChart*>(this->_entropychart)->elaborate(&databuffer, this->_cancontinue);
         emit entropyChartCompleted(this->_hexeditdata->length());
     }
 }
