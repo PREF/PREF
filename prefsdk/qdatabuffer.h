@@ -19,8 +19,8 @@ class QDataBuffer: public IO::DataBuffer
 
     public: /* Overriden Methods */
         virtual uint64_t length() const;
-        virtual int read(uint64_t offset, unsigned char* data, uint64_t len);
-        virtual int write(uint64_t offset, const unsigned char* data, uint64_t len);
+        virtual uint64_t read(uint64_t offset, unsigned char* data, uint64_t len);
+        virtual uint64_t write(uint64_t offset, const unsigned char* data, uint64_t len);
 
     private:
         QHexEditData* _hexeditdata;

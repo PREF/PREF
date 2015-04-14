@@ -43,14 +43,12 @@ uint64_t QDataBuffer::length() const
     return this->_hexeditdata->length();
 }
 
-int QDataBuffer::read(uint64_t offset, unsigned char *data, uint64_t len)
+uint64_t QDataBuffer::read(uint64_t offset, unsigned char *data, uint64_t len)
 {
-    QByteArray ba = this->_reader->read(offset, len);
-    std::memcpy(data, ba.data(), len); //NOTE: Improvement Needed
-    return ba.length();
+    return this->_reader->read(offset, data, len);
 }
 
-int QDataBuffer::write(uint64_t offset, const unsigned char *data, uint64_t len)
+uint64_t QDataBuffer::write(uint64_t offset, const unsigned char *data, uint64_t len)
 {
     this->_writer->replace(offset, QByteArray::fromRawData(reinterpret_cast<const char*>(data), len));
     return len;

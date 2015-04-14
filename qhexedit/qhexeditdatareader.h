@@ -22,6 +22,9 @@ class QHexEditDataReader : public QObject
         qint32 readInt32(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
         qint64 readInt64(qint64 pos, QSysInfo::Endian endian = QSysInfo::ByteOrder);
 
+    public: /* Low Level Interfaces */
+        qint64 read(qint64 pos, unsigned char* data, qint64 len);
+
     private slots:
         void onDataChanged(qint64 offset, qint64, QHexEditData::ActionType);
 

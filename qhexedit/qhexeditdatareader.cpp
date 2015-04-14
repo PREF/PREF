@@ -42,28 +42,9 @@ qint64 QHexEditDataReader::indexOf(const QByteArray &ba, qint64 start)
 
 QByteArray QHexEditDataReader::read(qint64 pos, qint64 len)
 {
-    if(pos >= this->_hexeditdata->_length)
-        return QByteArray();
-    else if(len > this->_hexeditdata->_length)
-        len = this->_hexeditdata->_length;
-
-    QByteArray resba(len, Qt::Uninitialized);
-    qint64 currpos = pos, copied = 0;
-
-    while(len > 0)
-    {
-        if(this->needsBuffering(currpos))
-            this->bufferizeData(currpos);
-
-        qint64 bufferedpos = currpos - this->_bufferpos, copylen = qMin(len, QHexEditData::BUFFER_SIZE);
-        memcpy(resba.data() + copied, this->_buffereddata.constData() + bufferedpos, copylen);
-
-        copied += copylen;
-        currpos += copylen;
-        len -= copylen;
-    }
-
-    return resba;
+    QByteArray ba(len, Qt::Uninitialized);
+    this->read(pos, reinterpret_cast<unsigned char*>(ba.data()), len);
+    return ba;
 }
 
 QString QHexEditDataReader::readString(qint64 pos, qint64 maxlen)
@@ -179,6 +160,31 @@ qint64 QHexEditDataReader::readInt64(qint64 pos, QSysInfo::Endian endian)
     qint64 val;
     ds >> val;
     return val;
+}
+
+qint64 QHexEditDataReader::read(qint64 pos, unsigned char *data, qint64 len)
+{
+    if(pos >= this->_hexeditdata->_length)
+        return 0;
+    else if(len > this->_hexeditdata->_length)
+        len = this->_hexeditdata->_length;
+
+    qint64 currpos = pos, copied = 0;
+
+    while(len > 0)
+    {
+        if(this->needsBuffering(currpos))
+            this->bufferizeData(currpos);
+
+        qint64 bufferedpos = currpos - this->_bufferpos, copylen = qMin(len, QHexEditData::BUFFER_SIZE);
+        memcpy(data + copied, this->_buffereddata.constData() + bufferedpos, copylen);
+
+        copied += copylen;
+        currpos += copylen;
+        len -= copylen;
+    }
+
+    return len;
 }
 
 void QHexEditDataReader::onDataChanged(qint64 pos, qint64, QHexEditData::ActionType)
