@@ -6,17 +6,19 @@ FormatListModel::FormatListModel(QObject *parent): QAbstractItemModel(parent)
     img.load(":/misc_icons/res/format.png");
 
     this->_icoformat = img.scaled(16, 16, Qt::KeepAspectRatio);
-    this->_formatctx = PrefContext::instance()->formats();
-    this->_category = CategoryManager::globalCategory();
+    this->_category = CategoryContext::GLOBAL_CATEGORY;
+    this->_categoryctx = PrefContext::instance()->formats()->categories();
 }
 
-void FormatListModel::changeCategory(const CategoryManager::CategoryPtr &c)
-{
-    this->_category = c;
-    emit dataChanged(this->createIndex(0, 0), this->createIndex(this->_category->formatsCount() - 1, this->columnCount()));
+void FormatListModel::setCategory(const char* category)
+{   
+    this->_category = category;
+    const CategoryContext::FormatList& fl = this->_categoryctx->formats(category);
+
+    emit dataChanged(this->createIndex(0, 0), this->createIndex(fl.size() - 1, this->columnCount()));
 }
 
-CategoryManager::CategoryPtr FormatListModel::selectedCategory() const
+const char *FormatListModel::category() const
 {
     return this->_category;
 }
@@ -59,21 +61,22 @@ QVariant FormatListModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        const FormatDefinition* f = this->_formatctx->get(this->_category->globalFormatIndex(index.row()));
+        const CategoryContext::FormatList& fl = this->_categoryctx->formats(this->_category);
+        const FormatDefinition* fd = fl.at(index.row());
 
         switch(index.column())
         {
             case 0:
-                return f->name();
+                return fd->name();
 
             case 1:
-                return f->category();
+                return fd->category();
 
             case 2:
-                return f->author();
+                return fd->author();
 
             case 3:
-                return f->version();
+                return fd->version();
 
             default:
                 break;
@@ -100,7 +103,7 @@ QModelIndex FormatListModel::parent(const QModelIndex &) const
 
 int FormatListModel::rowCount(const QModelIndex &) const
 {
-    return this->_formatctx->length();
+    return this->_categoryctx->formats(this->_category).size();
 }
 
 Qt::ItemFlags FormatListModel::flags(const QModelIndex &index) const

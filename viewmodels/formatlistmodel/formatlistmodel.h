@@ -4,11 +4,9 @@
 #include <QtCore>
 #include <QtGui>
 #include <prefcontext.h>
-#include "prefsdk/categorymanager.h"
 
 using namespace PrefLib;
 using namespace PrefLib::Format;
-using namespace PrefSDK;
 
 class FormatListModel: public QAbstractItemModel
 {
@@ -16,8 +14,8 @@ class FormatListModel: public QAbstractItemModel
 
     public:
         explicit FormatListModel(QObject *parent = 0);
-        void changeCategory(const CategoryManager::CategoryPtr &c);
-        CategoryManager::CategoryPtr selectedCategory() const;
+        void setCategory(const char *category);
+        const char* category() const;
 
     public: /* Overriden Methods */
         virtual int columnCount(const QModelIndex& = QModelIndex()) const;
@@ -29,8 +27,8 @@ class FormatListModel: public QAbstractItemModel
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
     private:
-        CategoryManager::CategoryPtr _category;
-        FormatContext* _formatctx;
+        const char* _category;
+        const CategoryContext* _categoryctx;
         QImage _icoformat;
 };
 

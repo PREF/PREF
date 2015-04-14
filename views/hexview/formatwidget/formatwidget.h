@@ -11,8 +11,6 @@
 #include "formatsdialog/formatsdialog.h"
 #include "formatworker.h"
 
-using namespace PrefSDK;
-
 namespace Ui {
 class FormatWidget;
 }

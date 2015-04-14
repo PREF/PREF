@@ -25,10 +25,11 @@ FormatsDialog::FormatsDialog(qint64 maxlen, qint64 pos, QWidget *parent): QDialo
 
 FormatDefinition* FormatsDialog::selectedFormat()
 {
-    CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
     QItemSelectionModel* model = ui->tvFormats->selectionModel();
+    const CategoryContext* categoryctx = PrefContext::instance()->formats()->categories();
+    const CategoryContext::FormatList& fl = categoryctx->formats(this->_formatsmodel->category());
 
-    return nullptr; //FIXME: FormatList::instance()->format(c->globalFormatIndex(model->currentIndex().row()));
+    return fl.at(model->currentIndex().row());
 }
 
 qint64 FormatsDialog::offset()
@@ -43,17 +44,24 @@ FormatsDialog::~FormatsDialog()
 
 void FormatsDialog::on_tvCategory_clicked(const QModelIndex &index)
 {
-    if(index.isValid())
-    {
-        CategoryManager::CategoryPtr c = CategoryManager::category(index.row());
-        this->_formatsmodel->changeCategory(c);
-    }
+    if(!index.isValid())
+        return;
+
+    const CategoryContext* categoryctx = PrefContext::instance()->formats()->categories();
+    const CategoryContext::CategoryList& cl = categoryctx->categories();
+    this->_formatsmodel->setCategory(cl.at(index.row()));
 }
 
 void FormatsDialog::on_tvFormats_doubleClicked(const QModelIndex& index)
 {
-    CategoryManager::CategoryPtr c = this->_formatsmodel->selectedCategory();
+    if(!index.isValid())
+        return;
 
-    if(index.isValid() && index.row() < c->formatsCount())
-        this->accept();
+    const CategoryContext* categoryctx = PrefContext::instance()->formats()->categories();
+    const CategoryContext::FormatList& fl = categoryctx->formats(this->_formatsmodel->category());
+
+    if(index.row() >= fl.size())
+        return;
+
+    this->accept();
 }

@@ -6,6 +6,7 @@ CategoryModel::CategoryModel(QObject *parent): QAbstractItemModel(parent)
     img.load(":/misc_icons/res/category.png");
 
     this->_icocategory = img.scaled(16, 16, Qt::KeepAspectRatio);
+    this->_categoryctx = PrefContext::instance()->formats()->categories();
 }
 
 int CategoryModel::columnCount(const QModelIndex &) const
@@ -25,8 +26,8 @@ QVariant CategoryModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole && index.column() == 0)
     {
-        CategoryManager::CategoryPtr c = CategoryManager::category(index.row());
-        return c->name();
+        const CategoryContext::CategoryList& cl = this->_categoryctx->categories();
+        return cl.at(index.row());
     }
     else if((role == Qt::DecorationRole) && (index.column() == 0))
         return this->_icocategory;
@@ -49,7 +50,7 @@ QModelIndex CategoryModel::parent(const QModelIndex &) const
 
 int CategoryModel::rowCount(const QModelIndex &) const
 {
-    return CategoryManager::categoryCount();
+    return this->_categoryctx->categories().size();
 }
 
 Qt::ItemFlags CategoryModel::flags(const QModelIndex &index) const

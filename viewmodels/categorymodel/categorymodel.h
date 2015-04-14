@@ -4,9 +4,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
-#include "prefsdk/categorymanager.h"
+#include <preflib.h>
 
-using namespace PrefSDK;
+using namespace PrefLib;
+using namespace PrefLib::Format;
 
 class CategoryModel : public QAbstractItemModel
 {
@@ -26,6 +27,7 @@ class CategoryModel : public QAbstractItemModel
 
     private:
         QImage _icocategory;
+        const CategoryContext* _categoryctx;
 };
 
 #endif // CATEGORYMODEL_H

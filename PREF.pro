@@ -39,7 +39,6 @@ SOURCES += main.cpp\
     viewmodels/crossreferencemodel/crossreferencemodel.cpp \
     views/disassemblerview/datamapview/datamapview.cpp \
     views/hexview/formatwidget/formatsdialog/formatsdialog.cpp \
-    prefsdk/categorymanager.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
     viewmodels/categorymodel/categorymodel.cpp \
     views/hexview/formatwidget/formattreeview/structuremenu.cpp \
@@ -154,7 +153,6 @@ HEADERS  += mainwindow.h \
     viewmodels/crossreferencemodel/crossreferencemodel.h \
     views/disassemblerview/datamapview/datamapview.h \
     views/hexview/formatwidget/formatsdialog/formatsdialog.h \
-    prefsdk/categorymanager.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
     viewmodels/categorymodel/categorymodel.h \
     views/hexview/formatwidget/formattreeview/structuremenu.h \
