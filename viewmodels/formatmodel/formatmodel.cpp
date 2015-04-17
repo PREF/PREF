@@ -24,23 +24,18 @@ void FormatModel::updateModelData(qint64 offset, qint64 length, QHexEditData::Ac
     if(!this->_formattree)
         return;
 
-    qint64 startoffset = offset;
-    qint64 endoffset = offset + length;
-
     for(size_t i = 0; i < this->_formattree->length(); i++)
     {
-        //FIXME: Structure* s = this->_formattree->element(i);
+        FormatElement* formatelement = this->_formattree->element(i);
 
-        /* FIXME:
-        if(s->containsOffset(startoffset))
+        if(formatelement->contains(offset))
         {
             QModelIndex midx = this->index(i, 0);
             emit dataChanged(midx, this->index(midx.row(), this->columnCount() - 1, midx.parent()));
 
-            if(s->containsOffset(endoffset))
+            if(formatelement->contains(offset + length))
                 break;
         }
-        */
     }
 }
 
@@ -91,16 +86,80 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
         {
             if(index.column() == 0)
                 return QString("%1").arg(formatelement->offset(), 8, 16, QLatin1Char('0')).toUpper();
-            /* FIXME: else if(index.column() == 1)
-                return formatelement->displayType();
-            else if(index.column() == 2)
-                return formatelement->displayName(); */
-            else if(index.column() == 4)
+
+            if(index.column() == 1)
+            {
+                if(formatelement->isStructure())
+                    return "Struct";
+
+                if(formatelement->isFieldArray())
+                    return QString("%1[]").arg(DataType::stringValue(dynamic_cast<FieldArray*>(formatelement)->dataType()));
+
+                if(formatelement->isField())
+                    return DataType::stringValue(dynamic_cast<Field*>(formatelement)->dataType());
+
+                if(formatelement->isBitField())
+                {
+                    BitField* bitfield = dynamic_cast<BitField*>(formatelement);
+
+                    if(bitfield->bitstart() != bitfield->bitend())
+                        return "bit[]";
+
+                    return "bit";
+                }
+
+                return QString();
+            }
+
+            if(index.column() == 2)
+            {
+                if(formatelement->isFieldArray())
+                    return QString("%1[%2]").arg(formatelement->name()).arg(formatelement->length(), 0, formatelement->base());
+
+                if(formatelement->isBitField())
+                {
+                    BitField* bitfield = dynamic_cast<BitField*>(formatelement);
+
+                    if(bitfield->bitstart() == bitfield->bitend())
+                        return QString("%1[%2]").arg(bitfield->name()).arg(bitfield->bitstart(), 0, bitfield->base());
+
+                    return QString("%1[%2..%3]").arg(bitfield->name()).arg(bitfield->bitstart(), 0, bitfield->base()).arg(bitfield->bitend(), 0, bitfield->base());
+                }
+
+                return formatelement->name();
+            }
+
+            if(index.column() == 3)
+            {
+                if(formatelement->isField())
+                {
+                    Field* field = dynamic_cast<Field*>(formatelement);
+                    return field->value().toString(field->base(), DataType::sizeOf(field->dataType()));
+                }
+
+                if(formatelement->isFieldArray())
+                {
+                    FieldArray* fieldarray = dynamic_cast<FieldArray*>(formatelement);
+
+                    if(fieldarray->elementType() == DataType::Character)
+                    {
+                        QHexEditDataReader reader(this->_hexeditdata);
+                        QString("'%1'").arg(QString(reader.read(fieldarray->offset(), fieldarray->length()))).simplified();
+                    }
+                }
+
+                if(formatelement->isBitField())
+                {
+                    BitField* bitfield = dynamic_cast<BitField*>(formatelement);
+                    return bitfield->value().toString(bitfield->base());
+                }
+
+                return QString();
+            }
+
+            if(index.column() == 4)
                 return formatelement->info();
         }
-
-        //FIXME: if(index.column() == 3 && ((formatelement->elementType() == FormatElement::FieldType || formatelement->elementType() == FormatElement::FieldArrayType) || (formatelement->elementType() == FormatElement::BitFieldType)))
-            //return formatelement->displayValue();
     }
     else if(role == Qt::DecorationRole)
     {
@@ -132,32 +191,30 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
             {
                 if(formatelement->isField())
                 {
-                    FieldElement* fieldelement = dynamic_cast<FieldElement*>(formatelement);
+                    Field* field = dynamic_cast<Field*>(formatelement);
 
-                    /* FIXME:
-                    if(fieldelement->isOverflowed())
+                    if(field->dataType() == DataType::Blob)
+                        return QColor(Qt::darkGray);
+
+                    DataValue dv = field->value();
+
+                    if(dv.isOverflowed())
                         return QColor(Qt::red);
 
-                    if(fieldelement->isInteger())
+                    if(dv.isArithmetic())
                         return QColor(Qt::darkBlue);
 
-                    if(fieldelement->dataType() == DataType::Character)
+                    if(dv.isString())
                         return QColor(Qt::darkGreen);
-
-                    if(fieldelement->dataType() == DataType::Blob)
-                        return QColor(Qt::darkGray);
-                        */
                 }
                 else if(formatelement->isFieldArray())
                 {
-                    /* FIXME:
                     FieldArray* fa = dynamic_cast<FieldArray*>(formatelement);
 
-                    if(fa->itemType() == DataType::Character)
+                    if(fa->elementType() == DataType::Character)
                         return QColor(Qt::darkGreen);
-                    else if(fa->itemType() == DataType::Blob)
+                    else if(fa->elementType() == DataType::Blob)
                         return QColor(Qt::darkGray);
-                        */
                 }
                 else if(formatelement->isBitField())
                     return QColor(Qt::darkRed);
@@ -176,19 +233,15 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
 
         if((formatelement->isField()) && (index.column() == 3))
         {
-            /* FIXME:
-            FieldElement* fieldelement = dynamic_cast<FieldElement*>(formatelement);
-            QString currvalue = fieldelement->displayValue();
+            Field* fieldelement = dynamic_cast<Field*>(formatelement);
+            DataValue currvalue = fieldelement->value();
             QString newvalue = value.toString();
 
-            if(fieldelement->dataType() == DataType::Character)
-                currvalue = currvalue.mid(1, currvalue.length() - 2); // Strip ' '
-
-            if(!QString::compare(currvalue, newvalue, Qt::CaseInsensitive))  // Does 'currvalue == newvalue' ?
+            if(!QString::compare(currvalue.toString(formatelement->base()), newvalue, Qt::CaseInsensitive))  // Does 'currvalue == newvalue' ?
                 return false;
 
             QByteArray newdata;
-            bool valid = false; //FIXME: FormatModel::validateValue(value, fieldelement->dataType(), fieldelement->base(), DataType::byteOrder(fieldelement->dataType()), newdata);
+            bool valid = FormatModel::validateValue(value, fieldelement->dataType(), fieldelement->base(), newdata);
 
             if(valid)
             {
@@ -198,7 +251,6 @@ bool FormatModel::setData(const QModelIndex &index, const QVariant &value, int r
             }
 
             return false;
-            */
         }
     }
 
@@ -209,33 +261,12 @@ void FormatModel::fetchMore(const QModelIndex &parent)
 {
     if(parent.isValid())
     {
-        /* FIXME:
-        quint64 count = 0;
         FormatElement* formatelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
-        formatelement->parseChildren();
-
-        switch(formatelement->elementType())
-        {
-            case FormatElement::StructureType:
-                count = dynamic_cast<Structure*>(formatelement)->fieldCount();
-                break;
-
-            case FormatElement::FieldArrayType:
-                count = dynamic_cast<FieldArray*>(formatelement)->itemCount();
-                break;
-
-            case FormatElement::FieldType:
-                count = dynamic_cast<Field*>(formatelement)->bitFieldCount();
-                break;
-
-            default:
-                break;
-        }
-        */
+        formatelement->populate();
 
         /* Notify the View that 'count' items has been inserted */
-        //FIXME: this->beginInsertRows(parent, 0, count);
-        //FIXME: this->endInsertRows();
+        this->beginInsertRows(parent, 0, formatelement->length());
+        this->endInsertRows();
         return;
     }
 
@@ -252,11 +283,16 @@ QModelIndex FormatModel::index(int row, int column, const QModelIndex &parent) c
     if(parent.isValid())
     {
         FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
-        //FIXME: element = this->_formattree->elementFromPool(row, parentelement);
+
+        if(parentelement->isStructure())
+            element = dynamic_cast<Structure*>(parentelement)->field(row);
+        else if(parentelement->isFieldArray())
+            element = dynamic_cast<FieldArray*>(parentelement)->item(row);
+        else if(parentelement->isField())
+            element = dynamic_cast<Field*>(parentelement)->bitField(row);
     }
-    /* FIXME:
     else
-        element = this->_formattree->elementFromPool(row); */
+        element = this->_formattree->element(row);
 
     if(!element)
         return QModelIndex();
@@ -270,12 +306,12 @@ QModelIndex FormatModel::parent(const QModelIndex &child) const
         return QModelIndex();
 
     FormatElement* childelement = reinterpret_cast<FormatElement*>(child.internalPointer());
+    FormatElement* parentelement = childelement->parent();
 
-    //FIXME: if(!childelement->hasParent())
-        //FIXME: return QModelIndex();
+    if(!parentelement)
+        return QModelIndex();
 
-    //FIXME: FormatElement* parentelement = childelement->parentElement();
-    //FIXME: return this->createIndex(parentelement->indexOf(childelement), 0, parentelement);
+    return this->createIndex(parentelement->indexOf(childelement), 0, parentelement);
 }
 
 bool FormatModel::canFetchMore(const QModelIndex &parent) const
@@ -298,7 +334,11 @@ bool FormatModel::hasChildren(const QModelIndex &parent) const
         return this->_formattree->length() > 0;
 
     FormatElement* parentelement = reinterpret_cast<FormatElement*>(parent.internalPointer());
-    return false; //FIXME: return parentelement->hasChildren();
+
+    if(parentelement->isFieldArray() && (dynamic_cast<FieldArray*>(parentelement)->elementType() == DataType::Blob))
+        return false;
+
+    return parentelement->isDynamic() || (parentelement->length() > 0);
 }
 
 int FormatModel::rowCount(const QModelIndex &parent) const

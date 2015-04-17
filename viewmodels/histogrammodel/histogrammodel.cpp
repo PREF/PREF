@@ -110,14 +110,14 @@ QVariant HistogramModel::data(const QModelIndex &index, int role) const
         else if(index.column() == 3)
             return QString("%1%").arg((static_cast<qreal>(cr.Counts.at(index.row())) / static_cast<qreal>(this->_hexeditdata->length())) * 100);
     }
-    else if((role == Qt::ForegroundRole) && (index.row() != cr.MaxByte))  /* NOTE: Testing needed */
+    else if((role == Qt::ForegroundRole) && (index.row() != cr.MaxByte))
     {
         if(index.column() == 0)
             return QColor(Qt::darkGreen);
 
         return QColor(Qt::darkBlue);
     }
-    else if((role == Qt::BackgroundRole) && (index.row() == cr.MaxByte)) /* NOTE: Testing needed */
+    else if((role == Qt::BackgroundRole) && (index.row() == cr.MaxByte))
         return QColor(Qt::yellow);
     else if(role == Qt::FontRole)
         return this->_monospacefont;

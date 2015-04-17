@@ -5,11 +5,13 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <format/formattree.h>
+#include "types/datavalue.h"
 #include "qhexedit/qhexeditdata.h"
 #include "qhexedit/qhexeditdatareader.h"
 #include "qhexedit/qhexeditdatawriter.h"
 #include "viewmodels/fielddatamodel/fielddatamodel.h"
 
+using namespace PrefLib;
 using namespace PrefLib::Format;
 
 class FormatModel : public FieldDataModel

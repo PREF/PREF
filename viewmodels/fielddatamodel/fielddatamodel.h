@@ -14,7 +14,7 @@ class FieldDataModel : public QAbstractItemModel
         explicit FieldDataModel(QObject *parent = 0);
 
     protected:
-        static bool validateValue(QVariant value, DataType::Type datatype, int base, Endianness::Type endian, QByteArray& ba);
+        static bool validateValue(QVariant value, DataType::Type datatype, int base, QByteArray& ba);
 };
 
 #endif // FIELDDATAMODEL_H

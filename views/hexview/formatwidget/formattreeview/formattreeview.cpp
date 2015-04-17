@@ -67,10 +67,10 @@ void FormatTreeView::showContextMenu(const QPoint &pos)
 
             if(DataType::isIntegral(field->dataType()) && DataType::isSigned(field->dataType()) && (DataType::bitWidth(field->dataType()) > 16))
             {
-                QHexEditData* hexeditdata = dynamic_cast<FormatModel*>(this->model())->data(); // TODO: promote FormatElement::dataBuffer() to public
+                IO::DataBuffer* databuffer = field->dataBuffer();
                 DataValue value = field->value();
 
-                if(!value.isZero() || value.isOverflowed() || (value >= hexeditdata->length()))
+                if(!value.isZero() || value.isOverflowed() || (value >= databuffer->length()))
                     this->_actiongoto->setVisible(false);
                 else
                     this->_actiongoto->setVisible(true);
@@ -154,8 +154,8 @@ void FormatTreeView::onCopyName()
 
 void FormatTreeView::onCopyValue()
 {
-    //FIXME: FormatElement* formatelement = this->selectedElement();
-    //FIXME: qApp->clipboard()->setText(formatelement->displayValue());
+    Field* field = dynamic_cast<Field*>(this->selectedElement());
+    qApp->clipboard()->setText(field->value().toString(field->base()));
 }
 
 FormatElement *FormatTreeView::selectedElement() const

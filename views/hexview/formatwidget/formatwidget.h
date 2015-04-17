@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/hexview/workertab.h"
+#include "prefsdk/qdatabuffer.h"
 #include "logwidget/logwidget.h"
 #include "formattreeview/formattreeview.h"
 #include "formatsdialog/formatsdialog.h"
@@ -49,7 +50,6 @@ class FormatWidget : public WorkerTab
         FormatModel* _formatmodel;
         QHexEdit* _hexedit;
         LogWidget* _logwidget;
-        FormatDefinition* _formatdefinition;
         QWidget* _formatview;
 };
 

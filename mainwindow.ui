@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1007</width>
-    <height>721</height>
+    <width>1005</width>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PREF: Portable Reverse Engineering Framework 0.9.5</string>
+   <string>PREF: Portable Reverse Engineering Framework 2.0</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
@@ -41,7 +41,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1007</width>
+     <width>1005</width>
      <height>22</height>
     </rect>
    </property>

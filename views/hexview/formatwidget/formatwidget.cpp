@@ -57,22 +57,10 @@ void FormatWidget::loadFormat()
 
     if(res == FormatsDialog::Accepted)
     {
-        /* FIXME:
         this->_formatview = nullptr;
         this->_logwidget->clear();
-        this->_formatdefinition = fd.selectedFormat();
 
-        Logger* logger = new Logger(this->_logwidget);
-        bool validated = this->_formatdefinition->callValidate(this->_hexedit->data(), logger, fd.offset());
-
-        if(!validated)
-        {
-            emit parsingFailed();
-            logger->deleteLater();
-            return;
-        }
-
-        this->_worker = new FormatWorker(this->_formatdefinition, logger, this->_hexedit->data(), fd.offset(), this);
+        this->_worker = new FormatWorker(fd.selectedFormat(), this->_logwidget, this->_hexedit->data(), fd.offset(), this);
         connect(this->_worker, SIGNAL(started()), this, SIGNAL(workStarted()));
         connect(this->_worker, SIGNAL(started()), this, SIGNAL(parsingStarted()));
         connect(this->_worker, SIGNAL(finished()), this, SIGNAL(workFinished()));
@@ -80,7 +68,6 @@ void FormatWidget::loadFormat()
         connect(this->_worker, SIGNAL(parsingFailed()), this, SIGNAL(parsingFailed()));
         connect(this->_worker, SIGNAL(parsingCompleted()), this, SLOT(onParseCompleted()));
         this->_worker->start();
-        */
     }
 }
 
@@ -120,7 +107,6 @@ void FormatWidget::exportData(FormatElement *formatelement)
 
 void FormatWidget::importData(FormatElement *formatelement)
 {
-    /* FIXME:
     QString s = QFileDialog::getOpenFileName(this, "Import binary file...");
 
     if(!s.isEmpty())
@@ -128,32 +114,28 @@ void FormatWidget::importData(FormatElement *formatelement)
         QFile f(s);
         f.open(QIODevice::ReadOnly);
 
-        quint64 size = qMin(static_cast<quint64>(f.size()), formatelement->size());
+        uint64_t size = qMin(static_cast<uint64_t>(f.size()), formatelement->size());
 
-        if(size > 0)
+        if(size > 0u)
         {
             QByteArray ba = f.read(size);
             QHexEditDataWriter writer(this->_hexedit->data());
             writer.replace(formatelement->offset(), size, ba);
         }
     }
-    */
 }
 
 void FormatWidget::onParseCompleted()
 {
-    /* FIXME:
     FormatModel* oldformatmodel = this->_formatmodel;
-    FormatTree* formattree = this->_worker->tree();
-    formattree->setParent(this);
-
-    this->_formatmodel = new FormatModel(this->_hexedit->data(), formattree, ui->tvFormat);
+    this->_formatmodel = new FormatModel(this->_hexedit->data(), this->_worker->tree(), ui->tvFormat);
     ui->tvFormat->setModel(this->_formatmodel);
     oldformatmodel->deleteLater();
 
     for(int i = 0; i < this->_formatmodel->columnCount(); i++)
         ui->tvFormat->resizeColumnToContents(i);
 
+    /* FIXME:
     if(this->_formatdefinition->hasView())
     {
         Logger logger(this->_logwidget);
@@ -161,5 +143,5 @@ void FormatWidget::onParseCompleted()
     }
     else
         this->_formatview = nullptr;
-    */
+     */
 }

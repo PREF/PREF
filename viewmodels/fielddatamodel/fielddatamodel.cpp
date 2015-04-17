@@ -4,24 +4,22 @@ FieldDataModel::FieldDataModel(QObject *parent): QAbstractItemModel(parent)
 {
 }
 
-bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int base, Endianness::Type endian, QByteArray &ba)
+bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int base, QByteArray &ba)
 {
-    return false;
-
-    /* FIXME:
     QString stringvalue = value.toString();
 
-    if(datatype == DataType::Character || datatype == DataType::isString(datatype)) // (Single Char) OR (Char Array (aka String))
+    if((datatype == DataType::Character) || (datatype == DataType::isString(datatype))) // (Single Char) OR (Char Array (aka String))
     {
         ba = stringvalue.toLatin1();
         return true;
     }
-    else if(DataType::isInteger(datatype))
+    else if(DataType::isIntegral(datatype))
     {
         bool isok = false;
+        Endianness::Type endian = DataType::endianness(datatype);
         QDataStream ds(&ba, QIODevice::WriteOnly);
 
-        if(endian == QSysInfo::LittleEndian)
+        if(endian == Endianness::LittleEndian)
             ds.setByteOrder(QDataStream::LittleEndian);
         else
             ds.setByteOrder(QDataStream::BigEndian);
@@ -76,5 +74,4 @@ bool FieldDataModel::validateValue(QVariant value, DataType::Type datatype, int 
     }
 
     return false;
-    */
 }
