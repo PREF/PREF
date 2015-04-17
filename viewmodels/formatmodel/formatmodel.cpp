@@ -134,7 +134,12 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                 if(formatelement->isField())
                 {
                     Field* field = dynamic_cast<Field*>(formatelement);
-                    return field->value().toString(field->base(), DataType::sizeOf(field->dataType()));
+                    DataValue dv = field->value();
+
+                    if(dv.isCharacter())
+                        return QString("'%1'").arg(QString(dv.toString()).simplified());
+
+                    return dv.toString(field->base(), DataType::sizeOf(field->dataType()));
                 }
 
                 if(formatelement->isFieldArray())
@@ -144,7 +149,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                     if(fieldarray->elementType() == DataType::Character)
                     {
                         QHexEditDataReader reader(this->_hexeditdata);
-                        QString("'%1'").arg(QString(reader.read(fieldarray->offset(), fieldarray->length()))).simplified();
+                        QString("'%1'").arg(QString(reader.read(fieldarray->offset(), fieldarray->length())).simplified());
                     }
                 }
 
