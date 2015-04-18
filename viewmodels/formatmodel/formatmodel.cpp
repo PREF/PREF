@@ -156,7 +156,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                 if(formatelement->isBitField())
                 {
                     BitField* bitfield = dynamic_cast<BitField*>(formatelement);
-                    return bitfield->value().toString(bitfield->base());
+                    return bitfield->value().toString(bitfield->base(), (bitfield->bitend() - bitfield->bitstart()) + 1);
                 }
 
                 return QString();
