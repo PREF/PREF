@@ -149,7 +149,7 @@ QVariant FormatModel::data(const QModelIndex &index, int role) const
                     if(fieldarray->elementType() == DataType::Character)
                     {
                         QHexEditDataReader reader(this->_hexeditdata);
-                        QString("'%1'").arg(QString(reader.read(fieldarray->offset(), fieldarray->length())).simplified());
+                        return QString("'%1'").arg(QString(reader.read(fieldarray->offset(), fieldarray->length())).simplified());
                     }
                 }
 
