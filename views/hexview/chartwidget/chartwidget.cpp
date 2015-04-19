@@ -63,7 +63,7 @@ void ChartWidget::onEntropyChartCompleted(quint64 size)
 
 void ChartWidget::displayEntropy(const ByteElaborator::CountResult& cr, uint64_t size)
 {
-    double e = Math::entropy(cr, size);
+    double e = Algorithm::entropy(cr, size);
     this->setEntropy(QString::number(e), ByteColors::entropyColor(e));
 }
 

@@ -4,6 +4,7 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <support/algorithm.h>
 #include <chart/histogramchart.h>
 #include <chart/entropychart.h>
 #include "viewmodels/histogrammodel/histogrammodel.h"
