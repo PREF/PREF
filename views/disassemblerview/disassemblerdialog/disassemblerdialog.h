@@ -7,8 +7,6 @@
 #include "qhexedit/qhexeditdata.h"
 #include "viewmodels/disassemblerlistmodel/disassemblerlistmodel.h"
 
-using namespace PrefSDK;
-
 namespace Ui {
 class DisassemblerDialog;
 }

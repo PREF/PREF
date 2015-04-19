@@ -2,10 +2,12 @@
 #define DISASSEMBLERLISTMODEL_H
 
 #include <QtCore>
+#include <QImage>
 #include <qhexedit/qhexeditdata.h>
-#include <disassembler/disassemblercontext.h>
-#include "prefsdk/sdkmanager.h"
+#include <prefsdk/qdatabuffer.h>
+#include <prefcontext.h>
 
+using namespace PrefLib;
 using namespace PrefLib::Disassembler;
 
 class DisassemblerListModel : public QAbstractItemModel

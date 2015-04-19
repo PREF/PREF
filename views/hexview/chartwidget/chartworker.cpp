@@ -12,7 +12,6 @@ ChartWorker::~ChartWorker()
 
 void ChartWorker::setData(HistogramChart* histogramchart, EntropyChart* entropychart, QHexEditData *hexeditdata)
 {
-    //NOTE: Move To Thread?
     this->_histogramchart = histogramchart;
     this->_entropychart = entropychart;
     this->_hexeditdata = hexeditdata;

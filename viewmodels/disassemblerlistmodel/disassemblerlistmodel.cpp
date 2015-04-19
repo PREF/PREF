@@ -14,17 +14,16 @@ DisassemblerDefinition* DisassemblerListModel::disassembler(int idx) const
 
 void DisassemblerListModel::validateDisassemblers(QHexEditData *hexeditdata)
 {
-    /* FIXME:
-    DisassemblerList* disassemblerlist = DisassemblerList::instance();
+    DisassemblerContext* disassemblerctx = PrefContext::instance()->disassemblers();
+    QDataBuffer databuffer(hexeditdata);
 
-    for(int i = 0; i < disassemblerlist->length(); i++)
+    for(size_t i = 0; i < disassemblerctx->length(); i++)
     {
-        DisassemblerDefinition* dd = disassemblerlist->disassembler(i);
+        DisassemblerDefinition* dd = disassemblerctx->get(i);
 
-        if(dd->validate(hexeditdata))
+        if(dd->validate(&databuffer))
             this->_disassemblers.append(dd);
     }
-    */
 }
 
 int DisassemblerListModel::columnCount(const QModelIndex &) const
