@@ -4,8 +4,8 @@
 #include <QtCore>
 #include <QImage>
 #include <qhexedit/qhexeditdata.h>
-#include <prefsdk/qdatabuffer.h>
 #include <prefcontext.h>
+#include "prefsdk/databuffer/qdatabuffer.h"
 
 using namespace PrefLib;
 using namespace PrefLib::Disassembler;

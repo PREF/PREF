@@ -5,7 +5,7 @@
 #include <support/byteelaborator.h>
 #include "views/hexview/worker.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/qdatabuffer.h"
+#include "prefsdk/databuffer/qdatabuffer.h"
 
 using namespace PrefLib::Support;
 

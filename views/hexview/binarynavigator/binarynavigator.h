@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <map/binarymap.h>
 #include <support/bytecolors.h>
-#include "prefsdk/qdatabuffer.h"
+#include "prefsdk/databuffer/qdatabuffer.h"
 #include "qhexedit/qhexedit.h"
 
 using namespace PrefLib::Map;

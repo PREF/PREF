@@ -5,7 +5,7 @@
 #include "format/formattree.h"
 #include "format/formatdefinition.h"
 #include "qhexedit/qhexeditdata.h"
-#include "prefsdk/qdatabuffer.h"
+#include "prefsdk/databuffer/qdatabuffer.h"
 #include "logwidget/logger.h"
 
 using namespace PrefLib::Format;

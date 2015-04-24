@@ -6,7 +6,7 @@
 #include <chart/entropychart.h>
 #include "qhexedit/qhexeditdata.h"
 #include "views/hexview/worker.h"
-#include "prefsdk/qdatabuffer.h"
+#include "prefsdk/databuffer/qdatabuffer.h"
 
 using namespace PrefLib;
 using namespace PrefLib::Chart;
