@@ -132,7 +132,8 @@ SOURCES += main.cpp\
     views/hexview/chartwidget/chartcontainer.cpp \
     qxychart/qxychart.cpp \
     viewmodels/histogrammodel/histogrammodel.cpp \
-    prefsdk/qdatabuffer.cpp
+    prefsdk/qdatabuffer.cpp \
+    prefsdk/databuffer/filedatabuffer.cpp
 
 HEADERS  += mainwindow.h \
     qhexedit/qhexeditprivate.h \
@@ -248,7 +249,8 @@ HEADERS  += mainwindow.h \
     views/hexview/chartwidget/chartcontainer.h \
     qxychart/qxychart.h \
     viewmodels/histogrammodel/histogrammodel.h \
-    prefsdk/qdatabuffer.h
+    prefsdk/qdatabuffer.h \
+    prefsdk/databuffer/filedatabuffer.h
 
 FORMS    += mainwindow.ui \
     spinboxbaseselector/spinboxbaseselector.ui \
