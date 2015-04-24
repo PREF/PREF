@@ -4,6 +4,8 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include "prefsdk/databuffer/qdatabuffer.h"
+#include "prefsdk/databuffer/filedatabuffer.h"
 #include "qhexedit/qhexedit.h"
 #include "actionwidget.h"
 #include "exportdialog.h"

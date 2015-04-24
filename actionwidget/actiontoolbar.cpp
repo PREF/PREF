@@ -292,8 +292,12 @@ void ActionToolBar::showExportDialog()
     ExportDialog ed(this->_hexedit, this->topLevelWidget());
     int res = ed.exec();
 
-    //FIXME: if((res == ExportDialog::Accepted) && ed.selectedExporter())
-        //FIXME: ed.selectedExporter()->callDump(this->_hexeditdata, ed.fileName(), ed.startOffset(), ed.endOffset());
+    if((res == ExportDialog::Accepted) && ed.selectedExporter())
+    {
+        QDataBuffer databufferin(this->_hexeditdata);
+        FileDataBuffer databufferout(ed.fileName(), FileDataBuffer::Write);
+        ed.selectedExporter()->dump(&databufferin, &databufferout, ed.startOffset(), ed.endOffset());
+    }
 }
 
 void ActionToolBar::byteOpRequested(uchar value, ByteOpsAction::ByteOperations bo)
