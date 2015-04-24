@@ -4,6 +4,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <preflib.h>
+
+using namespace PrefLib;
+using namespace PrefLib::Exporter;
 
 class ExporterModel : public QAbstractItemModel
 {
@@ -23,6 +27,7 @@ class ExporterModel : public QAbstractItemModel
 
     private:
         QImage _icoexport;
+        ExporterContext* _exporterctx;
 };
 
 #endif // EXPORTMODEL_H

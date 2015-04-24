@@ -6,6 +6,7 @@ ExporterModel::ExporterModel(QObject *parent): QAbstractItemModel(parent)
     img.load(":/action_icons/res/export.png");
 
     this->_icoexport = img.scaled(16, 16, Qt::KeepAspectRatio);
+    this->_exporterctx = PrefContext::instance()->exporters();
 }
 
 int ExporterModel::columnCount(const QModelIndex &) const
@@ -46,8 +47,7 @@ QVariant ExporterModel::data(const QModelIndex &index, int role) const
 
     if(role == Qt::DisplayRole)
     {
-        /* FIXME:
-        const ExporterDefinition* e = ExporterList::instance()->exporter(index.row());
+        const ExporterDefinition* e = this->_exporterctx->get(index.row());
 
         switch(index.column())
         {
@@ -66,7 +66,6 @@ QVariant ExporterModel::data(const QModelIndex &index, int role) const
             default:
                 break;
         }
-        */
     }
     else if((role == Qt::DecorationRole) && (index.column() == 0))
         return this->_icoexport;
@@ -89,7 +88,7 @@ QModelIndex ExporterModel::parent(const QModelIndex &) const
 
 int ExporterModel::rowCount(const QModelIndex &) const
 {
-    //FIXME: return ExporterList::instance()->length();
+    return this->_exporterctx->length();
 }
 
 Qt::ItemFlags ExporterModel::flags(const QModelIndex &index) const
