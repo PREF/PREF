@@ -6,6 +6,7 @@
 #include <QtWidgets>
 #include "viewmodels/formatmodel/formatmodel.h"
 #include "views/hexview/workertab.h"
+#include "prefsdk/databuffer/filedatabuffer.h"
 #include "prefsdk/databuffer/qdatabuffer.h"
 #include "logwidget/logwidget.h"
 #include "formattreeview/formattreeview.h"

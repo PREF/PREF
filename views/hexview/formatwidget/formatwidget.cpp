@@ -95,14 +95,16 @@ void FormatWidget::onFormatObjectSelected(FormatElement *formatelement)
 
 void FormatWidget::exportData(FormatElement *formatelement)
 {
-    /* FIXME:
     ExportDialog ed(this->_hexedit, this);
     ed.setFixedRange(formatelement->offset(), formatelement->endOffset());
     int res = ed.exec();
 
     if((res == ExportDialog::Accepted) && ed.selectedExporter())
-        ed.selectedExporter()->callDump(this->_hexedit->data(), ed.fileName(), ed.startOffset(), ed.endOffset());
-        */
+    {
+        QDataBuffer databufferin(this->_hexedit->data());
+        FileDataBuffer databufferout(ed.fileName(), FileDataBuffer::Write);
+        ed.selectedExporter()->dump(&databufferin, &databufferout, ed.startOffset(), ed.endOffset());
+    }
 }
 
 void FormatWidget::importData(FormatElement *formatelement)
