@@ -28,18 +28,8 @@
    </property>
    <item>
     <widget class="QTableView" name="dataTypesTable">
-     <property name="contextMenuPolicy">
-      <enum>Qt::CustomContextMenu</enum>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: white;
-alternate-background-color: whitesmoke;</string>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::CurrentChanged</set>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>true</bool>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::SingleSelection</enum>
@@ -49,6 +39,9 @@ alternate-background-color: whitesmoke;</string>
      </property>
      <attribute name="horizontalHeaderStretchLastSection">
       <bool>true</bool>
+     </attribute>
+     <attribute name="verticalHeaderVisible">
+      <bool>false</bool>
      </attribute>
     </widget>
    </item>
