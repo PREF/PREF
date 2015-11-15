@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>1005</width>
-     <height>22</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -51,7 +51,7 @@
     </property>
     <widget class="QMenu" name="menuImport">
      <property name="title">
-      <string>Import</string>
+      <string>&amp;Import</string>
      </property>
      <property name="icon">
       <iconset resource="resources.qrc">
@@ -60,7 +60,6 @@
      <addaction name="actionHex_File"/>
     </widget>
     <addaction name="action_Analyze"/>
-    <addaction name="actionDisassemble"/>
     <addaction name="actionCompare"/>
     <addaction name="menuImport"/>
     <addaction name="separator"/>
@@ -117,7 +116,6 @@
    <addaction name="action_Save_As"/>
    <addaction name="separator"/>
    <addaction name="action_Analyze"/>
-   <addaction name="actionDisassemble"/>
    <addaction name="actionCompare"/>
    <addaction name="separator"/>
    <addaction name="actionSignature_DB"/>
@@ -163,7 +161,7 @@
      <normaloff>:/action_icons/res/saveas.png</normaloff>:/action_icons/res/saveas.png</iconset>
    </property>
    <property name="text">
-    <string>Save As...</string>
+    <string>Sa&amp;ve As...</string>
    </property>
    <property name="visible">
     <bool>false</bool>
@@ -171,7 +169,7 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
    </property>
   </action>
   <action name="actionAbout_PREF">
@@ -180,7 +178,7 @@
      <normaloff>:/action_icons/res/about.png</normaloff>:/action_icons/res/about.png</iconset>
    </property>
    <property name="text">
-    <string>About PREF</string>
+    <string>&amp;About PREF</string>
    </property>
   </action>
   <action name="actionCompare">
@@ -189,7 +187,7 @@
      <normaloff>:/misc_icons/res/diff.png</normaloff>:/misc_icons/res/diff.png</iconset>
    </property>
    <property name="text">
-    <string>Compare</string>
+    <string>&amp;Compare</string>
    </property>
    <property name="shortcut">
     <string>F5</string>
@@ -201,7 +199,7 @@
      <normaloff>:/signature_database/res/database.png</normaloff>:/signature_database/res/database.png</iconset>
    </property>
    <property name="text">
-    <string>Signature DB</string>
+    <string>&amp;Signature DB</string>
    </property>
    <property name="toolTip">
     <string>Signature DB</string>
@@ -213,24 +211,12 @@
      <normaloff>:/misc_icons/res/hex.png</normaloff>:/misc_icons/res/hex.png</iconset>
    </property>
    <property name="text">
-    <string>Hex File</string>
+    <string>&amp;Hex File</string>
    </property>
   </action>
   <action name="actionSettings">
    <property name="text">
-    <string>Settings</string>
-   </property>
-  </action>
-  <action name="actionDisassemble">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/action_icons/res/cpu.png</normaloff>:/action_icons/res/cpu.png</iconset>
-   </property>
-   <property name="text">
-    <string>Disassemble</string>
-   </property>
-   <property name="shortcut">
-    <string>F4</string>
+    <string>S&amp;ettings</string>
    </property>
   </action>
  </widget>

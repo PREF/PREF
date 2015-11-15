@@ -45,8 +45,6 @@ bool SDKManager::loadSDK()
     SDKManager::loadScripts(prefctx, "exporters");
     SDKManager::loadScripts(prefctx, "formats");
 
-    //FIXME: DisassemblerList::load();
-
     // NOTE: To be moved in PrefLib
     SQLite::SQLiteDatabase::initialize();
     SignatureDatabase::load();

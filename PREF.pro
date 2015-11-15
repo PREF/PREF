@@ -35,9 +35,6 @@ SOURCES += main.cpp\
     exportdialog.cpp \
     viewmodels/datatypesmodel/datatypesmodel.cpp \
     viewmodels/formatmodel/formatmodel.cpp \
-    views/disassemblerview/crossreferencedialog/crossreferencedialog.cpp \
-    viewmodels/crossreferencemodel/crossreferencemodel.cpp \
-    views/disassemblerview/datamapview/datamapview.cpp \
     views/hexview/formatwidget/formatsdialog/formatsdialog.cpp \
     viewmodels/formatlistmodel/formatlistmodel.cpp \
     viewmodels/categorymodel/categorymodel.cpp \
@@ -97,37 +94,17 @@ SOURCES += main.cpp\
     viewmodels/visualmapmodel/visualmapmodel.cpp \
     viewmodels/visualmapmodel/visualmapdelegate.cpp \
     viewmodels/datatypesmodel/datatypesdelegate.cpp \
-    views/disassemblerview/disassemblerview.cpp \
-    viewmodels/disassemblerlistmodel/disassemblerlistmodel.cpp \
-    views/disassemblerview/segmentsdialog/segmentsdialog.cpp \
-    views/disassemblerview/entrypointsdialog/entrypointsdialog.cpp \
-    viewmodels/segmentsmodel/segmentsmodel.cpp \
-    viewmodels/entrypointsmodel/entrypointsmodel.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerwidget.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerhighlighter.cpp \
-    viewmodels/functionmodel/functionmodel.cpp \
-    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.cpp \
     logwidget/logwidget.cpp \
     views/hexview/outputwidget/outputwidget.cpp \
     logwidget/logwidgethightlighter.cpp \
     prefsdk/prefexception.cpp \
-    viewmodels/crossreferencemodel/crossreferencedelegate.cpp \
     actionwidget/abstractaction.cpp \
-    views/disassemblerview/gotowidget/gotowidget.cpp \
-    viewmodels/stringsymbolmodel/stringsymbolmodel.cpp \
-    viewmodels/variablesmodel/variablesmodel.cpp \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.cpp \
-    views/disassemblerview/disassemblerworker.cpp \
     logwidget/logger.cpp \
     views/hexview/formatwidget/formatworker.cpp \
     qhexedit/sparserangemap.cpp \
     csvexporterdialog/csvexporterworker.cpp \
     csvexporterdialog/csvexporter.cpp \
     csvexporterdialog/csvexporterdialog.cpp \
-    views/disassemblerview/bookmarkdialog/bookmarkdialog.cpp \
-    viewmodels/bookmarkmodel/bookmarkmodel.cpp \
-    views/disassemblerview/bookmarkwidget/bookmarkwidget.cpp \
-    views/disassemblerview/renamewidget/renamewidget.cpp \
     debugdialog/stackdumphighlighter.cpp \
     views/hexview/chartwidget/chartcontainer.cpp \
     qxychart/qxychart.cpp \
@@ -150,9 +127,6 @@ HEADERS  += mainwindow.h \
     exportdialog.h \
     viewmodels/datatypesmodel/datatypesmodel.h \
     viewmodels/formatmodel/formatmodel.h \
-    views/disassemblerview/crossreferencedialog/crossreferencedialog.h \
-    viewmodels/crossreferencemodel/crossreferencemodel.h \
-    views/disassemblerview/datamapview/datamapview.h \
     views/hexview/formatwidget/formatsdialog/formatsdialog.h \
     viewmodels/formatlistmodel/formatlistmodel.h \
     viewmodels/categorymodel/categorymodel.h \
@@ -214,37 +188,17 @@ HEADERS  += mainwindow.h \
     viewmodels/visualmapmodel/visualmapmodel.h \
     viewmodels/visualmapmodel/visualmapdelegate.h \
     viewmodels/datatypesmodel/datatypesdelegate.h \
-    views/disassemblerview/disassemblerview.h \
-    viewmodels/disassemblerlistmodel/disassemblerlistmodel.h \
-    views/disassemblerview/segmentsdialog/segmentsdialog.h \
-    views/disassemblerview/entrypointsdialog/entrypointsdialog.h \
-    viewmodels/segmentsmodel/segmentsmodel.h \
-    viewmodels/entrypointsmodel/entrypointsmodel.h \
-    views/disassemblerview/disassemblerwidget/disassemblerwidget.h \
-    views/disassemblerview/disassemblerwidget/disassemblerhighlighter.h \
-    viewmodels/functionmodel/functionmodel.h \
-    views/disassemblerview/disassemblerwidget/disassemblerwidgetprivate.h \
     qhexedit/sparserangemap.h \
     logwidget/logwidget.h \
     views/hexview/outputwidget/outputwidget.h \
     logwidget/logwidgethightlighter.h \
     prefsdk/prefexception.h \
-    viewmodels/crossreferencemodel/crossreferencedelegate.h \
     actionwidget/abstractaction.h \
-    views/disassemblerview/gotowidget/gotowidget.h \
-    viewmodels/stringsymbolmodel/stringsymbolmodel.h \
-    viewmodels/variablesmodel/variablesmodel.h \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.h \
-    views/disassemblerview/disassemblerworker.h \
     logwidget/logger.h \
     views/hexview/formatwidget/formatworker.h \
     csvexporterdialog/csvexporterworker.h \
     csvexporterdialog/csvexporter.h \
     csvexporterdialog/csvexporterdialog.h \
-    views/disassemblerview/bookmarkdialog/bookmarkdialog.h \
-    viewmodels/bookmarkmodel/bookmarkmodel.h \
-    views/disassemblerview/bookmarkwidget/bookmarkwidget.h \
-    views/disassemblerview/renamewidget/renamewidget.h \
     debugdialog/stackdumphighlighter.h \
     views/hexview/chartwidget/chartcontainer.h \
     qxychart/qxychart.h \
@@ -257,8 +211,6 @@ FORMS    += mainwindow.ui \
     views/hexview/datatypeswidget/datatypeswidget.ui \
     aboutdialog.ui \
     exportdialog.ui \
-    views/disassemblerview/crossreferencedialog/crossreferencedialog.ui \
-    views/disassemblerview/datamapview/datamapview.ui \
     views/hexview/formatwidget/formatsdialog/formatsdialog.ui \
     debugdialog/debugdialog.ui \
     formatoptionsdialog.ui \
@@ -276,16 +228,8 @@ FORMS    += mainwindow.ui \
     views/hexview/formatwidget/formatwidget.ui \
     views/hexview/bytecolorsdialog/bytecolorsdialog.ui \
     views/hexview/visualmapwidget/visualmapwidget.ui \
-    views/disassemblerview/disassemblerview.ui \
-    views/disassemblerview/segmentsdialog/segmentsdialog.ui \
-    views/disassemblerview/entrypointsdialog/entrypointsdialog.ui \
     views/hexview/outputwidget/outputwidget.ui \
-    views/disassemblerview/gotowidget/gotowidget.ui \
     csvexporterdialog/csvexporterdialog.ui \
-    views/disassemblerview/disassemblerdialog/disassemblerdialog.ui \
-    views/disassemblerview/bookmarkdialog/bookmarkdialog.ui \
-    views/disassemblerview/bookmarkwidget/bookmarkwidget.ui \
-    views/disassemblerview/renamewidget/renamewidget.ui
 
 RESOURCES += resources.qrc
 

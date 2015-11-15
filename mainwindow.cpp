@@ -82,47 +82,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
         e->ignore();
 }
 
-void MainWindow::disassembleFile(const QString &file)
-{
-    QHexEditData* hexeditdata = QHexEditData::fromFile(file);
-    DisassemblerDialog ld(hexeditdata, this);
-
-    if(!ld.hasLoaders())
-    {
-        QMessageBox m;
-        m.setWindowTitle("No Loaders found...");
-        m.setText("Cannot find a valid disassembler, do you want do load the file in binary mode?");
-        m.setIcon(QMessageBox::Warning);
-        m.setStandardButtons(QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
-        m.setDefaultButton(QMessageBox::Yes);
-        int ret = m.exec();
-
-        switch(ret)
-        {
-            case QMessageBox::Yes:
-                this->loadFile(file, hexeditdata);
-                break;
-
-            default:
-                break;
-        }
-
-        return;
-    }
-
-    int res = ld.exec();
-
-    if(res == DisassemblerDialog::Accepted && ld.selectedDisassembler())
-    {
-        DisassemblerView* dv = new DisassemblerView(ld.selectedDisassembler(), ld.canLoadDatabase(), hexeditdata, file, this->_lblinfo);
-
-        this->setWindowTitle(QString("%1 [%2]").arg(this->_basetitle, QFileInfo(file).fileName()));
-        this->setCentralWidget(dv);
-        this->setSaveVisible(dv->canSave(), dv->canSaveAs());
-        dv->disassemble();
-    }
-}
-
 void MainWindow::loadFile(const QString &file)
 {
     this->loadFile(file, QHexEditData::fromFile(file));
@@ -131,9 +90,6 @@ void MainWindow::loadFile(const QString &file)
 void MainWindow::checkCommandLine()
 {
     QStringList args = qApp->arguments();    
-
-    if(this->checkDisassembly(args))
-        return;
 
     for(int i = 1; (i < args.length()) && (i < 10); i++)
     {
@@ -144,20 +100,6 @@ void MainWindow::checkCommandLine()
 
         this->loadFile(args[i]);
     }
-}
-
-bool MainWindow::checkDisassembly(const QStringList &args)
-{
-    if((args.count() < 3) || (QString::compare(args[1], "-disassemble", Qt::CaseInsensitive) != 0))
-        return false;
-
-    QFileInfo fi(args[2]);
-
-    if(!fi.isFile())
-        return false;
-
-    this->disassembleFile(args[2]);
-    return true;
 }
 
 bool MainWindow::closeApplication()
@@ -283,12 +225,4 @@ void MainWindow::on_actionHex_File_triggered()
         this->setCentralWidget(hv);
         this->setSaveVisible(hv->canSave(), hv->canSaveAs());
     }
-}
-
-void MainWindow::on_actionDisassemble_triggered()
-{
-    QString file = QFileDialog::getOpenFileName(this, "Disassemble File...");
-
-    if(!file.isEmpty())
-        this->disassembleFile(file);
 }

@@ -7,8 +7,6 @@
 #include "debugdialog/debugdialog.h"
 #include "prefsdk/sdkmanager.h"
 #include "views/hexview/hexview.h"
-#include "views/disassemblerview/disassemblerview.h"
-#include "views/disassemblerview/disassemblerdialog/disassemblerdialog.h"
 #include "views/compareview/compareview.h"
 #include "views/compareview/comparedialog/comparedialog.h"
 #include "signaturedatabasedialog/signaturedatabasedialog.h"
@@ -38,17 +36,14 @@ class MainWindow : public QMainWindow
     private:
         void loadFile(const QString& file, QHexEditData* hexeditdata);
         void checkCommandLine();
-        bool checkDisassembly(const QStringList& args);
         bool closeApplication();
         void setSaveVisible(bool cansave, bool cansaveas);
         void centerWindowToScreen();
         void adjustSplitterPosition();
 
     private slots:
-        void disassembleFile(const QString& file);
         void loadFile(const QString& file);
         void on_action_Analyze_triggered();
-        void on_actionDisassemble_triggered();
         void on_actionCompare_triggered();
         void on_action_Save_As_triggered();
         void on_action_Save_triggered();
