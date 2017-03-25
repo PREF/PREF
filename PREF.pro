@@ -5,4 +5,4 @@ preflib.file = PrefLib/PrefLib.pro
 
 PREF.depends = preflib pref_ui
 
-SUBDIRS = pref_ui preflib
+SUBDIRS = preflib pref_ui

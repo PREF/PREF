@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BinaryView</class>
+ <widget class="QWidget" name="BinaryView">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1015</width>
+    <height>576</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QSplitter" name="vSplitter">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <widget class="QSplitter" name="hSplitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="layoutWidget">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="BinaryNavigator" name="binaryNavigator" native="true"/>
+        </item>
+        <item>
+         <widget class="QHexEdit" name="hexEdit" native="true"/>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QTableView" name="dataInspector">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
+      </widget>
+     </widget>
+     <widget class="QTabWidget" name="tabView">
+      <property name="tabPosition">
+       <enum>QTabWidget::South</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="VisualMap" name="visualMap">
+       <attribute name="title">
+        <string>Visual Map</string>
+       </attribute>
+      </widget>
+      <widget class="ChartTab" name="chartTab">
+       <attribute name="title">
+        <string>Chart</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabTemplate">
+       <attribute name="title">
+        <string>Template</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabStrings">
+       <attribute name="title">
+        <string>Strings</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="tabOutput">
+       <attribute name="title">
+        <string>Output</string>
+       </attribute>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QHexEdit</class>
+   <extends>QWidget</extends>
+   <header>qhexedit/qhexedit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BinaryNavigator</class>
+   <extends>QWidget</extends>
+   <header>widgets/binarynavigator.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VisualMap</class>
+   <extends>QWidget</extends>
+   <header>widgets/visualmap/visualmap.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ChartTab</class>
+   <extends>QWidget</extends>
+   <header>widgets/tabs/charttab.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

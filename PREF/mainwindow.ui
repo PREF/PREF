@@ -6,99 +6,52 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1005</width>
-    <height>719</height>
+    <width>1024</width>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>PREF: Portable Reverse Engineering Framework 2.0</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/app_icons/res/app.png</normaloff>:/app_icons/res/app.png</iconset>
-  </property>
-  <property name="documentMode">
-   <bool>false</bool>
+   <string>Portable Reverse Engineering Framework 3.0</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="leftMargin">
-     <number>0</number>
-    </property>
-    <property name="topMargin">
-     <number>0</number>
-    </property>
-    <property name="rightMargin">
-     <number>0</number>
-    </property>
-    <property name="bottomMargin">
-     <number>0</number>
-    </property>
-   </layout>
+   <layout class="QVBoxLayout" name="verticalLayout"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1005</width>
-     <height>29</height>
+     <width>1024</width>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <widget class="QMenu" name="menuImport">
-     <property name="title">
-      <string>&amp;Import</string>
-     </property>
-     <property name="icon">
-      <iconset resource="resources.qrc">
-       <normaloff>:/action_icons/res/import.png</normaloff>:/action_icons/res/import.png</iconset>
-     </property>
-     <addaction name="actionHex_File"/>
-    </widget>
     <addaction name="action_Analyze"/>
-    <addaction name="actionCompare"/>
-    <addaction name="menuImport"/>
     <addaction name="separator"/>
-    <addaction name="action_Save"/>
-    <addaction name="action_Save_As"/>
-    <addaction name="separator"/>
-    <addaction name="actionExit"/>
-    <addaction name="separator"/>
+    <addaction name="action_Exit"/>
    </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>&amp;?</string>
     </property>
-    <addaction name="actionAbout_PREF"/>
-   </widget>
-   <widget class="QMenu" name="menu_Tools">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="actionSignature_DB"/>
-    <addaction name="separator"/>
-    <addaction name="actionSettings"/>
+    <addaction name="action_About_PREF"/>
    </widget>
    <addaction name="menu_File"/>
-   <addaction name="menu_Tools"/>
    <addaction name="menu"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
    <property name="movable">
     <bool>false</bool>
    </property>
-   <property name="iconSize">
-    <size>
-     <width>22</width>
-     <height>22</height>
-    </size>
+   <property name="allowedAreas">
+    <set>Qt::TopToolBarArea</set>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
@@ -112,38 +65,26 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_Save"/>
-   <addaction name="action_Save_As"/>
-   <addaction name="separator"/>
-   <addaction name="action_Analyze"/>
-   <addaction name="actionCompare"/>
-   <addaction name="separator"/>
-   <addaction name="actionSignature_DB"/>
-   <addaction name="actionAbout_PREF"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
   <action name="action_Analyze">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/action_icons/res/analyze.png</normaloff>:/action_icons/res/analyze.png</iconset>
+     <normaloff>:/res/analyze.png</normaloff>:/res/analyze.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Analyze</string>
-   </property>
-   <property name="iconText">
-    <string>Analyze</string>
-   </property>
-   <property name="toolTip">
-    <string>Analyze</string>
    </property>
    <property name="shortcut">
     <string>F3</string>
    </property>
   </action>
   <action name="action_Save">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/action_icons/res/save.png</normaloff>:/action_icons/res/save.png</iconset>
+     <normaloff>:/res/save.png</normaloff>:/res/save.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Save</string>
@@ -151,72 +92,24 @@
    <property name="shortcut">
     <string>F2</string>
    </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
   </action>
-  <action name="action_Save_As">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/action_icons/res/saveas.png</normaloff>:/action_icons/res/saveas.png</iconset>
-   </property>
+  <action name="action_Save_as">
    <property name="text">
-    <string>Sa&amp;ve As...</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
+    <string>Sa&amp;ve as</string>
    </property>
   </action>
-  <action name="actionExit">
+  <action name="action_Exit">
    <property name="text">
     <string>&amp;Exit</string>
    </property>
   </action>
-  <action name="actionAbout_PREF">
+  <action name="action_About_PREF">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/action_icons/res/about.png</normaloff>:/action_icons/res/about.png</iconset>
+     <normaloff>:/res/about.png</normaloff>:/res/about.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About PREF</string>
-   </property>
-  </action>
-  <action name="actionCompare">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/misc_icons/res/diff.png</normaloff>:/misc_icons/res/diff.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Compare</string>
-   </property>
-   <property name="shortcut">
-    <string>F5</string>
-   </property>
-  </action>
-  <action name="actionSignature_DB">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/signature_database/res/database.png</normaloff>:/signature_database/res/database.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Signature DB</string>
-   </property>
-   <property name="toolTip">
-    <string>Signature DB</string>
-   </property>
-  </action>
-  <action name="actionHex_File">
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/misc_icons/res/hex.png</normaloff>:/misc_icons/res/hex.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Hex File</string>
-   </property>
-  </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>S&amp;ettings</string>
    </property>
   </action>
  </widget>
