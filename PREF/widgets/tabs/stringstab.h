@@ -23,7 +23,6 @@ class StringsTab : public QWidget
         void initialize(QHexEditData* hexeditdata);
         ~StringsTab();
 
-
     private:
         Ui::StringsTab *ui;
         StringsModel* _stringsmodel;
