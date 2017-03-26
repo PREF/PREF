@@ -23,6 +23,9 @@ class TemplateModel : public BasicItemModel
         virtual int rowCount(const QModelIndex &parent) const;
 
     private:
+        int childIndex(BTEntry* btentry, const BTEntryList& entries) const;
+
+    private:
         QHexEdit* _hexedit;
         LoadedData* _loadeddata;
         BTEntryList _template;
