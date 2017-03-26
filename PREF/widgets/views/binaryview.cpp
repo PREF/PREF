@@ -26,19 +26,29 @@ BinaryView::~BinaryView()
 
 void BinaryView::updateToolBar(QToolBar* toolbar) const
 {
-    toolbar->addAction(QIcon(":/res/save.png"), tr("Save"));
-    connect(toolbar->addAction(QIcon(":/res/entropy.png"), tr("Map View")), SIGNAL(triggered()), ui->binaryNavigator, SLOT(switchView()));
+    toolbar->addAction(QIcon(":/res/save.png"), tr("Save"))->setEnabled(!ui->hexEdit->readOnly());
+    toolbar->addAction(QIcon(":/res/entropy.png"), tr("Map View"), ui->binaryNavigator, &BinaryNavigator::switchView);
     toolbar->addSeparator();
-    toolbar->addAction(QIcon(":/res/undo.png"), tr("Undo"));
-    toolbar->addAction(QIcon(":/res/redo.png"), tr("Redo"));
+    toolbar->addAction(QIcon(":/res/undo.png"), tr("Undo"), ui->hexEdit, &QHexEdit::undo);
+    toolbar->addAction(QIcon(":/res/redo.png"), tr("Redo"), ui->hexEdit, &QHexEdit::redo);
     toolbar->addSeparator();
-    toolbar->addAction(QIcon(":/res/cut.png"), tr("Cut"));
-    toolbar->addAction(QIcon(":/res/copy.png"), tr("Copy"));
-    toolbar->addAction(QIcon(":/res/paste.png"), tr("Paste"));
-    toolbar->addAction(QIcon(":/res/selectall.png"), tr("Select All"));
+    QAction* actcut = toolbar->addAction(QIcon(":/res/cut.png"), tr("Cut"), ui->hexEdit, &QHexEdit::cut);
+    QAction* actcopy = toolbar->addAction(QIcon(":/res/copy.png"), tr("Copy"), ui->hexEdit, &QHexEdit::copy);
+    QAction* actpaste = toolbar->addAction(QIcon(":/res/paste.png"), tr("Paste"), ui->hexEdit, &QHexEdit::paste);
+    toolbar->addAction(QIcon(":/res/selectall.png"), tr("Select All"), ui->hexEdit, &QHexEdit::selectAll);
     toolbar->addSeparator();
     toolbar->addAction(QIcon(":/res/find.png"), tr("Find"));
     toolbar->addAction(QIcon(":/res/goto.png"), tr("Goto"));
+
+    actcut->setEnabled(false);
+    actcopy->setEnabled(false);
+    actpaste->setEnabled(false);
+
+    connect(ui->hexEdit, &QHexEdit::selectionChanged, [this, actcut, actcopy, actpaste](qint64 length) {
+        actcut->setEnabled(length > 0);
+        actcopy->setEnabled(length > 0);
+        actpaste->setEnabled(length > 0);
+    });
 }
 
 void BinaryView::analyze()
