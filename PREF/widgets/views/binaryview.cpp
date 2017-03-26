@@ -88,6 +88,7 @@ void BinaryView::loadTemplate()
         return;
 
     this->_templatemodel->execute(file);
+    ui->tabView->setCurrentIndex(2);
 }
 
 void BinaryView::on_tvTemplate_clicked(const QModelIndex &index)
