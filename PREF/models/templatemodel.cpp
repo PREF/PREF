@@ -17,7 +17,7 @@ TemplateModel::~TemplateModel()
 void TemplateModel::execute(const QString &btfile)
 {
     this->beginResetModel();
-    this->_template = PrefContext::instance()->executeFormat(this->_loadeddata, qs_s(btfile));
+    this->_template = PrefContext::instance()->executeTemplate(this->_loadeddata, qs_s(btfile));
     this->endResetModel();
 }
 
