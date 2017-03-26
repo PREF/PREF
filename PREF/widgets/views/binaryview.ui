@@ -14,6 +14,21 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QSplitter" name="vSplitter">
      <property name="orientation">
@@ -56,7 +71,7 @@
        <enum>QTabWidget::South</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="VisualMap" name="visualMap">
        <attribute name="title">
@@ -73,7 +88,7 @@
         <string>Template</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="tabStrings">
+      <widget class="StringsTab" name="stringsTab">
        <attribute name="title">
         <string>Strings</string>
        </attribute>
@@ -111,6 +126,12 @@
    <class>ChartTab</class>
    <extends>QWidget</extends>
    <header>widgets/tabs/charttab.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>StringsTab</class>
+   <extends>QWidget</extends>
+   <header>widgets/tabs/stringstab.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

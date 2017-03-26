@@ -41,7 +41,11 @@ SOURCES += main.cpp\
     widgets/chart/qhistogram.cpp \
     widgets/chart/chartcontainer.cpp \
     widgets/chart/qxychart.cpp \
-    widgets/tabs/charttab.cpp
+    widgets/tabs/charttab.cpp \
+    widgets/tabs/stringstab.cpp \
+    models/stringsmodel.cpp \
+    platform/basicworker.cpp \
+    platform/stringsworker.cpp
 
 HEADERS  += mainwindow.h \
     platform/loadeddata.h \
@@ -58,11 +62,16 @@ HEADERS  += mainwindow.h \
     widgets/chart/qhistogram.h \
     widgets/chart/chartcontainer.h \
     widgets/chart/qxychart.h \
-    widgets/tabs/charttab.h
+    widgets/tabs/charttab.h \
+    widgets/tabs/stringstab.h \
+    models/stringsmodel.h \
+    platform/basicworker.h \
+    platform/stringsworker.h
 
 FORMS    += mainwindow.ui \
     widgets/views/binaryview.ui \
-    widgets/tabs/charttab.ui
+    widgets/tabs/charttab.ui \
+    widgets/tabs/stringstab.ui
 
 DISTFILES +=
 

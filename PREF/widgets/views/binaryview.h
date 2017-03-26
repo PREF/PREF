@@ -3,7 +3,6 @@
 
 #include "abstractview.h"
 #include "platform/loadeddata.h"
-#include "platform/chartworker.h"
 #include "../../models/datainspectormodel.h"
 
 namespace Ui {
@@ -16,8 +15,8 @@ class BinaryView : public AbstractView
 
     public:
         explicit BinaryView(QHexEditData *hexeditdata, QLabel* lblstatus, const QString& loadedfile, QWidget *parent = 0);
-        ~BinaryView();
         virtual void updateToolBar(QToolBar *toolbar) const;
+        ~BinaryView();
 
     private:
         void analyze();
@@ -28,7 +27,6 @@ class BinaryView : public AbstractView
     private:
         Ui::BinaryView *ui;
         LoadedData* _loadeddata;
-        ChartWorker* _chartworker;
         DataInspectorModel* _datainspectormodel;
 };
 

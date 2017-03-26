@@ -1,20 +1,18 @@
 #ifndef CHARTWORKER_H
 #define CHARTWORKER_H
 
-#include <QThread>
-#include <qhexedit/qhexeditdata.h>
 #include <chart/histogramchart.h>
 #include <chart/entropychart.h>
+#include "basicworker.h"
 
 using namespace PrefLib::Chart;
 
-class ChartWorker : public QThread
+class ChartWorker : public BasicWorker
 {
     Q_OBJECT
 
     public:
         explicit ChartWorker(HistogramChart* histogramchart, EntropyChart* entropychart, QHexEditData *hexeditdata, QObject *parent = 0);
-        void abort();
 
     protected:
         virtual void run();
@@ -27,8 +25,6 @@ class ChartWorker : public QThread
     private:
         HistogramChart* _histogramchart;
         EntropyChart* _entropychart;
-        QHexEditData* _hexeditdata;
-        bool _cancontinue;
 };
 
 #endif // CHARTWORKER_H

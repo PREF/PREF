@@ -1,5 +1,6 @@
 #include "charttab.h"
 #include "ui_charttab.h"
+#include "../../platform/chartworker.h"
 #include <support/bytecolors.h>
 
 using namespace PrefLib::Support;
@@ -10,14 +11,16 @@ ChartTab::ChartTab(QWidget *parent) : QWidget(parent), ui(new Ui::ChartTab)
     ui->tbSwitchChart->setIcon(QIcon(":/res/xychart.png"));
 }
 
-QHistogram *ChartTab::histogram() const
+void ChartTab::initialize(QHexEditData *hexeditdata)
 {
-    return ui->chartContainer->histogram();
-}
+    ChartWorker* chartworker = new ChartWorker(ui->chartContainer->histogram()->chart(), ui->chartContainer->xyChart()->chart(), hexeditdata, this);
 
-QXYChart *ChartTab::xyChart() const
-{
-    return ui->chartContainer->xyChart();
+    connect(chartworker, &ChartWorker::histogramChartCompleted, [this]() { ui->chartContainer->histogram()->update(); });
+    connect(chartworker, &ChartWorker::entropyChartCompleted, [this]() { ui->chartContainer->xyChart()->update(); });
+    connect(chartworker, &ChartWorker::entropyCalculated, this, &ChartTab::updateEntropy);
+    connect(chartworker, &ChartWorker::finished, chartworker, &ChartWorker::deleteLater);
+
+    chartworker->start();
 }
 
 ChartTab::~ChartTab()

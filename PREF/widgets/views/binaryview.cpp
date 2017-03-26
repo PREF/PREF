@@ -43,18 +43,13 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
 
 void BinaryView::analyze()
 {
-    this->_chartworker = new ChartWorker(ui->chartTab->histogram()->chart(), ui->chartTab->xyChart()->chart(), ui->hexEdit->data(), this);
-    connect(this->_chartworker, SIGNAL(histogramChartCompleted()), ui->chartTab->histogram(), SLOT(update()));
-    connect(this->_chartworker, SIGNAL(entropyChartCompleted()), ui->chartTab->xyChart(), SLOT(update()));
-    connect(this->_chartworker, SIGNAL(entropyCalculated(double,quint64)), ui->chartTab, SLOT(updateEntropy(double,quint64)));
-
     this->_datainspectormodel = new DataInspectorModel(ui->hexEdit);
 
+    ui->chartTab->initialize(ui->hexEdit->data());
+    ui->stringsTab->initialize(ui->hexEdit->data());
     ui->binaryNavigator->initialize(ui->hexEdit, this->_loadeddata);
     ui->visualMap->initialize(ui->hexEdit);
     ui->dataInspector->setModel(this->_datainspectormodel);
-
-    this->_chartworker->start();
 }
 
 void BinaryView::updateStatus() const

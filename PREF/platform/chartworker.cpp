@@ -1,16 +1,11 @@
 #include "chartworker.h"
 #include "loadeddata.h"
 
-ChartWorker::ChartWorker(HistogramChart *histogramchart, EntropyChart *entropychart, QHexEditData *hexeditdata, QObject *parent): QThread(parent), _cancontinue(true)
+ChartWorker::ChartWorker(HistogramChart *histogramchart, EntropyChart *entropychart, QHexEditData *hexeditdata, QObject *parent): BasicWorker(hexeditdata, parent)
 {
     this->_histogramchart = histogramchart;
     this->_entropychart = entropychart;
     this->_hexeditdata = hexeditdata;
-}
-
-void ChartWorker::abort()
-{
-    this->_cancontinue = false;
 }
 
 void ChartWorker::run()

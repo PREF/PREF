@@ -2,6 +2,7 @@
 #define CHARTTAB_H
 
 #include <QWidget>
+#include <qhexedit/qhexeditdata.h>
 #include "../chart/qhistogram.h"
 #include "../chart/qxychart.h"
 
@@ -15,15 +16,12 @@ class ChartTab : public QWidget
 
     public:
         explicit ChartTab(QWidget *parent = 0);
-        QHistogram* histogram() const;
-        QXYChart* xyChart() const;
+        void initialize(QHexEditData* hexeditdata);
         ~ChartTab();
-
-    public slots:
-        void updateEntropy(double e, quint64 size);
 
     private slots:
         void on_tbSwitchChart_clicked();
+        void updateEntropy(double e, quint64 size);
 
     private:
         Ui::ChartTab *ui;
