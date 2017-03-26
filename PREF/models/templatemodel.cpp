@@ -86,6 +86,8 @@ QVariant TemplateModel::data(const QModelIndex &index, int role) const
             return QString::number(btentry->location.offset, 16).toUpper() + "h";
         else if(index.column() == 3)
             return QString::number(btentry->location.size, 16).toUpper() + "h";
+        else if(index.column() == 4)
+            return s_qs(btentry->value->value_comment);
     }
     else if((role == Qt::DecorationRole) && (index.column() == 0))
     {
