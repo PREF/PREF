@@ -87,6 +87,26 @@
        <attribute name="title">
         <string>Template</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTreeView" name="tvTemplate"/>
+        </item>
+       </layout>
       </widget>
       <widget class="StringsTab" name="stringsTab">
        <attribute name="title">

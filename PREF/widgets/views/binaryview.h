@@ -4,6 +4,7 @@
 #include "abstractview.h"
 #include "platform/loadeddata.h"
 #include "../../models/datainspectormodel.h"
+#include "../../models/templatemodel.h"
 
 namespace Ui {
 class BinaryView;
@@ -23,11 +24,13 @@ class BinaryView : public AbstractView
 
     private slots:
         void updateStatus() const;
+        void loadTemplate();
 
     private:
         Ui::BinaryView *ui;
         LoadedData* _loadeddata;
         DataInspectorModel* _datainspectormodel;
+        TemplateModel* _templatemodel;
 };
 
 #endif // BINARYVIEW_H

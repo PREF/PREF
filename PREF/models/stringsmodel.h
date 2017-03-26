@@ -7,7 +7,7 @@
 
 using namespace PrefLib::Support;
 
-class StringsModel : public BasicModel
+class StringsModel : public BasicListModel
 {
     Q_OBJECT
 

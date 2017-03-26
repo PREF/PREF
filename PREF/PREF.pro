@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     widgets/tabs/stringstab.cpp \
     models/stringsmodel.cpp \
     platform/basicworker.cpp \
-    platform/stringsworker.cpp
+    platform/stringsworker.cpp \
+    models/templatemodel.cpp
 
 HEADERS  += mainwindow.h \
     platform/loadeddata.h \
@@ -66,7 +67,8 @@ HEADERS  += mainwindow.h \
     widgets/tabs/stringstab.h \
     models/stringsmodel.h \
     platform/basicworker.h \
-    platform/stringsworker.h
+    platform/stringsworker.h \
+    models/templatemodel.h
 
 FORMS    += mainwindow.ui \
     widgets/views/binaryview.ui \

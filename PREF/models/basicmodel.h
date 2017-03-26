@@ -1,26 +1,43 @@
 #ifndef BASICMODEL_H
 #define BASICMODEL_H
 
-#include <QAbstractListModel>
+#include <QAbstractItemModel>
 #include <QColor>
 #include <QFont>
 #include <preflib.h>
 
 #define s_qs(s) QString::fromStdString(s)
+#define qs_s(s) s.toStdString()
 
-class BasicModel: public QAbstractListModel
+class BasicModel
+{
+    public:
+        BasicModel();
+
+    protected:
+        QColor highlight(const VMValuePtr& vmvalue) const;
+        QVariant defaultData(int role) const;
+
+    protected:
+        static QFont _monospacefont;
+};
+
+class BasicListModel: public QAbstractListModel, public BasicModel
 {
     Q_OBJECT
 
     public:
-        BasicModel(QObject* parent = 0);
+        BasicListModel(QObject* parent = 0);
         virtual QVariant data(const QModelIndex &index, int role) const;
+};
 
-    protected:
-        QColor highlight(const VMValuePtr& vmvalue) const;
+class BasicItemModel: public QAbstractItemModel, public BasicModel
+{
+    Q_OBJECT
 
-    private:
-        static QFont _monospacefont;
+    public:
+        BasicItemModel(QObject* parent = 0);
+        virtual QVariant data(const QModelIndex &index, int role) const;
 };
 
 #endif // BASICMODEL_H

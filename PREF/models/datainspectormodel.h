@@ -4,7 +4,7 @@
 #include <qhexedit/qhexedit.h>
 #include "basicmodel.h"
 
-class DataInspectorModel : public BasicModel
+class DataInspectorModel : public BasicListModel
 {
     Q_OBJECT
 

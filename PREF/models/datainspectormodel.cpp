@@ -3,7 +3,7 @@
 
 using namespace PrefLib;
 
-DataInspectorModel::DataInspectorModel(QHexEdit *hexedit, QObject *parent) : BasicModel(parent), _hexedit(hexedit)
+DataInspectorModel::DataInspectorModel(QHexEdit *hexedit, QObject *parent) : BasicListModel(parent), _hexedit(hexedit)
 {
     connect(this->_hexedit, SIGNAL(positionChanged(qint64)), this, SLOT(inspect(qint64)));
     this->inspect(hexedit->cursorPos());
@@ -30,7 +30,7 @@ QVariant DataInspectorModel::headerData(int section, Qt::Orientation orientation
 QVariant DataInspectorModel::data(const QModelIndex &index, int role) const
 {
     if(!this->_data)
-        return BasicModel::data(index, role);
+        return BasicListModel::data(index, role);
 
     const VMValuePtr& vmvalue = this->_data->m_value[index.row()];
 
@@ -44,7 +44,7 @@ QVariant DataInspectorModel::data(const QModelIndex &index, int role) const
     else if((role == Qt::ForegroundRole) && (index.column() == 1))
         return this->highlight(vmvalue);
 
-    return BasicModel::data(index, role);
+    return BasicListModel::data(index, role);
 }
 
 int DataInspectorModel::rowCount(const QModelIndex &) const

@@ -28,6 +28,7 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
 {
     toolbar->addAction(QIcon(":/res/save.png"), tr("Save"))->setEnabled(!ui->hexEdit->readOnly());
     toolbar->addAction(QIcon(":/res/entropy.png"), tr("Map View"), ui->binaryNavigator, &BinaryNavigator::switchView);
+    toolbar->addAction(QIcon(":/res/template.png"), tr("Load Template"), this, &BinaryView::loadTemplate);
     toolbar->addSeparator();
     toolbar->addAction(QIcon(":/res/undo.png"), tr("Undo"), ui->hexEdit, &QHexEdit::undo);
     toolbar->addAction(QIcon(":/res/redo.png"), tr("Redo"), ui->hexEdit, &QHexEdit::redo);
@@ -54,15 +55,27 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
 void BinaryView::analyze()
 {
     this->_datainspectormodel = new DataInspectorModel(ui->hexEdit);
+    this->_templatemodel = new TemplateModel(ui->hexEdit);
 
     ui->chartTab->initialize(ui->hexEdit->data());
     ui->stringsTab->initialize(ui->hexEdit->data());
     ui->binaryNavigator->initialize(ui->hexEdit, this->_loadeddata);
     ui->visualMap->initialize(ui->hexEdit);
     ui->dataInspector->setModel(this->_datainspectormodel);
+    ui->tvTemplate->setModel(this->_templatemodel);
 }
 
 void BinaryView::updateStatus() const
 {
     this->_lblstatus->setText(QString("<b>Offset:</b> %1h").arg(QString::number(ui->hexEdit->cursorPos(), 16).toUpper()));
+}
+
+void BinaryView::loadTemplate()
+{
+    QString file = QFileDialog::getOpenFileName(this, tr("Load template..."), QString(), "010 Editor Template (*.bt)");
+
+    if(file.isEmpty())
+        return;
+
+    this->_templatemodel->execute(file);
 }

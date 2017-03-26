@@ -1,7 +1,7 @@
 #include "stringsmodel.h"
 #include <QColor>
 
-StringsModel::StringsModel(QHexEditData *hexeditdata, QObject *parent) : BasicModel(parent)
+StringsModel::StringsModel(QHexEditData *hexeditdata, QObject *parent) : BasicListModel(parent)
 {
     this->_reader = new QHexEditDataReader(hexeditdata, this);
 }
@@ -50,7 +50,7 @@ QVariant StringsModel::data(const QModelIndex &index, int role) const
             return QColor(Qt::darkGreen);
     }
 
-    return BasicModel::data(index, role);
+    return BasicListModel::data(index, role);
 }
 
 int StringsModel::rowCount(const QModelIndex &) const

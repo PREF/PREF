@@ -3,18 +3,16 @@
 
 QFont BasicModel::_monospacefont;
 
-BasicModel::BasicModel(QObject *parent)
+BasicModel::BasicModel()
 {
     if(BasicModel::_monospacefont.family().isEmpty())
         BasicModel::_monospacefont = QFont("Monospace", qApp->font().pointSize());
 }
 
-QVariant BasicModel::data(const QModelIndex &index, int role) const
+QVariant BasicModel::defaultData(int role) const
 {
-    Q_UNUSED(index);
-
     if(role == Qt::FontRole)
-        return BasicModel::_monospacefont;
+        return BasicListModel::_monospacefont;
 
     return QVariant();
 }
@@ -29,4 +27,24 @@ QColor BasicModel::highlight(const VMValuePtr &vmvalue) const
         return QColor(Qt::darkGreen);
 
     return QColor(Qt::black);
+}
+
+BasicListModel::BasicListModel(QObject *parent): QAbstractListModel(parent), BasicModel()
+{
+}
+
+QVariant BasicListModel::data(const QModelIndex &index, int role) const
+{
+    Q_UNUSED(index);
+    return this->defaultData(role);
+}
+
+BasicItemModel::BasicItemModel(QObject *parent): QAbstractItemModel(parent), BasicModel()
+{
+}
+
+QVariant BasicItemModel::data(const QModelIndex &index, int role) const
+{
+    Q_UNUSED(index);
+    return this->defaultData(role);
 }
