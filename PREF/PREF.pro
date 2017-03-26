@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     models/stringsmodel.cpp \
     platform/basicworker.cpp \
     platform/stringsworker.cpp \
-    models/templatemodel.cpp
+    models/templatemodel.cpp \
+    platform/btvmex.cpp
 
 HEADERS  += mainwindow.h \
     platform/loadeddata.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     models/stringsmodel.h \
     platform/basicworker.h \
     platform/stringsworker.h \
-    models/templatemodel.h
+    models/templatemodel.h \
+    platform/btvmex.h
 
 FORMS    += mainwindow.ui \
     widgets/views/binaryview.ui \

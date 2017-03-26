@@ -1,7 +1,7 @@
 #include "datainspectormodel.h"
 #include "../platform/loadeddata.h"
-
-using namespace PrefLib;
+#include "../platform/btvmex.h"
+#include <support/datainspector.h>
 
 DataInspectorModel::DataInspectorModel(QHexEdit *hexedit, QObject *parent) : BasicListModel(parent), _hexedit(hexedit)
 {
@@ -61,6 +61,15 @@ void DataInspectorModel::inspect(qint64 offset)
     loadeddata.seek(offset); // NOTE: Fix Sign
 
     this->beginResetModel();
-    this->_data = PrefContext::instance()->inspect(&loadeddata);
+
+    BTVMEX btvm(this->_hexedit, &loadeddata);
+    btvm.evaluate(DATA_INSPECTOR_CODE);
+    BTEntryList btentries = btvm.createTemplate();
+
+    if(!btentries.empty())
+        this->_data = btentries.front()->value;
+    else
+        this->_data = NULL;
+
     this->endResetModel();
 }

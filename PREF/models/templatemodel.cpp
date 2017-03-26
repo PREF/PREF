@@ -1,7 +1,5 @@
 #include "templatemodel.h"
-#include <preflib.h>
-
-using namespace PrefLib;
+#include "../platform/btvmex.h"
 
 TemplateModel::TemplateModel(QHexEdit *hexedit, QObject *parent) : BasicItemModel(parent), _hexedit(hexedit)
 {
@@ -17,7 +15,11 @@ TemplateModel::~TemplateModel()
 void TemplateModel::execute(const QString &btfile)
 {
     this->beginResetModel();
-    this->_template = PrefContext::instance()->executeTemplate(this->_loadeddata, qs_s(btfile));
+
+    BTVMEX btvm(this->_hexedit, this->_loadeddata);
+    btvm.execute(qs_s(btfile));
+    this->_template = btvm.createTemplate();
+
     this->endResetModel();
 }
 
