@@ -1,6 +1,8 @@
 #include "binaryview.h"
 #include "ui_binaryview.h"
 
+#define pad(s, w) s += QString("&nbsp;").repeated(w)
+
 BinaryView::BinaryView(QHexEditData *hexeditdata, QLabel *lblstatus, const QString &loadedfile, QWidget *parent): AbstractView(hexeditdata, lblstatus, loadedfile, parent), ui(new Ui::BinaryView)
 {
     ui->setupUi(this);
@@ -15,6 +17,7 @@ BinaryView::BinaryView(QHexEditData *hexeditdata, QLabel *lblstatus, const QStri
     ui->hexEdit->setData(hexeditdata);
 
     connect(ui->hexEdit, &QHexEdit::positionChanged, [this](qint64) { this->updateStatus(); });
+    connect(ui->hexEdit, &QHexEdit::selectionChanged, [this](qint64) { this->updateStatus(); });
     this->updateStatus();
     this->analyze();
 }
@@ -67,7 +70,14 @@ void BinaryView::analyze()
 
 void BinaryView::updateStatus() const
 {
-    this->_lblstatus->setText(QString("<b>Offset:</b> %1h").arg(QString::number(ui->hexEdit->cursorPos(), 16).toUpper()));
+    QString info = QString("<b>Offset:</b> %1 [%2h]").arg(QString::number(ui->hexEdit->cursorPos()))
+                                                     .arg(QString::number(ui->hexEdit->cursorPos(), 16).toUpper());
+
+    pad(info, 10);
+    info += QString("<b>Size:</b> %1 [%2h]").arg(QString::number(ui->hexEdit->selectionLength()))
+                                            .arg(QString::number(ui->hexEdit->selectionLength(), 16).toUpper());
+
+    this->_lblstatus->setText(info);
 }
 
 void BinaryView::loadTemplate()
