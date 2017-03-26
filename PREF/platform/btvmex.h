@@ -9,6 +9,9 @@ class BTVMEX: public BTVM
     public:
         BTVMEX(QHexEdit* hexedit, BTVMIO* btvmio);
 
+    private:
+        QRgb bgrToRgb(uint32_t bgr) const;
+
     protected:
         virtual void entryCreated(const BTEntryPtr &btentry);
 
