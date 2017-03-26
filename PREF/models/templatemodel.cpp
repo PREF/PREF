@@ -92,6 +92,17 @@ QVariant TemplateModel::data(const QModelIndex &index, int role) const
 
         return QIcon(":/res/field.png");
     }
+    else if(role == Qt::ForegroundRole)
+    {
+        if(index.column() == 1)
+            return this->highlight(btentry->value);
+        else if((index.column() == 2) || (index.column() == 3))
+            return QColor(Qt::darkBlue);
+        else if(index.column() == 4)
+            return QColor(Qt::darkGreen);
+    }
+    else if((role == Qt::FontRole) && (index.column() == 0))
+        return QVariant(); // Use default font for column 0
 
     return BasicItemModel::data(index, role);
 }
