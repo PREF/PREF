@@ -79,3 +79,12 @@ void BinaryView::loadTemplate()
 
     this->_templatemodel->execute(file);
 }
+
+void BinaryView::on_tvTemplate_clicked(const QModelIndex &index)
+{
+    if(!index.isValid() || !index.internalPointer())
+        return;
+
+    BTEntry* btentry = reinterpret_cast<BTEntry*>(index.internalPointer());
+    ui->hexEdit->setSelection(btentry->location.offset, btentry->location.end());
+}
