@@ -1,4 +1,4 @@
-PREF
+PREF [![Build Status](https://travis-ci.org/PREF/PREF.svg?branch=master)](https://travis-ci.org/PREF/PREF)
 ====
 
 PREF (Portable Reverse Engineering Framework) aims to be the swiss army knife for Reverse Engineering.
