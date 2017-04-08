@@ -16,12 +16,20 @@ class MainWindow : public QMainWindow
         explicit MainWindow(QWidget *parent = 0);
         ~MainWindow();
 
+    protected:
+        virtual void dragEnterEvent(QDragEnterEvent* e);
+        virtual void dragMoveEvent(QDragMoveEvent* e);
+        virtual void dropEvent(QDropEvent* e);
+        virtual void closeEvent(QCloseEvent* e);
+
     private slots:
         void on_action_Analyze_triggered();
 
     private:
-        void centerWindow();
         void updateToolBar(AbstractView* abstractview) const;
+        void centerWindow();
+        void loadFile(const QString& file);
+        bool closeApplication() const;
 
     private:
         Ui::MainWindow *ui;
