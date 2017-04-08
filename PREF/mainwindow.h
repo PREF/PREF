@@ -28,8 +28,9 @@ class MainWindow : public QMainWindow
     private:
         void updateToolBar(AbstractView* abstractview) const;
         void centerWindow();
-        void loadFile(const QString& file);
+        void parseCommandLine();
         bool closeApplication() const;
+        void loadFile(const QString& file);
 
     private:
         Ui::MainWindow *ui;

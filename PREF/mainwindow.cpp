@@ -11,12 +11,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
 
-    this->setAcceptDrops(true);
-    this->centerWindow();
-    this->updateToolBar(NULL);
-
     this->_lblstatus = new QLabel();
     ui->statusBar->addPermanentWidget(this->_lblstatus, 1);
+
+    this->centerWindow();
+    this->setAcceptDrops(true);
+    this->updateToolBar(NULL);
+    this->parseCommandLine();
 }
 
 MainWindow::~MainWindow()
@@ -87,6 +88,36 @@ void MainWindow::centerWindow()
     this->move(position.topLeft());
 }
 
+void MainWindow::parseCommandLine()
+{
+    QStringList args = qApp->arguments();
+
+    if(args.length() <= 1)
+        return;
+
+    QFileInfo fi(args[1]);
+
+    if(!fi.isFile())
+        return;
+
+    this->loadFile(args[1]);
+}
+
+bool MainWindow::closeApplication() const
+{
+    if(!this->_currentview)
+        return false;
+
+    QMessageBox m;
+    m.setWindowTitle(tr("Closing..."));
+    m.setText(tr("Do you want to close PREF?"));
+    m.setIcon(QMessageBox::Question);
+    m.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    m.setDefaultButton(QMessageBox::No);
+
+    return m.exec() == QMessageBox::Yes;
+}
+
 void MainWindow::loadFile(const QString &file)
 {
     if(this->_currentview)
@@ -95,24 +126,6 @@ void MainWindow::loadFile(const QString &file)
     this->_currentview = new BinaryView(QHexDocument::fromFile(file), this->_lblstatus, file, this);
     this->setCentralWidget(this->_currentview);
     this->updateToolBar(this->_currentview);
-}
-
-bool MainWindow::closeApplication() const
-{
-    if(dynamic_cast<AbstractView*>(this->centralWidget()))
-    {
-        QMessageBox m;
-        m.setWindowTitle(tr("Closing..."));
-        m.setText(tr("Do you want to close PREF?"));
-        m.setIcon(QMessageBox::Question);
-        m.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        m.setDefaultButton(QMessageBox::No);
-
-        if(m.exec() == QMessageBox::Yes)
-            return true;
-    }
-
-    return false;
 }
 
 void MainWindow::on_action_Analyze_triggered()
