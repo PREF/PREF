@@ -1,15 +1,17 @@
 language: cpp
 compiler: gcc
-os: linux
+dist: trusty
 
 before_install:
-    - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+    - sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y
     - sudo apt-get update -qq
-    - sudo apt-get install -qq qt5-qmake qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
-script:
-    - qmake -qt=qt5 -v
-    - qmake -qt=qt5
-    - make 
 
-branches:
-    only: master
+install:
+    - sudo apt-get install qt56base
+    - source /opt/qt5*/bin/qt5*-env.sh
+
+script:
+    - git clone --recursive https://github.com/PREF/PREF.git
+    - cd PREF
+    - qmake PREFIX=/usr
+    - make -j4
