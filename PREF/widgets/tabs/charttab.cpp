@@ -11,9 +11,9 @@ ChartTab::ChartTab(QWidget *parent) : QWidget(parent), ui(new Ui::ChartTab)
     ui->tbSwitchChart->setIcon(QIcon(":/res/xychart.png"));
 }
 
-void ChartTab::initialize(QHexEditData *hexeditdata)
+void ChartTab::initialize(QHexDocument *document)
 {
-    ChartWorker* chartworker = new ChartWorker(ui->chartContainer->histogram()->chart(), ui->chartContainer->xyChart()->chart(), hexeditdata, this);
+    ChartWorker* chartworker = new ChartWorker(ui->chartContainer->histogram()->chart(), ui->chartContainer->xyChart()->chart(), document, this);
 
     connect(chartworker, &ChartWorker::histogramChartCompleted, [this]() { ui->chartContainer->histogram()->update(); });
     connect(chartworker, &ChartWorker::entropyChartCompleted, [this]() { ui->chartContainer->xyChart()->update(); });

@@ -16,7 +16,7 @@ class DataInspectorModel : public BasicListModel
         virtual int rowCount(const QModelIndex &) const;
 
     private slots:
-        void inspect(qint64 offset);
+        void inspect();
 
     private:
         VMValuePtr _data;

@@ -1,13 +1,13 @@
 #ifndef BTVMEX_H
 #define BTVMEX_H
 
-#include <qhexedit/qhexedit.h>
+#include <qhexedit/document/qhexdocument.h>
 #include <bt/btvm/btvm.h>
 
 class BTVMEX: public BTVM
 {
     public:
-        BTVMEX(QHexEdit* hexedit, BTVMIO* btvmio);
+        BTVMEX(QHexDocument* document, BTVMIO* btvmio);
 
     private:
         QRgb bgrToRgb(uint32_t bgr) const;
@@ -16,7 +16,7 @@ class BTVMEX: public BTVM
         virtual void entryCreated(const BTEntryPtr &btentry);
 
     private:
-        QHexEdit* _hexedit;
+        QHexDocument* _document;
 };
 
 #endif // BTVMEX_H

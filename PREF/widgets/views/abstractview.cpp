@@ -1,8 +1,8 @@
 #include "abstractview.h"
 
-AbstractView::AbstractView(QHexEditData* hexeditdata, QLabel *lblstatus, const QString &loadedfile, QWidget *parent): QWidget(parent), _hexeditdata(hexeditdata), _lblstatus(lblstatus), _loadedfile(loadedfile)
+AbstractView::AbstractView(QHexDocument* document, QLabel *lblstatus, const QString &loadedfile, QWidget *parent): QWidget(parent), _document(document), _lblstatus(lblstatus), _loadedfile(loadedfile)
 {
-    hexeditdata->setParent(this); /* Take Ownership */
+    document->setParent(this); // NOTE: Take Ownership
 }
 
 AbstractView::~AbstractView()

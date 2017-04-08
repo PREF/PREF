@@ -1,9 +1,10 @@
 #include "templatemodel.h"
 #include "../platform/btvmex.h"
+#include <QIcon>
 
 TemplateModel::TemplateModel(QHexEdit *hexedit, QObject *parent) : BasicItemModel(parent), _hexedit(hexedit)
 {
-    this->_loadeddata = new LoadedData(hexedit->data());
+    this->_loadeddata = new LoadedData(hexedit->document());
 }
 
 TemplateModel::~TemplateModel()
@@ -16,7 +17,7 @@ void TemplateModel::execute(const QString &btfile)
 {
     this->beginResetModel();
 
-    BTVMEX btvm(this->_hexedit, this->_loadeddata);
+    BTVMEX btvm(this->_hexedit->document(), this->_loadeddata);
     btvm.execute(qs_s(btfile));
     this->_template = btvm.createTemplate();
 

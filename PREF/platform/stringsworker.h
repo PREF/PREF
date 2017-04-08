@@ -11,7 +11,7 @@ class StringsWorker : public BasicWorker
     Q_OBJECT
 
     public:
-        explicit StringsWorker(ByteElaborator::StringList& stringlist, QHexEditData* hexeditdata, QObject *parent = 0);
+        explicit StringsWorker(ByteElaborator::StringList& stringlist, QHexDocument *document, QObject *parent = 0);
 
     protected:
         virtual void run();

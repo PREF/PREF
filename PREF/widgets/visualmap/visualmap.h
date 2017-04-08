@@ -28,10 +28,6 @@ class VisualMap : public QWidget
         void populateViewModes();
         void drawNoDataAvailable(QPainter& p);
 
-    private slots:
-        void updateMap(int);
-        void updateMap(qint64);
-
     protected:
         virtual void mousePressEvent(QMouseEvent* event);
         virtual void mouseMoveEvent(QMouseEvent* event);

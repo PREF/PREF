@@ -12,8 +12,8 @@ class DotPlotViewMode : public AbstractViewMode
 
     public:
         explicit DotPlotViewMode(QObject *parent = 0);
-        virtual qint64 size() const;
-        virtual qint64 offset(const QPoint &p) const;
+        virtual integer_t size() const;
+        virtual integer_t offset(const QPoint &p) const;
         virtual void render(QPainter* painter, qint64 width);
 };
 

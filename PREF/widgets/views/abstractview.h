@@ -4,20 +4,20 @@
 #include <QWidget>
 #include <QToolBar>
 #include <QLabel>
-#include "qhexedit/qhexeditdata.h"
+#include <qhexedit/document/qhexdocument.h>
 
 class AbstractView : public QWidget
 {
     Q_OBJECT
 
     public:
-        explicit AbstractView(QHexEditData *hexeditdata, QLabel* lblstatus, const QString& loadedfile, QWidget *parent = 0);
+        explicit AbstractView(QHexDocument *document, QLabel* lblstatus, const QString& loadedfile, QWidget *parent = 0);
         virtual ~AbstractView();
         const QString& loadedFile() const;
         virtual void updateToolBar(QToolBar* toolbar) const;
 
     protected:
-        QHexEditData* _hexeditdata;
+        QHexDocument* _document;
         QLabel* _lblstatus;
 
     private:

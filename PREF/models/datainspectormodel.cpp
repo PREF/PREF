@@ -5,8 +5,8 @@
 
 DataInspectorModel::DataInspectorModel(QHexEdit *hexedit, QObject *parent) : BasicListModel(parent), _hexedit(hexedit)
 {
-    connect(this->_hexedit, SIGNAL(positionChanged(qint64)), this, SLOT(inspect(qint64)));
-    this->inspect(hexedit->cursorPos());
+    connect(this->_hexedit->document()->cursor(), &QHexCursor::positionChanged, this, &DataInspectorModel::inspect);
+    this->inspect();
 }
 
 int DataInspectorModel::columnCount(const QModelIndex &) const
@@ -55,14 +55,15 @@ int DataInspectorModel::rowCount(const QModelIndex &) const
     return this->_data->m_value.size();
 }
 
-void DataInspectorModel::inspect(qint64 offset)
+void DataInspectorModel::inspect()
 {
-    LoadedData loadeddata(this->_hexedit->data());
-    loadeddata.seek(offset); // NOTE: Fix Sign
+    QHexDocument* document = this->_hexedit->document();
+    LoadedData loadeddata(document);
+    loadeddata.seek(document->cursor()->offset());
 
     this->beginResetModel();
 
-    BTVMEX btvm(this->_hexedit, &loadeddata);
+    BTVMEX btvm(this->_hexedit->document(), &loadeddata);
     btvm.evaluate(DATA_INSPECTOR_CODE);
     BTEntryList btentries = btvm.createTemplate();
 

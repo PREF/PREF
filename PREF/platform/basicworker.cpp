@@ -1,6 +1,6 @@
 #include "basicworker.h"
 
-BasicWorker::BasicWorker(QHexEditData* hexeditdata, QObject *parent) : QThread(parent), _hexeditdata(hexeditdata), _cancontinue(true)
+BasicWorker::BasicWorker(QHexDocument *document, QObject *parent) : QThread(parent), _document(document), _cancontinue(true)
 {
 
 }

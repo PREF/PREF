@@ -45,8 +45,7 @@ void MainWindow::on_action_Analyze_triggered()
     if(file.isEmpty())
         return;
 
-    QHexEditData* hexeditdata = QHexEditData::fromFile(file);
-    this->_currentview = new BinaryView(hexeditdata, this->_lblstatus, file, this);
+    this->_currentview = new BinaryView(QHexDocument::fromFile(file), this->_lblstatus, file, this);
     this->setCentralWidget(this->_currentview);
     this->updateToolBar(this->_currentview);
 }

@@ -2,20 +2,20 @@
 #define BASICWORKER_H
 
 #include <QThread>
-#include <qhexedit/qhexeditdata.h>
+#include <qhexedit/document/qhexdocument.h>
 
 class BasicWorker : public QThread
 {
     Q_OBJECT
 
     public:
-        explicit BasicWorker(QHexEditData *hexeditdata, QObject *parent = 0);
+        explicit BasicWorker(QHexDocument *document, QObject *parent = 0);
 
     public slots:
         void abort();
 
     protected:
-        QHexEditData* _hexeditdata;
+        QHexDocument* _document;
         bool _cancontinue;
 };
 

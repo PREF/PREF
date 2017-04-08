@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QSortFilterProxyModel>
-#include <qhexedit/qhexeditdata.h>
 #include <support/byteelaborator.h>
 #include "../../models/stringsmodel.h"
 #include "../../models/stringsmodel.h"
@@ -20,7 +19,7 @@ class StringsTab : public QWidget
 
     public:
         explicit StringsTab(QWidget *parent = 0);
-        void initialize(QHexEditData* hexeditdata);
+        void initialize(QHexDocument *document);
         ~StringsTab();
 
     private:

@@ -23,12 +23,12 @@ class BinaryNavigator : public QWidget
         void switchView();
 
     private:
-        qint64 indexFromPoint(const QPoint &pt);
+        integer_t offsetFromPoint(const QPoint &pt);
         void adjust();
 
     private slots:
-        void updateSquare(qint64);
-        void renderMap(int = 0);
+        void updateSquare();
+        void renderMap();
 
     protected:
         virtual void wheelEvent(QWheelEvent* event);
@@ -42,8 +42,8 @@ class BinaryNavigator : public QWidget
         QHexEdit* _hexedit;
         LoadedData* _loadeddata;
         uint64_t _squaresize;
-        uint64_t _offset;
-        uint64_t _endoffset;
+        integer_t _offset;
+        integer_t _endoffset;
 };
 
 #endif // BINARYNAVIGATOR_H

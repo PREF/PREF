@@ -1,6 +1,7 @@
 #include "pixelviewmode.h"
-#include <qhexedit/qhexeditdatareader.h>
+#include <qhexedit/qhexedit.h>
 #include <support/bytecolors.h>
+#include <QPainter>
 
 using namespace PrefLib::Support;
 
@@ -8,33 +9,30 @@ PixelViewMode::PixelViewMode(QHexEdit *hexedit, QObject *parent): AbstractViewMo
 {
 }
 
-qint64 PixelViewMode::size() const
+integer_t PixelViewMode::size() const
 {
-    return this->_hexedit->data()->length() - this->_hexedit->visibleStartOffset();
+    QHexMetrics* metrics = this->_hexedit->metrics();
+    return metrics->document()->length() - metrics->visibleStartOffset();
 }
 
-qint64 PixelViewMode::offset(const QPoint &p) const
+integer_t PixelViewMode::offset(const QPoint &p) const
 {
-    qint64 offset = this->_hexedit->visibleStartOffset() + (p.x() + (p.y() * this->_width));
-
-    if((offset >= 0) && (offset <= this->_hexedit->data()->length()))
-        return offset;
-
-    return -1;
+    QHexMetrics* metrics = this->_hexedit->metrics();
+    return metrics->visibleStartOffset() + (p.x() + (p.y() * this->_width));
 }
 
 void PixelViewMode::render(QPainter *painter, qint64 width)
 {
     AbstractViewMode::render(painter, width);
 
-    QHexEditData* hexeditdata = this->_hexedit->data();
-    QHexEditDataReader reader(hexeditdata);
-    qint64 s = this->_hexedit->visibleStartOffset(), h = this->preferredHeight(painter), e = std::min(hexeditdata->length(), this->_width * h);
+    QHexMetrics* metrics = this->_hexedit->metrics();
+    QHexDocument* document = this->_hexedit->document();
+    qint64 s = metrics->visibleStartOffset(), h = this->preferredHeight(painter), e = std::min(document->length(), static_cast<integer_t>(this->_width * h));
 
     if(s > e)
-        e = hexeditdata->length();
+        e = document->length();
 
-    this->_bits = reader.read(s, e - s);
+    this->_bits = document->read(s, e - s);
 
     QImage img(reinterpret_cast<const uchar*>(this->_bits.constData()), this->_width, h, this->_width, QImage::Format_Indexed8);
     //FIXME: img.setColorTable(ByteColors::colorTable());

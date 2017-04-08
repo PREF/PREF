@@ -15,7 +15,7 @@ class BinaryView : public AbstractView
     Q_OBJECT
 
     public:
-        explicit BinaryView(QHexEditData *hexeditdata, QLabel* lblstatus, const QString& loadedfile, QWidget *parent = 0);
+        explicit BinaryView(QHexDocument *document, QLabel* lblstatus, const QString& loadedfile, QWidget *parent = 0);
         virtual void updateToolBar(QToolBar *toolbar) const;
         ~BinaryView();
 

@@ -1,20 +1,20 @@
 #include "chartworker.h"
 #include "loadeddata.h"
 
-ChartWorker::ChartWorker(HistogramChart *histogramchart, EntropyChart *entropychart, QHexEditData *hexeditdata, QObject *parent): BasicWorker(hexeditdata, parent)
+ChartWorker::ChartWorker(HistogramChart *histogramchart, EntropyChart *entropychart, QHexDocument *document, QObject *parent): BasicWorker(document, parent)
 {
     this->_histogramchart = histogramchart;
     this->_entropychart = entropychart;
-    this->_hexeditdata = hexeditdata;
+    this->_document = document;
 }
 
 void ChartWorker::run()
 {
-    if(!this->_hexeditdata)
+    if(!this->_document)
         return;
 
     this->_cancontinue = true;
-    LoadedData loadeddata(this->_hexeditdata);
+    LoadedData loadeddata(this->_document);
 
     if(this->_histogramchart)
     {
@@ -28,5 +28,5 @@ void ChartWorker::run()
         emit entropyChartCompleted();
     }
 
-    emit entropyCalculated(Algorithm::entropy(this->_histogramchart->result(), this->_hexeditdata->length()), this->_hexeditdata->length());
+    emit entropyCalculated(Algorithm::entropy(this->_histogramchart->result(), this->_document->length()), this->_document->length());
 }

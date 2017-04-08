@@ -2,7 +2,7 @@
 #define CHARTTAB_H
 
 #include <QWidget>
-#include <qhexedit/qhexeditdata.h>
+#include <qhexedit/document/qhexdocument.h>
 #include "../chart/qhistogram.h"
 #include "../chart/qxychart.h"
 
@@ -16,7 +16,7 @@ class ChartTab : public QWidget
 
     public:
         explicit ChartTab(QWidget *parent = 0);
-        void initialize(QHexEditData* hexeditdata);
+        void initialize(QHexDocument *document);
         ~ChartTab();
 
     private slots:

@@ -11,8 +11,8 @@ class PixelViewMode : public AbstractViewMode
         explicit PixelViewMode(QHexEdit *hexedit, QObject *parent = 0);
 
     public: /* Overriden Methods */
-        virtual qint64 size() const;
-        virtual qint64 offset(const QPoint &p) const;
+        virtual integer_t size() const;
+        virtual integer_t offset(const QPoint &p) const;
         virtual void render(QPainter* painter, qint64 width);
 
     private:

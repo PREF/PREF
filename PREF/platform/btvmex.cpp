@@ -1,9 +1,9 @@
 #include "btvmex.h"
 #include <QColor>
 
-BTVMEX::BTVMEX(QHexEdit *hexedit, BTVMIO *btvmio): BTVM(btvmio), _hexedit(hexedit)
+BTVMEX::BTVMEX(QHexDocument *document, BTVMIO *btvmio): BTVM(btvmio), _document(document)
 {
-    this->_hexedit->clearHighlight();
+
 }
 
 QRgb BTVMEX::bgrToRgb(uint32_t bgr) const
@@ -18,15 +18,15 @@ void BTVMEX::entryCreated(const BTEntryPtr &btentry)
     if(btentry->value->value_fgcolor != ColorInvalid)
     {
         rgb = this->bgrToRgb(btentry->value->value_fgcolor);
-        this->_hexedit->highlightForeground(btentry->location.offset, btentry->location.end(), QColor::fromRgb(rgb));
+        this->_document->highlightFore(btentry->location.offset, btentry->location.end(), QColor::fromRgb(rgb));
 
         if(btentry->value->is_readable() && !btentry->value->value_id.empty())
-            this->_hexedit->commentRange(btentry->location.offset, btentry->location.end(), QString::fromStdString(btentry->value->value_id));
+            this->_document->comment(btentry->location.offset, btentry->location.end(), QString::fromStdString(btentry->value->value_id));
     }
 
     if(btentry->value->value_bgcolor != ColorInvalid)
     {
         rgb = this->bgrToRgb(btentry->value->value_bgcolor);
-        this->_hexedit->highlightBackground(btentry->location.offset, btentry->location.end(), QColor::fromRgb(rgb));
+        this->_document->highlightBack(btentry->location.offset, btentry->location.end(), QColor::fromRgb(rgb));
     }
 }

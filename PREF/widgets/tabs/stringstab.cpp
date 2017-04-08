@@ -7,9 +7,9 @@ StringsTab::StringsTab(QWidget *parent) : QWidget(parent), ui(new Ui::StringsTab
     ui->setupUi(this);
 }
 
-void StringsTab::initialize(QHexEditData *hexeditdata)
+void StringsTab::initialize(QHexDocument *document)
 {
-    this->_stringsmodel = new StringsModel(hexeditdata, this);
+    this->_stringsmodel = new StringsModel(document, this);
 
     this->_proxymodel = new QSortFilterProxyModel(this);
     this->_proxymodel->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -20,7 +20,7 @@ void StringsTab::initialize(QHexEditData *hexeditdata)
 
     ui->tvStrings->setModel(this->_proxymodel);
 
-    StringsWorker* stringsworker = new StringsWorker(this->_stringlist, hexeditdata, this);
+    StringsWorker* stringsworker = new StringsWorker(this->_stringlist, document, this);
     connect(stringsworker, &StringsWorker::searchEnable, ui->leFilter, &QLineEdit::setEnabled);
 
     connect(stringsworker, &StringsWorker::finished, [this, stringsworker]() {

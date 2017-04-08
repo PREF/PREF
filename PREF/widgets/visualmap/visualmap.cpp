@@ -1,4 +1,7 @@
 #include "visualmap.h"
+#include <QGuiApplication>
+#include <QMouseEvent>
+#include <QPainter>
 
 const QString VisualMap::NO_DATA_AVAILABLE = "No Data Available";
 
@@ -43,8 +46,8 @@ void VisualMap::initialize(QHexEdit* hexedit)
     this->_hexedit = hexedit;
     this->populateViewModes();
 
-    connect(this->_hexedit, SIGNAL(verticalScrollBarValueChanged(int)), this, SLOT(updateMap(int)));
-    connect(this->_hexedit, SIGNAL(selectionChanged(qint64)), this, SLOT(updateMap(qint64)));
+    connect(this->_hexedit, &QHexEdit::verticalScroll, [this](integer_t) { this->update(); });
+    connect(this->_hexedit->document()->cursor(), &QHexCursor::selectionChanged, [this]() { this->update(); });
 }
 
 qint64 VisualMap::calcOffset(const QPoint &cursorpos)
@@ -65,16 +68,6 @@ void VisualMap::drawNoDataAvailable(QPainter &p)
 
     p.setPen(QColor(Qt::white));
     p.drawText(10, 10, fm.width(VisualMap::NO_DATA_AVAILABLE), fm.height(), Qt::AlignLeft | Qt::AlignTop, VisualMap::NO_DATA_AVAILABLE);
-}
-
-void VisualMap::updateMap(int)
-{
-    this->update();
-}
-
-void VisualMap::updateMap(qint64)
-{
-    this->update();
 }
 
 void VisualMap::mousePressEvent(QMouseEvent *event)

@@ -1,9 +1,9 @@
 #include "stringsmodel.h"
 #include <QColor>
 
-StringsModel::StringsModel(QHexEditData *hexeditdata, QObject *parent) : BasicListModel(parent)
+StringsModel::StringsModel(QHexDocument *document, QObject *parent) : BasicListModel(parent), _document(document)
 {
-    this->_reader = new QHexEditDataReader(hexeditdata, this);
+
 }
 
 void StringsModel::initialize(const ByteElaborator::StringList &stringlist)
@@ -60,5 +60,5 @@ int StringsModel::rowCount(const QModelIndex &) const
 
 QString StringsModel::string(const ByteElaborator::StringRange &sr) const
 {
-    return this->_reader->readString(sr.Start, sr.End);
+    return this->_document->read(sr.Start, sr.End - sr.Start);
 }

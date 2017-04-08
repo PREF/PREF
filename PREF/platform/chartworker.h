@@ -12,7 +12,7 @@ class ChartWorker : public BasicWorker
     Q_OBJECT
 
     public:
-        explicit ChartWorker(HistogramChart* histogramchart, EntropyChart* entropychart, QHexEditData *hexeditdata, QObject *parent = 0);
+        explicit ChartWorker(HistogramChart* histogramchart, EntropyChart* entropychart, QHexDocument *document, QObject *parent = 0);
 
     protected:
         virtual void run();

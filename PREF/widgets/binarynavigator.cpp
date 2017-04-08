@@ -1,4 +1,7 @@
 #include "binarynavigator.h"
+#include <QMouseEvent>
+#include <QPainter>
+#include <QtMath>
 
 const uint64_t BinaryNavigator::BYTES_PER_LINE = 0x10;
 
@@ -29,24 +32,27 @@ void BinaryNavigator::initialize(QHexEdit *hexedit, LoadedData* loadeddata)
     this->_hexedit = hexedit;
     this->_loadeddata = loadeddata;
 
-    connect(this->_hexedit, SIGNAL(positionChanged(qint64)), this, SLOT(updateSquare(qint64)));
-    connect(this->_hexedit, SIGNAL(verticalScrollBarValueChanged(int)), this, SLOT(renderMap(int)));
+    connect(this->_hexedit->document()->cursor(), &QHexCursor::positionChanged, this, &BinaryNavigator::updateSquare);
+    connect(this->_hexedit, &QHexEdit::verticalScroll, [this](integer_t) { this->renderMap(); });
     this->renderMap();
 }
 
-void BinaryNavigator::renderMap(int)
+void BinaryNavigator::renderMap()
 {
+    if(!this->_loadeddata)
+        return;
+
     this->adjust();
     this->_binarymap.elaborate(this->_loadeddata, this->_offset, this->_endoffset, BinaryNavigator::BYTES_PER_LINE);
     this->update();
 }
 
-qint64 BinaryNavigator::indexFromPoint(const QPoint &pt)
+integer_t BinaryNavigator::offsetFromPoint(const QPoint &pt)
 {
     qint64 y = pt.y() / this->_squaresize;
     qint64 x = pt.x() / this->_squaresize;
 
-    return this->_hexedit->visibleStartOffset() + (x + (y * BinaryNavigator::BYTES_PER_LINE));
+    return this->_hexedit->metrics()->visibleStartOffset() + (x + (y * BinaryNavigator::BYTES_PER_LINE));
 }
 
 void BinaryNavigator::adjust()
@@ -55,11 +61,11 @@ void BinaryNavigator::adjust()
         return;
 
     this->_squaresize = qFloor(static_cast<qreal>(this->width()) / static_cast<qreal>(BinaryNavigator::BYTES_PER_LINE));
-    this->_offset = this->_hexedit->visibleStartOffset();
-    this->_endoffset = std::min(this->_loadeddata->size(), this->_offset + ((this->height() / this->_squaresize) * BinaryNavigator::BYTES_PER_LINE));
+    this->_offset = this->_hexedit->metrics()->visibleStartOffset();
+    this->_endoffset = qMin(this->_loadeddata->size(), this->_offset + ((this->height() / this->_squaresize) * BinaryNavigator::BYTES_PER_LINE));
 }
 
-void BinaryNavigator::updateSquare(qint64)
+void BinaryNavigator::updateSquare()
 {
     this->adjust();
     this->update();
@@ -77,10 +83,9 @@ void BinaryNavigator::mousePressEvent(QMouseEvent *event)
 {
     if(this->_hexedit && ((event->modifiers() == Qt::NoModifier) && (event->button() == Qt::LeftButton)))
     {
-        qint64 idx = this->indexFromPoint(event->pos());
-
-        if(idx != -1)
-            this->_hexedit->selectPos(idx);
+        sinteger_t offset = this->offsetFromPoint(event->pos());
+        QHexCursor* cursor = this->_hexedit->document()->cursor();
+        cursor->setSelectionRange(offset, 1);
     }
     else
         event->ignore();
@@ -94,10 +99,11 @@ void BinaryNavigator::paintEvent(QPaintEvent *)
         return;
 
     const BinaryMap::ByteDataList& bdl = this->_binarymap.data();
+    QHexCursor* cursor = this->_hexedit->document()->cursor();
     QRectF r(0, 0, this->_squaresize, this->_squaresize), cursorrect;
     QPainter p(this);
 
-    for(uint64_t i = 0; i < bdl.size(); i++, this->_offset++)
+    for(integer_t i = 0; i < bdl.size(); i++, this->_offset++)
     {
         if(r.left() >= this->width())
             r.moveTo(0, r.top() + this->_squaresize);
@@ -112,7 +118,7 @@ void BinaryNavigator::paintEvent(QPaintEvent *)
 
         p.fillRect(r, c);
 
-        if(this->_offset == static_cast<uint64_t>(this->_hexedit->cursorPos()))
+        if(this->_offset == cursor->offset())
             cursorrect = r;
 
         r.moveLeft(r.left() + this->_squaresize);
