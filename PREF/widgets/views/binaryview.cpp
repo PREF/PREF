@@ -19,6 +19,7 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
                                          << (this->width() * 0.25));
 
     ui->tvTemplate->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    ui->dataInspector->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     this->_loadeddata = new LoadedData(document);
     this->_menu = new QMenu(this);
