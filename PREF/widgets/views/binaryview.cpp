@@ -29,6 +29,7 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
 
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::positionChanged, this, &BinaryView::updateStatus);
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::selectionChanged, this, &BinaryView::updateStatus);
+    connect(ui->hexEdit->document()->cursor(), &QHexCursor::insertionModeChanged, this, &BinaryView::updateStatus);
     connect(ui->hexEdit, &QHexEdit::customContextMenuRequested, [this](const QPoint&) { this->_menu->popup(QCursor::pos()); });
     connect(ui->visualMap, &VisualMap::gotoTriggered, [this](integer_t offset) { this->_document->cursor()->setSelectionRange(offset, 1); });
 
@@ -145,6 +146,9 @@ void BinaryView::updateStatus() const
     pad(info, 10);
     info += QString("<b>Size:</b> %1 [%2h]").arg(QString::number(cursor->selectionLength()))
                                             .arg(QString::number(cursor->selectionLength(), 16).toUpper());
+
+    pad(info, 10);
+    info += cursor->isInsertMode() ? "INS" : "OVR";
 
     this->_lblstatus->setText(info);
 }
