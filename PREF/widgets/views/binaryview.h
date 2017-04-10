@@ -21,23 +21,24 @@ class BinaryView : public AbstractView
         ~BinaryView();
 
     private:
+        void initMenu();
         void initSaveMenu();
         void analyze();
         void saveTo(QFile* f);
 
     private slots:
+        void on_tvTemplate_clicked(const QModelIndex &index);
         void updateStatus() const;
         void loadTemplate();
         void save();
         void saveAs();
-        void on_tvTemplate_clicked(const QModelIndex &index);
 
     private:
         Ui::BinaryView *ui;
         LoadedData* _loadeddata;
         DataInspectorModel* _datainspectormodel;
         TemplateModel* _templatemodel;
-        QMenu* _savemenu;
+        QMenu *_menu, *_savemenu;
 };
 
 #endif // BINARYVIEW_H

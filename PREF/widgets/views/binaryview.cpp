@@ -20,8 +20,12 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
     ui->tvTemplate->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     this->_loadeddata = new LoadedData(document);
+    this->_menu = new QMenu(this);
+
+    ui->hexEdit->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->hexEdit->setDocument(document);
 
+    connect(ui->hexEdit, &QHexEdit::customContextMenuRequested, [this](const QPoint&) { this->_menu->popup(QCursor::pos()); });
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::positionChanged, this, &BinaryView::updateStatus);
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::selectionChanged, this, &BinaryView::updateStatus);
 
@@ -33,6 +37,20 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
 BinaryView::~BinaryView()
 {
     delete ui;
+}
+
+void BinaryView::initMenu()
+{
+    this->_menu->addAction(QIcon(":/res/undo.png"), tr("Undo"));
+    this->_menu->addAction(QIcon(":/res/redo.png"), tr("Redo"));
+    this->_menu->addSeparator();
+    this->_menu->addAction(QIcon(":/res/cut.png"), tr("Cut"));
+    this->_menu->addAction(QIcon(":/res/copy.png"), tr("Copy"));
+    this->_menu->addAction(QIcon(":/res/paste.png"), tr("Paste"));
+    this->_menu->addSeparator();
+    this->_menu->addAction(QIcon(":/res/selectall.png"), tr("Select All"));
+    this->_menu->addAction(QIcon(":/res/find.png"), tr("Find"));
+    this->_menu->addAction(QIcon(":/res/goto.png"), tr("Goto"));
 }
 
 void BinaryView::initSaveMenu()
@@ -57,22 +75,36 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
     toolbar->addAction(QIcon(":/res/entropy.png"), tr("Map View"), ui->binaryNavigator, &BinaryNavigator::switchView);
     toolbar->addAction(QIcon(":/res/template.png"), tr("Load Template"), this, &BinaryView::loadTemplate);
     toolbar->addSeparator();
-    toolbar->addAction(QIcon(":/res/undo.png"), tr("Undo"), document, &QHexDocument::undo);
-    toolbar->addAction(QIcon(":/res/redo.png"), tr("Redo"), document, &QHexDocument::redo);
+    QAction* actundo = toolbar->addAction(QIcon(":/res/undo.png"), tr("Undo"), document, &QHexDocument::undo);
+    QAction* actredo = toolbar->addAction(QIcon(":/res/redo.png"), tr("Redo"), document, &QHexDocument::redo);
     toolbar->addSeparator();
-
     QAction* actcut = toolbar->addAction(QIcon(":/res/cut.png"), tr("Cut"), document, &QHexDocument::cut);
     QAction* actcopy = toolbar->addAction(QIcon(":/res/copy.png"), tr("Copy"), document, &QHexDocument::copy);
     QAction* actpaste = toolbar->addAction(QIcon(":/res/paste.png"), tr("Paste"), document, &QHexDocument::paste);
-
-    toolbar->addAction(QIcon(":/res/selectall.png"), tr("Select All"), cursor, &QHexCursor::selectAll);
+    QAction* actselectall = toolbar->addAction(QIcon(":/res/selectall.png"), tr("Select All"), cursor, &QHexCursor::selectAll);
     toolbar->addSeparator();
-    toolbar->addAction(QIcon(":/res/find.png"), tr("Find"));
-    toolbar->addAction(QIcon(":/res/goto.png"), tr("Goto"));
+    QAction* actfind = toolbar->addAction(QIcon(":/res/find.png"), tr("Find"));
+    QAction* actgoto = toolbar->addAction(QIcon(":/res/goto.png"), tr("Goto"));
 
+    actundo->setEnabled(false);
+    actredo->setEnabled(false);
     actcut->setEnabled(false);
     actcopy->setEnabled(false);
     actpaste->setEnabled(false);
+
+    this->_menu->addAction(actundo);
+    this->_menu->addAction(actredo);
+    this->_menu->addSeparator();
+    this->_menu->addAction(actcut);
+    this->_menu->addAction(actcopy);
+    this->_menu->addAction(actpaste);
+    this->_menu->addSeparator();
+    this->_menu->addAction(actselectall);
+    this->_menu->addAction(actfind);
+    this->_menu->addAction(actgoto);
+
+    connect(this->_document, &QHexDocument::canUndoChanged, [this, actundo]() { actundo->setEnabled(this->_document->canUndo());});
+    connect(this->_document, &QHexDocument::canRedoChanged, [this, actredo]() { actredo->setEnabled(this->_document->canRedo());});
 
     connect(cursor, &QHexCursor::selectionChanged, [cursor, actcut, actcopy, actpaste]() {
         actcut->setEnabled(cursor->selectionLength() > 0);
@@ -103,6 +135,16 @@ void BinaryView::saveTo(QFile *f)
         QMessageBox::warning(this, tr("Save failed"), tr("Cannot save '%1'").arg(this->loadedFile()));
 
     f->close();
+}
+
+void BinaryView::on_tvTemplate_clicked(const QModelIndex &index)
+{
+    if(!index.isValid() || !index.internalPointer())
+        return;
+
+    QHexCursor* cursor = ui->hexEdit->document()->cursor();
+    BTEntry* btentry = reinterpret_cast<BTEntry*>(index.internalPointer());
+    cursor->setSelectionRange(btentry->location.offset, btentry->location.size);
 }
 
 void BinaryView::updateStatus() const
@@ -146,14 +188,4 @@ void BinaryView::saveAs()
 
     QFile f(file);
     this->saveTo(&f);
-}
-
-void BinaryView::on_tvTemplate_clicked(const QModelIndex &index)
-{
-    if(!index.isValid() || !index.internalPointer())
-        return;
-
-    QHexCursor* cursor = ui->hexEdit->document()->cursor();
-    BTEntry* btentry = reinterpret_cast<BTEntry*>(index.internalPointer());
-    cursor->setSelectionRange(btentry->location.offset, btentry->location.size);
 }
