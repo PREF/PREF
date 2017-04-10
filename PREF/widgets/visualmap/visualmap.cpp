@@ -10,7 +10,6 @@ VisualMap::VisualMap(QWidget *parent): QWidget(parent), _viewmode(VisualMap::Dot
     QFont f("Monospace", qApp->font().pointSize());
     f.setStyleHint(QFont::TypeWriter);
 
-    this->setMouseTracking(true);
     this->setAutoFillBackground(true);
     this->setCursor(QCursor(Qt::CrossCursor));
     this->setFocusPolicy(Qt::StrongFocus);
@@ -84,19 +83,6 @@ void VisualMap::mousePressEvent(QMouseEvent *event)
     }
 
     QWidget::mousePressEvent(event);
-}
-
-void VisualMap::mouseMoveEvent(QMouseEvent *event)
-{
-    if(this->_hexedit)
-    {
-        qint64 offset = this->calcOffset(event->pos());
-
-        if(offset != -1)
-            emit offsetChanged(offset);
-    }
-
-    QWidget::mouseMoveEvent(event);
 }
 
 void VisualMap::wheelEvent(QWheelEvent *event)

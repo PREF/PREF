@@ -30,13 +30,11 @@ class VisualMap : public QWidget
 
     protected:
         virtual void mousePressEvent(QMouseEvent* event);
-        virtual void mouseMoveEvent(QMouseEvent* event);
         virtual void wheelEvent(QWheelEvent* event);
         virtual void paintEvent(QPaintEvent*);
 
     signals:
-        void offsetChanged(qint64 offset);
-        void gotoTriggered(qint64);
+        void gotoTriggered(integer_t offset);
 
     private:
         static const QString NO_DATA_AVAILABLE;
