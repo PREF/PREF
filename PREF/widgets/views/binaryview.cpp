@@ -78,7 +78,6 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
     actredo->setEnabled(false);
     actcut->setEnabled(false);
     actcopy->setEnabled(false);
-    actpaste->setEnabled(false);
 
     actgoto->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_G));
 
@@ -93,13 +92,12 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
     this->_menu->addAction(actfind);
     this->_menu->addAction(actgoto);
 
-    connect(this->_document, &QHexDocument::canUndoChanged, [this, actundo]() { actundo->setEnabled(this->_document->canUndo());});
-    connect(this->_document, &QHexDocument::canRedoChanged, [this, actredo]() { actredo->setEnabled(this->_document->canRedo());});
+    connect(this->_document, &QHexDocument::canUndoChanged, [this, actundo]() { actundo->setEnabled(this->_document->canUndo()); });
+    connect(this->_document, &QHexDocument::canRedoChanged, [this, actredo]() { actredo->setEnabled(this->_document->canRedo()); });
 
     connect(cursor, &QHexCursor::selectionChanged, [cursor, actcut, actcopy, actpaste]() {
         actcut->setEnabled(cursor->selectionLength() > 0);
         actcopy->setEnabled(cursor->selectionLength() > 0);
-        actpaste->setEnabled(cursor->selectionLength() > 0);
     });
 }
 
