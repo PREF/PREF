@@ -14,18 +14,9 @@ integer_t DotPlotViewMode::size() const
 integer_t DotPlotViewMode::offset(const QPoint &p) const
 {
     integer_t l = this->_hexedit->document()->length();
-    sinteger_t s = qMin(sinteger_t(500), static_cast<sinteger_t>(l));
-
-    if(p.x() > s || p.y() > s)
-        return -1;
-
+    integer_t s = qMin(integer_t(500), l);
     QHexMetrics* metrics = this->_hexedit->metrics();
-    sinteger_t offset = metrics->visibleStartOffset() + (p.x() + (p.y() / s));
-
-    if(offset >= 0 && (offset <= l))
-        return offset;
-
-    return -1;
+    return qMin(metrics->visibleStartOffset() + (p.x() + (p.y() / s)), l);
 }
 
 void DotPlotViewMode::render(QPainter *painter, qint64 width)
