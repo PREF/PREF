@@ -14,11 +14,14 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
     ui->hSplitter->setSizes(QList<int>() << (this->width() * 0.75)
                                          << (this->width() * 0.25));
 
+    ui->tvTemplate->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     this->_loadeddata = new LoadedData(document);
     ui->hexEdit->setDocument(document);
 
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::positionChanged, this, &BinaryView::updateStatus);
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::selectionChanged, this, &BinaryView::updateStatus);
+
     this->updateStatus();
     this->analyze();
 }
