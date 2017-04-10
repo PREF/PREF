@@ -21,7 +21,6 @@ class BinaryView : public AbstractView
         ~BinaryView();
 
     private:
-        void initMenu();
         void initSaveMenu();
         void analyze();
         void saveTo(QFile* f);

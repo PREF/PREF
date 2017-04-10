@@ -39,20 +39,6 @@ BinaryView::~BinaryView()
     delete ui;
 }
 
-void BinaryView::initMenu()
-{
-    this->_menu->addAction(QIcon(":/res/undo.png"), tr("Undo"));
-    this->_menu->addAction(QIcon(":/res/redo.png"), tr("Redo"));
-    this->_menu->addSeparator();
-    this->_menu->addAction(QIcon(":/res/cut.png"), tr("Cut"));
-    this->_menu->addAction(QIcon(":/res/copy.png"), tr("Copy"));
-    this->_menu->addAction(QIcon(":/res/paste.png"), tr("Paste"));
-    this->_menu->addSeparator();
-    this->_menu->addAction(QIcon(":/res/selectall.png"), tr("Select All"));
-    this->_menu->addAction(QIcon(":/res/find.png"), tr("Find"));
-    this->_menu->addAction(QIcon(":/res/goto.png"), tr("Goto"));
-}
-
 void BinaryView::initSaveMenu()
 {
     this->_savemenu = new QMenu(this);
