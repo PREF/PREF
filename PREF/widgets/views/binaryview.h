@@ -29,8 +29,9 @@ class BinaryView : public AbstractView
         void on_tvTemplate_clicked(const QModelIndex &index);
         void updateStatus() const;
         void loadTemplate();
-        void save();
+        void showGoto();
         void saveAs();
+        void save();
 
     private:
         Ui::BinaryView *ui;

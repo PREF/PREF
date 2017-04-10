@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     platform/basicworker.cpp \
     platform/stringsworker.cpp \
     models/templatemodel.cpp \
-    platform/btvmex.cpp
+    platform/btvmex.cpp \
+    dialogs/scalardialog.cpp
 
 HEADERS  += mainwindow.h \
     platform/loadeddata.h \
@@ -70,12 +71,14 @@ HEADERS  += mainwindow.h \
     platform/basicworker.h \
     platform/stringsworker.h \
     models/templatemodel.h \
-    platform/btvmex.h
+    platform/btvmex.h \
+    dialogs/scalardialog.h
 
 FORMS    += mainwindow.ui \
     widgets/views/binaryview.ui \
     widgets/tabs/charttab.ui \
-    widgets/tabs/stringstab.ui
+    widgets/tabs/stringstab.ui \
+    dialogs/scalardialog.ui
 
 DISTFILES +=
 

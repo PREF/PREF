@@ -1,5 +1,6 @@
 #include "binaryview.h"
 #include "ui_binaryview.h"
+#include "../../dialogs/scalardialog.h"
 #include <QToolButton>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -53,12 +54,6 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
     QHexCursor* cursor = document->cursor();
 
     QAction* actsave = toolbar->addAction(QIcon(":/res/save.png"), tr("Save"), this, &BinaryView::save);
-    actsave->setEnabled(!ui->hexEdit->readOnly());
-    actsave->setMenu(this->_savemenu);
-
-    QToolButton* toolbutton = static_cast<QToolButton*>(toolbar->widgetForAction(actsave));
-    toolbutton->setPopupMode(QToolButton::MenuButtonPopup);
-
     toolbar->addAction(QIcon(":/res/entropy.png"), tr("Map View"), ui->binaryNavigator, &BinaryNavigator::switchView);
     toolbar->addAction(QIcon(":/res/template.png"), tr("Load Template"), this, &BinaryView::loadTemplate);
     toolbar->addSeparator();
@@ -71,13 +66,20 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
     QAction* actselectall = toolbar->addAction(QIcon(":/res/selectall.png"), tr("Select All"), cursor, &QHexCursor::selectAll);
     toolbar->addSeparator();
     QAction* actfind = toolbar->addAction(QIcon(":/res/find.png"), tr("Find"));
-    QAction* actgoto = toolbar->addAction(QIcon(":/res/goto.png"), tr("Goto"));
+    QAction* actgoto = toolbar->addAction(QIcon(":/res/goto.png"), tr("Goto"), this, &BinaryView::showGoto);
 
+    QToolButton* toolbutton = static_cast<QToolButton*>(toolbar->widgetForAction(actsave));
+    toolbutton->setPopupMode(QToolButton::MenuButtonPopup);
+
+    actsave->setEnabled(!ui->hexEdit->readOnly());
+    actsave->setMenu(this->_savemenu);
     actundo->setEnabled(false);
     actredo->setEnabled(false);
     actcut->setEnabled(false);
     actcopy->setEnabled(false);
     actpaste->setEnabled(false);
+
+    actgoto->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_G));
 
     this->_menu->addAction(actundo);
     this->_menu->addAction(actredo);
@@ -160,10 +162,14 @@ void BinaryView::loadTemplate()
     ui->tabView->setCurrentIndex(2);
 }
 
-void BinaryView::save()
+void BinaryView::showGoto()
 {
-    QFile f(this->loadedFile());
-    this->saveTo(&f);
+    integer_t offset = ScalarDialog::getScalar(this, tr("Goto..."), tr("Offset:"));
+
+    if(offset >= this->_document->length())
+        return;
+
+    this->_document->cursor()->setOffset(offset);
 }
 
 void BinaryView::saveAs()
@@ -174,5 +180,11 @@ void BinaryView::saveAs()
         return;
 
     QFile f(file);
+    this->saveTo(&f);
+}
+
+void BinaryView::save()
+{
+    QFile f(this->loadedFile());
     this->saveTo(&f);
 }

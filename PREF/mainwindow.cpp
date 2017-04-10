@@ -62,11 +62,13 @@ void MainWindow::dropEvent(QDropEvent *e)
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     if(this->closeApplication())
+    {
         e->accept();
-    else
-        e->ignore();
+        QMainWindow::closeEvent(e);
+        return;
+    }
 
-    QMainWindow::closeEvent(e);
+    e->ignore();
 }
 
 void MainWindow::updateToolBar(AbstractView *abstractview) const
