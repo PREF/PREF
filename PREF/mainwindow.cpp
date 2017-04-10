@@ -95,11 +95,6 @@ void MainWindow::parseCommandLine()
     if(args.length() <= 1)
         return;
 
-    QFileInfo fi(args[1]);
-
-    if(!fi.isFile())
-        return;
-
     this->loadFile(args[1]);
 }
 
@@ -120,8 +115,15 @@ bool MainWindow::closeApplication() const
 
 void MainWindow::loadFile(const QString &file)
 {
+    QFileInfo fi(file);
+
+    if(!fi.isFile())
+        return;
+
     if(this->_currentview)
         this->_currentview->deleteLater();
+
+    this->setWindowTitle(fi.fileName());
 
     this->_currentview = new BinaryView(QHexDocument::fromFile(file), this->_lblstatus, file, this);
     this->setCentralWidget(this->_currentview);
