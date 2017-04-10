@@ -1,7 +1,12 @@
 #include "btvmex.h"
 #include <QColor>
 
-BTVMEX::BTVMEX(QHexDocument *document, BTVMIO *btvmio): BTVM(btvmio), _document(document)
+BTVMEX::BTVMEX(QHexDocument *document, LogWidget *logwidget, BTVMIO *btvmio): BTVM(btvmio), _document(document), _logwidget(logwidget)
+{
+
+}
+
+BTVMEX::BTVMEX(QHexDocument *document, BTVMIO *btvmio): BTVM(btvmio), _document(document), _logwidget(NULL)
 {
 
 }
@@ -29,4 +34,12 @@ void BTVMEX::entryCreated(const BTEntryPtr &btentry)
         rgb = this->bgrToRgb(btentry->value->value_bgcolor);
         this->_document->highlightBack(btentry->location.offset, btentry->location.end(), QColor::fromRgb(rgb));
     }
+}
+
+void BTVMEX::print(const std::string &s)
+{
+    if(!this->_logwidget)
+        return;
+
+    this->_logwidget->log(QString::fromStdString(s));
 }

@@ -26,9 +26,9 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
     ui->hexEdit->setContextMenuPolicy(Qt::CustomContextMenu);
     ui->hexEdit->setDocument(document);
 
-    connect(ui->hexEdit, &QHexEdit::customContextMenuRequested, [this](const QPoint&) { this->_menu->popup(QCursor::pos()); });
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::positionChanged, this, &BinaryView::updateStatus);
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::selectionChanged, this, &BinaryView::updateStatus);
+    connect(ui->hexEdit, &QHexEdit::customContextMenuRequested, [this](const QPoint&) { this->_menu->popup(QCursor::pos()); });
     connect(ui->visualMap, &VisualMap::gotoTriggered, [this](integer_t offset) { this->_document->cursor()->setSelectionRange(offset, 1); });
 
     this->initSaveMenu();
@@ -158,7 +158,7 @@ void BinaryView::loadTemplate()
         return;
 
     ui->hexEdit->document()->clearMetadata();
-    this->_templatemodel->execute(file);
+    this->_templatemodel->execute(file, ui->logWidget);
     ui->tabView->setCurrentIndex(2);
 }
 

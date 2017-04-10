@@ -48,7 +48,9 @@ SOURCES += main.cpp\
     platform/stringsworker.cpp \
     models/templatemodel.cpp \
     platform/btvmex.cpp \
-    dialogs/scalardialog.cpp
+    dialogs/scalardialog.cpp \
+    widgets/logwidget/logwidget.cpp \
+    widgets/logwidget/loghighlighter.cpp
 
 HEADERS  += mainwindow.h \
     platform/loadeddata.h \
@@ -72,7 +74,9 @@ HEADERS  += mainwindow.h \
     platform/stringsworker.h \
     models/templatemodel.h \
     platform/btvmex.h \
-    dialogs/scalardialog.h
+    dialogs/scalardialog.h \
+    widgets/logwidget/logwidget.h \
+    widgets/logwidget/loghighlighter.h
 
 FORMS    += mainwindow.ui \
     widgets/views/binaryview.ui \

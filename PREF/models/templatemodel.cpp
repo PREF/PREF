@@ -1,5 +1,6 @@
 #include "templatemodel.h"
 #include "../platform/btvmex.h"
+#include "../widgets/logwidget/logwidget.h"
 #include <QIcon>
 
 TemplateModel::TemplateModel(QHexEdit *hexedit, QObject *parent) : BasicItemModel(parent), _hexedit(hexedit)
@@ -13,11 +14,11 @@ TemplateModel::~TemplateModel()
     this->_loadeddata = NULL;
 }
 
-void TemplateModel::execute(const QString &btfile)
+void TemplateModel::execute(const QString &btfile, LogWidget* logwidget)
 {
     this->beginResetModel();
 
-    BTVMEX btvm(this->_hexedit->document(), this->_loadeddata);
+    BTVMEX btvm(this->_hexedit->document(), logwidget, this->_loadeddata);
     btvm.execute(qs_s(btfile));
     this->_template = btvm.createTemplate();
 

@@ -127,6 +127,26 @@
        <attribute name="title">
         <string>Output</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="LogWidget" name="logWidget"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>
@@ -163,6 +183,11 @@
    <extends>QWidget</extends>
    <header>widgets/tabs/stringstab.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LogWidget</class>
+   <extends>QPlainTextEdit</extends>
+   <header>widgets/logwidget/logwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
