@@ -78,26 +78,6 @@
     <string>F3</string>
    </property>
   </action>
-  <action name="action_Save">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="resources.qrc">
-     <normaloff>:/res/save.png</normaloff>:/res/save.png</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Save</string>
-   </property>
-   <property name="shortcut">
-    <string>F2</string>
-   </property>
-  </action>
-  <action name="action_Save_as">
-   <property name="text">
-    <string>Sa&amp;ve as</string>
-   </property>
-  </action>
   <action name="action_Exit">
    <property name="text">
     <string>&amp;Exit</string>
