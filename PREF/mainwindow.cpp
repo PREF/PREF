@@ -103,7 +103,7 @@ void MainWindow::parseCommandLine()
 bool MainWindow::closeApplication() const
 {
     if(!this->_currentview)
-        return false;
+        return true;
 
     QMessageBox m;
     m.setWindowTitle(tr("Closing..."));
