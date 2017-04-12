@@ -22,6 +22,12 @@ class StringsTab : public QWidget
         void initialize(QHexDocument *document);
         ~StringsTab();
 
+    private slots:
+        void on_tvStrings_doubleClicked(const QModelIndex &index);
+
+    signals:
+        void selectString(integer_t startoffset, integer_t endoffset);
+
     private:
         Ui::StringsTab *ui;
         StringsModel* _stringsmodel;

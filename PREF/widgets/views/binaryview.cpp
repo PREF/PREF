@@ -32,6 +32,7 @@ BinaryView::BinaryView(QHexDocument *document, QLabel *lblstatus, const QString 
     connect(ui->hexEdit->document()->cursor(), &QHexCursor::insertionModeChanged, this, &BinaryView::updateStatus);
     connect(ui->hexEdit, &QHexEdit::customContextMenuRequested, [this](const QPoint&) { this->_menu->popup(QCursor::pos()); });
     connect(ui->visualMap, &VisualMap::gotoTriggered, [this](integer_t offset) { this->_document->cursor()->setSelectionRange(offset, 1); });
+    connect(ui->stringsTab, &StringsTab::selectString, ui->hexEdit->document()->cursor(), &QHexCursor::setSelection);
 
     this->initSaveMenu();
     this->updateStatus();

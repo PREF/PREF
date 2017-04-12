@@ -35,3 +35,14 @@ StringsTab::~StringsTab()
 {
     delete ui;
 }
+
+void StringsTab::on_tvStrings_doubleClicked(const QModelIndex &index)
+{
+    QModelIndex sourceindex = this->_proxymodel->mapToSource(index);
+
+    if(!sourceindex.isValid())
+        return;
+
+    ByteElaborator::StringRange sr = this->_stringlist[sourceindex.row()];
+    emit selectString(sr.Start, sr.End);
+}
