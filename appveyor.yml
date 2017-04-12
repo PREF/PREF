@@ -16,5 +16,5 @@ install:
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
 
 build_script:
-  - qmake CONFIG+=release
+  - qmake CONFIG+=release PREF.pro
   - nmake /S /NOLOGO
