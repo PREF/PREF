@@ -10,8 +10,9 @@ max_jobs: 4
 
 install:
   - git submodule update --init --recursive
-  - set QTDIR=C:\Qt\5.6\msvc2015_64
-  - set PATH=%QTDIR%\bin;%PATH%
-  - '%QTDIR%\bin\qtenv2.bat'
-  - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
-  - qmake -tp vc -r
+  - set QTDIR=C:\Qt\5.6\mingw49_32
+  - set PATH=%QTDIR%\bin;C:\Qt\Tools\mingw530_32\bin;%PATH%
+
+build_script:
+  - qmake PREF.pro CONFIG+=release
+  - mingw32-make
