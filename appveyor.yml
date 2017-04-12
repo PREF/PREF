@@ -15,4 +15,4 @@ install:
 
 build_script:
   - qmake PREF.pro
-  - mingw32-make
+  - mingw64-make
