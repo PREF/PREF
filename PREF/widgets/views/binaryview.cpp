@@ -57,7 +57,7 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
 
     QAction* actsave = toolbar->addAction(QIcon(":/res/save.png"), tr("Save"), this, &BinaryView::save);
     toolbar->addAction(QIcon(":/res/entropy.png"), tr("Map View"), ui->binaryNavigator, &BinaryNavigator::switchView);
-    toolbar->addAction(QIcon(":/res/template.png"), tr("Load Template"), this, &BinaryView::loadTemplate);
+    QAction* acttemplate = toolbar->addAction(QIcon(":/res/template.png"), tr("Load Template"), this, &BinaryView::loadTemplate);
     toolbar->addSeparator();
     QAction* actundo = toolbar->addAction(QIcon(":/res/undo.png"), tr("Undo"), document, &QHexDocument::undo);
     QAction* actredo = toolbar->addAction(QIcon(":/res/redo.png"), tr("Redo"), document, &QHexDocument::redo);
@@ -80,7 +80,8 @@ void BinaryView::updateToolBar(QToolBar* toolbar) const
     actcut->setEnabled(false);
     actcopy->setEnabled(false);
 
-    actgoto->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_G));
+    acttemplate->setShortcut(QKeySequence(Qt::Key_F4));
+    actgoto->setShortcut(QKeySequence(Qt::Key_F5));
 
     this->_menu->addAction(actundo);
     this->_menu->addAction(actredo);

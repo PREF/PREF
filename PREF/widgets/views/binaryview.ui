@@ -105,6 +105,9 @@
         </property>
         <item>
          <widget class="QTreeView" name="tvTemplate">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>
@@ -144,7 +147,11 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="LogWidget" name="logWidget"/>
+         <widget class="LogWidget" name="logWidget">
+          <property name="frameShape">
+           <enum>QFrame::NoFrame</enum>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
