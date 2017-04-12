@@ -1,4 +1,6 @@
 INCLUDEPATH += $$PWD/PrefLib
-LIBS += -L$$OUT_PWD/../PrefLib/ -lPrefLib
+
+unix:LIBS  += -L$$OUT_PWD/../PrefLib/ -lPrefLib
+win32:LIBS += $$OUT_PWD/../PrefLib.lib
 
 #win32: RC_FILE = resources.rc
