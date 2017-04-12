@@ -15,4 +15,4 @@ install:
 
 build_script:
   - qmake PREF.pro CONFIG+=release
-  - mingw32-make
+  - mingw32-make -j4
