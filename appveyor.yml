@@ -14,7 +14,4 @@ install:
   - set PATH=%QTDIR%\bin;%PATH%
   - '%QTDIR%\bin\qtenv2.bat'
   - call "%ProgramFiles(x86)%\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x64
-
-build_script:
-  - qmake PREF.pro
-  - nmake /S /NOLOGO
+  - qmake -tp vc -r
