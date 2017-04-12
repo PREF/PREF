@@ -1,7 +1,8 @@
-version: 3.0.{build}
+version: master
 
 branches:
-  only: master
+  only: 
+    - master
 
 skip_tags: true
 skip_non_tags: true
