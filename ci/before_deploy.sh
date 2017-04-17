@@ -12,6 +12,7 @@ cp PREF/PREF $DEPLOY_DIR #Copy executable
 
 cd $DEPLOY_DIR
 zip -r ../$BUILD_ID.zip *
+find . -type f ! -name '*.zip' -delete
 cd ..
 
 rm -rf $DEPLOY_DIR
