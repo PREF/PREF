@@ -20,12 +20,14 @@ notifications:
     email: false
 
 before_deploy:
+    - export BUILD_ARCHIVE=$(ls *.zip)
+    - echo "Deploying $BUILD_ARCHIVE"
     - sh ci/before_deploy.sh
 
 deploy:
     provider: pages
     local_dir: build
-    file: *.zip
+    file: $BUILD_ARCHIVE
     skip_cleanup: true
     project_name: PREF
     github_token: $GITHUB_TOKEN
