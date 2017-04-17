@@ -28,6 +28,7 @@ deploy:
     provider: pages
     file: $BUILD_ARCHIVE
     skip_cleanup: true
+    target_branch: files
     project_name: PREF
     github_token: $GITHUB_TOKEN
     name: Travis Build Bot
