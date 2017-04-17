@@ -14,6 +14,9 @@ cd $DEPLOY_DIR
 zip -r ../$BUILD_ID.zip *
 cd ..
 
-shopt -s extglob
-rm -rf !(*.zip) # Cleanup temporary files
+# Cleanup temporary files
+rm -rf PREF/
+rm -rf PrefLib/
+rm deployed*
+rm Makefile
 rm -rf $DEPLOY_DIR
