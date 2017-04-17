@@ -21,8 +21,8 @@ notifications:
 
 before_deploy:
     - export BUILD_ARCHIVE=$(ls *.zip)
-    - echo "Deploying $BUILD_ARCHIVE"
-    - sh ci/before_deploy.sh
+    - echo "Deploying "$BUILD_ARCHIVE
+    - sh ../ci/before_deploy.sh
 
 deploy:
     provider: pages
