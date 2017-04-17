@@ -23,9 +23,9 @@ before_deploy:
     - sh ci/before_deploy.sh
 
 deploy:
-    local_dir: build/deploy
-    file: *.zip
     provider: pages
+    local_dir: build
+    file: *.zip
     skip_cleanup: true
     project_name: PREF
     github_token: $GITHUB_TOKEN
