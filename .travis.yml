@@ -11,13 +11,20 @@ install:
     - source /opt/qt5*/bin/qt5*-env.sh
 
 script:
-    - qmake PREFIX=/usr
+    - mkdir build
+    - cd build
+    - qmake PREFIX=/usr ..
     - make -j4
 
 notifications:
     email: false
 
+before_deploy:
+    - sh ci/before_deploy.sh
+
 deploy:
+    local_dir: build/deploy
+    file: *.zip
     provider: pages
     skip_cleanup: true
     project_name: PREF
