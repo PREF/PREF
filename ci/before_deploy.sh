@@ -4,9 +4,14 @@ DEPLOY_DIR=deploy
 OS_NAME=`uname`
 ARCH=`uname -m`
 BUILD_DATE=`date +%d%m%Y`
-BUILD_ID=$OS_NAME"_"$ARCH"_"$BUILD_DATE
+BUILD_ID="PREF_"$OS_NAME"_"$ARCH"_"$BUILD_DATE
 
 mkdir $DEPLOY_DIR
-cp PREF $DEPLOY_DIR #Copy executable
-zip -r $BUILD_ID.zip $DEPLOY_DIR
+
+cp PREF/PREF $DEPLOY_DIR #Copy executable
+
+cd $DEPLOY_DIR
+zip -r ../$BUILD_ID.zip *
+cd ..
+
 rm -rf $DEPLOY_DIR
