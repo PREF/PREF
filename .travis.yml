@@ -16,3 +16,13 @@ script:
 
 notifications:
     email: false
+
+deploy:
+    provider: pages
+    skip_cleanup: true
+    project_name: PREF
+    github_token: $GITHUB_TOKEN
+    name: Travis Build Bot
+    repo: PREF/pref.github.io
+    on:
+        branch: master
