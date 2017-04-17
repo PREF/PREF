@@ -14,5 +14,6 @@ cd $DEPLOY_DIR
 zip -r ../$BUILD_ID.zip *
 cd ..
 
+shopt -s extglob
 rm -rf !(*.zip) # Cleanup temporary files
 rm -rf $DEPLOY_DIR
