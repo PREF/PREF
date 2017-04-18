@@ -1,11 +1,11 @@
-version: PREF_Windows_i686_{build}
+version: {build}
 
 branches:
   only: 
     - master
 
 init:
-- ps: Update-AppveyorBuild -Version "$(Get-Date -format dmY)_$env:appveyor_build_number"
+- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -Uformat "dmY")_$env:appveyor_build_number"
 
 environment:
   access_token:
@@ -15,8 +15,14 @@ skip_tags: true
 skip_non_tags: true
 max_jobs: 4
 
+notifications:
+  - provider: Email
+  - on_build_success: false
+  - on_build_failure: false
+  - on_build_status_changed: false
+
 artifacts:
-  - path: release\PREF.exe
+  - path: build\release\PREF.exe
     name: PREF-{build}
 
 install:
