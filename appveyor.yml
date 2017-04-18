@@ -22,8 +22,8 @@ notifications:
   - on_build_status_changed: false
 
 artifacts:
-  - path: "build\PREF\{build}.exe"
-    name: "{build}"
+  - path: build\PREF\$(version).zip
+    name: $(version)
 
 install:
   - git submodule update --init --recursive
@@ -35,5 +35,5 @@ build_script:
   - cd build
   - qmake CONFIG+=release ..
   - mingw32-make -j4
-  - 7z a {build}.zip release\PREF.EXE
+  - 7z a $(version).zip release\PREF.EXE
   - tree /f /a
