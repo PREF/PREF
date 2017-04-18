@@ -16,8 +16,8 @@ skip_non_tags: true
 max_jobs: 4
 
 artifacts:
-  - path: 'build\PREF\$(APPVEYOR_BUILD_VERSION).zip'
-    name: '$(APPVEYOR_BUILD_VERSION)'
+  - path: build\PREF\$(APPVEYOR_BUILD_VERSION).zip
+    name: $(APPVEYOR_BUILD_VERSION)
 
 install:
   - git submodule update --init --recursive
@@ -29,5 +29,5 @@ build_script:
   - cd build
   - qmake CONFIG+=release ..
   - mingw32-make -j4
-  - 7z a '$(APPVEYOR_BUILD_VERSION).zip' release\PREF.EXE
+  - 7z a $(APPVEYOR_BUILD_VERSION).zip release\PREF.EXE
   - tree /f /a
