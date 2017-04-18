@@ -5,7 +5,7 @@ branches:
     - master
 
 init:
-- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -Uformat "dmY")_$env:appveyor_build_number"
+- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -Uformat dmY)_$env:appveyor_build_number"
 
 environment:
   access_token:
@@ -22,8 +22,8 @@ notifications:
   - on_build_status_changed: false
 
 artifacts:
-  - path: build\release\PREF.exe
-    name: PREF-{build}
+  - path: PREF\release\PREF.exe
+    name: PREF
 
 install:
   - git submodule update --init --recursive
