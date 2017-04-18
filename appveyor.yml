@@ -29,5 +29,6 @@ build_script:
   - cd build
   - qmake CONFIG+=release ..
   - mingw32-make -j4
+  - set
   - 7z a $(APPVEYOR_BUILD_VERSION).zip release\PREF.EXE
   - tree /f /a
