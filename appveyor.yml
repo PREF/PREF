@@ -36,4 +36,4 @@ build_script:
   - qmake CONFIG+=release ..
   - mingw32-make -j4
   - pwd
-  - tree PREF\release
+  - tree /f /a PREF
