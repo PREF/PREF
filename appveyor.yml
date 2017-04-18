@@ -5,7 +5,7 @@ branches:
     - master
 
 init:
-- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -Uformat dmY)_$env:appveyor_build_number"
+- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -format dmY)_$env:appveyor_build_number"
 
 environment:
   access_token:
@@ -35,3 +35,4 @@ build_script:
   - cd build
   - qmake CONFIG+=release ..
   - mingw32-make -j4
+  - tree
