@@ -1,12 +1,23 @@
-version: master-build-{build}
+version: PREF_Windows_i686_{build}
 
 branches:
   only: 
     - master
 
+init:
+- ps: Update-AppveyorBuild -Version "$(Get-Date -format dmY)_$env:appveyor_build_number"
+
+environment:
+  access_token:
+    secure: 1xDbJm4/ZdjBTgkbzAHDtNOcsRwJz4u1GSfI4UEA2ZQYt1zFWURWu9+gyy9rEGck
+
 skip_tags: true
 skip_non_tags: true
 max_jobs: 4
+
+artifacts:
+  - path: release\PREF.exe
+  - name: PREF-{build}
 
 install:
   - git submodule update --init --recursive
@@ -14,5 +25,7 @@ install:
   - set PATH=%QTDIR%\bin;C:\Qt\Tools\mingw530_32\bin;%PATH%
 
 build_script:
-  - qmake PREF.pro CONFIG+=release
+  - mkdir build
+  - cd build
+  - qmake CONFIG+=release ..
   - mingw32-make -j4
