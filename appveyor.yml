@@ -22,8 +22,8 @@ notifications:
   - on_build_status_changed: false
 
 artifacts:
-  - path: PREF\release\PREF.exe
-    name: PREF
+  - path: build\PREF\release\PREF.exe
+    name: $(version)
 
 install:
   - git submodule update --init --recursive
