@@ -17,7 +17,7 @@ max_jobs: 4
 
 artifacts:
   - path: release\PREF.exe
-  - name: PREF-{build}
+    name: PREF-{build}
 
 install:
   - git submodule update --init --recursive
