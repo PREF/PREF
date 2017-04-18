@@ -5,7 +5,7 @@ branches:
     - master
 
 init:
-- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -format ddMyyyy)_$env:appveyor_build_number"
+- ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -format ddMMyyyy)_$env:appveyor_build_number"
 
 environment:
   access_token:
@@ -22,8 +22,8 @@ notifications:
   - on_build_status_changed: false
 
 artifacts:
-  - path: build\PREF\$(version).zip
-    name: $(version)
+  - path: build\PREF\$(appveyor_build_version).zip
+    name: $(appveyor_build_version)
 
 install:
   - git submodule update --init --recursive
@@ -35,5 +35,5 @@ build_script:
   - cd build
   - qmake CONFIG+=release ..
   - mingw32-make -j4
-  - 7z a $(version).zip release\PREF.EXE
+  - 7z a $(appveyor_build_version).zip release\PREF.EXE
   - tree /f /a
