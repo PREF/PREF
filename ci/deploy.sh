@@ -17,10 +17,10 @@ cd ..
 # Cleanup temporary files
 rm -rf PREF/
 rm -rf PrefLib/
-rm deployed*
 rm Makefile
 rm -rf $DEPLOY_DIR
 
+# Prepare deploy
 rm -rf $BUILD_REPO
 git clone -b builds https://${GH_TOKEN}@github.com/PREF/$BUILD_REPO.git
 
@@ -31,5 +31,5 @@ mv ../$BUILD_ID.zip .
 git config user.email "buildbot@none.io"
 git config user.name "Travis Build Bot"
 git add -A .
-git commit -a -m "Updated Linux Nightly $BUILD_DATE"
+git commit -m "Updated Linux Nightly $BUILD_DATE"
 git push --quiet origin builds > /dev/null 2>&1
