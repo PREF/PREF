@@ -32,4 +32,4 @@ git config user.email "buildbot@none.io"
 git config user.name "Travis Build Bot"
 git add -A .
 git commit -m "Updated Linux Nightly $BUILD_DATE"
-git push --quiet origin builds > /dev/null 2>&1
+git push origin builds
