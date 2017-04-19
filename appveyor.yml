@@ -32,7 +32,7 @@ build_script:
 on_success:
   - git config --global credential.helper store
   - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:github_token):x-oauth-basic@github.com`n"
-  - ps: Remove-Item $(env:build_repo) -Recurse -Force 
+  - ps: Remove-Item $($env:build_repo) -Recurse -Force 
   - start /B git clone -b builds https://${GITHUB_TOKEN}@github.com/PREF/$BUILD_REPO.git > NUL 2>&1
   - cd $(BUILD_REPO)
   - ps: Remove-Item *Windows* 
