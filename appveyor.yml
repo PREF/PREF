@@ -16,10 +16,6 @@ skip_tags: true
 skip_non_tags: true
 max_jobs: 4
 
-artifacts:
-  - path: build\$(APPVEYOR_BUILD_VERSION).zip
-    name: $(APPVEYOR_BUILD_VERSION)
-
 install:
   - git submodule update --init --recursive
   - set QTDIR=C:\Qt\5.6\mingw49_32
@@ -39,7 +35,7 @@ on_success:
   - ps: rm $($env:build_repo) -r -f
   - start /B git clone -b builds https://${GITHUB_TOKEN}@github.com/PREF/$BUILD_REPO.git > NUL 2>&1
   - cd $(BUILD_REPO)
-  - ps: rm *Windows* -r -f
+  - ps: Remove-Item *Windows* 
   - mv ../$(APPVEYOR_BUILD_VERSION).zip .
   - git config --global user.email "buildbot@none.io"
   - git config --global user.name "AppVeyor Build Bot"
