@@ -8,7 +8,8 @@ init:
 - ps: Update-AppveyorBuild -Version "PREF_Windows_i686_$(Get-Date -format ddMMyyyy)_$env:appveyor_build_number"
 
 environment:
-  access_token:
+  build_repo: pref.github.io
+  github_token:
     secure: 1xDbJm4/ZdjBTgkbzAHDtNOcsRwJz4u1GSfI4UEA2ZQYt1zFWURWu9+gyy9rEGck
 
 skip_tags: true
@@ -31,3 +32,17 @@ build_script:
   - mingw32-make -j4
   - 7z a %APPVEYOR_BUILD_VERSION%.zip PREF\release\PREF.EXE
   - tree /f /a
+
+on_success:
+  - git config --global credential.helper store
+  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:github_token):x-oauth-basic@github.com`n"
+  - ps: rm $(BUILD_REPO) -r -f
+  - start /B git clone -b builds https://${GITHUB_TOKEN}@github.com/PREF/$BUILD_REPO.git > NUL 2>&1
+  - cd $(BUILD_REPO)
+  - ps: rm *Windows* -r -f
+  - mv ../$(APPVEYOR_BUILD_VERSION).zip .
+  - git config --global user.email "buildbot@none.io"
+  - git config --global user.name "AppVeyor Build Bot"
+  - git add -A .
+  - git commit -m "Updated Windows Nightly $(Get-Date -format ddMMyyyy)"
+  - ps: start /B git push --quiet origin builds > NULL 2>&1 
