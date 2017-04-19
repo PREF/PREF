@@ -25,13 +25,12 @@ before_deploy:
     - echo "Deploying $BUILD_ARCHIVE"
 
 deploy:
-    provider: pages
+    provider: releases
+
+    api_key:
+        secure: $GITHUB_TOKEN
+
     file: $BUILD_ARCHIVE
     skip_cleanup: true
-    target_branch: files
-    project_name: PREF
-    github_token: $GITHUB_TOKEN
-    name: Travis Build Bot
-    repo: PREF/pref.github.io
     on:
-        branch: master
+        tags: true
