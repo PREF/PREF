@@ -2,6 +2,10 @@ language: cpp
 compiler: gcc
 dist: trusty
 
+env:
+  global:
+    secure: Mde4H6eedhEje7En4LgJgYpNt+NkabfquJ5uZOcOfb5l8A04F2Z7Ojps3eJb0LchDxdTrGxUPwDBoVvqp0KT2707asSZ8OwJTUlNZcwc6JKhEzV50ACuaVJwF5S7AQ1hwBKN1EY11JxPpZnjyZmphAIJcGnI07A7D4obGq5T2uV2tCZUE5yiCYeVvLGf/9J2qc+ZHumyBm1rOKdB1ASB0F9CUIjTmAaJAAai9ghTd2JgxwHtQGWcAn/4UGAVe0kdTzfeTd0ZPG3svmWLdYVbGHIpm+wynP5OVQc+cKLZ1r90YTthlivS9xwndJX188vibWM6f0BzaGmjVnWxbyWl2QQWC2z6tZklvE0ND2+U4MkDTflMIUU07swXPpYoq2RoU6Y5LwX1jzTPDmm4gKubVsppg21M1G7L417B6XNS1aLgEqfRCcv2OkNpWMzqPzbxpPKppwuIUpbFen7v/RPFtuo6fOMZ5Jsx0Ejm7qaw4dpm4YiM7oVa8q+0pthZL5fUvQ2pTbg4hEf7aVO57SebGgoqnKZZxk3kvlCOvxMvFvXockyxSLLKrlgifMKkkuIYbahChRb8WeVqbR2XQ1rddS8Kh7YKWzrgXCMcjmlZzzVz3ryRYoVUpRi3JUDMb2waA2iWNidRyms/cbdN9wISwNQcU72GdiWoonHcEb8kouQ=
+
 before_install:
     - sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y
     - sudo apt-get update -qq
@@ -15,22 +19,7 @@ script:
     - cd build
     - qmake PREFIX=/usr ..
     - make -j4
+    - sh ../ci/deploy.sh
 
 notifications:
     email: false
-
-before_deploy:
-    - sh ../ci/before_deploy.sh
-    - export BUILD_ARCHIVE=$(ls *.zip)
-    - echo "Deploying $BUILD_ARCHIVE"
-
-deploy:
-    provider: releases
-
-    api_key:
-        secure: $GITHUB_TOKEN
-
-    file: $BUILD_ARCHIVE
-    skip_cleanup: true
-    on:
-        tags: true
