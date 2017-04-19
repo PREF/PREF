@@ -22,7 +22,7 @@ rm -rf $DEPLOY_DIR
 
 # Prepare deploy
 rm -rf $BUILD_REPO
-git clone -b builds https://${GH_TOKEN}@github.com/PREF/$BUILD_REPO.git
+git clone -b builds https://${GITHUB_TOKEN}@github.com/PREF/$BUILD_REPO.git > /dev/null 2>&1
 
 cd $BUILD_REPO
 rm -rf *$OS_NAME*
@@ -32,4 +32,4 @@ git config user.email "buildbot@none.io"
 git config user.name "Travis Build Bot"
 git add -A .
 git commit -m "Updated Linux Nightly $BUILD_DATE"
-git push origin builds
+git push --quiet origin builds > /dev/null 2>&1 
