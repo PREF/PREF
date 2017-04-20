@@ -27,9 +27,4 @@ build_script:
   - qmake CONFIG+=release ..
   - mingw32-make -j4
   - 7z a %APPVEYOR_BUILD_VERSION%.zip PREF\release\PREF.EXE
-
-deploy:
-  - provider: Script
-    script: ci/deploy.ps1
-    on:
-      branch: master
+  - ps: ../../ci/deploy.ps1
