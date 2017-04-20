@@ -27,18 +27,9 @@ build_script:
   - qmake CONFIG+=release ..
   - mingw32-make -j4
   - 7z a %APPVEYOR_BUILD_VERSION%.zip PREF\release\PREF.EXE
-  - tree /f /a
 
-on_success:
-  - git config --global credential.helper store
-  - ps: Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:github_token):x-oauth-basic@github.com`n"
-  - ps: Remove-Item $($env:build_repo) -Recurse -Force 
-  - start /B git clone -b builds https://${GITHUB_TOKEN}@github.com/PREF/$BUILD_REPO.git > NUL 2>&1
-  - cd $(BUILD_REPO)
-  - ps: Remove-Item *Windows* 
-  - mv ../$(APPVEYOR_BUILD_VERSION).zip .
-  - git config --global user.email "buildbot@none.io"
-  - git config --global user.name "AppVeyor Build Bot"
-  - git add -A .
-  - git commit -m "Updated Windows Nightly $(Get-Date -format ddMMyyyy)"
-  - ps: start /B git push --quiet origin builds > NULL 2>&1 
+deploy:
+  - provider: Script
+    script: ci/deploy.ps1
+    on:
+      branch: master
