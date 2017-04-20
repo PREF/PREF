@@ -26,10 +26,12 @@ git clone -b builds https://${GITHUB_TOKEN}@github.com/PREF/$BUILD_REPO.git > /d
 
 cd $BUILD_REPO
 rm -rf *$OS_NAME*
-mv ../$BUILD_ID.zip .
 
-git config user.email "buildbot@none.io"
-git config user.name "Travis Build Bot"
-git add -A .
-git commit -m "Updated Linux Nightly $BUILD_DATE"
-git push --quiet origin builds > /dev/null 2>&1 
+if [ -f ../$BUILD_ID.zip ]; then
+    mv ../$BUILD_ID.zip .
+    git config user.email "buildbot@none.io"
+    git config user.name "Travis Build Bot"
+    git add -A .
+    git commit -m "Updated Linux Nightly $BUILD_DATE"
+    git push --quiet origin builds > /dev/null 2>&1 
+fi
