@@ -26,5 +26,5 @@ build_script:
   - cd build
   - qmake CONFIG+=release ..
   - mingw32-make -j4
-  - 7z a %APPVEYOR_BUILD_VERSION%.zip PREF\release\PREF.EXE
+  - ps: ../ci/package.ps1
   - ps: ../ci/deploy.ps1
