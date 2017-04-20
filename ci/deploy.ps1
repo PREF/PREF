@@ -10,8 +10,12 @@ git clone -b builds https://$($env:github_token)@github.com/PREF/$($env:build_re
 cd $($env:build_repo)
 Remove-Item *Windows* 
 Move-Item -Path ../$($env:appveyor_build_version).zip -Destination .
-git config --global user.email "buildbot@none.io"
-git config --global user.name "AppVeyor Build Bot"
-git add -A .
-git commit -m "Updated Windows Nightly $(Get-Date -format ddMMyyyy)"
-git push --quiet origin builds > $null 2>&1 
+    
+if(Test-Path $($env:appveyor_build_version))
+{
+    git config --global user.email "buildbot@none.io"
+    git config --global user.name "AppVeyor Build Bot"
+    git add -A .
+    git commit -m "Updated Windows Nightly $(Get-Date -format ddMMyyyy)"
+    git push --quiet origin builds > $null 2>&1 
+}
