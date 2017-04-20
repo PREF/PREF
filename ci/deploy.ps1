@@ -1,3 +1,4 @@
+git config core.autocrlf true
 git config --global credential.helper store
 Add-Content "$env:USERPROFILE\.git-credentials" "https://$($env:github_token):x-oauth-basic@github.com`n"
 
@@ -5,8 +6,8 @@ if(Test-Path $($env:build_repo)) {
     Remove-Item $($env:build_repo) -Recurse -Force 
 }
 
-git clone -b builds https://$($env:github_token)@github.com/PREF/$BUILD_REPO.git > $null 2>&1
-cd $(BUILD_REPO)
+git clone -b builds https://$($env:github_token)@github.com/PREF/$($env:build_repo).git > $null 2>&1
+cd $($env:build_repo)
 Remove-Item *Windows* 
 Move-Item -Path ../$($env:appveyor_build_version).zip -Destination .
 git config --global user.email "buildbot@none.io"
