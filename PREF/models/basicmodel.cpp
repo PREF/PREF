@@ -1,12 +1,12 @@
 #include "basicmodel.h"
-#include <QGuiApplication>
+#include <QFontDatabase>
 
 QFont BasicModel::_monospacefont;
 
 BasicModel::BasicModel()
 {
     if(BasicModel::_monospacefont.family().isEmpty())
-        BasicModel::_monospacefont = QFont("Monospace", qApp->font().pointSize());
+        BasicModel::_monospacefont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
 }
 
 QVariant BasicModel::defaultData(int role) const
