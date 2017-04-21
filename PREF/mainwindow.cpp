@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "widgets/views/binaryview.h"
+#include "dialogs/aboutdialog.h"
 #include <QDesktopWidget>
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -140,4 +141,10 @@ void MainWindow::on_action_Analyze_triggered()
         return;
 
     this->loadFile(file);
+}
+
+void MainWindow::on_action_About_PREF_triggered()
+{
+    AboutDialog dlgabout(this);
+    dlgabout.exec();
 }

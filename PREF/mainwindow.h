@@ -24,6 +24,7 @@ class MainWindow : public QMainWindow
 
     private slots:
         void on_action_Analyze_triggered();
+        void on_action_About_PREF_triggered();
 
     private:
         void updateToolBar(AbstractView* abstractview) const;

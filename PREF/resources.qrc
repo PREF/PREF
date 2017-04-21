@@ -2,7 +2,6 @@
     <qresource prefix="/">
         <file>res/about.png</file>
         <file>res/analyze.png</file>
-        <file>res/app.ico</file>
         <file>res/app.png</file>
         <file>res/apply.png</file>
         <file>res/arrow.png</file>

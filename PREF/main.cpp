@@ -4,7 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    a.setApplicationDisplayName("PREF 3.0");
+    a.setApplicationDisplayName(QString("PREF 3.0-") + GIT_VERSION);
 
     MainWindow w;
     w.show();

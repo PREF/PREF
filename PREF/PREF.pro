@@ -25,6 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include($$PWD/../config.pri)
 include($$PWD/qhexedit/QHexEdit.pri)
 
+DEFINES += GIT_VERSION='\\\"'$$system("git rev-parse --short HEAD")'\\\"'
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     platform/loadeddata.cpp \
@@ -50,7 +52,8 @@ SOURCES += main.cpp\
     platform/btvmex.cpp \
     dialogs/scalardialog.cpp \
     widgets/logwidget/logwidget.cpp \
-    widgets/logwidget/loghighlighter.cpp
+    widgets/logwidget/loghighlighter.cpp \
+    dialogs/aboutdialog.cpp
 
 HEADERS  += mainwindow.h \
     platform/loadeddata.h \
@@ -76,15 +79,15 @@ HEADERS  += mainwindow.h \
     platform/btvmex.h \
     dialogs/scalardialog.h \
     widgets/logwidget/logwidget.h \
-    widgets/logwidget/loghighlighter.h
+    widgets/logwidget/loghighlighter.h \
+    dialogs/aboutdialog.h
 
-FORMS    += mainwindow.ui \
+FORMS  += mainwindow.ui \
     widgets/views/binaryview.ui \
     widgets/tabs/charttab.ui \
     widgets/tabs/stringstab.ui \
-    dialogs/scalardialog.ui
-
-DISTFILES +=
+    dialogs/scalardialog.ui \
+    dialogs/aboutdialog.ui
 
 RESOURCES += \
     resources.qrc
