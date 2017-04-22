@@ -13,7 +13,6 @@ environment:
     secure: 1xDbJm4/ZdjBTgkbzAHDtNOcsRwJz4u1GSfI4UEA2ZQYt1zFWURWu9+gyy9rEGck
 
 skip_tags: true
-skip_non_tags: true
 max_jobs: 4
 
 install:
